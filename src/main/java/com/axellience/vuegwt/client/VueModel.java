@@ -30,7 +30,7 @@ public abstract class VueModel
      * Register VueComponents on this VueModel
      * @param components VueComponents to register on this VueModel
      */
-    protected void registerComponents(Collection<VueComponent> components)
+    protected final void registerComponents(Collection<VueComponent> components)
     {
         for (VueComponent component : components)
         {
@@ -42,7 +42,7 @@ public abstract class VueModel
      * Register a VueComponent on this VueModel
      * @param component VueComponent to register on this VueModel
      */
-    protected void registerComponent(VueComponent component)
+    protected final void registerComponent(VueComponent component)
     {
         this.$$components.set(component.getName(), VueGwtTools.convertFromJavaToVueModel(component));
     }
@@ -53,15 +53,15 @@ public abstract class VueModel
      * @param value Value of this event
      */
     @JsMethod
-    protected void $emit(String eventName, Object value) {
-        // Native method, no code needed
+    protected final void $emit(String eventName, Object value) {
+        VueGwtTools.vue$emit(this, eventName, value);
     }
 
     /**
      * Emit an event with no value
      * @param eventName Name (identifier) of the event
      */
-    protected void $emit(String eventName) {
+    protected final void $emit(String eventName) {
         this.$emit(eventName, null);
     }
 
@@ -71,7 +71,7 @@ public abstract class VueModel
      * @param onEvent A callback to call when the event occurs
      */
     @JsMethod
-    protected void $on(String eventName, OnEvent onEvent) {
-        // Native method, no code needed
+    protected final void $on(String eventName, OnEvent onEvent) {
+        VueGwtTools.vue$on(this, eventName, onEvent);
     }
 }

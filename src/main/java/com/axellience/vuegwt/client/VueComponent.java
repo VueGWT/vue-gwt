@@ -52,7 +52,7 @@ public abstract class VueComponent extends VueModel
      * Doesn't support constraint yet.
      * @param prop Name of the custom property
      */
-    protected void addProp(String prop)
+    protected final void addProp(String prop)
     {
         this.$$props.set(prop, null);
     }
