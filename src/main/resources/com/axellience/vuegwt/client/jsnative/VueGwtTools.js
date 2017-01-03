@@ -28,14 +28,7 @@ window.vueGwt = {
 			if (!javaVueModel.hasOwnProperty(propName))
 				continue;
 
-			if (propName.slice(0, 2) == "$$") {
-				// Properties starting with $$ are not data properties of our VM
-				// but should be directly copied in the vueModelDefinition (example $$el)
-				vueModel[propName.slice(2)] = javaVueModel[propName];
-			} else {
-				// Other properties are data properties
-				data[propName] = javaVueModel[propName];
-			}
+			this._manageJavaProperty(propName, javaVueModel[propName], data, vueModel);
 		}
 		if (isComponent) {
 			// If we are creating a component, data is a factory of data
@@ -50,31 +43,42 @@ window.vueGwt = {
 
 		// Browse all the methods of our java object
 		var proto = javaVueModel.__proto__;
-		for (var functionName in proto) {
-			if (!proto.hasOwnProperty(functionName))
-				continue;
-
-			// We only take a look at function on the prototype
-			var func = proto[functionName];
-			if (func instanceof Object)
+		for (propName in proto) {
+			if (!proto.hasOwnProperty(propName))
 				continue;
 
 			// Exclude some GWT specific methods and the constructor
-			if (functionName.indexOf("$init") === 0 || functionName.indexOf("___") === 0 || functionName == "constructor")
+			if (propName.indexOf("$init") === 0 || propName.indexOf("___") === 0 || propName == "constructor")
 				continue;
 
+			var value = proto[propName];
+			if (typeof value != "function") {
+				this._manageJavaProperty(propName, value, data, vueModel);
+			}
+
 			// Get computed and watch properties and register them in the right property
-			var splitName = functionName.split("_");
+			var splitName = propName.split("_");
 			if (splitName[0] == "watch") {
-				vueModel.watch[this._removeFirstWord(splitName)] = func;
+				vueModel.watch[this._removeFirstWord(splitName)] = value;
 			} else if (splitName[0] == "computed") {
-				vueModel.computed[this._removeFirstWord(splitName)] = func;
+				vueModel.computed[this._removeFirstWord(splitName)] = value;
 			} else {
-				vueModel.methods[functionName] = func;
+				vueModel.methods[propName] = value;
 			}
 		}
 
 		return vueModel;
+	},
+
+	_manageJavaProperty: function(propertyName, propertyValue, data, vueModel) {
+		if (propertyName.slice(0, 2) == "$$") {
+			// Properties starting with $$ are not data properties of our VM
+			// but should be directly copied in the vueModelDefinition (example $$el)
+			vueModel[propertyName.slice(2)] = propertyValue;
+		} else {
+			// Other properties are data properties
+			data[propertyName] = propertyValue;
+		}
 	},
 
 	convertFromJavaToVueDirective: function (javaVueDirective) {
@@ -103,5 +107,13 @@ window.vueGwt = {
 	_removeFirstWord: function (splitWords) {
 		splitWords.shift();
 		return splitWords.join("");
+	},
+
+	vue$emit: function (vueInstance, name, value) {
+		vueInstance.$emit(name, value);
+	},
+
+	vue$on: function (vueInstance, name, listener) {
+		vueInstance.$on(name, listener);
 	}
 };
