@@ -1,5 +1,7 @@
 # Vue GWT
 
+[![Join the chat at https://gitter.im/vue-gwt/Lobby](https://badges.gitter.im/vue-gwt/Lobby.svg)](https://gitter.im/vue-gwt/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Vue GWT is a wrapper of [Vue.JS](https://vuejs.org/) using [GWT](http://www.gwtproject.org/) 2.8 and [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
 
 :warning: Vue GWT is in an **experimental** state.
