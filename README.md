@@ -5,7 +5,7 @@ It let you write Vue.JS components in Java.
 
 <p align="center">
 <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
-<a href="https://gitter.im/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
+<a href="https://gitter.im/Axellience/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
 </p>
 
 
@@ -13,17 +13,18 @@ It let you write Vue.JS components in Java.
 The syntax is not final and might change between versions.
 It may also contains bugs. :warning:
 
-:sparkles: A simple demo project using Vue GWT is available here: [Vue GWT Demo](https://axellience.github.io/vue-gwt-demo/). :sparkles:
+Want to see what it looks like? Checkout the :sparkles: [Vue GWT Demo](https://axellience.github.io/vue-gwt-demo/). :sparkles:
 
-Vue GWT makes heavy use of Vue.JS, it's recommended to read [Vue.JS introduction guide](https://vuejs.org/v2/guide/) if you are not familiar with it.
+It's recommended to read [Vue.JS introduction guide](https://vuejs.org/v2/guide/) if you are not familiar with it.
 
 ## Setup on your project
 
-### Get Vue GWT
+### :white_check_mark: Get Vue GWT
 
 Vue GWT uses maven.
 For now there is now maven repository.
-:white_check_mark: You must clone the source on your computer and mvn install them:
+
+You must clone the source on your computer and mvn install them:
 
 ```bash
 git clone https://github.com/Axellience/vue-gwt.git
@@ -31,8 +32,8 @@ cd vue-gwt
 mvn install
 ```
 
-### Add the maven dependency
-:white_check_mark: Then add Vue GWT to your project `pom.xml`:
+### :white_check_mark: Add the maven dependency
+Add Vue GWT to your project `pom.xml`:
 
 ```xml
 <properties>
@@ -47,14 +48,15 @@ mvn install
 
 ### Configure JsInterop
 :exclamation: Vue GWT relies heavily on JsInterop exports.
-You must enable them in superDevMode and Maven.
+You must enable them in SuperDevMode and Maven.
 
-
-:white_check_mark: For SuperDevMode, simply add this flag to your devMode parameters:
+#### :white_check_mark: SuperDevMode
+For SuperDevMode, simply add this flag to your devMode parameters:
 
 `-generateJsInteropExports`
 
-:white_check_mark: For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-maven-plugin/), add the following in your `pom.xml`:
+#### :white_check_mark: Maven
+For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-maven-plugin/), add the following in your `pom.xml`:
 
 ```xml
 <plugins>
@@ -69,7 +71,7 @@ You must enable them in superDevMode and Maven.
 </plugins>
 ```
 
-:white_check_mark: You are good to go!
+:thumbsup: You are good to go!
 
 ### Simple App
 
@@ -96,7 +98,7 @@ In our GWT index page we add a div with our root component template.
 To create your Component, you must create a Class that extends `VueComponent`.
 All the public attributes and methods of this class will be accessible in your template.
 
-:warning: Don't forget to add the @JsType annotation to your class.
+:exclamation: Don't forget to add the @JsType annotation to your Class.
 This ensure that GWT doesn't change their name at compile time.
 
 ```java
@@ -123,7 +125,7 @@ public class RootGwtApp implements EntryPoint {
 }
 ```
 
-:question: Behind the scene, the instance of our Component will be converted to the format that Vue.JS is expecting:
+Behind the scene, the instance of our Component will be converted to the format that Vue.JS is expecting:
 ```javascript
 {
     el: "#rootComponent",
@@ -169,9 +171,11 @@ public interface VueTemplatesResources extends ClientBundle
 }
 ```
 
-We can then simply set our Component template in it's constructor.
 
 ***ChildComponent.java***
+
+We can then simply set our Component template in it's constructor.
+
 ```java
 @JsType
 public class ChildComponent extends VueComponent
@@ -213,7 +217,9 @@ public class RootComponent extends VueComponent
 }
 ```
 
-:question: The name of the html element for our Component in the template (here, `child`) is determined using the Component Class name.
+#### How is the component html name set?
+
+The name of the html element for our Component in the template (here, `child`) is determined using the Component Class name.
 
 The name is converted from CamelCase to kebab-case.
 If the name ends with "Component" this part is dropped.
