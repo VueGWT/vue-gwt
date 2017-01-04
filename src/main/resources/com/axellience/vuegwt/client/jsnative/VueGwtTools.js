@@ -1,45 +1,38 @@
 /**
- * This object provides methods used to make our Java components compatible with Vue.JS
+ * This object provides methods to integrate Java in Vue.JS world
  */
 
 window.vueGwt = {
 	/**
-	 * Convert the Java representation of a VueModel definition to a JS object that
+	 * Convert the Java representation of a VueComponent to a JS object that
 	 * can be passed to Vue.JS
-	 * This is going to be passed to either new Vue() or Vue.component()
+	 * This is going to be passed to either new Vue(), Vue.component(), or in a components array of another Component
 	 *
 	 * @param javaVueComponent
-	 * @returns {methods: {}, watch: {}, computed: {}} VueModel definition
+	 * @returns Object Vue component definition
 	 */
 	javaComponentToVueComponentDefinition: function (javaVueComponent) {
 		// Base VueModel definition structure
-		var vueModel = {
+		var vueComponent = {
 			methods: {},
 			watch: {},
 			computed: {}
 		};
 		var data = {};
 
-		// Check if our element is an App or a Component
-		var isComponent = !javaVueComponent["$$el"];
-
 		// Browse all the properties of our java object
 		for (var propName in javaVueComponent) {
 			if (!javaVueComponent.hasOwnProperty(propName))
 				continue;
 
-			this._manageJavaProperty(propName, javaVueComponent[propName], data, vueModel);
+			this._manageJavaProperty(propName, javaVueComponent[propName], data, vueComponent);
 		}
-		if (isComponent) {
-			// If we are creating a component, data is a factory of data
-			vueModel.data = function () {
-				// Each component will get it's own instance of the data model
-				return JSON.parse(JSON.stringify(data));
-			}
-		} else {
-			// If it's an app, there is just one instance of data model
-			vueModel.data = data;
-		}
+
+		// Data is always a factory
+		vueComponent.data = function () {
+			// Each component will get it's own instance of the data model
+			return JSON.parse(JSON.stringify(data));
+		};
 
 		// Browse all the methods of our java object
 		var proto = javaVueComponent.__proto__;
@@ -53,24 +46,24 @@ window.vueGwt = {
 
 			var value = proto[propName];
 			if (typeof value != "function") {
-				this._manageJavaProperty(propName, value, data, vueModel);
+				this._manageJavaProperty(propName, value, data, vueComponent);
 			}
 
 			// Get computed and watch properties and register them in the right property
 			var splitName = propName.split("_");
 			if (splitName[0] == "watch") {
-				vueModel.watch[this._removeFirstWord(splitName)] = value;
+				vueComponent.watch[this._removeFirstWord(splitName)] = value;
 			} else if (splitName[0] == "computed") {
-				vueModel.computed[this._removeFirstWord(splitName)] = value;
+				vueComponent.computed[this._removeFirstWord(splitName)] = value;
 			} else {
-				vueModel.methods[propName] = value;
+				vueComponent.methods[propName] = value;
 			}
 		}
 
-		return vueModel;
+		return vueComponent;
 	},
 
-	_manageJavaProperty: function(propertyName, propertyValue, data, vueModel) {
+	_manageJavaProperty: function (propertyName, propertyValue, data, vueModel) {
 		if (propertyName.slice(0, 2) == "$$") {
 			// Properties starting with $$ are not data properties of our VM
 			// but should be directly copied in the vueModelDefinition (example $$el)
@@ -81,6 +74,19 @@ window.vueGwt = {
 		}
 	},
 
+	_removeFirstWord: function (splitWords) {
+		splitWords.shift();
+		return splitWords.join("");
+	},
+
+	/**
+	 * Convert the Java representation of a VueDirective to a JS object that
+	 * can be passed to Vue.JS
+	 * This is going to be passed to either Vue.directive(), or in a directives array of a Component
+	 *
+	 * @param javaVueDirective
+	 * @returns Object Vue directive definition
+	 */
 	javaDirectiveToVueDirectiveDefinition: function (javaVueDirective) {
 		// Base VueModel definition structure
 		var vueDirective = {};
@@ -104,15 +110,22 @@ window.vueGwt = {
 		return vueDirective;
 	},
 
-	_removeFirstWord: function (splitWords) {
-		splitWords.shift();
-		return splitWords.join("");
-	},
-
+	/**
+	 * Used to emit an event on the given instance
+	 * @param vueInstance
+	 * @param name
+	 * @param value
+	 */
 	vue$emit: function (vueInstance, name, value) {
 		vueInstance.$emit(name, value);
 	},
 
+	/**
+	 * Used to listen to events on the given instance
+	 * @param vueInstance
+	 * @param name
+	 * @param listener
+	 */
 	vue$on: function (vueInstance, name, listener) {
 		vueInstance.$on(name, listener);
 	}
