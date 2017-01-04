@@ -8,31 +8,30 @@ It let you write Vue.JS components in Java.
 <a href="https://gitter.im/Axellience/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
 </p>
 
-
-:warning: Vue GWT is in an **experimental** state.
-The syntax is not final and might change between versions.
-It may also contains bugs. :warning:
-
 Want to see what it looks like? Checkout the :sparkles: [Vue GWT Demo](https://axellience.github.io/vue-gwt-demo/). :sparkles:
 
 It's recommended to read [Vue.JS introduction guide](https://vuejs.org/v2/guide/) if you are not familiar with it.
+
+:warning: Vue GWT is in an **experimental** state.
+The syntax is not final and might change between versions.
+It may also contain bugs.
 
 ## Setup on your project
 
 ### :white_check_mark: Get Vue GWT
 
-Vue GWT uses maven.
-For now there is now maven repository.
+Vue GWT uses Maven.
+For now there is no Maven repository.
 
 You must clone the source on your computer and mvn install them:
 
 ```bash
 git clone https://github.com/Axellience/vue-gwt.git
 cd vue-gwt
-mvn install
+mvn clean install
 ```
 
-### :white_check_mark: Add the maven dependency
+### :white_check_mark: Add the Maven dependency
 Add Vue GWT to your project `pom.xml`:
 
 ```xml
@@ -47,8 +46,8 @@ Add Vue GWT to your project `pom.xml`:
 ```
 
 ### Configure JsInterop
-:exclamation: Vue GWT relies heavily on JsInterop exports.
-You must enable them in SuperDevMode and Maven.
+Vue GWT relies heavily on JsInterop.
+You must enable it in SuperDevMode and Maven.
 
 #### :white_check_mark: SuperDevMode
 For SuperDevMode, simply add this flag to your devMode parameters:
