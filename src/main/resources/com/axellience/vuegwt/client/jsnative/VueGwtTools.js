@@ -8,10 +8,10 @@ window.vueGwt = {
 	 * can be passed to Vue.JS
 	 * This is going to be passed to either new Vue() or Vue.component()
 	 *
-	 * @param javaVueModel
+	 * @param javaVueComponent
 	 * @returns {methods: {}, watch: {}, computed: {}} VueModel definition
 	 */
-	convertFromJavaToVueModel: function (javaVueModel) {
+	javaComponentToVueComponentDefinition: function (javaVueComponent) {
 		// Base VueModel definition structure
 		var vueModel = {
 			methods: {},
@@ -21,14 +21,14 @@ window.vueGwt = {
 		var data = {};
 
 		// Check if our element is an App or a Component
-		var isComponent = !javaVueModel["$$el"];
+		var isComponent = !javaVueComponent["$$el"];
 
 		// Browse all the properties of our java object
-		for (var propName in javaVueModel) {
-			if (!javaVueModel.hasOwnProperty(propName))
+		for (var propName in javaVueComponent) {
+			if (!javaVueComponent.hasOwnProperty(propName))
 				continue;
 
-			this._manageJavaProperty(propName, javaVueModel[propName], data, vueModel);
+			this._manageJavaProperty(propName, javaVueComponent[propName], data, vueModel);
 		}
 		if (isComponent) {
 			// If we are creating a component, data is a factory of data
@@ -42,7 +42,7 @@ window.vueGwt = {
 		}
 
 		// Browse all the methods of our java object
-		var proto = javaVueModel.__proto__;
+		var proto = javaVueComponent.__proto__;
 		for (propName in proto) {
 			if (!proto.hasOwnProperty(propName))
 				continue;
@@ -81,7 +81,7 @@ window.vueGwt = {
 		}
 	},
 
-	convertFromJavaToVueDirective: function (javaVueDirective) {
+	javaDirectiveToVueDirectiveDefinition: function (javaVueDirective) {
 		// Base VueModel definition structure
 		var vueDirective = {};
 
