@@ -8,7 +8,7 @@ It let you write Vue.JS components in Java.
 <a href="https://gitter.im/Axellience/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
 </p>
 
-Want to see what it looks like? Checkout the :sparkles: [Vue GWT Demo](https://axellience.github.io/vue-gwt-demo/). :sparkles:
+Checkout our **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)** to see it in action.
 
 It's recommended to read [Vue.JS introduction guide](https://vuejs.org/v2/guide/) if you are not familiar with it.
 
@@ -70,7 +70,7 @@ For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-
 </plugins>
 ```
 
-:thumbsup: You are good to go!
+You are good to go!
 
 ### Simple App
 
