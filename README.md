@@ -81,7 +81,7 @@ In your GWT app index.html add the following tag in the &lt;head&gt; section:
 
 You are good to go!
 
-### Simple App
+## Simple App
 
 If you already know GWT then you should be familiar with the concept of Widgets.
 In Vue.JS the equivalent of Widgets are Components.
