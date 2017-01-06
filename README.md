@@ -70,6 +70,15 @@ For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-
 </plugins>
 ```
 
+### :white_check_mark: Add Vue.JS library to your index.html
+
+In your GWT app index html, in the <head> part, add the following tag:
+
+```html
+<!-- Vue JS Framework -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+```
+
 You are good to go!
 
 ### Simple App
