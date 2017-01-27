@@ -13,18 +13,18 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class VueGwtPanel extends SimplePanel
 {
-    private final VueComponent rootComponent;
+    private final Class<? extends VueComponent> rootComponentClass;
 
-    public VueGwtPanel(VueComponent rootComponent)
+    public VueGwtPanel(Class<? extends VueComponent> rootComponentClass)
     {
         super();
-        this.rootComponent = rootComponent;
+        this.rootComponentClass = rootComponentClass;
     }
 
     @Override
     protected void onAttach()
     {
         super.onAttach();
-        Vue.attach(this.getElement(), this.rootComponent);
+        Vue.attach(this.getElement(), this.rootComponentClass);
     }
 }

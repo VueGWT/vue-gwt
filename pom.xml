@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.axellience</groupId>
 	<artifactId>vue-gwt</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.2-SNAPSHOT</version>
 
 	<name>Vue GWT</name>
 	<description>Let you use Vue.JS in GWT application</description>
@@ -36,6 +36,11 @@
 			<scope>provided</scope>
             <optional>true</optional>
 		</dependency>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>javapoet</artifactId>
+            <version>1.8.0</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -43,11 +48,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
 				<configuration>
 					<compilerArgument>-proc:none</compilerArgument>
-					<source>1.8</source>
-					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -1,10 +1,11 @@
 package com.axellience.vuegwt.client;
 
 import com.axellience.vuegwt.client.jsnative.JsObject;
+import com.axellience.vuegwt.client.jsnative.Vue;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 import com.axellience.vuegwt.client.jsnative.VueGwtToolsInjector;
+import com.axellience.vuegwt.client.gwtextension.TemplateResource;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.resources.client.TextResource;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 
@@ -27,40 +28,43 @@ public abstract class VueComponent
      * Only useful if you add your component using at
      */
     @JsProperty
-    private Object   $$el;
+    private Object $$vue_el;
 
     /**
      * The template of this Vue component this should be an html file next to your component class
      * You then register it as a TextResource and pass it in your component setTemplate function
      */
     @JsProperty
-    private String   $$template;
+    private String $$vue_template;
 
     /**
      * Props of your component (data it can receive as attributes from other components)
      */
     @JsProperty
-    private final JsObject $$props = new JsObject();
+    private final JsObject $$vue_props = new JsObject();
 
     /**
      * Components registered locally
      */
     @JsProperty
-    private final JsObject $$components = new JsObject();
+    private final JsObject $$vue_components = new JsObject();
 
     /**
      * Directives registered locally
      */
     @JsProperty
-    private final JsObject $$directives = new JsObject();
+    private final JsObject $$vue_directives = new JsObject();
 
     /**
      * Register a VueComponent locally
-     * @param component VueComponent to register
+     * @param componentClass VueComponent to register
      */
-    protected final void registerComponent(VueComponent component)
+    public final void registerComponent(Class<? extends VueComponent> componentClass)
     {
-        this.$$components.set(VueGwtTools.componentToTagName(component), VueGwtTools.javaComponentToVueComponentDefinition(component));
+        this.$$vue_components.set(
+            VueGwtTools.componentToTagName(componentClass),
+            Vue.getJsComponentDefinitionForClass(componentClass)
+        );
     }
 
     /**
@@ -69,7 +73,10 @@ public abstract class VueComponent
      */
     protected final void registerDirective(VueDirective directive)
     {
-        this.$$directives.set(VueGwtTools.directiveToTagName(directive), VueGwtTools.javaDirectiveToVueDirectiveDefinition(directive));
+        this.$$vue_directives.set(
+            VueGwtTools.directiveToTagName(directive),
+            VueGwtTools.javaDirectiveToVueDirectiveDefinition(directive)
+        );
     }
 
     /**
@@ -78,7 +85,7 @@ public abstract class VueComponent
      */
     public void setEl(String el)
     {
-        this.$$el = el;
+        this.$$vue_el = el;
     }
 
     /**
@@ -87,15 +94,25 @@ public abstract class VueComponent
      */
     public void setEl(Element el)
     {
-        this.$$el = el;
+        this.$$vue_el = el;
     }
 
     /**
      * Set the template to use for this Component
      * @param template
      */
-    protected void setTemplate(TextResource template) {
-        this.$$template = template.getText();
+    public void setTemplate(TemplateResource template)
+    {
+        this.setTemplate(template.getText());
+    }
+
+    /**
+     * Set the template to use for this Component
+     * @param template
+     */
+    protected void setTemplate(String template)
+    {
+        this.$$vue_template = template;
     }
 
     /**
@@ -103,9 +120,9 @@ public abstract class VueComponent
      * Doesn't support constraint yet.
      * @param prop Name of the custom property
      */
-    protected final void addProp(String prop)
+    public final void addProp(String prop)
     {
-        this.$$props.set(prop, null);
+        this.$$vue_props.set(prop, null);
     }
 
     /**
@@ -114,10 +131,10 @@ public abstract class VueComponent
      * @param onEvent A callback to call when the event occurs
      */
     @JsMethod
-    protected final void $on(String eventName, OnEvent onEvent) {
+    protected final void $on(String eventName, OnEvent onEvent)
+    {
         VueGwtTools.vue$on(this, eventName, onEvent);
     }
-
 
     /**
      * Emit an event with a given value
@@ -125,7 +142,8 @@ public abstract class VueComponent
      * @param value Value of this event
      */
     @JsMethod
-    protected final void $emit(String eventName, Object value) {
+    protected final void $emit(String eventName, Object value)
+    {
         VueGwtTools.vue$emit(this, eventName, value);
     }
 
@@ -133,7 +151,8 @@ public abstract class VueComponent
      * Emit an event with no value
      * @param eventName Name (identifier) of the event
      */
-    protected final void $emit(String eventName) {
+    protected final void $emit(String eventName)
+    {
         this.$emit(eventName, null);
     }
 }

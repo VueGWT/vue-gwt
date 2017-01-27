@@ -14,18 +14,18 @@ public class VueGwtToolsInjector
 
     public static void inject()
     {
-        if( injected )
+        if (injected)
             return;
         injected = true;
 
         HTMLDocument document = HTMLDocument.get();
 
-        HTMLElement jsToolsScriptElement = document.createElement( "script" );
+        HTMLElement jsToolsScriptElement = document.createElement("script");
         jsToolsScriptElement.innerHTML = VueGwtResources.JS_RESOURCES.jsToolsScript().getText();
-        document.body.appendChild( jsToolsScriptElement );
+        document.body.appendChild(jsToolsScriptElement);
 
-        HTMLElement vueGwtScriptElement = document.createElement( "script" );
+        HTMLElement vueGwtScriptElement = document.createElement("script");
         vueGwtScriptElement.innerHTML = VueGwtResources.JS_RESOURCES.vueToolsScript().getText();
-        document.body.appendChild( vueGwtScriptElement );
+        document.body.appendChild(vueGwtScriptElement);
     }
 }

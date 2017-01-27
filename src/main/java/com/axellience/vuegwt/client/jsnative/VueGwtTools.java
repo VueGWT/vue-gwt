@@ -3,8 +3,8 @@ package com.axellience.vuegwt.client.jsnative;
 import com.axellience.vuegwt.client.OnEvent;
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.VueDirective;
-import com.axellience.vuegwt.client.jsnative.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.jsnative.definitions.VueDirectiveDefinition;
+import com.axellience.vuegwt.client.jsnative.definitions.ComponentDefinition;
 import jsinterop.annotations.JsMethod;
 
 import com.google.gwt.regexp.shared.RegExp;
@@ -28,10 +28,10 @@ public class VueGwtTools
      * Return the default name to register a component based on it's class name
      * The name of the tag is the name of the component converted to kebab-case
      * If the component class ends with "Component", this part is ignored
-     * @param vueComponent
+     * @param vueComponentClass
      */
-    public static String componentToTagName(VueComponent vueComponent) {
-        String name = vueComponent.getClass().getSimpleName();
+    public static String componentToTagName(Class<? extends VueComponent> vueComponentClass) {
+        String name = vueComponentClass.getSimpleName();
         // Drop "Component" at the end of the class name
         name = componentEnd.replace(name, "");
         // Convert from CamelCase to kebab-case
@@ -53,8 +53,7 @@ public class VueGwtTools
     }
 
     @JsMethod(namespace = "vueGwt")
-    public static native VueComponentDefinition javaComponentToVueComponentDefinition(
-        VueComponent vueComponent);
+    public static native JsObject javaComponentDefinitionToJs(ComponentDefinition vueComponent);
 
     @JsMethod(namespace = "vueGwt")
     public static native VueDirectiveDefinition javaDirectiveToVueDirectiveDefinition(VueDirective vueDirective);

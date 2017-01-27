@@ -31,18 +31,77 @@ cd vue-gwt
 mvn clean install
 ```
 
-### :white_check_mark: Add the Maven dependency
+### :white_check_mark: Configure Maven
+
+#### Add the dependency
 Add Vue GWT to your project `pom.xml`:
 
 ```xml
 <properties>
-    <vue-gwt.version>1.1-SNAPSHOT</vue-gwt.version>
+    <vue-gwt.version>1.2-SNAPSHOT</vue-gwt.version>
 </properties>
 <dependency>
     <groupId>com.axellience</groupId>
     <artifactId>vue-gwt</artifactId>
     <version>${vue-gwt.version}</version>
 </dependency>
+```
+
+#### Add Annotation processing configuration
+In the `plugins` section:
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <!-- version is important to have java annotation processing correctly handled -->
+    <version>3.3</version><!--$NO-MVN-MAN-VER$-->
+    <configuration>
+        <compilerArgument>-parameters</compilerArgument>
+        <testCompilerArgument>-parameters</testCompilerArgument>
+        <useIncrementalCompilation>false</useIncrementalCompilation>
+        <source>1.8</source>
+        <target>1.8</target>
+    </configuration>
+</plugin>
+```
+
+This is useful for Eclipse:
+```xml
+<pluginManagement>
+    <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+            <groupId>org.eclipse.m2e</groupId>
+            <artifactId>lifecycle-mapping</artifactId>
+            <version>1.0.0</version>
+            <configuration>
+                <lifecycleMappingMetadata>
+                    <pluginExecutions>
+                        <pluginExecution>
+                            <pluginExecutionFilter>
+                                <groupId>
+                                    org.codehaus.mojo
+                                </groupId>
+                                <artifactId>
+                                    gwt-maven-plugin
+                                </artifactId>
+                                <versionRange>
+                                    [2.7.0,)
+                                </versionRange>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </pluginExecutionFilter>
+                            <action>
+                                <ignore></ignore>
+                            </action>
+                        </pluginExecution>
+                    </pluginExecutions>
+                </lifecycleMappingMetadata>
+            </configuration>
+        </plugin>
+    </plugins>
+</pluginManagement>
 ```
 
 ### Configure JsInterop
@@ -79,6 +138,24 @@ In your GWT app index.html add the following tag in the &lt;head&gt; section:
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 ```
 
+### IDE Configuration
+
+#### Eclipse
+Just import your project as a Maven project.
+
+#### IntelliJ IDEA
+By default IntelliJ doesn't support automatic compilation on file change.
+But don't worry, enabling it is easy!
+
+Go to `File -> Settings -> Build, Execution, Deployment -> Compiler` and enable “Make project automatically”
+
+Open the Action window :
+* Linux : `CTRL+SHIFT+A`
+* Mac OSX : `SHIFT+COMMAND+A`
+* Windows : `CTRL+ALT+SHIFT+/`
+
+Enter `Registry...` and enable `compiler.automake.allow.when.app.running`
+
 You are good to go!
 
 ## Simple App
@@ -103,13 +180,14 @@ In our GWT index page we add a div with our root component template.
 
 ***RootComponent.java***
 
-To create your Component, you must create a Class that extends `VueComponent`.
+To create your Component, you must create a Class annotated by @Component and @JsType that extends `VueComponent`.
 All the public attributes and methods of this class will be accessible in your template.
 
 :exclamation: Don't forget to add the @JsType annotation to your Class.
 This ensure that GWT doesn't change their name at compile time.
 
 ```java
+@Component
 @JsType
 public class RootComponent extends VueComponent
 {
@@ -120,15 +198,14 @@ public class RootComponent extends VueComponent
 ***RootGwtApp.java***
 
 We need to bootstrap our `RootComponent` when GWT starts.
-For that we simply call Vue.attach() and pass it an instance of our RootComponent class.
+For that we simply call Vue.attach() and pass it our RootComponent class.
 
 ```java
-@JsType
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad()
     {
         // When our GWT app starts, we start our Vue app.
-        Vue.attach("#rootComponent", new RootComponent());
+        Vue.attach("#rootComponent", RootComponent.class);
     }
 }
 ```
@@ -156,6 +233,8 @@ We will then instantiate this component in our RootComponent.
 This Component will display a message coming from a html text box.
 
 First we create an HTML file with our component template.
+We add this file next to our Java class.
+VueGWT will detect it automatically and use it as the template.
 
 ***ChildComponent.html***
 ```html
@@ -164,41 +243,6 @@ First we create an HTML file with our component template.
     <p>{{ message }}</p>
     <a href v-on:click="clearMessage">Clear message</a>
 </div>
-```
-
-We add this template as a GWT resource.
-
-***VueTemplatesResources.java***
-```java
-public interface VueTemplatesResources extends ClientBundle
-{
-    VueTemplatesResources TEMPLATES = GWT.create(VueTemplatesResources.class);
-
-    @Source("ChildComponent.html")
-    TextResource child();
-}
-```
-
-
-***ChildComponent.java***
-
-We can then simply set our Component template in it's constructor.
-
-```java
-@JsType
-public class ChildComponent extends VueComponent
-{
-    public String message = "This is my first component!";
-
-    public SimpleComponent()
-    {
-        this.setTemplate(TEMPLATES.child());
-    }
-
-    public void clearMessage() {
-        message = "";
-    }
-}
 ```
 
 We will then make a few changes to our `RootComponent` to use `ChildComponent`:
@@ -214,18 +258,16 @@ We will then make a few changes to our `RootComponent` to use `ChildComponent`:
 ***RootComponent.java***
 
 ```java
+// ChildComponent is registered to be used in our RootComponent by passing it to the annotation
+@Component(components = {ChildComponent.class})
 @JsType
 public class RootComponent extends VueComponent
 {
-    public RootComponent()
-    {
-        // ChildComponent is registered to be used in our RootComponent
-        this.registerComponent(new ChildComponent());
-    }
+    public String message = "Hello Vue GWT!";
 }
 ```
 
-#### How is the component html name set?
+### How is the component html name set?
 
 The name of the html element for our Component in the template (here, `child`) is determined using the Component Class name.
 
@@ -238,6 +280,22 @@ For example:
  * TodoListComponent -> todo-list
  * Header -> header
  
+### Registering components globally
+
+Components can also be registered globally.
+They will then be usable in any component template in your app.
+
+This is the equivalent of calling `Vue.component(...)` in Vue.JS.
+
+```java
+public class RootGwtApp implements EntryPoint {
+    public void onModuleLoad()
+    {
+        // Register ChildComponent globally
+        Vue.registerComponent(ChildComponent.class);
+    }
+}
+```
  
 
 ## Vue GWT Panel
@@ -259,12 +317,11 @@ For example, let's instantiate our `ChildComponent` using this mechanism:
 ***RootGwtApp.java***
  
 ```java
-@JsType
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad()
     {
         // Create a VueGwtPanel, it's a regular GWT Widget and can be attached to any GWT Widget
-        VueGwtPanel vueGwtPanel = new VueGwtPanel(new RootComponent());
+        VueGwtPanel vueGwtPanel = new VueGwtPanel(RootComponent.class);
         
         // Attach it to inside our DOM element
         RootPanel.get("childComponentAttachPoint").add(vueGwtPanel);

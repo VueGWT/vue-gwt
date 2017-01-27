@@ -3,80 +3,82 @@
  */
 
 window.vueGwt = {
+	VUE_GWT_PREFIX: "$$vue_",
+
 	/**
 	 * Convert the Java representation of a VueComponent to a JS object that
 	 * can be passed to Vue.JS
 	 * This is going to be passed to either new Vue(), Vue.component(), or in a components array of another Component
 	 *
-	 * @param javaVueComponent
+	 * @param javaComponentDefinition
 	 * @returns Object Vue component definition
 	 */
-	javaComponentToVueComponentDefinition: function (javaVueComponent) {
-		// Base VueModel definition structure
-		var vueComponent = {
+	javaComponentDefinitionToJs: function (javaComponentDefinition) {
+		// Base JsComponentDefinition structure
+		var jsComponentDefinition = {
 			methods: {},
 			watch: {},
-			computed: {}
+			computed: {},
+			data: {}
 		};
-		var data = {};
 
-		// Browse all the properties of our java object
-		for (var propName in javaVueComponent) {
-			if (!javaVueComponent.hasOwnProperty(propName))
-				continue;
+		this._processJavaComponentDefinitionToJs(jsComponentDefinition, javaComponentDefinition);
 
-			this._manageJavaProperty(propName, javaVueComponent[propName], data, vueComponent);
-		}
-
+		var data = jsComponentDefinition.data;
 		// Data is always a factory
-		vueComponent.data = function () {
+		jsComponentDefinition.data = function () {
 			// Each component will get it's own instance of the data model
 			return JSON.parse(JSON.stringify(data));
 		};
 
-		// Browse all the methods of our java object
-		var proto = javaVueComponent.__proto__;
-		for (propName in proto) {
-			if (!proto.hasOwnProperty(propName))
-				continue;
-
-			// Exclude some GWT specific methods and the constructor
-			if (propName.indexOf("$init") === 0 || propName.indexOf("___") === 0 || propName == "constructor")
-				continue;
-
-			var value = proto[propName];
-			if (typeof value != "function") {
-				this._manageJavaProperty(propName, value, data, vueComponent);
-			}
-
-			// Get computed and watch properties and register them in the right property
-			var splitName = propName.split("_");
-			if (splitName[0] == "watch") {
-				vueComponent.watch[this._removeFirstWord(splitName)] = value;
-			} else if (splitName[0] == "computed") {
-				vueComponent.computed[this._removeFirstWord(splitName)] = value;
-			} else {
-				vueComponent.methods[propName] = value;
-			}
-		}
-
-		return vueComponent;
+		return jsComponentDefinition;
 	},
 
-	_manageJavaProperty: function (propertyName, propertyValue, data, vueModel) {
-		if (propertyName.slice(0, 2) == "$$") {
-			// Properties starting with $$ are not data properties of our VM
-			// but should be directly copied in the vueModelDefinition (example $$el)
-			vueModel[propertyName.slice(2)] = propertyValue;
-		} else {
-			// Other properties are data properties
-			data[propertyName] = propertyValue;
-		}
-	},
+	_processJavaComponentDefinitionToJs: function (jsComponentDefinition, javaComponentDefinition) {
+		var jci = javaComponentDefinition.getJavaComponentInstance();
+		var jciProto = jci.__proto__;
 
-	_removeFirstWord: function (splitWords) {
-		splitWords.shift();
-		return splitWords.join("");
+		var dataPropertiesNames = javaComponentDefinition.getDataPropertiesNames();
+		for (var i = 0; i < dataPropertiesNames.length; i++) {
+			var dataPropertyName = dataPropertiesNames[i];
+
+			jsComponentDefinition.data[dataPropertyName] = jci[dataPropertyName];
+		}
+
+		var methodsNames = javaComponentDefinition.getMethodsNames();
+		for (i = 0; i < methodsNames.length; i++) {
+			var methodName = methodsNames[i];
+
+			jsComponentDefinition.methods[methodName] = jciProto[methodName];
+		}
+		var computed = javaComponentDefinition.getComputed();
+		for (i = 0; i < computed.length; i++) {
+			var computedNVP = computed[i];
+
+			jsComponentDefinition.computed[computedNVP.getJsName()] = jciProto[computedNVP.getJavaName()];
+		}
+		var watched = javaComponentDefinition.getWatched();
+		for (i = 0; i < watched.length; i++) {
+			var watchedNVP = watched[i];
+
+			jsComponentDefinition.watch[watchedNVP.getJsName()] = jciProto[watchedNVP.getJavaName()];
+		}
+
+		for (var propName in jci) {
+			if (!jci.hasOwnProperty(propName))
+				continue;
+
+			// Skip non Vue GWT properties
+			if (propName.indexOf(this.VUE_GWT_PREFIX) !== 0)
+				continue;
+
+			var propNameWithoutPrefix = propName.slice(this.VUE_GWT_PREFIX.length);
+			var splitName = propNameWithoutPrefix.split("_");
+
+			if (splitName.length == 1) {
+				jsComponentDefinition[splitName[0]] = jci[propName];
+			}
+		}
 	},
 
 	/**
