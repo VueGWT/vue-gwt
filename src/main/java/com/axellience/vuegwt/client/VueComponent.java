@@ -19,6 +19,41 @@ public abstract class VueComponent
     }
 
     /**
+     * Lifecycle hooks
+     * By default they are not copied, they are here to facilitate development
+     */
+    public void beforeCreate() {
+
+    }
+    public void created() {
+
+    }
+    public void beforeMount() {
+
+    }
+    public void mounted() {
+
+    }
+    public void beforeUpdate() {
+
+    }
+    public void updated() {
+
+    }
+    public void activated() {
+
+    }
+    public void deactivated() {
+
+    }
+    public void beforeDestroy() {
+
+    }
+    public void destroyed() {
+
+    }
+
+    /**
      * Call the given event handler when this event occurs
      * @param eventName Name (identifier) of the event
      * @param onEvent A callback to call when the event occurs

@@ -79,6 +79,12 @@ public abstract class ComponentDefinition
         abstractCopyJavaMethod(watched, javaName, jsName);
     }
 
+    protected void addLifecycleHook(String hookName)
+    {
+        JsTools.setObjectProperty(
+            this, hookName, VueGwtTools.getGwtObjectMethod(javaComponentInstance, hookName));
+    }
+
     protected void addProp(String jsName)
     {
         props.push(jsName);

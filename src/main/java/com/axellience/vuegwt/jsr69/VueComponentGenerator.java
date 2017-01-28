@@ -32,14 +32,32 @@ import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 class VueComponentGenerator
 {
     public static String COMPONENT_DEFINITION_SUFFIX = "_ComponentDefinition";
     public static String JCI                         = "javaComponentInstance";
+
+    public static Map<String, Boolean> LIFECYCLE_HOOKS_MAP = new HashMap<>();
+
+    static
+    {
+        LIFECYCLE_HOOKS_MAP.put("beforeCreate", true);
+        LIFECYCLE_HOOKS_MAP.put("created", true);
+        LIFECYCLE_HOOKS_MAP.put("beforeMount", true);
+        LIFECYCLE_HOOKS_MAP.put("mounted", true);
+        LIFECYCLE_HOOKS_MAP.put("beforeUpdate", true);
+        LIFECYCLE_HOOKS_MAP.put("updated", true);
+        LIFECYCLE_HOOKS_MAP.put("activated", true);
+        LIFECYCLE_HOOKS_MAP.put("deactivated", true);
+        LIFECYCLE_HOOKS_MAP.put("beforeDestroy", true);
+        LIFECYCLE_HOOKS_MAP.put("destroyed", true);
+    }
 
     private final Messager messager;
     private final Elements elementsUtils;
@@ -116,39 +134,30 @@ class VueComponentGenerator
 
         // Methods
         ElementFilter.methodsIn(componentTypeElement.getEnclosedElements())
-            .stream()
-            .filter(executableElement -> !hasAnnotation(executableElement, Computed.class))
-            .forEach(executableElement -> constructorBuilder.addStatement("this.addMethod($S)",
-                executableElement.getSimpleName()
-            ));
-
-        // Computed
-        ElementFilter.methodsIn(componentTypeElement.getEnclosedElements())
-            .stream()
-            .filter(executableElement -> hasAnnotation(executableElement, Computed.class))
             .forEach(executableElement ->
             {
                 String javaName = executableElement.getSimpleName().toString();
-                String jsName = javaName;
-
                 Computed computed = executableElement.getAnnotation(Computed.class);
-                if (!"".equals(computed.name()))
-                    jsName = computed.name();
-
-                constructorBuilder.addStatement("this.addComputed($S, $S)", javaName, jsName);
-            });
-
-        // Watch
-        ElementFilter.methodsIn(componentTypeElement.getEnclosedElements())
-            .stream()
-            .filter(executableElement -> hasAnnotation(executableElement, Watch.class))
-            .forEach(executableElement ->
-            {
                 Watch watch = executableElement.getAnnotation(Watch.class);
-                String javaName = executableElement.getSimpleName().toString();
-                String jsName = watch.watchedProperty();
 
-                constructorBuilder.addStatement("this.addWatch($S, $S)", javaName, jsName);
+                if (computed != null)
+                {
+                    String jsName = !"".equals(computed.name()) ? computed.name() : javaName;
+                    constructorBuilder.addStatement("this.addComputed($S, $S)", javaName, jsName);
+                }
+                else if (watch != null)
+                {
+                    String jsName = watch.watchedProperty();
+                    constructorBuilder.addStatement("this.addWatch($S, $S)", javaName, jsName);
+                }
+                else if (LIFECYCLE_HOOKS_MAP.containsKey(javaName))
+                {
+                    constructorBuilder.addStatement("this.addLifecycleHook($S)", javaName);
+                }
+                else
+                {
+                    constructorBuilder.addStatement("this.addMethod($S)", javaName);
+                }
             });
 
         // Components
