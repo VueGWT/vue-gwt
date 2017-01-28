@@ -24,6 +24,9 @@ public class VueGwtTools
     @JsMethod(namespace = "vueGwt")
     public static native void vue$on(VueComponent vueComponent, String eventName, OnEvent onEvent);
 
+    @JsMethod(namespace = "vueGwt")
+    public static native Object getGwtObjectMethod(Object javaObject, String javaName);
+
     /**
      * Return the default name to register a component based on it's class name
      * The name of the tag is the name of the component converted to kebab-case
@@ -51,10 +54,4 @@ public class VueGwtTools
         // Convert from CamelCase to kebab-case
         return camelCasePattern.replace(name, "$1-$2").toLowerCase();
     }
-
-    @JsMethod(namespace = "vueGwt")
-    public static native JsObject javaComponentDefinitionToJs(ComponentDefinition vueComponent);
-
-    @JsMethod(namespace = "vueGwt")
-    public static native VueDirectiveDefinition javaDirectiveToVueDirectiveDefinition(VueDirective vueDirective);
 }

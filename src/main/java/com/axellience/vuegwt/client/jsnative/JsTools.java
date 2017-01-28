@@ -7,31 +7,34 @@ import jsinterop.annotations.JsMethod;
  */
 public class JsTools
 {
-    @JsMethod(namespace = "console", name = "log")
+    @JsMethod(namespace = "console")
     public static native void log(String message);
 
-    @JsMethod(namespace = "axellience", name = "propertyInObject")
+    @JsMethod(namespace = "axellience")
     public static native boolean propertyInObject(String property, Object object);
 
-    @JsMethod(namespace = "axellience", name = "getObjectProperty")
+    @JsMethod(namespace = "axellience")
     public static native Object getObjectProperty(Object object, String property);
 
-    @JsMethod(namespace = "axellience", name = "setObjectProperty")
+    @JsMethod(namespace = "axellience")
     public static native void setObjectProperty(Object object, String property, Object value);
 
-    @JsMethod(namespace = "axellience", name = "getArrayItem")
+    @JsMethod(namespace = "axellience")
+    public static native void unsetObjectProperty(Object object, String property);
+
+    @JsMethod(namespace = "axellience")
     public static native <T> T getArrayItem(Object array, int index);
 
-    @JsMethod(namespace = "axellience", name = "setArrayItem")
+    @JsMethod(namespace = "axellience")
     public static native void setArrayItem(Object array, int index, Object value);
 
-    @JsMethod(namespace = "axellience", name = "getObjectIterator")
+    @JsMethod(namespace = "axellience")
     public static native <T> JsIterator<T> getObjectIterator(Object object);
 
-    @JsMethod(namespace = "axellience", name = "convertObject")
+    @JsMethod(namespace = "axellience")
     public static native <T> T convertObject(String prototypeName, Object template);
 
-    @JsMethod(namespace = "window.history", name = "back")
+    @JsMethod(namespace = "window.history")
     public static native void historyGoBack();
 
     public static <T> T get(Object o, int index)

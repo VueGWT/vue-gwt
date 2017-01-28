@@ -4,6 +4,7 @@ import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.jsnative.definitions.VueDirectiveDefinition;
 import com.axellience.vuegwt.client.jsnative.definitions.ComponentDefinition;
+import com.axellience.vuegwt.jsr69.annotations.Component;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -19,32 +20,31 @@ import java.util.Map;
 public class Vue
 {
     @JsOverlay
-    private static Map<Class<? extends VueComponent>, JsObject>
-        jsComponentDefinitionsCache = new HashMap<>();
+    private static Map<Class<? extends VueComponent>, ComponentDefinition>
+        componentDefinitionsCache = new HashMap<>();
 
-    private Vue(JsObject vueComponent)
+    private Vue(ComponentDefinition componentDefinition)
     {
 
     }
 
     @JsOverlay
-    public static void registerComponent(Class<? extends VueComponent> vueComponentClass, ComponentDefinition componentDefinition)
+    public static void registerComponent(Class<? extends VueComponent> vueComponentClass,
+        ComponentDefinition componentDefinition)
     {
-        JsObject jsComponentDefinition = VueGwtTools.javaComponentDefinitionToJs(componentDefinition);
-        jsComponentDefinitionsCache.put(vueComponentClass, jsComponentDefinition);
+        componentDefinitionsCache.put(vueComponentClass, componentDefinition);
     }
 
     @JsOverlay
-    public static JsObject getJsComponentDefinitionForClass(
+    public static ComponentDefinition getComponentDefinitionForClass(
         Class<? extends VueComponent> vueComponentClass)
     {
-        JsObject jsComponentDefinition = jsComponentDefinitionsCache.get(vueComponentClass);
-        if (jsComponentDefinition != null)
-            return jsComponentDefinition;
+        ComponentDefinition componentDefinition = componentDefinitionsCache.get(vueComponentClass);
+        if (componentDefinition != null)
+            return componentDefinition;
 
         throw new RuntimeException(
-            "Couldn't find the given Component " +
-                vueComponentClass.getCanonicalName() +
+            "Couldn't find the given Component " + vueComponentClass.getCanonicalName() +
                 ". Are you sure annotations are being processed?");
     }
 
@@ -58,11 +58,10 @@ public class Vue
     @JsOverlay
     public static void attach(String element, Class<? extends VueComponent> vueComponentClass)
     {
-        JsObject jsComponentDefinition =
-            getJsComponentDefinitionForClass(vueComponentClass);
-        jsComponentDefinition.set("el", element);
+        ComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
+        componentDefinition.setEl(element);
 
-        new Vue(jsComponentDefinition);
+        new Vue(componentDefinition);
     }
 
     /**
@@ -75,11 +74,10 @@ public class Vue
     @JsOverlay
     public static void attach(Element element, Class<? extends VueComponent> vueComponentClass)
     {
-        JsObject jsComponentDefinition =
-            getJsComponentDefinitionForClass(vueComponentClass);
-        jsComponentDefinition.set("el", element);
+        ComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
+        componentDefinition.setEl(element);
 
-        new Vue(jsComponentDefinition);
+        new Vue(componentDefinition);
     }
 
     /**
@@ -93,10 +91,10 @@ public class Vue
     @JsOverlay
     public static void component(Class<? extends VueComponent> vueComponentClass)
     {
-        JsObject jsComponentDefinition =
-            getJsComponentDefinitionForClass(vueComponentClass);
-
-        Vue.component(VueGwtTools.componentToTagName(vueComponentClass), jsComponentDefinition);
+        Vue.component(
+            VueGwtTools.componentToTagName(vueComponentClass),
+            getComponentDefinitionForClass(vueComponentClass)
+        );
     }
 
     /**
@@ -109,12 +107,11 @@ public class Vue
     @JsOverlay
     public static void directive(VueDirective vueDirective)
     {
-        Vue.directive(VueGwtTools.directiveToTagName(vueDirective),
-            VueGwtTools.javaDirectiveToVueDirectiveDefinition(vueDirective)
-        );
+
     }
 
-    private static native void component(String componentName, JsObject vueComponent);
+    private static native void component(String componentName,
+        ComponentDefinition componentDefinition);
 
     private static native void directive(String directiveName, VueDirectiveDefinition vueDirective);
 }

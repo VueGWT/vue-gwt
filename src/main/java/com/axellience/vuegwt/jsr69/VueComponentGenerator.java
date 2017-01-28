@@ -1,9 +1,8 @@
 package com.axellience.vuegwt.jsr69;
 
-import com.axellience.vuegwt.client.jsnative.JsArray;
 import com.axellience.vuegwt.client.jsnative.Vue;
 import com.axellience.vuegwt.client.jsnative.definitions.ComponentDefinition;
-import com.axellience.vuegwt.client.jsnative.definitions.NamedVueProperty;
+import com.axellience.vuegwt.client.jsnative.definitions.component.DataDefinition;
 import com.axellience.vuegwt.jsr69.annotations.Component;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
 import com.axellience.vuegwt.jsr69.annotations.Watch;
@@ -33,8 +32,8 @@ import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class VueComponentGenerator
@@ -71,6 +70,8 @@ class VueComponentGenerator
 
     public void generate()
     {
+        Component annotation = componentTypeElement.getAnnotation(Component.class);
+
         Builder componentClassBuilder = TypeSpec.classBuilder(generatedTypeName)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .superclass(ComponentDefinition.class)
@@ -85,32 +86,43 @@ class VueComponentGenerator
                 TypeName.get(componentTypeElement.asType()), generatedTypeName
             ));
 
-        // Template provider
-        MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
-            .addModifiers(Modifier.PUBLIC)
-            .addStatement("this.$L = new $T()", JCI, TypeName.get(componentTypeElement.asType()))
-            .addStatement("this.$L.setTemplate($T.INSTANCE.$L())", JCI, ClassName.get(packageName,
+        // Initialize constructor
+        MethodSpec.Builder constructorBuilder =
+            MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
+
+        // Add the Java Component Instance initialization
+        constructorBuilder.addStatement(
+            "this.$L = new $T()", JCI, TypeName.get(componentTypeElement.asType()));
+
+        // Add template initialization
+        constructorBuilder.addStatement(
+            "this.setTemplate($T.INSTANCE.$L().getText())", ClassName.get(packageName,
                 typeName + TemplateProviderGenerator.TEMPLATE_PROVIDER_SUFFIX
             ), TemplateProviderGenerator.TEMPLATE_METHOD_NAME);
 
-        // Add all properties as component data attributes
-        constructorBuilder.addStatement("this.dataPropertiesNames = $T.of($L)", JsArray.class,
-            ElementFilter.fieldsIn(componentTypeElement.getEnclosedElements())
-                .stream()
-                .map(VueComponentGenerator::surroundWithQuote)
-                .collect(Collectors.joining(", "))
-        );
+        // Data
+        constructorBuilder.addStatement(
+            "$T<$T> dataFields = new $T()", List.class, DataDefinition.class, LinkedList.class);
+        ElementFilter.fieldsIn(componentTypeElement.getEnclosedElements())
+            .forEach(
+                variableElement -> constructorBuilder.addStatement("dataFields.add(new $T($S))",
+                    DataDefinition.class, variableElement.getSimpleName()
+                ));
+        constructorBuilder.addStatement("this.initData(dataFields, $L)", annotation.useFactory());
 
-        // Add all methods as component methods
-        constructorBuilder.addStatement("this.methodsNames = $T.of($L)", JsArray.class,
-            ElementFilter.methodsIn(componentTypeElement.getEnclosedElements())
-                .stream()
-                .filter(executableElement -> !hasAnnotation(executableElement, Computed.class))
-                .map(VueComponentGenerator::surroundWithQuote)
-                .collect(Collectors.joining(", "))
-        );
+        // Props
+        Stream.of(annotation.props())
+            .forEach(prop -> constructorBuilder.addStatement("this.addProp($S)", prop));
 
-        // Add all computed properties
+        // Methods
+        ElementFilter.methodsIn(componentTypeElement.getEnclosedElements())
+            .stream()
+            .filter(executableElement -> !hasAnnotation(executableElement, Computed.class))
+            .forEach(executableElement -> constructorBuilder.addStatement("this.addMethod($S)",
+                executableElement.getSimpleName()
+            ));
+
+        // Computed
         ElementFilter.methodsIn(componentTypeElement.getEnclosedElements())
             .stream()
             .filter(executableElement -> hasAnnotation(executableElement, Computed.class))
@@ -123,12 +135,10 @@ class VueComponentGenerator
                 if (!"".equals(computed.name()))
                     jsName = computed.name();
 
-                constructorBuilder.addStatement("this.computed.push(new $T($S, $S))",
-                    NamedVueProperty.class, javaName, jsName
-                );
+                constructorBuilder.addStatement("this.addComputed($S, $S)", javaName, jsName);
             });
 
-        // Add all watched properties
+        // Watch
         ElementFilter.methodsIn(componentTypeElement.getEnclosedElements())
             .stream()
             .filter(executableElement -> hasAnnotation(executableElement, Watch.class))
@@ -138,22 +148,17 @@ class VueComponentGenerator
                 String javaName = executableElement.getSimpleName().toString();
                 String jsName = watch.watchedProperty();
 
-                constructorBuilder.addStatement("this.watched.push(new $T($S, $S))",
-                    NamedVueProperty.class, javaName, jsName
-                );
+                constructorBuilder.addStatement("this.addWatch($S, $S)", javaName, jsName);
             });
 
-        Component annotation = componentTypeElement.getAnnotation(Component.class);
-
-        // Add components dependencies
+        // Components
         try
         {
             Class<?>[] componentsClass = annotation.components();
             Stream.of(componentsClass)
-                .forEach(
-                    clazz -> constructorBuilder.addStatement("this.$L.registerComponent($L.class)",
-                        JCI, clazz.getCanonicalName()
-                    ));
+                .forEach(clazz -> constructorBuilder.addStatement("this.addComponent($L.class)",
+                    clazz.getCanonicalName()
+                ));
         }
         catch (MirroredTypesException mte)
         {
@@ -161,19 +166,16 @@ class VueComponentGenerator
             classTypeMirrors.forEach(classTypeMirror ->
             {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
-                constructorBuilder.addStatement("this.$L.registerComponent($L.class)", JCI,
+                constructorBuilder.addStatement("this.addComponent($L.class)",
                     classTypeElement.getQualifiedName().toString()
                 );
             });
         }
 
-        // Add props
-        Stream.of(annotation.props())
-            .forEach(prop -> constructorBuilder.addStatement("this.$L.addProp($S)", JCI, prop));
-
-        // Create and add constructor
+        // Finish building the constructor and add to the component definition
         componentClassBuilder.addMethod(constructorBuilder.build());
 
+        // Build the component definition class
         TypeSpec componentClass = componentClassBuilder.build();
 
         try

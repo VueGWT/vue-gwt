@@ -1,42 +1,98 @@
 package com.axellience.vuegwt.client.jsnative.definitions;
 
 import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.jsnative.JSON;
 import com.axellience.vuegwt.client.jsnative.JsArray;
+import com.axellience.vuegwt.client.jsnative.JsObject;
+import com.axellience.vuegwt.client.jsnative.JsTools;
+import com.axellience.vuegwt.client.jsnative.Vue;
+import com.axellience.vuegwt.client.jsnative.VueGwtTools;
+import com.axellience.vuegwt.client.jsnative.definitions.component.DataDefinition;
+import com.axellience.vuegwt.client.jsnative.definitions.component.DataFactory;
 import jsinterop.annotations.JsType;
+
+import java.util.List;
 
 @JsType
 public abstract class ComponentDefinition
 {
     protected VueComponent javaComponentInstance;
 
-    protected JsArray<String> dataPropertiesNames;
-    protected JsArray<String> methodsNames;
+    public Object el;
+    public String template;
 
-    protected JsArray<NamedVueProperty> computed = new JsArray<>();
-    protected JsArray<NamedVueProperty> watched = new JsArray<>();
+    public Object data;
+    public final JsObject computed     = new JsObject();
+    public final JsObject methods      = new JsObject();
+    public final JsObject watched      = new JsObject();
+    public final JsArray<String> props = new JsArray<>();
 
-    public VueComponent getJavaComponentInstance()
+    public final JsObject components = new JsObject();
+    public final JsObject directives = new JsObject();
+
+    protected void initData(List<DataDefinition> dataDefinitions, boolean useFactory)
     {
-        return javaComponentInstance;
+        JsObject dataObject = new JsObject();
+        for (DataDefinition dataDefinition : dataDefinitions)
+        {
+            dataObject.set(dataDefinition.jsName,
+                JsTools.getObjectProperty(javaComponentInstance, dataDefinition.javaName)
+            );
+        }
+
+        if (useFactory)
+            this.data = (DataFactory) () -> JSON.parse(JSON.stringify(dataObject));
+        else
+            this.data = dataObject;
     }
 
-    public JsArray<String> getDataPropertiesNames()
+    public void setEl(Object el)
     {
-        return dataPropertiesNames;
+        this.el = el;
     }
 
-    public JsArray<String> getMethodsNames()
+    protected void setTemplate(String template)
     {
-        return methodsNames;
+        if ("".equals(template))
+            JsTools.unsetObjectProperty(this, "template");
+        else
+            this.template = template;
     }
 
-    public JsArray<NamedVueProperty> getComputed()
+    protected void addMethod(String javaName)
     {
-        return computed;
+        addMethod(javaName, javaName);
     }
 
-    public JsArray<NamedVueProperty> getWatched()
+    protected void addMethod(String javaName, String jsName)
     {
-        return watched;
+        abstractCopyJavaMethod(methods, javaName, javaName);
+    }
+
+    protected void addComputed(String javaName, String jsName)
+    {
+        abstractCopyJavaMethod(computed, javaName, jsName);
+    }
+
+    protected void addWatch(String javaName, String jsName)
+    {
+        abstractCopyJavaMethod(watched, javaName, jsName);
+    }
+
+    protected void addProp(String jsName)
+    {
+        props.push(jsName);
+    }
+
+    protected void addComponent(Class<? extends VueComponent> componentClass)
+    {
+        this.components.set(VueGwtTools.componentToTagName(componentClass),
+            Vue.getComponentDefinitionForClass(componentClass)
+        );
+    }
+
+    private void abstractCopyJavaMethod(JsObject container, String javaName, String jsName)
+    {
+        container.set(jsName, VueGwtTools.getGwtObjectMethod(javaComponentInstance, javaName));
     }
 }

@@ -21,11 +21,15 @@ window.axellience = {
 	},
 
 	getObjectProperty: function (object, property) {
-		return object[property] || null;
+		return object[property];
 	},
 
 	setObjectProperty: function (object, property, value) {
 		object[property] = value;
+	},
+
+	unsetObjectProperty: function (object, property) {
+		delete object[property];
 	},
 
 	setObjectFunction: function (object, property, func) {

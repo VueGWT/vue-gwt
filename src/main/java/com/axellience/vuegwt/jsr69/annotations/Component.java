@@ -16,6 +16,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 @Retention(SOURCE)
 public @interface Component
 {
+    boolean useFactory() default true;
     Class<? extends VueComponent>[] components() default {};
     String[] props() default {};
 }
