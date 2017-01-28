@@ -18,6 +18,20 @@ public class JsTools
 
     @JsMethod(namespace = "axellience")
     public static native void setObjectProperty(Object object, String property, Object value);
+    @JsMethod(namespace = "axellience")
+    public static native void setObjectProperty(Object object, String property, boolean value);
+    @JsMethod(namespace = "axellience")
+    public static native void setObjectProperty(Object object, String property, byte value);
+    @JsMethod(namespace = "axellience")
+    public static native void setObjectProperty(Object object, String property, char value);
+    @JsMethod(namespace = "axellience")
+    public static native void setObjectProperty(Object object, String property, float value);
+    @JsMethod(namespace = "axellience")
+    public static native void setObjectProperty(Object object, String property, int value);
+    @JsMethod(namespace = "axellience")
+    public static native void setObjectProperty(Object object, String property, short value);
+    @JsMethod(namespace = "axellience")
+    public static native void setObjectProperty(Object object, String property, double value);
 
     @JsMethod(namespace = "axellience")
     public static native void unsetObjectProperty(Object object, String property);

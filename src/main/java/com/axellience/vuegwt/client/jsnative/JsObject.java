@@ -24,5 +24,54 @@ public class JsObject
         return this;
     }
 
+    @JsOverlay
+    public final JsObject set(String propertyName, boolean value)
+    {
+        JsTools.setObjectProperty(this, propertyName, value);
+        return this;
+    }
+
+    @JsOverlay
+    public final JsObject set(String propertyName, byte value)
+    {
+        JsTools.setObjectProperty(this, propertyName, value);
+        return this;
+    }
+
+    @JsOverlay
+    public final JsObject set(String propertyName, char value)
+    {
+        JsTools.setObjectProperty(this, propertyName, value);
+        return this;
+    }
+
+    @JsOverlay
+    public final JsObject set(String propertyName, float value)
+    {
+        JsTools.setObjectProperty(this, propertyName, value);
+        return this;
+    }
+
+    @JsOverlay
+    public final JsObject set(String propertyName, int value)
+    {
+        JsTools.setObjectProperty(this, propertyName, value);
+        return this;
+    }
+
+    @JsOverlay
+    public final JsObject set(String propertyName, short value)
+    {
+        JsTools.setObjectProperty(this, propertyName, value);
+        return this;
+    }
+
+    @JsOverlay
+    public final JsObject set(String propertyName, double value)
+    {
+        JsTools.setObjectProperty(this, propertyName, value);
+        return this;
+    }
+
     public static native JsArray<String> getOwnPropertyNames(JsObject object);
 }
