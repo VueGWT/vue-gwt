@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.client;
+package com.axellience.vuegwt.client.functions;
 
 import jsinterop.annotations.JsFunction;
 
@@ -7,7 +7,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface OnEvent
+public interface OnValueChange
 {
-    void exec(Object parameter);
+    void exec(Object newValue, Object oldValue);
 }

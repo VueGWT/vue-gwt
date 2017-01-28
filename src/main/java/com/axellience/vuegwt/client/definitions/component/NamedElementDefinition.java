@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.client.jsnative.definitions.component;
+package com.axellience.vuegwt.client.definitions.component;
 
 import jsinterop.annotations.JsProperty;
 

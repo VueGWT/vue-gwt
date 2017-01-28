@@ -1,8 +1,8 @@
 package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.client.jsnative.Vue;
-import com.axellience.vuegwt.client.jsnative.definitions.ComponentDefinition;
-import com.axellience.vuegwt.client.jsnative.definitions.component.DataDefinition;
+import com.axellience.vuegwt.client.definitions.ComponentDefinition;
+import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.jsr69.annotations.Component;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
 import com.axellience.vuegwt.jsr69.annotations.Watch;

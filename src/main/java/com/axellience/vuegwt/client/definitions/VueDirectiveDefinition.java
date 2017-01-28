@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.client.jsnative.definitions;
+package com.axellience.vuegwt.client.definitions;
 
 /**
  * Simple interface representing a directive once converted

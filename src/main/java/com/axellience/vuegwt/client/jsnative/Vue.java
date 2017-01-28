@@ -2,9 +2,8 @@ package com.axellience.vuegwt.client.jsnative;
 
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.VueDirective;
-import com.axellience.vuegwt.client.jsnative.definitions.VueDirectiveDefinition;
-import com.axellience.vuegwt.client.jsnative.definitions.ComponentDefinition;
-import com.axellience.vuegwt.jsr69.annotations.Component;
+import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
+import com.axellience.vuegwt.client.definitions.ComponentDefinition;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;

@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.client.jsnative.definitions;
+package com.axellience.vuegwt.client.definitions;
 
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.jsnative.JSON;
@@ -7,8 +7,8 @@ import com.axellience.vuegwt.client.jsnative.JsObject;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.Vue;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
-import com.axellience.vuegwt.client.jsnative.definitions.component.DataDefinition;
-import com.axellience.vuegwt.client.jsnative.definitions.component.DataFactory;
+import com.axellience.vuegwt.client.definitions.component.DataDefinition;
+import com.axellience.vuegwt.client.definitions.component.DataFactory;
 import jsinterop.annotations.JsType;
 
 import java.util.List;

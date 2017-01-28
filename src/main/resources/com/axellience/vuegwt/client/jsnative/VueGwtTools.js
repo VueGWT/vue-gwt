@@ -13,25 +13,5 @@ window.vueGwt = {
 	 */
 	getGwtObjectMethod: function (object, methodName) {
 		return object.__proto__[methodName];
-	},
-
-	/**
-	 * Used to emit an event on the given instance
-	 * @param vueInstance
-	 * @param name
-	 * @param value
-	 */
-	vue$emit: function (vueInstance, name, value) {
-		vueInstance.$emit(name, value);
-	},
-
-	/**
-	 * Used to listen to events on the given instance
-	 * @param vueInstance
-	 * @param name
-	 * @param listener
-	 */
-	vue$on: function (vueInstance, name, listener) {
-		vueInstance.$on(name, listener);
 	}
 };
