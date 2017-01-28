@@ -2,15 +2,14 @@ package com.axellience.vuegwt.client.jsnative;
 
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.VueDirective;
+import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
-import com.axellience.vuegwt.client.definitions.ComponentDefinition;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-import java.util.HashMap;
-import java.util.Map;
+import static com.axellience.vuegwt.client.definitions.VueComponentDefinitionCache.getComponentDefinitionForClass;
 
 /**
  * JsInterop representation of the main Vue instance
@@ -18,33 +17,9 @@ import java.util.Map;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Vue
 {
-    @JsOverlay
-    private static Map<Class<? extends VueComponent>, ComponentDefinition>
-        componentDefinitionsCache = new HashMap<>();
-
-    private Vue(ComponentDefinition componentDefinition)
+    private Vue(VueComponentDefinition componentDefinition)
     {
 
-    }
-
-    @JsOverlay
-    public static void registerComponent(Class<? extends VueComponent> vueComponentClass,
-        ComponentDefinition componentDefinition)
-    {
-        componentDefinitionsCache.put(vueComponentClass, componentDefinition);
-    }
-
-    @JsOverlay
-    public static ComponentDefinition getComponentDefinitionForClass(
-        Class<? extends VueComponent> vueComponentClass)
-    {
-        ComponentDefinition componentDefinition = componentDefinitionsCache.get(vueComponentClass);
-        if (componentDefinition != null)
-            return componentDefinition;
-
-        throw new RuntimeException(
-            "Couldn't find the given Component " + vueComponentClass.getCanonicalName() +
-                ". Are you sure annotations are being processed?");
     }
 
     /**
@@ -57,7 +32,7 @@ public class Vue
     @JsOverlay
     public static void attach(String element, Class<? extends VueComponent> vueComponentClass)
     {
-        ComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
+        VueComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
         componentDefinition.setEl(element);
 
         new Vue(componentDefinition);
@@ -73,7 +48,7 @@ public class Vue
     @JsOverlay
     public static void attach(Element element, Class<? extends VueComponent> vueComponentClass)
     {
-        ComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
+        VueComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
         componentDefinition.setEl(element);
 
         new Vue(componentDefinition);
@@ -109,8 +84,7 @@ public class Vue
 
     }
 
-    private static native void component(String componentName,
-        ComponentDefinition componentDefinition);
+    private static native void component(String componentName, VueComponentDefinition componentDefinition);
 
     private static native void directive(String directiveName, VueDirectiveDefinition vueDirective);
 }

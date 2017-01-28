@@ -1,20 +1,19 @@
 package com.axellience.vuegwt.client.definitions;
 
 import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.definitions.component.DataDefinition;
+import com.axellience.vuegwt.client.definitions.component.DataFactory;
 import com.axellience.vuegwt.client.jsnative.JSON;
 import com.axellience.vuegwt.client.jsnative.JsArray;
 import com.axellience.vuegwt.client.jsnative.JsObject;
 import com.axellience.vuegwt.client.jsnative.JsTools;
-import com.axellience.vuegwt.client.jsnative.Vue;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
-import com.axellience.vuegwt.client.definitions.component.DataDefinition;
-import com.axellience.vuegwt.client.definitions.component.DataFactory;
 import jsinterop.annotations.JsType;
 
 import java.util.List;
 
 @JsType
-public abstract class ComponentDefinition
+public abstract class VueComponentDefinition
 {
     protected VueComponent javaComponentInstance;
 
@@ -93,7 +92,7 @@ public abstract class ComponentDefinition
     protected void addComponent(Class<? extends VueComponent> componentClass)
     {
         this.components.set(VueGwtTools.componentToTagName(componentClass),
-            Vue.getComponentDefinitionForClass(componentClass)
+            VueComponentDefinitionCache.getComponentDefinitionForClass(componentClass)
         );
     }
 

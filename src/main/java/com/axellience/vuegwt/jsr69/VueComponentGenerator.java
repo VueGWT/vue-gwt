@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.jsr69;
 
-import com.axellience.vuegwt.client.jsnative.Vue;
-import com.axellience.vuegwt.client.definitions.ComponentDefinition;
+import com.axellience.vuegwt.client.definitions.VueComponentDefinitionCache;
+import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.jsr69.annotations.Component;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
@@ -92,7 +92,7 @@ class VueComponentGenerator
 
         Builder componentClassBuilder = TypeSpec.classBuilder(generatedTypeName)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-            .superclass(ComponentDefinition.class)
+            .superclass(VueComponentDefinition.class)
             .addAnnotation(JsType.class)
             .addJavadoc("Vue Component for component {@link $S}",
                 this.componentTypeElement.getQualifiedName().toString()
@@ -100,8 +100,9 @@ class VueComponentGenerator
 
         // Static init block
         componentClassBuilder.addStaticBlock(
-            CodeBlock.of("$T.registerComponent($T.class, new $L());", Vue.class,
-                TypeName.get(componentTypeElement.asType()), generatedTypeName
+            CodeBlock.of("$T.registerComponent($T.class, new $L());",
+                VueComponentDefinitionCache.class, TypeName.get(componentTypeElement.asType()),
+                generatedTypeName
             ));
 
         // Initialize constructor
