@@ -20,7 +20,7 @@ Vue.use(function (Vue) {
 			// This is required for GWT type checking to work
 			var jciProto = this.$options.vuegwt$javaComponentInstance.__proto__;
 			for (var protoProp in jciProto) {
-				if (jciProto.hasOwnProperty(protoProp) && !this[protoProp]) {
+				if (jciProto.hasOwnProperty(protoProp) && !this.hasOwnProperty(protoProp)) {
 					this[protoProp] = jciProto[protoProp];
 				}
 			}
