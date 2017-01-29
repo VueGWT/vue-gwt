@@ -6,6 +6,7 @@ import com.google.gwt.resources.client.TextResource;
 
 /**
  * Resources used by Vue GWT
+ * @author Adrien Baron
  */
 public interface VueGwtResources extends ClientBundle
 {

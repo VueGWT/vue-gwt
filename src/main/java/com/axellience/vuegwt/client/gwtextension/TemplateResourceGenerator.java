@@ -33,8 +33,10 @@ import java.net.URL;
 
 /**
  * Source: GWT Project http://www.gwtproject.org/
- *
+ * <p>
  * Modified by Adrien Baron
+ * Modification: Doesn't throw an exception if the resource doesn't exist, just return an empty
+ * String
  */
 public final class TemplateResourceGenerator extends AbstractResourceGenerator
     implements SupportsGeneratorResultCaching
@@ -47,14 +49,16 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
     private static final int MAX_STRING_CHUNK = 16383;
 
     @Override
-    public String createAssignment(TreeLogger logger, ResourceContext context,
-        JMethod method) throws UnableToCompleteException
+    public String createAssignment(TreeLogger logger, ResourceContext context, JMethod method)
+    throws UnableToCompleteException
     {
         URL[] resources;
-        try {
-            resources = ResourceGeneratorUtil.findResources(logger, context,
-                method);
-        } catch (UnableToCompleteException e) {
+        try
+        {
+            resources = ResourceGeneratorUtil.findResources(logger, context, method);
+        }
+        catch (UnableToCompleteException e)
+        {
             resources = null;
         }
 
@@ -65,8 +69,10 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("new " + TemplateResource.class.getName() + "() {");
         sw.indent();
 
-        if (resource != null) {
-            if (!AbstractResourceGenerator.STRIP_COMMENTS) {
+        if (resource != null)
+        {
+            if (!AbstractResourceGenerator.STRIP_COMMENTS)
+            {
                 // Convenience when examining the generated code.
                 sw.println("// " + resource.toExternalForm());
             }
@@ -77,9 +83,12 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
 
         String toWrite = resource != null ? Util.readURLAsString(resource) : "";
 
-        if (toWrite.length() > MAX_STRING_CHUNK) {
+        if (toWrite.length() > MAX_STRING_CHUNK)
+        {
             writeLongString(sw, toWrite);
-        } else {
+        }
+        else
+        {
             sw.println("return \"" + Generator.escape(toWrite) + "\";");
         }
         sw.outdent();
@@ -102,11 +111,13 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
      * memory error. Break up the constant and generate code that appends using a
      * buffer.
      */
-    private void writeLongString(SourceWriter sw, String toWrite) {
+    private void writeLongString(SourceWriter sw, String toWrite)
+    {
         sw.println("StringBuilder builder = new StringBuilder();");
         int offset = 0;
         int length = toWrite.length();
-        while (offset < length - 1) {
+        while (offset < length - 1)
+        {
             int subLength = Math.min(MAX_STRING_CHUNK, length - offset);
             sw.print("builder.append(\"");
             sw.print(Generator.escape(toWrite.substring(offset, offset + subLength)));

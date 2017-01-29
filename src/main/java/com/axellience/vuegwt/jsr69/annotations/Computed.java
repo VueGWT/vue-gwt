@@ -7,12 +7,12 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
- * Annotation placed on Vue Components
+ * Mark a computed property
  * @author Adrien Baron
  */
 @Target(METHOD)
 @Retention(SOURCE)
 public @interface Computed
 {
-    String name() default "";
+    String propertyName() default "";
 }

@@ -7,7 +7,8 @@ import com.google.gwt.regexp.shared.RegExp;
 import jsinterop.annotations.JsMethod;
 
 /**
- * This object provides methods used to make our Java components compatible with Vue.JS
+ * This object provides utils methods for VueGWT internal processing
+ * @author Adrien Baron
  */
 public class VueGwtTools
 {

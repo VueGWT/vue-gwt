@@ -5,6 +5,13 @@ import com.axellience.vuegwt.client.VueComponent;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A Cache for generated VueComponentDefinitions.
+ * Using static initializer block, VueComponentDefinitions register an instance of themselves in
+ * this Cache.
+ * VueGWT then use this cache to get definitions for VueComponents.
+ * @author Adrien Baron
+ */
 public class VueComponentDefinitionCache
 {
     private static Map<Class<? extends VueComponent>, VueComponentDefinition>

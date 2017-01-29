@@ -2,7 +2,11 @@ package com.axellience.vuegwt.client.definitions.component;
 
 import jsinterop.annotations.JsProperty;
 
-public class NamedElementDefinition
+/**
+ * Abstract class to link a Java and a Js name for a given property
+ * @author Adrien Baron
+ */
+public abstract class NamedElementDefinition
 {
     @JsProperty
     public final String javaName;

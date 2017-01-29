@@ -1,3 +1,6 @@
+/**
+ * Source: https://github.com/ltearno/angular2-gwt/
+ */
 window.axellience = {
 	defineProperty: function (object, name, definition) {
 		var def = {};

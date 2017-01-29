@@ -14,7 +14,6 @@ import jsinterop.annotations.JsType;
 /**
  * The Java representation of a VueComponent
  * Whenever you want to add a component to your application you should extends this class.
- *
  * @author Adrien Baron
  */
 @JsType
@@ -41,40 +40,61 @@ public class VueComponent
      * Lifecycle hooks
      * By default they are not copied, they are here to facilitate development
      */
-    public void beforeCreate() {
+    public void beforeCreate()
+    {
 
     }
-    public void created() {
+
+    public void created()
+    {
 
     }
-    public void beforeMount() {
+
+    public void beforeMount()
+    {
 
     }
-    public void mounted() {
+
+    public void mounted()
+    {
 
     }
-    public void beforeUpdate() {
+
+    public void beforeUpdate()
+    {
 
     }
-    public void updated() {
+
+    public void updated()
+    {
 
     }
-    public void activated() {
+
+    public void activated()
+    {
 
     }
-    public void deactivated() {
+
+    public void deactivated()
+    {
 
     }
-    public void beforeDestroy() {
+
+    public void beforeDestroy()
+    {
 
     }
-    public void destroyed() {
+
+    public void destroyed()
+    {
 
     }
 
     // Data
     public native WatcherRegistration $watch(String toWatch, OnValueChange onValueChange);
-    public native WatcherRegistration $watch(ChangeTrigger changeTrigger, OnValueChange onValueChange);
+
+    public native WatcherRegistration $watch(ChangeTrigger changeTrigger,
+        OnValueChange onValueChange);
 
     public native Object $set(Object object, String key, Object value);
 

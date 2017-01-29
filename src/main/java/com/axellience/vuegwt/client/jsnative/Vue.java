@@ -6,6 +6,7 @@ import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
 import com.google.gwt.dom.client.Element;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -14,15 +15,16 @@ import static com.axellience.vuegwt.client.definitions.VueComponentDefinitionCac
 
 /**
  * JsInterop representation of the main Vue instance
+ * Provide some methods that are specific to VueGWT
+ * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Vue
 {
     /**
-     * Method to attach a Vue Component to a DOM element
+     * Create a VueComponent instance and attach it to a DOM element
      * Equivalent to new Vue({el: element, ...}) in Vue.JS
      * @param vueComponentClass The class of the Component to create
-     * here to initialise your app.
      */
     @JsOverlay
     public static <T extends VueComponent> T attach(String element, Class<T> vueComponentClass)
@@ -35,10 +37,9 @@ public class Vue
     }
 
     /**
-     * Method to attach a Vue Component to a DOM element
+     * Create a VueComponent instance and attach it to a DOM element
      * Equivalent to new Vue({el: element, ...}) in Vue.JS
      * @param vueComponentClass The class of the Component to create
-     * here to initialise your app.
      */
     @JsOverlay
     public static <T extends VueComponent> T attach(Element element, Class<T> vueComponentClass)
@@ -50,10 +51,14 @@ public class Vue
         return VueGwtTools.createVueInstance(componentDefinition);
     }
 
-
+    /**
+     * Extend the base Vue Class with your VueComponent definition
+     * Equivalent to Vue.extend({}) in Vue.JS
+     * @param vueComponentClass The class of the Component to use
+     * @return A factory that can be used to create instance of your VueComponent
+     */
     @JsOverlay
-    public static VueComponentFactory extend(
-        Class<? extends VueComponent> vueComponentClass)
+    public static VueComponentFactory extend(Class<? extends VueComponent> vueComponentClass)
     {
         JsObject extendedVueClass = extend(getComponentDefinitionForClass(vueComponentClass));
         return new VueComponentFactory(extendedVueClass);
@@ -61,11 +66,33 @@ public class Vue
 
     /**
      * Register a component globally
-     * It will be usable anywhere in your app.
-     * This should be called before instantiating your app.
-     * @param vueComponentClass The component to register. You should inherit from VueComponent and
-     * pass
-     * an instance of your component here.
+     * It will be usable in any component of your app.
+     * @param id Register under the given id
+     * @param vueComponentClass The class of the Component to
+     */
+    @JsOverlay
+    public static void component(String id, Class<? extends VueComponent> vueComponentClass)
+    {
+        Vue.component(id, getComponentDefinitionForClass(vueComponentClass));
+    }
+
+    /**
+     * Register a component globally
+     * It will be usable in any component of your app.
+     * The name will be automatically computed based on the component class name
+     */
+    @JsOverlay
+    public static VueComponentFactory component(String id)
+    {
+        JsObject extendedVueClass = getRegisteredComponent(id);
+        return new VueComponentFactory(extendedVueClass);
+    }
+
+    /**
+     * Register a component globally
+     * It will be usable in any component of your app.
+     * The name will be automatically computed based on the component class name
+     * @param vueComponentClass The class of the Component to
      */
     @JsOverlay
     public static void component(Class<? extends VueComponent> vueComponentClass)
@@ -78,8 +105,7 @@ public class Vue
 
     /**
      * Register a directive globally
-     * It will be usable anywhere in your app.
-     * This should be called before instantiating your app.
+     * It will be usable in any component of your app.
      * @param vueDirective The directive to register. You should inherit from VueDirective and pass
      * an instance of your directive here.
      */
@@ -91,8 +117,10 @@ public class Vue
 
     private static native JsObject extend(VueComponentDefinition componentDefinition);
 
-    private static native void component(String componentName,
-        VueComponentDefinition componentDefinition);
+    private static native void component(String id, VueComponentDefinition componentDefinition);
+
+    @JsMethod(name = "component")
+    private static native JsObject getRegisteredComponent(String id);
 
     private static native void directive(String directiveName, VueDirectiveDefinition vueDirective);
 }

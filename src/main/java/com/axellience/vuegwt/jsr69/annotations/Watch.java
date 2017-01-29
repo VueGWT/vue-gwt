@@ -7,12 +7,12 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
- * Annotation placed on Vue Components
+ * Mark a watcher for a property of the component data model
  * @author Adrien Baron
  */
 @Target(METHOD)
 @Retention(SOURCE)
 public @interface Watch
 {
-    String watchedProperty();
+    String propertyName();
 }

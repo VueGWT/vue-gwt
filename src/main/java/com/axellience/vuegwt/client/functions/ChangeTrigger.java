@@ -3,7 +3,8 @@ package com.axellience.vuegwt.client.functions;
 import jsinterop.annotations.JsFunction;
 
 /**
- * Callback when a Vue.JS event is fired by a child component
+ * Callback for change on watched value
+ * @author Adrien Baron
  */
 @JsFunction
 @FunctionalInterface

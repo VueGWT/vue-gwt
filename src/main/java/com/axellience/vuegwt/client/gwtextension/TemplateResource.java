@@ -5,10 +5,11 @@ import com.google.gwt.resources.ext.DefaultExtensions;
 import com.google.gwt.resources.ext.ResourceGeneratorType;
 
 /**
- * A resource that contains text that should be incorporated into the compiled
- * output.
+ * Source: GWT Project http://www.gwtproject.org/
+ * <p>
+ * Modified by Adrien Baron
  */
-@DefaultExtensions(value = {".txt"})
+@DefaultExtensions(value = { ".txt" })
 @ResourceGeneratorType(TemplateResourceGenerator.class)
 public interface TemplateResource extends ResourcePrototype
 {

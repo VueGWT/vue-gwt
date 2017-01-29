@@ -24,6 +24,7 @@ import java.io.Writer;
 
 /**
  * Generate the TemplateProvider for each Component
+ * @author Adrien Baron
  */
 public class TemplateProviderGenerator
 {
@@ -45,7 +46,8 @@ public class TemplateProviderGenerator
             elementsUtils.getPackageOf(componentTypeElement).getQualifiedName().toString();
         String templateProviderName =
             componentTypeElement.getSimpleName() + TEMPLATE_PROVIDER_SUFFIX;
-        ClassName templateProviderClassName = ClassName.get(templateProviderPackage, templateProviderName);
+        ClassName templateProviderClassName =
+            ClassName.get(templateProviderPackage, templateProviderName);
 
         Builder templateClassBuilder = TypeSpec.interfaceBuilder(templateProviderName)
             .addModifiers(Modifier.PUBLIC)
@@ -73,7 +75,8 @@ public class TemplateProviderGenerator
 
         try
         {
-            JavaFile javaFile = JavaFile.builder(templateProviderPackage, templateClassBuilder.build()).build();
+            JavaFile javaFile =
+                JavaFile.builder(templateProviderPackage, templateClassBuilder.build()).build();
 
             JavaFileObject javaFileObject =
                 filer.createSourceFile(templateProviderPackage + "." + templateProviderName,

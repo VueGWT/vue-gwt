@@ -19,15 +19,17 @@ public class VueGWTProcessor extends AbstractProcessor
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
-        Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(
-            Component.class);
+        Set<? extends Element> annotatedElements =
+            roundEnv.getElementsAnnotatedWith(Component.class);
 
-        TemplateProviderGenerator templateProviderGenerator = new TemplateProviderGenerator(processingEnv);
+        TemplateProviderGenerator templateProviderGenerator =
+            new TemplateProviderGenerator(processingEnv);
+        VueComponentDefinitionGenerator vueComponentGenerator =
+            new VueComponentDefinitionGenerator(processingEnv);
 
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
-            VueComponentGenerator vueComponent = new VueComponentGenerator(processingEnv, element);
-            vueComponent.generate();
+            vueComponentGenerator.generate(element);
             templateProviderGenerator.generate(element);
         }
 

@@ -12,6 +12,16 @@ import jsinterop.annotations.JsType;
 
 import java.util.List;
 
+/**
+ * Java representation of a Vue Component definition
+ * Class extending this one are generated using the Annotation processor for each VueComponent
+ * <p>
+ * An instance of this Class can be immediately passed to Vue.JS instance where it's expecting a
+ * component definition object.
+ * <p>
+ * This is an internal Class, it shouldn't be manipulated in applications that use VueGWT.
+ * @author Adrien Baron
+ */
 @JsType
 public abstract class VueComponentDefinition
 {

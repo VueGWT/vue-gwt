@@ -3,6 +3,10 @@ package com.axellience.vuegwt.client.jsnative;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
+/**
+ * Basic native wrapper for JSON util object
+ * @author Adrien Baron
+ */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class JSON
 {

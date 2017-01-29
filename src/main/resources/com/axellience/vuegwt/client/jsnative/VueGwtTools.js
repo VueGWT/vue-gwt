@@ -1,7 +1,7 @@
 /**
  * This object provides methods to integrate Java in Vue.JS world
+ * @author Adrien Baron
  */
-
 window.vueGwt = {
 	createVueInstance: function (vueComponentDefinition) {
 		return new Vue(vueComponentDefinition);

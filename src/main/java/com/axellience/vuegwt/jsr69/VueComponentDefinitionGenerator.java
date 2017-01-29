@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.jsr69;
 
-import com.axellience.vuegwt.client.definitions.VueComponentDefinitionCache;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
+import com.axellience.vuegwt.client.definitions.VueComponentDefinitionCache;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.jsr69.annotations.Component;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
@@ -18,11 +18,8 @@ import jsinterop.annotations.JsType;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.util.ElementFilter;
@@ -31,14 +28,17 @@ import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-class VueComponentGenerator
+/**
+ * Generate VueComponentDefinitions from the user VueComponent classes
+ * @author Adrien Baron
+ */
+public class VueComponentDefinitionGenerator
 {
     public static String COMPONENT_DEFINITION_SUFFIX = "_ComponentDefinition";
     public static String JCI                         = "vuegwt$javaComponentInstance";
@@ -47,6 +47,7 @@ class VueComponentGenerator
 
     static
     {
+        // Init the map of lifecycle hooks for fast type type check
         LIFECYCLE_HOOKS_MAP.put("beforeCreate", true);
         LIFECYCLE_HOOKS_MAP.put("created", true);
         LIFECYCLE_HOOKS_MAP.put("beforeMount", true);
@@ -64,30 +65,24 @@ class VueComponentGenerator
     private final Types    typeUtils;
     private final Filer    filer;
 
-    private final TypeElement componentTypeElement;
-
-    private final String generatedTypeName;
-    private final String typeName;
-    private final String packageName;
-
-    public VueComponentGenerator(ProcessingEnvironment processingEnv,
-        TypeElement componentTypeElement)
+    public VueComponentDefinitionGenerator(ProcessingEnvironment processingEnv)
     {
         messager = processingEnv.getMessager();
         elementsUtils = processingEnv.getElementUtils();
         typeUtils = processingEnv.getTypeUtils();
         filer = processingEnv.getFiler();
-
-        this.componentTypeElement = componentTypeElement;
-
-        this.packageName =
-            elementsUtils.getPackageOf(componentTypeElement).getQualifiedName().toString();
-        this.typeName = componentTypeElement.getSimpleName().toString();
-        this.generatedTypeName = typeName + COMPONENT_DEFINITION_SUFFIX;
     }
 
-    public void generate()
+    /**
+     * Generate and save the Java file for the typeElement passed to the constructor
+     */
+    public void generate(TypeElement componentTypeElement)
     {
+        String packageName =
+            elementsUtils.getPackageOf(componentTypeElement).getQualifiedName().toString();
+        String typeName = componentTypeElement.getSimpleName().toString();
+        String generatedTypeName = typeName + COMPONENT_DEFINITION_SUFFIX;
+
         Component annotation = componentTypeElement.getAnnotation(Component.class);
 
         Builder componentClassBuilder = TypeSpec.classBuilder(generatedTypeName)
@@ -95,7 +90,7 @@ class VueComponentGenerator
             .superclass(VueComponentDefinition.class)
             .addAnnotation(JsType.class)
             .addJavadoc("Vue Component for component {@link $S}",
-                this.componentTypeElement.getQualifiedName().toString()
+                componentTypeElement.getQualifiedName().toString()
             );
 
         // Static init block
@@ -143,12 +138,13 @@ class VueComponentGenerator
 
                 if (computed != null)
                 {
-                    String jsName = !"".equals(computed.name()) ? computed.name() : javaName;
+                    String jsName =
+                        !"".equals(computed.propertyName()) ? computed.propertyName() : javaName;
                     constructorBuilder.addStatement("this.addComputed($S, $S)", javaName, jsName);
                 }
                 else if (watch != null)
                 {
-                    String jsName = watch.watchedProperty();
+                    String jsName = watch.propertyName();
                     constructorBuilder.addStatement("this.addWatch($S, $S)", javaName, jsName);
                 }
                 else if (LIFECYCLE_HOOKS_MAP.containsKey(javaName))
@@ -193,7 +189,7 @@ class VueComponentGenerator
             JavaFile javaFile = JavaFile.builder(packageName, componentClass).build();
 
             JavaFileObject javaFileObject =
-                filer.createSourceFile(getGeneratedFullQualifiedName(), componentTypeElement);
+                filer.createSourceFile(packageName + "." + generatedTypeName, componentTypeElement);
 
             Writer writer = javaFileObject.openWriter();
             javaFile.writeTo(writer);
@@ -203,50 +199,5 @@ class VueComponentGenerator
         {
             e.printStackTrace();
         }
-    }
-
-    static String surroundWithQuote(String string)
-    {
-        return "\"" + string + "\"";
-    }
-
-    static String surroundWithQuote(VariableElement variableElement)
-    {
-        return "\"" + variableElement.getSimpleName().toString() + "\"";
-    }
-
-    static String surroundWithQuote(ExecutableElement executableElement)
-    {
-        return "\"" + executableElement.getSimpleName().toString() + "\"";
-    }
-
-    private boolean hasAnnotation(Element element, Class<? extends Annotation> annotation)
-    {
-        return element.getAnnotation(annotation) != null;
-    }
-
-    public String getTypeName()
-    {
-        return typeName;
-    }
-
-    public String getGeneratedTypeName()
-    {
-        return generatedTypeName;
-    }
-
-    public String getPackageName()
-    {
-        return packageName;
-    }
-
-    public String getFullQualifiedName()
-    {
-        return packageName + "." + typeName;
-    }
-
-    public String getGeneratedFullQualifiedName()
-    {
-        return packageName + "." + generatedTypeName;
     }
 }
