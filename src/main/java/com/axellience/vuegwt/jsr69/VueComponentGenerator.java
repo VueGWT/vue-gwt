@@ -41,7 +41,7 @@ import java.util.stream.Stream;
 class VueComponentGenerator
 {
     public static String COMPONENT_DEFINITION_SUFFIX = "_ComponentDefinition";
-    public static String JCI                         = "javaComponentInstance";
+    public static String JCI                         = "vuegwt$javaComponentInstance";
 
     public static Map<String, Boolean> LIFECYCLE_HOOKS_MAP = new HashMap<>();
 

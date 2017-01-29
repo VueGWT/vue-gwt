@@ -1,25 +1,26 @@
 package com.axellience.vuegwt.client.definitions;
 
-import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.VueComponentInstance;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class VueComponentDefinitionCache
 {
-    private static Map<Class<? extends VueComponent>, VueComponentDefinition>
+    private static Map<Class<? extends VueComponentInstance>, VueComponentDefinition>
         componentDefinitionsCache = new HashMap<>();
 
-    public static void registerComponent(Class<? extends VueComponent> vueComponentClass,
+    public static void registerComponent(Class<? extends VueComponentInstance> vueComponentClass,
         VueComponentDefinition componentDefinition)
     {
         componentDefinitionsCache.put(vueComponentClass, componentDefinition);
     }
 
     public static VueComponentDefinition getComponentDefinitionForClass(
-        Class<? extends VueComponent> vueComponentClass)
+        Class<? extends VueComponentInstance> vueComponentClass)
     {
-        VueComponentDefinition componentDefinition = componentDefinitionsCache.get(vueComponentClass);
+        VueComponentDefinition componentDefinition =
+            componentDefinitionsCache.get(vueComponentClass);
         if (componentDefinition != null)
             return componentDefinition;
 

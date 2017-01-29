@@ -15,7 +15,7 @@ import java.util.List;
 @JsType
 public abstract class VueComponentDefinition
 {
-    protected VueComponent javaComponentInstance;
+    public VueComponent vuegwt$javaComponentInstance;
 
     public Object el;
     public String template;
@@ -35,7 +35,7 @@ public abstract class VueComponentDefinition
         for (DataDefinition dataDefinition : dataDefinitions)
         {
             dataObject.set(dataDefinition.jsName,
-                JsTools.getObjectProperty(javaComponentInstance, dataDefinition.javaName)
+                JsTools.getObjectProperty(vuegwt$javaComponentInstance, dataDefinition.javaName)
             );
         }
 
@@ -81,7 +81,7 @@ public abstract class VueComponentDefinition
     protected void addLifecycleHook(String hookName)
     {
         JsTools.setObjectProperty(
-            this, hookName, VueGwtTools.getGwtObjectMethod(javaComponentInstance, hookName));
+            this, hookName, JsTools.getObjectProperty(vuegwt$javaComponentInstance, hookName));
     }
 
     protected void addProp(String jsName)
@@ -98,6 +98,6 @@ public abstract class VueComponentDefinition
 
     private void abstractCopyJavaMethod(JsObject container, String javaName, String jsName)
     {
-        container.set(jsName, VueGwtTools.getGwtObjectMethod(javaComponentInstance, javaName));
+        container.set(jsName, JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName));
     }
 }

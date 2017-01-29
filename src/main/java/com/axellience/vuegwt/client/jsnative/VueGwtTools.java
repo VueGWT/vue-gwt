@@ -1,8 +1,11 @@
 package com.axellience.vuegwt.client.jsnative;
 
 import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.VueComponentInstance;
 import com.axellience.vuegwt.client.VueDirective;
+import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.safehtml.shared.annotations.SuppressIsSafeUriCastCheck;
 import jsinterop.annotations.JsMethod;
 
 /**
@@ -15,7 +18,8 @@ public class VueGwtTools
     private static RegExp directiveEnd     = RegExp.compile("Directive$");
 
     @JsMethod(namespace = "vueGwt")
-    public static native Object getGwtObjectMethod(Object javaObject, String javaName);
+    public static native <T extends VueComponentInstance> T createVueInstance(
+        VueComponentDefinition vueComponentDefinition);
 
     /**
      * Return the default name to register a component based on it's class name

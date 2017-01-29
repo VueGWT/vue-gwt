@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.client.jsnative;
 
 import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.VueComponentInstance;
 import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
@@ -17,41 +18,34 @@ import static com.axellience.vuegwt.client.definitions.VueComponentDefinitionCac
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Vue
 {
-    private Vue(VueComponentDefinition componentDefinition)
+    /**
+     * Method to attach a Vue Component to a DOM element
+     * Equivalent to new Vue({el: element, ...}) in Vue.JS
+     * @param vueComponentClass The class of the Component to create
+     * here to initialise your app.
+     */
+    @JsOverlay
+    public static <T extends VueComponentInstance> T attach(String element, Class<T> vueComponentClass)
     {
+        VueComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
+        componentDefinition.setEl(element);
 
+        return VueGwtTools.createVueInstance(componentDefinition);
     }
 
     /**
      * Method to attach a Vue Component to a DOM element
      * Equivalent to new Vue({el: element, ...}) in Vue.JS
-     * @param vueComponentClass The co to create. You should inherit from VueApp and pass an
-     * instance
+     * @param vueComponentClass The class of the Component to create
      * here to initialise your app.
      */
     @JsOverlay
-    public static void attach(String element, Class<? extends VueComponent> vueComponentClass)
+    public static <T extends VueComponentInstance> T attach(Element element, Class<T> vueComponentClass)
     {
         VueComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
         componentDefinition.setEl(element);
 
-        new Vue(componentDefinition);
-    }
-
-    /**
-     * Method to attach a Vue Component to a DOM element
-     * Equivalent to new Vue({el: element, ...}) in Vue.JS
-     * @param vueComponentClass The co to create. You should inherit from VueApp and pass an
-     * instance
-     * here to initialise your app.
-     */
-    @JsOverlay
-    public static void attach(Element element, Class<? extends VueComponent> vueComponentClass)
-    {
-        VueComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
-        componentDefinition.setEl(element);
-
-        new Vue(componentDefinition);
+        return VueGwtTools.createVueInstance(componentDefinition);
     }
 
     /**

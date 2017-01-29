@@ -3,15 +3,24 @@
  */
 
 window.vueGwt = {
-	/**
-	 * Get a Java method on a GWT object from it's __proto__
-	 * Obviously the method has to be public in a class annotated with @JsType
-	 * Or have the @JsMethod annotation
-	 * @param object
-	 * @param methodName
-	 * @returns {*|null}
-	 */
-	getGwtObjectMethod: function (object, methodName) {
-		return object.__proto__[methodName];
+	createVueInstance: function (vueComponentDefinition) {
+		return new Vue(vueComponentDefinition);
 	}
 };
+
+Vue.use(function (Vue) {
+	Vue.mixin({
+		created: function () {
+			if (!this.$options.vuegwt$javaComponentInstance)
+				return;
+
+			// This is required for GWT type checking to work
+			var jciProto = this.$options.vuegwt$javaComponentInstance.__proto__;
+			for (var protoProp in jciProto) {
+				if (jciProto.hasOwnProperty(protoProp) && !this[protoProp]) {
+					this[protoProp] = jciProto[protoProp];
+				}
+			}
+		}
+	})
+});
