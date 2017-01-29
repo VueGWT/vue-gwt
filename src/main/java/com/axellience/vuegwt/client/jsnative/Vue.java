@@ -5,6 +5,7 @@ import com.axellience.vuegwt.client.VueComponentFactory;
 import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
+import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;

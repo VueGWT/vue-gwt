@@ -19,7 +19,11 @@ window.axellience = {
 		Object.defineProperty(object, name, def);
 	},
 
-	propertyInObject: function (property, object) {
+	getNativeType: function (typeName) {
+		return window[typeName];
+	},
+
+	objectHasProperty: function (object, property) {
 		return property in object;
 	},
 

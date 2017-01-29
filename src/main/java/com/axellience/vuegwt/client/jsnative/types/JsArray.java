@@ -1,5 +1,7 @@
-package com.axellience.vuegwt.client.jsnative;
+package com.axellience.vuegwt.client.jsnative.types;
 
+import com.axellience.vuegwt.client.jsnative.JsPredicate;
+import com.axellience.vuegwt.client.jsnative.JsTools;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;

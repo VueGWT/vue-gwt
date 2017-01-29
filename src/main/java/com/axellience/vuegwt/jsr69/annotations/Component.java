@@ -25,5 +25,4 @@ public @interface Component
      * Components to register on this component instance
      */
     Class<? extends VueComponent>[] components() default {};
-    String[] props() default {};
 }

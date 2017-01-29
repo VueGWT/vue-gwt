@@ -3,9 +3,9 @@ package com.axellience.vuegwt.client.definitions;
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.client.definitions.component.DataFactory;
-import com.axellience.vuegwt.client.jsnative.JSON;
-import com.axellience.vuegwt.client.jsnative.JsArray;
-import com.axellience.vuegwt.client.jsnative.JsObject;
+import com.axellience.vuegwt.client.definitions.component.PropDefinition;
+import com.axellience.vuegwt.client.jsnative.types.JSON;
+import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 import jsinterop.annotations.JsType;
@@ -31,10 +31,10 @@ public abstract class VueComponentDefinition
     public String template;
 
     public Object data;
-    public final JsObject computed     = new JsObject();
-    public final JsObject methods      = new JsObject();
-    public final JsObject watched      = new JsObject();
-    public final JsArray<String> props = new JsArray<>();
+    public final JsObject computed = new JsObject();
+    public final JsObject methods  = new JsObject();
+    public final JsObject watched  = new JsObject();
+    public final JsObject props    = new JsObject();
 
     public final JsObject components = new JsObject();
     public final JsObject directives = new JsObject();
@@ -94,9 +94,25 @@ public abstract class VueComponentDefinition
             this, hookName, JsTools.getObjectProperty(vuegwt$javaComponentInstance, hookName));
     }
 
-    protected void addProp(String jsName)
+    protected void addProp(String javaName, String jsName, boolean required, String typeJsName)
     {
-        props.push(jsName);
+        PropDefinition propDefinition = new PropDefinition();
+        propDefinition.required = required;
+        if (JsTools.objectHasProperty(vuegwt$javaComponentInstance, javaName))
+            propDefinition.defaultValue =
+                JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
+
+        if (typeJsName != null)
+            propDefinition.type = JsTools.getNativeType(typeJsName);
+
+        props.set(jsName, propDefinition);
+    }
+
+    protected void addPropValidator(String methodName, String propertyName)
+    {
+        PropDefinition propDefinition = props.get(propertyName);
+        propDefinition.validator =
+            JsTools.getObjectProperty(vuegwt$javaComponentInstance, methodName);
     }
 
     protected void addComponent(Class<? extends VueComponent> componentClass)

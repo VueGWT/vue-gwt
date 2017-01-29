@@ -3,6 +3,7 @@ package com.axellience.vuegwt.client.jsnative;
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
+import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.google.gwt.regexp.shared.RegExp;
 import jsinterop.annotations.JsMethod;
 

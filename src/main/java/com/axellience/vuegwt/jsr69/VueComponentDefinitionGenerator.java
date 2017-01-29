@@ -3,8 +3,12 @@ package com.axellience.vuegwt.jsr69;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinitionCache;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
+import com.axellience.vuegwt.client.jsnative.JsTools;
+import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.jsr69.annotations.Component;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
+import com.axellience.vuegwt.jsr69.annotations.Prop;
+import com.axellience.vuegwt.jsr69.annotations.PropValidator;
 import com.axellience.vuegwt.jsr69.annotations.Watch;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -22,6 +26,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypesException;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -114,19 +119,31 @@ public class VueComponentDefinitionGenerator
                 typeName + TemplateProviderGenerator.TEMPLATE_PROVIDER_SUFFIX
             ), TemplateProviderGenerator.TEMPLATE_METHOD_NAME);
 
-        // Data
+        // Data and props
         constructorBuilder.addStatement(
             "$T<$T> dataFields = new $T()", List.class, DataDefinition.class, LinkedList.class);
         ElementFilter.fieldsIn(componentTypeElement.getEnclosedElements())
-            .forEach(
-                variableElement -> constructorBuilder.addStatement("dataFields.add(new $T($S))",
-                    DataDefinition.class, variableElement.getSimpleName()
-                ));
-        constructorBuilder.addStatement("this.initData(dataFields, $L)", annotation.useFactory());
+            .forEach(variableElement ->
+            {
+                String javaName = variableElement.getSimpleName().toString();
+                Prop prop = variableElement.getAnnotation(Prop.class);
 
-        // Props
-        Stream.of(annotation.props())
-            .forEach(prop -> constructorBuilder.addStatement("this.addProp($S)", prop));
+                if (prop != null)
+                {
+                    constructorBuilder.addStatement("this.addProp($S, $S, $L, $S)", javaName,
+                        !"".equals(prop.propertyName()) ? prop.propertyName() : javaName,
+                        prop.required(),
+                        prop.checkType() ? getNativeNameForJavaType(variableElement.asType()) : null
+                    );
+                }
+                else
+                {
+                    constructorBuilder.addStatement("dataFields.add(new $T($S))",
+                        DataDefinition.class, javaName
+                    );
+                }
+            });
+        constructorBuilder.addStatement("this.initData(dataFields, $L)", annotation.useFactory());
 
         // Methods
         ElementFilter.methodsIn(componentTypeElement.getEnclosedElements())
@@ -135,6 +152,7 @@ public class VueComponentDefinitionGenerator
                 String javaName = executableElement.getSimpleName().toString();
                 Computed computed = executableElement.getAnnotation(Computed.class);
                 Watch watch = executableElement.getAnnotation(Watch.class);
+                PropValidator propValidator = executableElement.getAnnotation(PropValidator.class);
 
                 if (computed != null)
                 {
@@ -146,6 +164,12 @@ public class VueComponentDefinitionGenerator
                 {
                     String jsName = watch.propertyName();
                     constructorBuilder.addStatement("this.addWatch($S, $S)", javaName, jsName);
+                }
+                else if (propValidator != null)
+                {
+                    String propertyName = propValidator.propertyName();
+                    constructorBuilder.addStatement(
+                        "this.addPropValidator($S, $S)", javaName, propertyName);
                 }
                 else if (LIFECYCLE_HOOKS_MAP.containsKey(javaName))
                 {
@@ -198,6 +222,38 @@ public class VueComponentDefinitionGenerator
         catch (IOException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    private String getNativeNameForJavaType(TypeMirror typeMirror)
+    {
+        TypeName typeName = TypeName.get(typeMirror);
+        if (typeName.isBoxedPrimitive())
+        {
+            typeName = typeName.unbox();
+        }
+
+        if (typeName.equals(TypeName.INT) || typeName.equals(TypeName.BYTE) ||
+            typeName.equals(TypeName.SHORT) || typeName.equals(TypeName.LONG) ||
+            typeName.equals(TypeName.FLOAT) || typeName.equals(TypeName.DOUBLE))
+        {
+            return "Number";
+        }
+        else if (typeName.equals(TypeName.BOOLEAN))
+        {
+            return "Boolean";
+        }
+        else if (typeName.equals(TypeName.get(String.class)) || typeName.equals(TypeName.CHAR))
+        {
+            return "String";
+        }
+        else if (typeMirror.toString().startsWith(JsArray.class.getCanonicalName()))
+        {
+            return "Array";
+        }
+        else
+        {
+            return "Object";
         }
     }
 }

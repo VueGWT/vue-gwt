@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.jsnative;
 
+import com.axellience.vuegwt.client.jsnative.types.JsIterator;
 import jsinterop.annotations.JsMethod;
 
 /**
@@ -11,7 +12,10 @@ public class JsTools
     public static native void log(String message);
 
     @JsMethod(namespace = "axellience")
-    public static native boolean propertyInObject(String property, Object object);
+    public static native Object getNativeType(String typeName);
+
+    @JsMethod(namespace = "axellience")
+    public static native boolean objectHasProperty(Object object, String property);
 
     @JsMethod(namespace = "axellience")
     public static native Object getObjectProperty(Object object, String property);

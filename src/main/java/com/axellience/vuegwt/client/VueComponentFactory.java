@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client;
 
-import com.axellience.vuegwt.client.jsnative.JsObject;
+import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 
 /**
