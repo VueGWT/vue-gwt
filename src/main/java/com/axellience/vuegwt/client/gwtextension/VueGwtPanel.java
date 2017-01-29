@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.gwtextension;
 
-import com.axellience.vuegwt.client.VueComponentInstance;
+import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.jsnative.Vue;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * <p>
  * /!\ Your VueComponent MUST use kebab case in it's name for this to work
  */
-public class VueGwtPanel<T extends VueComponentInstance> extends SimplePanel
+public class VueGwtPanel<T extends VueComponent> extends SimplePanel
 {
     private final Class<T> rootComponentClass;
     private       T                  vueComponentInstance;

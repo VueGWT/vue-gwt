@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.client.jsnative;
 
 import com.axellience.vuegwt.client.VueComponent;
-import com.axellience.vuegwt.client.VueComponentInstance;
 import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
@@ -25,9 +24,10 @@ public class Vue
      * here to initialise your app.
      */
     @JsOverlay
-    public static <T extends VueComponentInstance> T attach(String element, Class<T> vueComponentClass)
+    public static <T extends VueComponent> T attach(String element, Class<T> vueComponentClass)
     {
-        VueComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
+        VueComponentDefinition componentDefinition =
+            getComponentDefinitionForClass(vueComponentClass);
         componentDefinition.setEl(element);
 
         return VueGwtTools.createVueInstance(componentDefinition);
@@ -40,9 +40,10 @@ public class Vue
      * here to initialise your app.
      */
     @JsOverlay
-    public static <T extends VueComponentInstance> T attach(Element element, Class<T> vueComponentClass)
+    public static <T extends VueComponent> T attach(Element element, Class<T> vueComponentClass)
     {
-        VueComponentDefinition componentDefinition = getComponentDefinitionForClass(vueComponentClass);
+        VueComponentDefinition componentDefinition =
+            getComponentDefinitionForClass(vueComponentClass);
         componentDefinition.setEl(element);
 
         return VueGwtTools.createVueInstance(componentDefinition);
@@ -78,7 +79,8 @@ public class Vue
 
     }
 
-    private static native void component(String componentName, VueComponentDefinition componentDefinition);
+    private static native void component(String componentName,
+        VueComponentDefinition componentDefinition);
 
     private static native void directive(String directiveName, VueDirectiveDefinition vueDirective);
 }
