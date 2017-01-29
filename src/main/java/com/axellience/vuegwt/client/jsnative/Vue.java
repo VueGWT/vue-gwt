@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.client.jsnative;
 
 import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.VueComponentFactory;
 import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
@@ -49,6 +50,15 @@ public class Vue
         return VueGwtTools.createVueInstance(componentDefinition);
     }
 
+
+    @JsOverlay
+    public static VueComponentFactory extend(
+        Class<? extends VueComponent> vueComponentClass)
+    {
+        JsObject extendedVueClass = extend(getComponentDefinitionForClass(vueComponentClass));
+        return new VueComponentFactory(extendedVueClass);
+    }
+
     /**
      * Register a component globally
      * It will be usable anywhere in your app.
@@ -78,6 +88,8 @@ public class Vue
     {
 
     }
+
+    private static native JsObject extend(VueComponentDefinition componentDefinition);
 
     private static native void component(String componentName,
         VueComponentDefinition componentDefinition);

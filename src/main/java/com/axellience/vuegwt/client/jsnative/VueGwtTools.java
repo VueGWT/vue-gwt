@@ -19,6 +19,10 @@ public class VueGwtTools
     public static native <T extends VueComponent> T createVueInstance(
         VueComponentDefinition vueComponentDefinition);
 
+    @JsMethod(namespace = "vueGwt")
+    public static native <T extends VueComponent> T createInstanceForVueClass(
+        JsObject extendedVueClass);
+
     /**
      * Return the default name to register a component based on it's class name
      * The name of the tag is the name of the component converted to kebab-case

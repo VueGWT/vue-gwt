@@ -12,7 +12,10 @@ import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsType;
 
 /**
- * Represent an instantiated VueComponent
+ * The Java representation of a VueComponent
+ * Whenever you want to add a component to your application you should extends this class.
+ *
+ * @author Adrien Baron
  */
 @JsType
 public class VueComponent

@@ -5,6 +5,9 @@
 window.vueGwt = {
 	createVueInstance: function (vueComponentDefinition) {
 		return new Vue(vueComponentDefinition);
+	},
+	createInstanceForVueClass: function (extendedVueClass) {
+		return new extendedVueClass();
 	}
 };
 
