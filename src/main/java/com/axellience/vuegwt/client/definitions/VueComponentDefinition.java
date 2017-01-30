@@ -35,7 +35,7 @@ public abstract class VueComponentDefinition
     public Object data;
     public final JsObject computed = new JsObject();
     public final JsObject methods  = new JsObject();
-    public final JsObject watched  = new JsObject();
+    public final JsObject watch    = new JsObject();
     public final JsObject props    = new JsObject();
 
     public final JsObject components = new JsObject();
@@ -97,9 +97,19 @@ public abstract class VueComponentDefinition
             computedDefinition.set = method;
     }
 
-    protected void addWatch(String javaName, String jsName)
+    protected void addWatch(String javaName, String watchedPropertyName, boolean isDeep)
     {
-        abstractCopyJavaMethod(watched, javaName, jsName);
+        if (!isDeep)
+        {
+            abstractCopyJavaMethod(watch, javaName, watchedPropertyName);
+            return;
+        }
+
+        JsObject watchDefinition = new JsObject();
+        watchDefinition.set("deep", true);
+        watchDefinition.set(
+            "handler", JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName));
+        watch.set(watchedPropertyName, watchDefinition);
     }
 
     protected void addLifecycleHook(String hookName)

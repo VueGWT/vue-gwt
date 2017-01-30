@@ -165,7 +165,9 @@ public class VueComponentDefinitionGenerator
                 else if (watch != null)
                 {
                     String jsName = watch.propertyName();
-                    constructorBuilder.addStatement("this.addWatch($S, $S)", javaName, jsName);
+                    constructorBuilder.addStatement(
+                        "this.addWatch($S, $S, $L)", javaName, jsName, watch.isDeep()
+                    );
                 }
                 else if (propValidator != null)
                 {

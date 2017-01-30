@@ -15,4 +15,5 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 public @interface Watch
 {
     String propertyName();
+    boolean isDeep() default false;
 }
