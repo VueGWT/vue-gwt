@@ -28,8 +28,7 @@ window.axellience = {
 	},
 
 	getObjectProperty: function (object, property) {
-		var value = object[property];
-		return value !== undefined ? value : "";
+		return object[property];
 	},
 
 	setObjectProperty: function (object, property, value) {

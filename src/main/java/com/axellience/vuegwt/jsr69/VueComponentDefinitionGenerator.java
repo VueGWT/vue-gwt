@@ -2,8 +2,8 @@ package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinitionCache;
+import com.axellience.vuegwt.client.definitions.component.ComputedKind;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
-import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.jsr69.annotations.Component;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
@@ -158,7 +158,9 @@ public class VueComponentDefinitionGenerator
                 {
                     String jsName =
                         !"".equals(computed.propertyName()) ? computed.propertyName() : javaName;
-                    constructorBuilder.addStatement("this.addComputed($S, $S)", javaName, jsName);
+                    constructorBuilder.addStatement("this.addComputed($S, $S, $T.$L)", javaName,
+                        jsName, ComputedKind.class, computed.kind()
+                    );
                 }
                 else if (watch != null)
                 {
