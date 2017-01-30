@@ -19,8 +19,12 @@ package com.axellience.vuegwt.client.gwtextension;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.util.Util;
+import com.google.gwt.resources.client.ClientBundle.Source;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.resources.ext.AbstractResourceGenerator;
 import com.google.gwt.resources.ext.ResourceContext;
@@ -30,6 +34,8 @@ import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.user.rebind.StringSourceWriter;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Source: GWT Project http://www.gwtproject.org/
@@ -78,6 +84,13 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             }
         }
 
+        TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
+        Source resourceAnnotation = method.getAnnotation(Source.class);
+        String resourcePath = resourceAnnotation.value()[0];
+        String typeName = resourcePath.substring(0, resourcePath.length() - 5).replaceAll("/", ".");
+        JClassType jClassType = typeOracle.findType(typeName);
+        sw.println("public " + typeName + " ci = new " + typeName + "();");
+
         sw.println("public String getText() {");
         sw.indent();
 
@@ -99,6 +112,17 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("return \"" + method.getName() + "\";");
         sw.outdent();
         sw.println("}");
+
+        for (JField jField : jClassType.getFields())
+        {
+            if (jField.getType().isPrimitive() != null) {
+                sw.println("public " + jField.getType().getQualifiedBinaryName() + " get_" + jField.getName() +"() {");
+                sw.indent();
+                sw.println("return ci." + jField.getName() + ";");
+                sw.outdent();
+                sw.println("}");
+            }
+        }
 
         sw.outdent();
         sw.println("}");
