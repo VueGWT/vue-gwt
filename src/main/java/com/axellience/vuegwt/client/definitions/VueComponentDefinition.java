@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.client.definitions;
 
 import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.definitions.component.ComputedDefinition;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.client.definitions.component.DataFactory;
 import com.axellience.vuegwt.client.definitions.component.PropDefinition;
@@ -8,6 +9,7 @@ import com.axellience.vuegwt.client.jsnative.types.JSON;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
+import com.axellience.vuegwt.client.definitions.component.ComputedKind;
 import jsinterop.annotations.JsType;
 
 import java.util.List;
@@ -33,7 +35,7 @@ public abstract class VueComponentDefinition
     public Object data;
     public final JsObject computed = new JsObject();
     public final JsObject methods  = new JsObject();
-    public final JsObject watched  = new JsObject();
+    public final JsObject watch    = new JsObject();
     public final JsObject props    = new JsObject();
 
     public final JsObject components = new JsObject();
@@ -44,9 +46,10 @@ public abstract class VueComponentDefinition
         JsObject dataObject = new JsObject();
         for (DataDefinition dataDefinition : dataDefinitions)
         {
-            dataObject.set(dataDefinition.jsName,
-                JsTools.getObjectProperty(vuegwt$javaComponentInstance, dataDefinition.javaName)
-            );
+            Object dataDefaultValue =
+                JsTools.getObjectProperty(vuegwt$javaComponentInstance, dataDefinition.javaName);
+
+            dataObject.set(dataDefinition.jsName, dataDefaultValue);
         }
 
         if (useFactory)
@@ -78,14 +81,35 @@ public abstract class VueComponentDefinition
         abstractCopyJavaMethod(methods, javaName, javaName);
     }
 
-    protected void addComputed(String javaName, String jsName)
+    protected void addComputed(String javaName, String jsName, ComputedKind kind)
     {
-        abstractCopyJavaMethod(computed, javaName, jsName);
+        ComputedDefinition computedDefinition = computed.get(jsName);
+        if (computedDefinition == null)
+        {
+            computedDefinition = new ComputedDefinition();
+            computed.set(jsName, computedDefinition);
+        }
+
+        Object method = JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
+        if (kind == ComputedKind.GETTER)
+            computedDefinition.get = method;
+        else if (kind == ComputedKind.SETTER)
+            computedDefinition.set = method;
     }
 
-    protected void addWatch(String javaName, String jsName)
+    protected void addWatch(String javaName, String watchedPropertyName, boolean isDeep)
     {
-        abstractCopyJavaMethod(watched, javaName, jsName);
+        if (!isDeep)
+        {
+            abstractCopyJavaMethod(watch, javaName, watchedPropertyName);
+            return;
+        }
+
+        JsObject watchDefinition = new JsObject();
+        watchDefinition.set("deep", true);
+        watchDefinition.set(
+            "handler", JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName));
+        watch.set(watchedPropertyName, watchDefinition);
     }
 
     protected void addLifecycleHook(String hookName)
