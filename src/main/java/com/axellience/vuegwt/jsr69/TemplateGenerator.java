@@ -10,6 +10,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
@@ -26,22 +27,24 @@ import java.io.Writer;
  * Generate the TemplateProvider for each Component
  * @author Adrien Baron
  */
-public class TemplateProviderGenerator
+public class TemplateGenerator
 {
     public static String TEMPLATE_PROVIDER_SUFFIX = "_TemplateProvider";
+    public static String TEMPLATE_RESOURCE_SUFFIX = "_TemplateResource";
     public static String TEMPLATE_METHOD_NAME     = "template";
 
     private final Filer filer;
     private final Elements elementsUtils;
 
-    public TemplateProviderGenerator(ProcessingEnvironment processingEnvironment)
+    public TemplateGenerator(ProcessingEnvironment processingEnvironment)
     {
         filer = processingEnvironment.getFiler();
         elementsUtils = processingEnvironment.getElementUtils();
     }
 
-    public TypeSpec generate(TypeElement componentTypeElement)
+    public void generate(TypeElement componentTypeElement)
     {
+        // Template provider
         String templateProviderPackage =
             elementsUtils.getPackageOf(componentTypeElement).getQualifiedName().toString();
         String templateProviderName =
@@ -73,25 +76,25 @@ public class TemplateProviderGenerator
             .returns(TemplateResource.class)
             .build());
 
-        try
-        {
-            JavaFile javaFile =
-                JavaFile.builder(templateProviderPackage, templateClassBuilder.build()).build();
+        GenerationUtil.toJavaFile(filer, templateClassBuilder, templateProviderPackage,
+            templateProviderName, componentTypeElement
+        );
 
-            JavaFileObject javaFileObject =
-                filer.createSourceFile(templateProviderPackage + "." + templateProviderName,
-                    componentTypeElement
-                );
+        // Template resource abstract class
+        String templateResourcePackage =
+            elementsUtils.getPackageOf(componentTypeElement).getQualifiedName().toString();
+        String templateResourceName =
+            componentTypeElement.getSimpleName() + TEMPLATE_RESOURCE_SUFFIX;
 
-            Writer writer = javaFileObject.openWriter();
-            javaFile.writeTo(writer);
-            writer.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        Builder templateResourceClassBuilder = TypeSpec.classBuilder(templateResourceName)
+            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(Modifier.ABSTRACT)
+            .superclass(TypeName.get(componentTypeElement.asType()))
+            .addSuperinterface(TemplateResource.class);
 
-        return templateClassBuilder.build();
+        GenerationUtil.toJavaFile(
+            filer, templateResourceClassBuilder, templateResourcePackage, templateResourceName,
+            componentTypeElement
+        );
     }
 }

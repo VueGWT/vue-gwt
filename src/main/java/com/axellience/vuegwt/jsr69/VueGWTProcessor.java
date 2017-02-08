@@ -22,15 +22,16 @@ public class VueGWTProcessor extends AbstractProcessor
         Set<? extends Element> annotatedElements =
             roundEnv.getElementsAnnotatedWith(Component.class);
 
-        TemplateProviderGenerator templateProviderGenerator =
-            new TemplateProviderGenerator(processingEnv);
+        TemplateGenerator templateGenerator =
+            new TemplateGenerator(processingEnv);
+
         VueComponentDefinitionGenerator vueComponentGenerator =
             new VueComponentDefinitionGenerator(processingEnv);
 
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
             vueComponentGenerator.generate(element);
-            templateProviderGenerator.generate(element);
+            templateGenerator.generate(element);
         }
 
         // claim the annotation

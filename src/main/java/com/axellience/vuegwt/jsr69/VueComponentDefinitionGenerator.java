@@ -12,7 +12,6 @@ import com.axellience.vuegwt.jsr69.annotations.PropValidator;
 import com.axellience.vuegwt.jsr69.annotations.Watch;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -30,9 +29,6 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.JavaFileObject;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -115,13 +111,14 @@ public class VueComponentDefinitionGenerator
 
         // Add template initialization
         constructorBuilder.addStatement(
-            "this.setTemplate($T.INSTANCE.$L().getText())", ClassName.get(packageName,
-                typeName + TemplateProviderGenerator.TEMPLATE_PROVIDER_SUFFIX
-            ), TemplateProviderGenerator.TEMPLATE_METHOD_NAME);
+            "this.setTemplateResource($T.INSTANCE.$L())",
+            ClassName.get(packageName, typeName + TemplateGenerator.TEMPLATE_PROVIDER_SUFFIX),
+            TemplateGenerator.TEMPLATE_METHOD_NAME
+        );
 
         // Data and props
         constructorBuilder.addStatement(
-            "$T<$T> dataFields = new $T()", List.class, DataDefinition.class, LinkedList.class);
+            "$T<$T> dataFields = new $T<>()", List.class, DataDefinition.class, LinkedList.class);
         ElementFilter.fieldsIn(componentTypeElement.getEnclosedElements())
             .forEach(variableElement ->
             {
@@ -157,7 +154,7 @@ public class VueComponentDefinitionGenerator
                 if (computed != null)
                 {
                     String jsName =
-                        !"".equals(computed.propertyName()) ? computed.propertyName() : javaName;
+                        !"".equals(computed.propertyName()) ? computed.propertyName() : "$" + javaName;
                     constructorBuilder.addStatement("this.addComputed($S, $S, $T.$L)", javaName,
                         jsName, ComputedKind.class, computed.kind()
                     );
@@ -166,8 +163,7 @@ public class VueComponentDefinitionGenerator
                 {
                     String jsName = watch.propertyName();
                     constructorBuilder.addStatement(
-                        "this.addWatch($S, $S, $L)", javaName, jsName, watch.isDeep()
-                    );
+                        "this.addWatch($S, $S, $L)", javaName, jsName, watch.isDeep());
                 }
                 else if (propValidator != null)
                 {
@@ -210,23 +206,8 @@ public class VueComponentDefinitionGenerator
         componentClassBuilder.addMethod(constructorBuilder.build());
 
         // Build the component definition class
-        TypeSpec componentClass = componentClassBuilder.build();
-
-        try
-        {
-            JavaFile javaFile = JavaFile.builder(packageName, componentClass).build();
-
-            JavaFileObject javaFileObject =
-                filer.createSourceFile(packageName + "." + generatedTypeName, componentTypeElement);
-
-            Writer writer = javaFileObject.openWriter();
-            javaFile.writeTo(writer);
-            writer.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        GenerationUtil.toJavaFile(
+            filer, componentClassBuilder, packageName, generatedTypeName, componentTypeElement);
     }
 
     private String getNativeNameForJavaType(TypeMirror typeMirror)
