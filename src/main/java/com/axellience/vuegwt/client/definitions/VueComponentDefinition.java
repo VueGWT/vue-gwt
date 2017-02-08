@@ -5,11 +5,13 @@ import com.axellience.vuegwt.client.definitions.component.ComputedDefinition;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.client.definitions.component.DataFactory;
 import com.axellience.vuegwt.client.definitions.component.PropDefinition;
+import com.axellience.vuegwt.client.gwtextension.TemplateResource;
 import com.axellience.vuegwt.client.jsnative.types.JSON;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 import com.axellience.vuegwt.client.definitions.component.ComputedKind;
+import com.google.gwt.regexp.shared.RegExp;
 import jsinterop.annotations.JsType;
 
 import java.util.List;
@@ -33,13 +35,16 @@ public abstract class VueComponentDefinition
     public String template;
 
     public Object data;
-    public final JsObject computed = new JsObject();
-    public final JsObject methods  = new JsObject();
-    public final JsObject watch    = new JsObject();
-    public final JsObject props    = new JsObject();
+    public final JsObject        computed           = new JsObject();
+    public final JsObject        methods            = new JsObject();
+    public final JsObject        watch              = new JsObject();
+    public final JsObject        props              = new JsObject();
 
     public final JsObject components = new JsObject();
     public final JsObject directives = new JsObject();
+
+    public static final RegExp GET_FUNCTION_BODY =
+        RegExp.compile("function\\s*[^)]*\\s*\\(\\)\\s*{\\s*(?:return|)\\s*([^;]*);?\\s*}");
 
     protected void initData(List<DataDefinition> dataDefinitions, boolean useFactory)
     {
@@ -48,6 +53,11 @@ public abstract class VueComponentDefinition
         {
             Object dataDefaultValue =
                 JsTools.getObjectProperty(vuegwt$javaComponentInstance, dataDefinition.javaName);
+
+            if (dataDefaultValue == null)
+            {
+                dataDefaultValue = new JsObject();
+            }
 
             dataObject.set(dataDefinition.jsName, dataDefaultValue);
         }
@@ -69,6 +79,39 @@ public abstract class VueComponentDefinition
             JsTools.unsetObjectProperty(this, "template");
         else
             this.template = template;
+    }
+
+    protected void setTemplateResource(TemplateResource templateResource)
+    {
+        String templateText = templateResource.getText();
+        if ("".equals(templateText))
+        {
+            JsTools.unsetObjectProperty(this, "template");
+            return;
+        }
+
+        int i = 0;
+        String expressionId = TemplateResource.EXPRESSION_PREFIX + i;
+        JsTools.log(templateText);
+        while (JsTools.objectHasProperty(templateResource, expressionId))
+        {
+            String expressionJavaFunction = JsTools.get(templateResource, expressionId).toString();
+            String expression = GET_FUNCTION_BODY.exec(expressionJavaFunction).getGroup(1);
+            if (!"this.".equals(expression.substring(0, 5)))
+            {
+                expression =
+                    expression.substring(expression.indexOf('(') + 1, expression.length() - 1);
+            }
+            expression = expression.substring(5);
+
+            JsTools.log(expression);
+
+            templateText = templateText.replaceAll(RegExp.quote(expressionId), expression);
+            i++;
+            expressionId = TemplateResource.EXPRESSION_PREFIX + i;
+        }
+
+        this.setTemplate(templateText);
     }
 
     protected void addMethod(String javaName)

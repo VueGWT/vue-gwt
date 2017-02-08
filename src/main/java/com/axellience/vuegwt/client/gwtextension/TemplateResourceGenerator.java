@@ -16,16 +16,18 @@
 
 package com.axellience.vuegwt.client.gwtextension;
 
+import com.axellience.vuegwt.jsr69.TemplateGenerator;
+import com.axellience.vuegwt.jsr69.annotations.Computed;
+import com.axellience.vuegwt.template.TemplateParser;
+import com.axellience.vuegwt.template.TemplateParserResult;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.util.Util;
 import com.google.gwt.resources.client.ClientBundle.Source;
-import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.resources.ext.AbstractResourceGenerator;
 import com.google.gwt.resources.ext.ResourceContext;
 import com.google.gwt.resources.ext.ResourceGeneratorUtil;
@@ -34,8 +36,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.user.rebind.StringSourceWriter;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.Map.Entry;
 
 /**
  * Source: GWT Project http://www.gwtproject.org/
@@ -71,38 +72,68 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         URL resource = resources == null ? null : resources[0];
 
         SourceWriter sw = new StringSourceWriter();
-        // Write the expression to create the subtype.
-        sw.println("new " + TemplateResource.class.getName() + "() {");
-        sw.indent();
 
-        if (resource != null)
+        // No resource for the template
+        if (resource == null)
         {
-            if (!AbstractResourceGenerator.STRIP_COMMENTS)
-            {
-                // Convenience when examining the generated code.
-                sw.println("// " + resource.toExternalForm());
-            }
+            sw.println("new " + TemplateResource.class.getName() + "() {");
+            sw.indent();
+            sw.println("public String getText() {return \"\";}");
+            sw.println("public String getName() {return \"" + method.getName() + "\";}");
+            sw.outdent();
+            sw.println("}");
+            return sw.toString();
+        }
+
+        if (!AbstractResourceGenerator.STRIP_COMMENTS)
+        {
+            // Convenience when examining the generated code.
+            sw.println("// " + resource.toExternalForm());
         }
 
         TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
         Source resourceAnnotation = method.getAnnotation(Source.class);
         String resourcePath = resourceAnnotation.value()[0];
         String typeName = resourcePath.substring(0, resourcePath.length() - 5).replaceAll("/", ".");
+
+        // Start class
+        sw.println("new " + typeName + TemplateGenerator.TEMPLATE_RESOURCE_SUFFIX + "() {");
+        sw.indent();
+
+        // Get template content from HTML file
+        String templateContent = Util.readURLAsString(resource);
+
+        TemplateParser templateParser = new TemplateParser();
+        TemplateParserResult templateParserResult =
+            templateParser.parseHtmlTemplate(templateContent, typeOracle.findType(typeName));
+        templateContent = templateParserResult.getTemplateWithReplacements();
+
+        // Add computed properties
         JClassType jClassType = typeOracle.findType(typeName);
-        sw.println("public " + typeName + " ci = new " + typeName + "();");
+        for (JMethod jMethod : jClassType.getMethods())
+        {
+            Computed computed = jMethod.getAnnotation(Computed.class);
+            if (computed == null)
+                continue;
+
+            String propertyName = "$" + jMethod.getName();
+            if (!"".equals(computed.propertyName()))
+                propertyName = computed.propertyName();
+
+            sw.println("@jsinterop.annotations.JsProperty");
+            sw.println(jMethod.getReturnType().getQualifiedSourceName() + " " + propertyName + ";");
+        }
 
         sw.println("public String getText() {");
         sw.indent();
 
-        String toWrite = resource != null ? Util.readURLAsString(resource) : "";
-
-        if (toWrite.length() > MAX_STRING_CHUNK)
+        if (templateContent.length() > MAX_STRING_CHUNK)
         {
-            writeLongString(sw, toWrite);
+            writeLongString(sw, templateContent);
         }
         else
         {
-            sw.println("return \"" + Generator.escape(toWrite) + "\";");
+            sw.println("return \"" + Generator.escape(templateContent) + "\";");
         }
         sw.outdent();
         sw.println("}");
@@ -113,12 +144,29 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.outdent();
         sw.println("}");
 
-        for (JField jField : jClassType.getFields())
+        for (Entry<String, String> entry : templateParserResult.getTemplateExpressions().entrySet())
         {
-            if (jField.getType().isPrimitive() != null) {
-                sw.println("public " + jField.getType().getQualifiedBinaryName() + " get_" + jField.getName() +"() {");
+            String expression = entry.getValue().trim();
+            boolean isMethodCall = false;
+            if (")".equals(expression.substring(expression.length() - 1)))
+            {
+                isMethodCall = true;
+            }
+
+            sw.println("@jsinterop.annotations.JsMethod");
+            if (isMethodCall)
+            {
+                sw.println("public void " + entry.getKey() + "() {");
                 sw.indent();
-                sw.println("return ci." + jField.getName() + ";");
+                sw.println("" + entry.getValue() + ";");
+                sw.outdent();
+                sw.println("}");
+            }
+            else
+            {
+                sw.println("public Object " + entry.getKey() + "() {");
+                sw.indent();
+                sw.println("return " + entry.getValue() + ";");
                 sw.outdent();
                 sw.println("}");
             }
