@@ -16,6 +16,8 @@ import java.util.Iterator;
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Array" )
 public class JsArray<T>
 {
+    public int length;
+
     @JsOverlay
     @SafeVarargs
     public static <T> JsArray<T> of( T... array )
