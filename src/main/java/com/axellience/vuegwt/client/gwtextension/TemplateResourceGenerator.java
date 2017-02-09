@@ -20,6 +20,7 @@ import com.axellience.vuegwt.jsr69.TemplateGenerator;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
 import com.axellience.vuegwt.template.TemplateParser;
 import com.axellience.vuegwt.template.TemplateParserResult;
+import com.axellience.vuegwt.template.VariableInfo;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
@@ -108,6 +109,13 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             templateParser.parseHtmlTemplate(templateContent, typeOracle.findType(typeName));
         templateContent = templateParserResult.getTemplateWithReplacements();
 
+        for (VariableInfo variableInfo : templateParserResult.getLocalVariables())
+        {
+            sw.println("@jsinterop.annotations.JsProperty");
+            sw.println("public " + variableInfo.getType().getQualifiedSourceName() + " " +
+                variableInfo.getJavaName() + ";");
+        }
+
         // Add computed properties
         JClassType jClassType = typeOracle.findType(typeName);
         for (JMethod jMethod : jClassType.getMethods())
@@ -158,7 +166,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             {
                 sw.println("public void " + entry.getKey() + "() {");
                 sw.indent();
-                sw.println("" + entry.getValue() + ";");
+                sw.println(entry.getValue() + ";");
                 sw.outdent();
                 sw.println("}");
             }
@@ -170,6 +178,17 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
                 sw.outdent();
                 sw.println("}");
             }
+        }
+
+        for (Entry<String, String> entry : templateParserResult.getCollectionsExpressions()
+            .entrySet())
+        {
+            sw.println("@jsinterop.annotations.JsMethod");
+            sw.println("public Object " + entry.getKey() + "() {");
+            sw.indent();
+            sw.println("return " + entry.getValue() + ";");
+            sw.outdent();
+            sw.println("}");
         }
 
         sw.outdent();

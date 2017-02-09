@@ -13,7 +13,9 @@ import com.google.gwt.resources.ext.ResourceGeneratorType;
 @ResourceGeneratorType(TemplateResourceGenerator.class)
 public interface TemplateResource extends ResourcePrototype
 {
-    String EXPRESSION_PREFIX = "$$VUE_GWT_EXPR_";
+    String EXPRESSION_PREFIX       = "$$VUE_GWT_EXPR_";
+    String COLLECTION_PREFIX       = "VUE_GWT_COLLECTION_";
+    String COLLECTION_ARRAY_SUFFIX = "_ARRAY";
 
     String getText();
 }

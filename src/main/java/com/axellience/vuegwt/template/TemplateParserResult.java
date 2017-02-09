@@ -1,8 +1,12 @@
 package com.axellience.vuegwt.template;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import static com.axellience.vuegwt.client.gwtextension.TemplateResource.COLLECTION_PREFIX;
 import static com.axellience.vuegwt.client.gwtextension.TemplateResource.EXPRESSION_PREFIX;
 
 /**
@@ -10,8 +14,10 @@ import static com.axellience.vuegwt.client.gwtextension.TemplateResource.EXPRESS
  */
 public class TemplateParserResult
 {
-    String templateWithReplacements;
-    Map<String, String> templateExpressions = new HashMap<>();
+    private String templateWithReplacements;
+    private final Map<String, String> templateExpressions    = new HashMap<>();
+    private final Map<String, String> collectionsExpressions = new HashMap<>();
+    private final List<VariableInfo>  localVariables         = new LinkedList<>();
 
     public String getTemplateWithReplacements()
     {
@@ -30,8 +36,30 @@ public class TemplateParserResult
         return key;
     }
 
+    public String addCollectionExpression(String expression)
+    {
+        String id = COLLECTION_PREFIX + this.collectionsExpressions.size();
+        this.collectionsExpressions.put(id, expression);
+        return id;
+    }
+
     public Map<String, String> getTemplateExpressions()
     {
         return templateExpressions;
+    }
+
+    public Map<String, String> getCollectionsExpressions()
+    {
+        return collectionsExpressions;
+    }
+
+    public void addLocalVariables(Collection<VariableInfo> variablesInfo)
+    {
+        this.localVariables.addAll(variablesInfo);
+    }
+
+    public List<VariableInfo> getLocalVariables()
+    {
+        return localVariables;
     }
 }

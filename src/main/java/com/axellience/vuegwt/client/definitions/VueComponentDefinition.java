@@ -7,6 +7,7 @@ import com.axellience.vuegwt.client.definitions.component.DataFactory;
 import com.axellience.vuegwt.client.definitions.component.PropDefinition;
 import com.axellience.vuegwt.client.gwtextension.TemplateResource;
 import com.axellience.vuegwt.client.jsnative.types.JSON;
+import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
@@ -39,34 +40,13 @@ public abstract class VueComponentDefinition
     public final JsObject        methods            = new JsObject();
     public final JsObject        watch              = new JsObject();
     public final JsObject        props              = new JsObject();
+    public final JsArray<String> vuegwt$collections = new JsArray<>();
 
     public final JsObject components = new JsObject();
     public final JsObject directives = new JsObject();
 
     public static final RegExp GET_FUNCTION_BODY =
         RegExp.compile("function\\s*[^)]*\\s*\\(\\)\\s*{\\s*(?:return|)\\s*([^;]*);?\\s*}");
-
-    protected void initData(List<DataDefinition> dataDefinitions, boolean useFactory)
-    {
-        JsObject dataObject = new JsObject();
-        for (DataDefinition dataDefinition : dataDefinitions)
-        {
-            Object dataDefaultValue =
-                JsTools.getObjectProperty(vuegwt$javaComponentInstance, dataDefinition.javaName);
-
-            if (dataDefaultValue == null)
-            {
-                dataDefaultValue = new JsObject();
-            }
-
-            dataObject.set(dataDefinition.jsName, dataDefaultValue);
-        }
-
-        if (useFactory)
-            this.data = (DataFactory) () -> JSON.parse(JSON.stringify(dataObject));
-        else
-            this.data = dataObject;
-    }
 
     public void setEl(Object el)
     {
@@ -81,15 +61,22 @@ public abstract class VueComponentDefinition
             this.template = template;
     }
 
+    /**
+     * Set the template resource for the component
+     * Put back the JS function in the template expressions
+     * @param templateResource
+     */
     protected void setTemplateResource(TemplateResource templateResource)
     {
         String templateText = templateResource.getText();
+        // Empty template, nothing to do
         if ("".equals(templateText))
         {
             JsTools.unsetObjectProperty(this, "template");
             return;
         }
 
+        // For each expression defined on our template
         int i = 0;
         String expressionId = TemplateResource.EXPRESSION_PREFIX + i;
         JsTools.log(templateText);
@@ -111,7 +98,47 @@ public abstract class VueComponentDefinition
             expressionId = TemplateResource.EXPRESSION_PREFIX + i;
         }
 
+        i = 0;
+        String listId = TemplateResource.COLLECTION_PREFIX + i;
+        while (JsTools.objectHasProperty(templateResource, listId))
+        {
+            vuegwt$collections.push(listId);
+            methods.set(listId, JsTools.get(templateResource, listId));
+
+            i++;
+            listId = TemplateResource.COLLECTION_PREFIX + i;
+        }
+        JsTools.log(templateText);
         this.setTemplate(templateText);
+    }
+
+    protected void initData(List<DataDefinition> dataDefinitions, boolean useFactory)
+    {
+        JsObject dataObject = new JsObject();
+        for (DataDefinition dataDefinition : dataDefinitions)
+        {
+            Object dataDefaultValue =
+                JsTools.getObjectProperty(vuegwt$javaComponentInstance, dataDefinition.javaName);
+
+            if (dataDefaultValue == null)
+            {
+                dataDefaultValue = new JsObject();
+            }
+
+            dataObject.set(dataDefinition.jsName, dataDefaultValue);
+        }
+
+        // Create JsArrays for the Java collections to be copied into
+        for (String collectionId : vuegwt$collections.iterate())
+        {
+            dataObject.set(
+                collectionId + TemplateResource.COLLECTION_ARRAY_SUFFIX, new JsArray<>());
+        }
+
+        if (useFactory)
+            this.data = (DataFactory) () -> JSON.parse(JSON.stringify(dataObject));
+        else
+            this.data = dataObject;
     }
 
     protected void addMethod(String javaName)
