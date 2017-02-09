@@ -27,7 +27,7 @@ import java.io.Writer;
  * Generate the TemplateProvider for each Component
  * @author Adrien Baron
  */
-public class TemplateGenerator
+public class TemplateProviderGenerator
 {
     public static String TEMPLATE_PROVIDER_SUFFIX = "_TemplateProvider";
     public static String TEMPLATE_RESOURCE_SUFFIX = "_TemplateResource";
@@ -36,7 +36,7 @@ public class TemplateGenerator
     private final Filer filer;
     private final Elements elementsUtils;
 
-    public TemplateGenerator(ProcessingEnvironment processingEnvironment)
+    public TemplateProviderGenerator(ProcessingEnvironment processingEnvironment)
     {
         filer = processingEnvironment.getFiler();
         elementsUtils = processingEnvironment.getElementUtils();

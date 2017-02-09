@@ -16,7 +16,7 @@
 
 package com.axellience.vuegwt.client.gwtextension;
 
-import com.axellience.vuegwt.jsr69.TemplateGenerator;
+import com.axellience.vuegwt.jsr69.TemplateProviderGenerator;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
 import com.axellience.vuegwt.template.TemplateParser;
 import com.axellience.vuegwt.template.TemplateParserResult;
@@ -98,7 +98,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         String typeName = resourcePath.substring(0, resourcePath.length() - 5).replaceAll("/", ".");
 
         // Start class
-        sw.println("new " + typeName + TemplateGenerator.TEMPLATE_RESOURCE_SUFFIX + "() {");
+        sw.println("new " + typeName + TemplateProviderGenerator.TEMPLATE_RESOURCE_SUFFIX + "() {");
         sw.indent();
 
         // Get template content from HTML file

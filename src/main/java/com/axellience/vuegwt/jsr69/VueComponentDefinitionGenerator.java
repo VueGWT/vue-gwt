@@ -112,8 +112,8 @@ public class VueComponentDefinitionGenerator
         // Add template initialization
         constructorBuilder.addStatement(
             "this.setTemplateResource($T.INSTANCE.$L())",
-            ClassName.get(packageName, typeName + TemplateGenerator.TEMPLATE_PROVIDER_SUFFIX),
-            TemplateGenerator.TEMPLATE_METHOD_NAME
+            ClassName.get(packageName, typeName + TemplateProviderGenerator.TEMPLATE_PROVIDER_SUFFIX),
+            TemplateProviderGenerator.TEMPLATE_METHOD_NAME
         );
 
         // Data and props
