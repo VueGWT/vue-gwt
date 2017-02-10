@@ -50,9 +50,9 @@ public class TemplateParserTest
         TemplateParserResult result = templateParser.parseHtmlTemplate(html, vueComponent);
 
         assertEquals("<div v-bind:title=\"" + EXPRESSION_PREFIX + "0\"></div>", pr(result));
-        assertEquals(1, result.getTemplateExpressions().size());
+        assertEquals(1, result.getExpressions().size());
         assertEquals(
-            "test", result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0").getExpression());
+            "test", result.getExpressions().get(EXPRESSION_PREFIX + "0").getExpression());
     }
 
     @Test
@@ -96,9 +96,9 @@ public class TemplateParserTest
         TemplateParserResult result = templateParser.parseHtmlTemplate(html, vueComponent);
 
         assertEquals("<div>{{ " + EXPRESSION_PREFIX + "0 }}</div>", pr(result));
-        assertEquals(1, result.getTemplateExpressions().size());
+        assertEquals(1, result.getExpressions().size());
         assertEquals(
-            "test", result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0").getExpression());
+            "test", result.getExpressions().get(EXPRESSION_PREFIX + "0").getExpression());
     }
 
     @Test
@@ -123,9 +123,9 @@ public class TemplateParserTest
         assertEquals("<div v-for=\"" + CONTEXT_PREFIX + "0_todo in " + COLLECTION_PREFIX + "0" +
             COLLECTION_ARRAY_SUFFIX + "\">{{ " + EXPRESSION_PREFIX + "0 }}</div>", pr(result));
 
-        assertEquals(1, result.getTemplateExpressions().size());
+        assertEquals(1, result.getExpressions().size());
         assertEquals(CONTEXT_PREFIX + "0_todo",
-            result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0").getExpression()
+            result.getExpressions().get(EXPRESSION_PREFIX + "0").getExpression()
         );
 
         assertEquals(1, result.getCollectionsExpressions().size());

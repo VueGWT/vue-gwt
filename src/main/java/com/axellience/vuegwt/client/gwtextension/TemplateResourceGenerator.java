@@ -27,6 +27,8 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
+import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.util.Util;
 import com.google.gwt.resources.client.ClientBundle.Source;
@@ -153,13 +155,16 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.outdent();
         sw.println("}");
 
-        for (Entry<String, ExpressionInfo> entry : templateParserResult.getTemplateExpressions()
-            .entrySet())
+        for (Entry<String, ExpressionInfo> entry : templateParserResult.getExpressions().entrySet())
         {
-            String returnType = entry.getValue().getType().getQualifiedSourceName();
-            String returnKeyword = ("void".equals(returnType) ? "" : "return ");
+            JType returnType = toPrimitiveType(entry.getValue().getType());
+
+            String returnKeyword =
+                ("void".equals(returnType.getQualifiedSourceName()) ? "" : "return ");
+
             sw.println("@jsinterop.annotations.JsMethod");
-            sw.println("public " + returnType + " " + entry.getKey() + "() {");
+            sw.println(
+                "public " + returnType.getQualifiedSourceName() + " " + entry.getKey() + "() {");
             sw.indent();
             sw.println(returnKeyword + entry.getValue().getExpression() + ";");
             sw.outdent();
@@ -181,6 +186,28 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("}");
 
         return sw.toString();
+    }
+
+    public JType toPrimitiveType(JType type)
+    {
+        if ("java.lang.Boolean".equals(type.getQualifiedSourceName()))
+            return JPrimitiveType.BOOLEAN;
+        if ("java.lang.Byte".equals(type.getQualifiedSourceName()))
+            return JPrimitiveType.BYTE;
+        if ("java.lang.Character".equals(type.getQualifiedSourceName()))
+            return JPrimitiveType.CHAR;
+        if ("java.lang.Double".equals(type.getQualifiedSourceName()))
+            return JPrimitiveType.DOUBLE;
+        if ("java.lang.Float".equals(type.getQualifiedSourceName()))
+            return JPrimitiveType.FLOAT;
+        if ("java.lang.Integer".equals(type.getQualifiedSourceName()))
+            return JPrimitiveType.INT;
+        if ("java.lang.Long".equals(type.getQualifiedSourceName()))
+            return JPrimitiveType.LONG;
+        if ("java.lang.Short".equals(type.getQualifiedSourceName()))
+            return JPrimitiveType.SHORT;
+
+        return type;
     }
 
     /**

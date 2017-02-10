@@ -48,8 +48,7 @@ public abstract class VueComponentDefinition
     public static final RegExp GET_FUNCTION_BODY =
         RegExp.compile("function\\s*[^)]*\\s*\\(\\)\\s*{\\s*(?:return|)\\s*([^;]*);?\\s*}");
 
-    public static final RegExp REPLACE_THIS =
-        RegExp.compile("(^|[^A-z0-9_\\$\\%])(this\\.)");
+    public static final RegExp REPLACE_THIS = RegExp.compile("(^|[^A-z0-9_\\$\\%])(this\\.)");
 
     public void setEl(Object el)
     {
@@ -88,7 +87,7 @@ public abstract class VueComponentDefinition
             String expressionJavaFunction = JsTools.get(templateResource, expressionId).toString();
             String expression = GET_FUNCTION_BODY.exec(expressionJavaFunction).getGroup(1);
 
-            expression = REPLACE_THIS.replace(expression, "");
+            expression = REPLACE_THIS.replace(expression, "$1");
             JsTools.log(expression);
 
             templateText = templateText.replaceAll(RegExp.quote(expressionId), expression);

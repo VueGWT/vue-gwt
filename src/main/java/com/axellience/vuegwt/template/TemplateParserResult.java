@@ -17,7 +17,7 @@ import static com.axellience.vuegwt.client.gwtextension.TemplateResource.EXPRESS
 public class TemplateParserResult
 {
     private String templateWithReplacements;
-    private final Map<String, ExpressionInfo> templateExpressions    = new HashMap<>();
+    private final Map<String, ExpressionInfo> expressions            = new HashMap<>();
     private final Map<String, String>         collectionsExpressions = new HashMap<>();
     private final List<VariableInfo>          localVariables         = new LinkedList<>();
 
@@ -31,33 +31,33 @@ public class TemplateParserResult
         this.templateWithReplacements = templateWithReplacements;
     }
 
-    public String addTemplateExpression(String expression, JType expressionType)
+    public String addExpression(String expression, JType expressionType)
     {
-        String key = EXPRESSION_PREFIX + this.templateExpressions.size();
-        this.templateExpressions.put(key, new ExpressionInfo(expression.trim(), expressionType));
+        String key = EXPRESSION_PREFIX + this.expressions.size();
+        this.expressions.put(key, new ExpressionInfo(expression.trim(), expressionType));
         return key;
     }
 
     public String addCollectionExpression(String expression)
     {
         String id = COLLECTION_PREFIX + this.collectionsExpressions.size();
-        this.collectionsExpressions.put(id, expression);
+        this.collectionsExpressions.put(id, expression.trim());
         return id;
-    }
-
-    public Map<String, ExpressionInfo> getTemplateExpressions()
-    {
-        return templateExpressions;
-    }
-
-    public Map<String, String> getCollectionsExpressions()
-    {
-        return collectionsExpressions;
     }
 
     public void addLocalVariables(Collection<VariableInfo> variablesInfo)
     {
         this.localVariables.addAll(variablesInfo);
+    }
+
+    public Map<String, ExpressionInfo> getExpressions()
+    {
+        return expressions;
+    }
+
+    public Map<String, String> getCollectionsExpressions()
+    {
+        return collectionsExpressions;
     }
 
     public List<VariableInfo> getLocalVariables()

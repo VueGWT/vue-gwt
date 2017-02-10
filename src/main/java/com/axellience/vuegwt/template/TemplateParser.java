@@ -96,14 +96,17 @@ public class TemplateParser
             // Iterate on element attributes
             for (Attribute attribute : node.attributes())
             {
-                if ("v-for".equals(attribute.getKey()))
+                String attributeName = attribute.getKey();
+                if ("v-for".equals(attributeName))
                     continue;
 
-                if (!VUE_ATTR_PATTERN.matcher(attribute.getKey()).matches())
+                if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
                     continue;
 
-                if (":class".equals(attribute.getKey()) ||
-                    "v-bind:class".equals(attribute.getKey()))
+                if (":class".equals(attributeName) || "v-bind:class".equals(attributeName))
+                    continue;
+
+                if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0)
                     continue;
 
                 attribute.setValue(addExpressionToTemplate(attribute.getValue(), context, result));
@@ -135,7 +138,7 @@ public class TemplateParser
             expressionString = expression.toString();
         }
 
-        return result.addTemplateExpression(expressionString, expressionType);
+        return result.addExpression(expressionString, expressionType);
     }
 
     private String processVForExpression(String vForValue, TemplateParserContext context,
