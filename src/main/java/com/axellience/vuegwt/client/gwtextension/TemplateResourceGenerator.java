@@ -18,6 +18,7 @@ package com.axellience.vuegwt.client.gwtextension;
 
 import com.axellience.vuegwt.jsr69.TemplateProviderGenerator;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
+import com.axellience.vuegwt.template.ExpressionInfo;
 import com.axellience.vuegwt.template.TemplateParser;
 import com.axellience.vuegwt.template.TemplateParserResult;
 import com.axellience.vuegwt.template.VariableInfo;
@@ -152,32 +153,17 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.outdent();
         sw.println("}");
 
-        for (Entry<String, String> entry : templateParserResult.getTemplateExpressions().entrySet())
+        for (Entry<String, ExpressionInfo> entry : templateParserResult.getTemplateExpressions()
+            .entrySet())
         {
-            String expression = entry.getValue().trim();
-            boolean isMethodCall = false;
-            if (")".equals(expression.substring(expression.length() - 1)))
-            {
-                isMethodCall = true;
-            }
-
+            String returnType = entry.getValue().getType().getQualifiedSourceName();
+            String returnKeyword = ("void".equals(returnType) ? "" : "return ");
             sw.println("@jsinterop.annotations.JsMethod");
-            if (isMethodCall)
-            {
-                sw.println("public void " + entry.getKey() + "() {");
-                sw.indent();
-                sw.println(entry.getValue() + ";");
-                sw.outdent();
-                sw.println("}");
-            }
-            else
-            {
-                sw.println("public Object " + entry.getKey() + "() {");
-                sw.indent();
-                sw.println("return " + entry.getValue() + ";");
-                sw.outdent();
-                sw.println("}");
-            }
+            sw.println("public " + returnType + " " + entry.getKey() + "() {");
+            sw.indent();
+            sw.println(returnKeyword + entry.getValue().getExpression() + ";");
+            sw.outdent();
+            sw.println("}");
         }
 
         for (Entry<String, String> entry : templateParserResult.getCollectionsExpressions()

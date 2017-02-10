@@ -12,10 +12,12 @@ public class TemplateParserContext
 {
     public static final String              CONTEXT_PREFIX = "VUE_GWT_CTX_";
     private final       Deque<ContextLayer> contextLayers  = new ArrayDeque<>();
-    private             int                 contextNumber  = 0;
+    private final JClassType vueComponentClass;
+    private int contextNumber = 0;
 
     public TemplateParserContext(JClassType vueComponentClass)
     {
+        this.vueComponentClass = vueComponentClass;
         ContextLayer root = new ContextLayer("");
         contextLayers.add(root);
         for (JField jField : vueComponentClass.getFields())
@@ -54,5 +56,10 @@ public class TemplateParserContext
         }
 
         throw new InvalidExpressionException("Couldn't find the type: " + name);
+    }
+
+    public JClassType getVueComponentClass()
+    {
+        return vueComponentClass;
     }
 }

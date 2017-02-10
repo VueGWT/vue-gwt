@@ -38,26 +38,30 @@ public class TemplateParserTest
     }
 
     @Test
-    void replaceVueExpression(@Mock JClassType vueComponent, @Mock JField test)
+    void replaceVueExpression(@Mock JClassType vueComponent, @Mock JField test,
+        @Mock JClassType testType)
     {
         String html = "<div v-bind:title=\"test\"></div>";
 
         when(test.getName()).thenReturn("test");
+        when(test.getType()).thenReturn(testType);
         when(vueComponent.getFields()).thenReturn(new JField[] { test });
 
         TemplateParserResult result = templateParser.parseHtmlTemplate(html, vueComponent);
 
         assertEquals("<div v-bind:title=\"" + EXPRESSION_PREFIX + "0\"></div>", pr(result));
         assertEquals(1, result.getTemplateExpressions().size());
-        assertEquals("test", result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0"));
+        assertEquals(
+            "test", result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0").getExpression());
     }
 
     @Test
-    void supportAtSign(@Mock JClassType vueComponent, @Mock JField test)
+    void supportAtSign(@Mock JClassType vueComponent, @Mock JField test, @Mock JClassType testType)
     {
         String html = "<div @class=\"test\"></div>";
 
         when(test.getName()).thenReturn("test");
+        when(test.getType()).thenReturn(testType);
         when(vueComponent.getFields()).thenReturn(new JField[] { test });
 
         TemplateParserResult result = templateParser.parseHtmlTemplate(html, vueComponent);
@@ -66,11 +70,12 @@ public class TemplateParserTest
     }
 
     @Test
-    void supportTwoDots(@Mock JClassType vueComponent, @Mock JField test)
+    void supportTwoDots(@Mock JClassType vueComponent, @Mock JField test, @Mock JClassType testType)
     {
         String html = "<div :title=\"test\"></div>";
 
         when(test.getName()).thenReturn("test");
+        when(test.getType()).thenReturn(testType);
         when(vueComponent.getFields()).thenReturn(new JField[] { test });
 
         TemplateParserResult result = templateParser.parseHtmlTemplate(html, vueComponent);
@@ -79,54 +84,21 @@ public class TemplateParserTest
     }
 
     @Test
-    void supportMustache(@Mock JClassType vueComponent, @Mock JField test)
+    void supportMustache(@Mock JClassType vueComponent, @Mock JField test,
+        @Mock JClassType testType)
     {
         String html = "<div>{{ test }}</div>";
 
         when(test.getName()).thenReturn("test");
+        when(test.getType()).thenReturn(testType);
         when(vueComponent.getFields()).thenReturn(new JField[] { test });
 
         TemplateParserResult result = templateParser.parseHtmlTemplate(html, vueComponent);
 
         assertEquals("<div>{{ " + EXPRESSION_PREFIX + "0 }}</div>", pr(result));
         assertEquals(1, result.getTemplateExpressions().size());
-        assertEquals("test", result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0"));
-    }
-
-    @Test
-    void supportMustacheMultiple(@Mock JClassType vueComponent, @Mock JField test,
-        @Mock JField test2)
-    {
-        String html = "<div>{{ test }} {{ test2 }}</div>";
-
-        when(test.getName()).thenReturn("test");
-        when(test2.getName()).thenReturn("test2");
-        when(vueComponent.getFields()).thenReturn(new JField[] { test, test2 });
-
-        TemplateParserResult result = templateParser.parseHtmlTemplate(html, vueComponent);
-
-        assertEquals("<div>{{ " + EXPRESSION_PREFIX + "0 }} {{ " + EXPRESSION_PREFIX + "1 }}</div>",
-            pr(result)
-        );
-        assertEquals(2, result.getTemplateExpressions().size());
-        assertEquals("test", result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0"));
-        assertEquals("test2", result.getTemplateExpressions().get(EXPRESSION_PREFIX + "1"));
-    }
-
-    @Test
-    void testChangeExpression(@Mock JClassType vueComponent, @Mock JField myObject)
-    {
-        String html = "<div>{{ myObject.hello() }}</div>";
-
-        when(myObject.getName()).thenReturn("myObject");
-        when(vueComponent.getFields()).thenReturn(new JField[] { myObject });
-
-        TemplateParserResult result = templateParser.parseHtmlTemplate(html, vueComponent);
-
-        assertEquals("<div>{{ " + EXPRESSION_PREFIX + "0 }}</div>", pr(result));
-        assertEquals(1, result.getTemplateExpressions().size());
         assertEquals(
-            "myObject.hello()", result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0"));
+            "test", result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0").getExpression());
     }
 
     @Test
@@ -134,7 +106,7 @@ public class TemplateParserTest
         @Mock JParameterizedType parameterizedType, @Mock JClassType todoType,
         @Mock TypeOracle typeOracle, @Mock JClassType iterableType) throws NotFoundException
     {
-        String html = "<div v-for=\"todo in todos\">{{ todo.getName() }}</div>";
+        String html = "<div v-for=\"todo in todos\">{{ todo }}</div>";
 
         when(todos.getName()).thenReturn("todos");
         when(todos.getType()).thenReturn(todosType);
@@ -152,8 +124,8 @@ public class TemplateParserTest
             COLLECTION_ARRAY_SUFFIX + "\">{{ " + EXPRESSION_PREFIX + "0 }}</div>", pr(result));
 
         assertEquals(1, result.getTemplateExpressions().size());
-        assertEquals(CONTEXT_PREFIX + "0_todo.getName()",
-            result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0")
+        assertEquals(CONTEXT_PREFIX + "0_todo",
+            result.getTemplateExpressions().get(EXPRESSION_PREFIX + "0").getExpression()
         );
 
         assertEquals(1, result.getCollectionsExpressions().size());
