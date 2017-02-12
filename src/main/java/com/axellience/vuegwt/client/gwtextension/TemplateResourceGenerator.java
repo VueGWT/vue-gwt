@@ -160,7 +160,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             sw.println("@jsinterop.annotations.JsMethod");
             sw.println("public String " + entry.getKey() + "() {");
             sw.indent();
-            sw.println("return " + entry.getValue().getExpression() + " + \"\";");
+            sw.println("return (" + entry.getValue().getExpression() + ") + \"\";");
             sw.outdent();
             sw.println("}");
         }
