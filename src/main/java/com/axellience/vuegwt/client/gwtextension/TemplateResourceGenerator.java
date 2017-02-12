@@ -157,16 +157,10 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
 
         for (Entry<String, ExpressionInfo> entry : templateParserResult.getExpressions().entrySet())
         {
-            JType returnType = toPrimitiveType(entry.getValue().getType());
-
-            String returnKeyword =
-                ("void".equals(returnType.getQualifiedSourceName()) ? "" : "return ");
-
             sw.println("@jsinterop.annotations.JsMethod");
-            sw.println(
-                "public " + returnType.getQualifiedSourceName() + " " + entry.getKey() + "() {");
+            sw.println("public String " + entry.getKey() + "() {");
             sw.indent();
-            sw.println(returnKeyword + entry.getValue().getExpression() + ";");
+            sw.println("return " + entry.getValue().getExpression() + " + \"\";");
             sw.outdent();
             sw.println("}");
         }

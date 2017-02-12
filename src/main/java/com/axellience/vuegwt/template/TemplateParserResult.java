@@ -31,10 +31,10 @@ public class TemplateParserResult
         this.templateWithReplacements = templateWithReplacements;
     }
 
-    public String addExpression(String expression, JType expressionType)
+    public String addExpression(String expression)
     {
         String key = EXPRESSION_PREFIX + this.expressions.size();
-        this.expressions.put(key, new ExpressionInfo(expression.trim(), expressionType));
+        this.expressions.put(key, new ExpressionInfo(expression.trim()));
         return key;
     }
 

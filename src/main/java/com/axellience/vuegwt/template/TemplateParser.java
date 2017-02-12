@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.template;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -130,7 +131,6 @@ public class TemplateParser
     {
         // If we are inside a context we might have to rename variables
         Expression expression = JavaParser.parseExpression(expressionString);
-        JType expressionType = getExpressionType(expression, context);
 
         if (context.isInContext())
         {
@@ -138,7 +138,7 @@ public class TemplateParser
             expressionString = expression.toString();
         }
 
-        return result.addExpression(expressionString, expressionType);
+        return result.addExpression(expressionString);
     }
 
     private String processVForExpression(String vForValue, TemplateParserContext context,
@@ -192,6 +192,14 @@ public class TemplateParser
             scope.ifPresent(expression1 -> renameLocalVariables(expression1, context));
             return;
         }
+        else if (expression instanceof FieldAccessExpr)
+        {
+            // Evaluate field access
+            FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expression;
+            Optional<Expression> scope = fieldAccessExpr.getScope();
+            scope.ifPresent(expression1 -> renameLocalVariables(expression1, context));
+            return;
+        }
         else if (expression instanceof ConditionalExpr)
         {
             ConditionalExpr conditionalExpr = (ConditionalExpr) expression;
@@ -201,6 +209,12 @@ public class TemplateParser
             if (conditionalExpr.getElseExpr() != null)
                 renameLocalVariables(conditionalExpr.getElseExpr(), context);
             return;
+        }
+        else if (expression instanceof BinaryExpr)
+        {
+            BinaryExpr binaryExpr = (BinaryExpr) expression;
+            renameLocalVariables(binaryExpr.getRight(), context);
+            renameLocalVariables(binaryExpr.getLeft(), context);
         }
 
         throw new InvalidExpressionException("Unsupported expression: " + expression);
@@ -284,6 +298,6 @@ public class TemplateParser
                 "Couldn't find field " + fieldAccessExpr.getName());
         }
 
-        throw new InvalidExpressionException("Unsupported expression.");
+        throw new InvalidExpressionException("Couldn't determine expression type: " + expression);
     }
 }
