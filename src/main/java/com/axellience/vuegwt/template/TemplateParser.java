@@ -68,8 +68,8 @@ public class TemplateParser
 
                 String expressionString = elementText.substring(start + 2, end - 2).trim();
 
-                String expressionId = addExpressionToTemplate(expressionString, context, result);
-                newText.append("{{ ").append(expressionId).append(" }}");
+                String processedExpression = processExpression(expressionString, context, result);
+                newText.append("{{ ").append(processedExpression).append(" }}");
                 lastEnd = end;
             }
             if (lastEnd > 0)
@@ -91,7 +91,7 @@ public class TemplateParser
                 shouldPopContext = true;
 
                 // Process the for expression and declare local variables if necessary
-                attribute.setValue(processVForExpression(attribute.getValue(), context, result));
+                attribute.setValue(processVForValue(attribute.getValue(), context, result));
             }
 
             // Iterate on element attributes
@@ -110,7 +110,7 @@ public class TemplateParser
                 if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0)
                     continue;
 
-                attribute.setValue(addExpressionToTemplate(attribute.getValue(), context, result));
+                attribute.setValue(processExpression(attribute.getValue(), context, result));
             }
         }
 
@@ -126,7 +126,16 @@ public class TemplateParser
         }
     }
 
-    private String addExpressionToTemplate(String expressionString, TemplateParserContext context,
+    /**
+     * Process a template expression
+     * Will rename local variables if necessary
+     * @param expressionString The expression as it is in the HTML template
+     * @param context The current context
+     * @param result The result of the template parser
+     * @return A processed expression, should be placed in the HTML in place of the original
+     * expression
+     */
+    private String processExpression(String expressionString, TemplateParserContext context,
         TemplateParserResult result)
     {
         // If we are inside a context we might have to rename variables
@@ -141,7 +150,18 @@ public class TemplateParser
         return result.addExpression(expressionString);
     }
 
-    private String processVForExpression(String vForValue, TemplateParserContext context,
+    /**
+     * Process a V-for value
+     * Determine the type of the collection that's being iterated. Throw an exception if it can't
+     * determine the type.
+     * It will also register the loop variable as a local variable in the context stack.
+     * @param vForValue The value of the v-for attribute
+     * @param context The current context
+     * @param result The result of the template parser
+     * @return A processed v-for value, should be placed in the HTML in place of the original
+     * v-for value
+     */
+    private String processVForValue(String vForValue, TemplateParserContext context,
         TemplateParserResult result)
     {
         String[] splitValue = vForValue.split(" in ");
