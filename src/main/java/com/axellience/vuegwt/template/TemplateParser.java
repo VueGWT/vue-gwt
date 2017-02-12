@@ -5,9 +5,12 @@ import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.google.gwt.core.ext.typeinfo.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -104,9 +107,6 @@ public class TemplateParser
                 if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
                     continue;
 
-                if (":class".equals(attributeName) || "v-bind:class".equals(attributeName))
-                    continue;
-
                 if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0)
                     continue;
 
@@ -138,6 +138,70 @@ public class TemplateParser
     private String processExpression(String expressionString, TemplateParserContext context,
         TemplateParserResult result)
     {
+        try
+        {
+            // Try to parse the expression as JSON
+            JSONObject jsonObject = new JSONObject(expressionString);
+            JSONObject targetObject = new JSONObject();
+            String jsonString =
+                processJSONExpression(jsonObject, targetObject, context, result).toString();
+
+            // Transform the JSON object into a JS object
+            return jsonString.replaceAll("\"<<VUE_GWT_JSON_KEY ", "'")
+                .replaceAll(" VUE_GWT_JSON_KEY>>\"", "'")
+                .replaceAll("\"<<VUE_GWT_JSON_VALUE ", "")
+                .replaceAll(" VUE_GWT_JSON_VALUE>>\"", "");
+        }
+        catch (JSONException e)
+        {
+            // Ignore exception
+        }
+
+        return processJavaExpression(expressionString, context, result);
+    }
+
+    /**
+     * Process all the keys in a given JSON object
+     * @param jsonObject the JSON object to process
+     * @param context The current context
+     * @param result The result of the template parser
+     * @return
+     */
+    private JSONObject processJSONExpression(JSONObject jsonObject, JSONObject targetObject,
+        TemplateParserContext context, TemplateParserResult result)
+    {
+        for (String key : jsonObject.keySet())
+        {
+            Object value = jsonObject.get(key);
+            String targetKey = "<<VUE_GWT_JSON_KEY " + key + " VUE_GWT_JSON_KEY>>";
+            if (value instanceof JSONObject)
+            {
+                targetObject.put(
+                    targetKey,
+                    processJSONExpression((JSONObject) value, targetObject, context, result)
+                );
+            }
+            else
+            {
+                targetObject.put(targetKey, "<<VUE_GWT_JSON_VALUE " +
+                    processJavaExpression(value.toString(), context, result) +
+                    " VUE_GWT_JSON_VALUE>>");
+            }
+        }
+        return jsonObject;
+    }
+
+    /**
+     * Process the given string as a Java expression.
+     * @param expressionString A valid Java expression
+     * @param context The current context
+     * @param result The result of the template parser
+     * @return A processed expression, should be placed in the HTML in place of the original
+     * expression
+     */
+    private String processJavaExpression(String expressionString, TemplateParserContext context,
+        TemplateParserResult result)
+    {
         // If we are inside a context we might have to rename variables
         Expression expression = JavaParser.parseExpression(expressionString);
 
@@ -146,7 +210,6 @@ public class TemplateParser
             renameLocalVariables(expression, context);
             expressionString = expression.toString();
         }
-
         return result.addExpression(expressionString);
     }
 
@@ -235,9 +298,16 @@ public class TemplateParser
             BinaryExpr binaryExpr = (BinaryExpr) expression;
             renameLocalVariables(binaryExpr.getRight(), context);
             renameLocalVariables(binaryExpr.getLeft(), context);
+            return;
+        }
+        else if (expression instanceof LiteralExpr)
+        {
+            return;
         }
 
-        throw new InvalidExpressionException("Unsupported expression: " + expression);
+        throw new InvalidExpressionException(
+            "Unsupported expression: " + expression.getClass().getCanonicalName() + " -> " +
+                expression);
     }
 
     /**
