@@ -81,14 +81,12 @@ public abstract class VueComponentDefinition
         // For each expression defined on our template
         int i = 0;
         String expressionId = TemplateResource.EXPRESSION_PREFIX + i;
-        JsTools.log(templateText);
         while (JsTools.objectHasProperty(templateResource, expressionId))
         {
             String expressionJavaFunction = JsTools.get(templateResource, expressionId).toString();
             String expression = GET_FUNCTION_BODY.exec(expressionJavaFunction).getGroup(1);
 
             expression = REPLACE_THIS.replace(expression, "$1");
-            JsTools.log(expression);
 
             templateText = templateText.replaceAll(RegExp.quote(expressionId), expression);
             i++;
@@ -105,7 +103,6 @@ public abstract class VueComponentDefinition
             i++;
             listId = TemplateResource.COLLECTION_PREFIX + i;
         }
-        JsTools.log(templateText);
         this.setTemplate(templateText);
     }
 
