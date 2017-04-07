@@ -161,7 +161,7 @@ public class TemplateParser
             if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0)
                 continue;
 
-            if ("v-if".equals(attributeName))
+            if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
                 expressionType = "boolean";
 
             if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName)) && isJSON(
