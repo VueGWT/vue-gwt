@@ -46,8 +46,7 @@ import java.util.Map.Entry;
  * Source: GWT Project http://www.gwtproject.org/
  * <p>
  * Modified by Adrien Baron
- * Modification: Doesn't throw an exception if the resource doesn't exist, just return an empty
- * String
+ * Modification: Generate methods for the view based on the parsed template
  */
 public final class TemplateResourceGenerator extends AbstractResourceGenerator
     implements SupportsGeneratorResultCaching
@@ -108,8 +107,8 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         String templateContent = Util.readURLAsString(resource);
 
         TemplateParser templateParser = new TemplateParser();
-        TemplateParserResult templateParserResult =
-            templateParser.parseHtmlTemplate(templateContent, typeOracle.findType(typeName));
+        TemplateParserResult templateParserResult = templateParser.parseHtmlTemplate(
+            templateContent, typeOracle.findType(typeName));
         templateContent = templateParserResult.getTemplateWithReplacements();
 
         for (VariableInfo variableInfo : templateParserResult.getLocalVariables())
@@ -157,10 +156,25 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
 
         for (Entry<String, ExpressionInfo> entry : templateParserResult.getExpressions().entrySet())
         {
+            ExpressionInfo expressionInfo = entry.getValue();
             sw.println("@jsinterop.annotations.JsMethod");
-            sw.println("public String " + entry.getKey() + "() {");
+            sw.println(
+                "public " + expressionInfo.getExpressionType() + " " + entry.getKey() + "() {");
             sw.indent();
-            sw.println("return (" + entry.getValue().getExpression() + ") + \"\";");
+
+            String expressionTypeName = expressionInfo.getExpressionType();
+            if ("java.lang.String".equals(expressionTypeName) || "String".equals(
+                expressionTypeName))
+            {
+                sw.println("return (" + expressionInfo.getExpression() + ") + \"\";");
+            }
+            else
+            {
+                sw.println(
+                    "return (" + expressionTypeName + ") (" + expressionInfo.getExpression() +
+                        ");");
+            }
+
             sw.outdent();
             sw.println("}");
         }

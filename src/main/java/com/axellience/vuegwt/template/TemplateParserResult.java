@@ -1,7 +1,5 @@
 package com.axellience.vuegwt.template;
 
-import com.google.gwt.core.ext.typeinfo.JType;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -31,10 +29,10 @@ public class TemplateParserResult
         this.templateWithReplacements = templateWithReplacements;
     }
 
-    public String addExpression(String expression)
+    public String addExpression(String expression, String expressionType)
     {
         String key = EXPRESSION_PREFIX + this.expressions.size();
-        this.expressions.put(key, new ExpressionInfo(expression.trim()));
+        this.expressions.put(key, new ExpressionInfo(expression.trim(), expressionType));
         return key;
     }
 
