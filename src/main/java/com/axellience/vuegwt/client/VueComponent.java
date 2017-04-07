@@ -35,6 +35,7 @@ public class VueComponent
     public JsObject              $scopedSlots;
     public JsObject              $refs;
     public boolean               $isServer;
+    public String                _uid;
 
     /**
      * Lifecycle hooks
