@@ -16,6 +16,13 @@ It's recommended to read [Vue.JS introduction guide](https://vuejs.org/v2/guide/
 The syntax is not final and might change between versions.
 It may also contain bugs.
 
+## Features
+
+* VueJS Components with a Java controller
+* Java type checking in the templates
+* Iterate on Java collections in your template
+* Use regular Java objects in your templates
+
 ## Setup on your project
 
 ### :white_check_mark: Get Vue GWT
@@ -170,12 +177,10 @@ We will call it RootComponent.
 
 ***GwtIndex.html***
 
-In our GWT index page we add a div with our root component template.
+In our GWT index page we add a div to attach our root component.
 
 ```html
-<div id="rootComponent">
-  {{ message }}
-</div>
+<div id="rootComponent"></div>
 ```
 
 ***RootComponent.java***
@@ -193,6 +198,18 @@ public class RootComponent extends VueComponent
 {
     public String message = "Hello Vue GWT!";
 }
+```
+
+***RootComponent.html***
+
+We then create our Component template.
+We place this file next to our Java class file.
+VueGWT will detect it automatically and use it as the template.
+
+```html
+<div>
+    {{ message }}
+</div>
 ```
 
 ***RootGwtApp.java***
@@ -214,6 +231,7 @@ Behind the scene, the instance of our Component will be converted to the format 
 ```javascript
 {
     el: "#rootComponent",
+    template: "<div>{{ message }}</div>",
     data: {
         message: "Hello Vue GWT!"
     }
@@ -223,34 +241,44 @@ Behind the scene, the instance of our Component will be converted to the format 
 And passed down to `new Vue()`.
 
 
-## Separating the template
+## Creating child components
 
-Our `RootComponent` works well, but it's not easily reusable because it's template is in our index.html file.
+Every components can have children.
 
-Let's create a reusable Component called `ChildComponent` with it's own template.
+Let's create a child Component called `ChildComponent`.
 We will then instantiate this component in our RootComponent.
 
 This Component will display a message coming from a html text box.
 
+***ChildComponent.java***
+```java
+@Component
+@JsType
+public class ChildComponent extends VueComponent
+{
+    public String childMessage = "Hello Vue GWT!";
+}
+```
+
 First we create an HTML file with our component template.
-We add this file next to our Java class.
-VueGWT will detect it automatically and use it as the template.
+We add this file next to our Java class as before.
 
 ***ChildComponent.html***
 ```html
 <div>
-    <input type="text" v-model="message"/>
-    <p>{{ message }}</p>
+    <input type="text" v-model="childMessage"/>
+    <p>{{ childMessage }}</p>
     <a href v-on:click="clearMessage">Clear message</a>
 </div>
 ```
 
 We will then make a few changes to our `RootComponent` to use `ChildComponent`:
 
-***GwtIndex.html***
+
+***RootComponent.html***
 
 ```html
-<div id="rootComponent">
+<div>
     <child></child>
 </div>
 ```
@@ -263,7 +291,6 @@ We will then make a few changes to our `RootComponent` to use `ChildComponent`:
 @JsType
 public class RootComponent extends VueComponent
 {
-    public String message = "Hello Vue GWT!";
 }
 ```
 
@@ -302,9 +329,6 @@ public class RootGwtApp implements EntryPoint {
 
 For easy backward compatibility it's possible to wrap any Vue GWT Component in a gwt-user Panel.
 For this you need to use `VueGwtPanel`
-
-:exclamation: For it to work, your Component must have a template.
-
 
 For example, let's instantiate our `ChildComponent` using this mechanism:
  
