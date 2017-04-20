@@ -16,6 +16,8 @@ It's recommended to read [Vue.JS introduction guide](https://vuejs.org/v2/guide/
 The syntax is not final and might change between versions.
 It may also contain bugs.
 
+:warning: This version is deprecated. We are working on a new version on the develop branch that will change a lot of things. Stay tuned for more information!
+
 ## Setup on your project
 
 ### :white_check_mark: Get Vue GWT
