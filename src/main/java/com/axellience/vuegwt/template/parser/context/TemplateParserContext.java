@@ -9,6 +9,8 @@ import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Adrien Baron
@@ -19,6 +21,8 @@ public class TemplateParserContext
     private final Deque<ContextLayer> contextLayers = new ArrayDeque<>();
     private final JClassType vueComponentClass;
     private int contextId = 0;
+
+    private Map<String, String> classNameToFullyQualifiedName = new HashMap<>();
 
     private Node currentNode;
     private String currentExpressionReturnType;
@@ -100,5 +104,21 @@ public class TemplateParserContext
     public void setCurrentExpressionKind(TemplateExpressionKind currentExpressionKind)
     {
         this.currentExpressionKind = currentExpressionKind;
+    }
+
+    public void addImport(String fullyQualifiedName)
+    {
+        String[] importSplit = fullyQualifiedName.split("\\.");
+        String className = importSplit[importSplit.length - 1];
+
+        classNameToFullyQualifiedName.put(className, fullyQualifiedName);
+    }
+
+    public String getFullyQualifiedNameForClassName(String className)
+    {
+        if (!classNameToFullyQualifiedName.containsKey(className))
+            return className;
+
+        return classNameToFullyQualifiedName.get(className);
     }
 }

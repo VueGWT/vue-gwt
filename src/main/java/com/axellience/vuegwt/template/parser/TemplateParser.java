@@ -54,10 +54,35 @@ public class TemplateParser
         Document doc = parser.parseInput(htmlTemplate, "");
 
         TemplateParserContext parserContext = new TemplateParserContext(vueComponentClass);
+        processImports(doc, parserContext);
         processNode(doc, parserContext, result);
 
         result.setTemplateWithReplacements(doc.body().html());
         return result;
+    }
+
+    /**
+     * Process java imports in the template
+     * @param doc The document to process
+     * @param context Context of the parser
+     */
+    private void processImports(Document doc, TemplateParserContext context)
+    {
+        Set<Element> importElements = new HashSet<>();
+        for (Element element : doc.getAllElements())
+        {
+            if ("vue-gwt:import".equals(element.tagName()))
+            {
+                context.addImport(element.attr("class"));
+                importElements.add(element);
+            }
+        }
+
+        // Remove imports from the template once processed
+        for (Element importElement : importElements)
+        {
+            importElement.remove();
+        }
     }
 
     /**
@@ -128,17 +153,17 @@ public class TemplateParser
 
     /**
      * Process Element node to check for vue attributes
-     * @param node Current node being processed
+     * @param element Current node being processed
      * @param context Context of the parser
      * @param result Result of the template parsing
      */
-    private boolean processElementNode(Element node, TemplateParserContext context,
+    private boolean processElementNode(Element element, TemplateParserContext context,
         TemplateParserResult result)
     {
         boolean shouldPopContext = false;
 
         // First try to find v-for
-        for (Attribute attribute : node.attributes())
+        for (Attribute attribute : element.attributes())
         {
             if (!"v-for".equals(attribute.getKey()))
                 continue;
@@ -152,7 +177,7 @@ public class TemplateParser
         }
 
         // Iterate on element attributes
-        for (Attribute attribute : node.attributes())
+        for (Attribute attribute : element.attributes())
         {
             String attributeName = attribute.getKey().toLowerCase();
 
@@ -281,7 +306,8 @@ public class TemplateParser
         if (expression instanceof CastExpr)
         {
             CastExpr castExpr = (CastExpr) expression;
-            context.setCurrentExpressionReturnType(castExpr.getType().toString());
+            context.setCurrentExpressionReturnType(context.getFullyQualifiedNameForClassName(
+                castExpr.getType().toString()));
             expression = castExpr.getExpression();
             expressionString = expression.toString();
         }
