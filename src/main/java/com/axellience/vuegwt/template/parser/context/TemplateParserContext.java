@@ -1,7 +1,11 @@
 package com.axellience.vuegwt.template.parser.context;
 
+import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 import com.axellience.vuegwt.template.parser.InvalidExpressionException;
-import com.google.gwt.core.ext.typeinfo.*;
+import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JField;
+import com.google.gwt.core.ext.typeinfo.JType;
+import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -15,6 +19,10 @@ public class TemplateParserContext
     private final Deque<ContextLayer> contextLayers = new ArrayDeque<>();
     private final JClassType vueComponentClass;
     private int contextId = 0;
+
+    private Node currentNode;
+    private String currentExpressionReturnType;
+    private TemplateExpressionKind currentExpressionKind;
 
     public TemplateParserContext(JClassType vueComponentClass)
     {
@@ -62,5 +70,35 @@ public class TemplateParserContext
     public JClassType getVueComponentClass()
     {
         return vueComponentClass;
+    }
+
+    public Node getCurrentNode()
+    {
+        return currentNode;
+    }
+
+    public void setCurrentNode(Node currentNode)
+    {
+        this.currentNode = currentNode;
+    }
+
+    public String getCurrentExpressionReturnType()
+    {
+        return currentExpressionReturnType;
+    }
+
+    public void setCurrentExpressionReturnType(String currentExpressionReturnType)
+    {
+        this.currentExpressionReturnType = currentExpressionReturnType;
+    }
+
+    public TemplateExpressionKind getCurrentExpressionKind()
+    {
+        return currentExpressionKind;
+    }
+
+    public void setCurrentExpressionKind(TemplateExpressionKind currentExpressionKind)
+    {
+        this.currentExpressionKind = currentExpressionKind;
     }
 }

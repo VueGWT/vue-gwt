@@ -28,40 +28,32 @@ public class TemplateParserResult
         this.templateWithReplacements = templateWithReplacements;
     }
 
-    public TemplateExpression addMethodExpression(String body, String expressionType,
-        Set<VariableInfo> usedVariables)
+    public TemplateExpression addCollectionExpression(String body, Set<VariableInfo> usedVariables)
     {
-        return addExpression(TemplateExpressionKind.METHOD,
-            body,
-            expressionType,
-            usedVariables);
+        return addExpression(TemplateExpressionKind.COLLECTION, body, "Object", usedVariables);
     }
 
-    public TemplateExpression addCollectionExpression(String body,
-        Set<VariableInfo> usedVariables)
-    {
-        return addExpression(TemplateExpressionKind.COLLECTION,
-            body,
-            "Object",
-            usedVariables);
-    }
-
-    private TemplateExpression addExpression(TemplateExpressionKind kind, String expression,
+    public TemplateExpression addExpression(TemplateExpressionKind kind, String expression,
         String expressionType, Set<VariableInfo> usedVariables)
     {
         String id = EXPRESSION_PREFIX + this.expressions.size() + EXPRESSION_SUFFIX;
-        TemplateExpression templateExpression =
-            new TemplateExpression(kind, id, expression.trim(), expressionType);
 
+        List<TemplateExpressionParameter> parameters = new LinkedList<>();
         for (VariableInfo usedVariable : usedVariables)
         {
             if (usedVariable.hasCustomJavaName())
             {
-                templateExpression.addParameter(new TemplateExpressionParameter(usedVariable
+                parameters.add(new TemplateExpressionParameter(usedVariable
                     .getType()
                     .getQualifiedSourceName(), usedVariable.getJavaName()));
             }
         }
+
+        if (kind == TemplateExpressionKind.COMPUTED_PROPERTY && !parameters.isEmpty())
+            kind = TemplateExpressionKind.METHOD;
+
+        TemplateExpression templateExpression =
+            new TemplateExpression(kind, id, expression.trim(), expressionType, parameters);
 
         this.expressions.add(templateExpression);
         return templateExpression;

@@ -3,6 +3,7 @@ package com.axellience.vuegwt.template.parser.result;
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionBase;
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,16 +19,12 @@ public class TemplateExpression extends TemplateExpressionBase
     private final List<TemplateExpressionParameter> parameters = new LinkedList<>();
 
     public TemplateExpression(TemplateExpressionKind kind, String id, String body,
-        String returnType)
+        String returnType, Collection<TemplateExpressionParameter> parameters)
     {
         super(kind, id);
         this.body = body;
         this.returnType = returnType;
-    }
-
-    public void addParameter(TemplateExpressionParameter parameter)
-    {
-        parameters.add(parameter);
+        this.parameters.addAll(parameters);
     }
 
     public String getReturnType()
@@ -49,6 +46,9 @@ public class TemplateExpression extends TemplateExpressionBase
     {
         if (getKind() == TemplateExpressionKind.COLLECTION)
             return this.getId() + COLLECTION_ARRAY_SUFFIX;
+
+        if (getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
+            return this.getId();
 
         String[] parametersName = this.parameters
             .stream()

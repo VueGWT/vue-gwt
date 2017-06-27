@@ -1,10 +1,12 @@
 package com.axellience.vuegwt.template.parser;
 
+import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.template.parser.context.VariableInfo;
 import com.axellience.vuegwt.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.template.parser.result.TemplateParserResult;
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
@@ -67,6 +69,7 @@ public class TemplateParser
     private void processNode(Node node, TemplateParserContext context, TemplateParserResult result)
     {
         boolean shouldPopContextLayer = false;
+        context.setCurrentNode(node);
         if (node instanceof TextNode)
         {
             processTextNode((TextNode) node, context, result);
@@ -109,10 +112,10 @@ public class TemplateParser
             if (start > 0)
                 newText.append(elementText.substring(lastEnd, start));
 
+            context.setCurrentExpressionKind(TemplateExpressionKind.COMPUTED_PROPERTY);
+            context.setCurrentExpressionReturnType("String");
             String expressionString = elementText.substring(start + 2, end - 2).trim();
-
-            String processedExpression =
-                processExpression(expressionString, "String", context, result);
+            String processedExpression = processExpression(expressionString, context, result);
             newText.append("{{ ").append(processedExpression).append(" }}");
             lastEnd = end;
         }
@@ -152,7 +155,6 @@ public class TemplateParser
         for (Attribute attribute : node.attributes())
         {
             String attributeName = attribute.getKey().toLowerCase();
-            String expressionType = "Object";
 
             if ("v-for".equals(attributeName) || "v-model".equals(attributeName))
                 continue;
@@ -160,22 +162,27 @@ public class TemplateParser
             if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
                 continue;
 
+            context.setCurrentExpressionReturnType("Object");
+            context.setCurrentExpressionKind(TemplateExpressionKind.COMPUTED_PROPERTY);
+
             if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0)
-                expressionType = "void";
+            {
+                context.setCurrentExpressionReturnType("void");
+                context.setCurrentExpressionKind(TemplateExpressionKind.METHOD);
+            }
 
             if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
-                expressionType = "boolean";
+            {
+                context.setCurrentExpressionReturnType("boolean");
+            }
 
             if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName)) && isJSON(
                 attribute.getValue()))
             {
-                expressionType = "boolean";
+                context.setCurrentExpressionReturnType("boolean");
             }
 
-            attribute.setValue(processExpression(attribute.getValue(),
-                expressionType,
-                context,
-                result));
+            attribute.setValue(processExpression(attribute.getValue(), context, result));
         }
 
         return shouldPopContext;
@@ -185,21 +192,19 @@ public class TemplateParser
      * Process a template expression
      * Will rename local variables if necessary
      * @param expressionString The expression as it is in the HTML template
-     * @param expressionType The expression type
      * @param context The current context
      * @param result The result of the template parser
      * @return A processed expression, should be placed in the HTML in place of the original
      * expression
      */
-    private String processExpression(String expressionString, String expressionType,
-        TemplateParserContext context, TemplateParserResult result)
+    private String processExpression(String expressionString, TemplateParserContext context,
+        TemplateParserResult result)
     {
         // Try to parse the expression as JSON
         try
         {
             JSONObject jsonObject = new JSONObject(expressionString);
-            String jsonString =
-                processJSONExpression(jsonObject, expressionType, context, result).toString();
+            String jsonString = processJSONExpression(jsonObject, context, result).toString();
 
             // Transform the JSON object into a JS object
             return jsonString
@@ -214,10 +219,7 @@ public class TemplateParser
         }
 
         // Process as a JavaExpression instead
-        return processJavaExpression(expressionString,
-            expressionType,
-            context,
-            result).toTemplateString();
+        return processJavaExpression(expressionString, context, result).toTemplateString();
     }
 
     /**
@@ -227,8 +229,8 @@ public class TemplateParser
      * @param result The result of the template parser
      * @return
      */
-    private JSONObject processJSONExpression(JSONObject jsonObject, String expressionType,
-        TemplateParserContext context, TemplateParserResult result)
+    private JSONObject processJSONExpression(JSONObject jsonObject, TemplateParserContext context,
+        TemplateParserResult result)
     {
         JSONObject resultJson = new JSONObject();
         for (String key : jsonObject.keySet())
@@ -238,13 +240,12 @@ public class TemplateParser
             if (value instanceof JSONObject)
             {
                 resultJson.put(targetKey,
-                    processJSONExpression((JSONObject) value, expressionType, context, result));
+                    processJSONExpression((JSONObject) value, context, result));
             }
             else
             {
                 resultJson.put(targetKey,
                     "<<VUE_GWT_JSON_VALUE " + processJavaExpression(value.toString(),
-                        expressionType,
                         context,
                         result).toTemplateString() + " VUE_GWT_JSON_VALUE>>");
             }
@@ -260,16 +261,27 @@ public class TemplateParser
      * @return A processed expression, should be placed in the HTML in place of the original
      * expression
      */
-    private TemplateExpression processJavaExpression(String expressionString, String expressionType,
+    private TemplateExpression processJavaExpression(String expressionString,
         TemplateParserContext context, TemplateParserResult result)
     {
-        Expression expression = JavaParser.parseExpression(expressionString);
+        Expression expression;
+        try
+        {
+            expression = JavaParser.parseExpression(expressionString);
+        }
+        catch (ParseProblemException e)
+        {
+            throw new InvalidExpressionException("'"
+                + expressionString
+                + "' - Current Node: "
+                + context.getCurrentNode());
+        }
 
         // If there is a cast, we use this as type for our expression
         if (expression instanceof CastExpr)
         {
             CastExpr castExpr = (CastExpr) expression;
-            expressionType = castExpr.getType().toString();
+            context.setCurrentExpressionReturnType(castExpr.getType().toString());
             expression = castExpr.getExpression();
             expressionString = expression.toString();
         }
@@ -282,7 +294,10 @@ public class TemplateParser
             expressionString = expression.toString();
         }
 
-        return result.addMethodExpression(expressionString, expressionType, usedVariables);
+        return result.addExpression(context.getCurrentExpressionKind(),
+            expressionString,
+            context.getCurrentExpressionReturnType(),
+            usedVariables);
     }
 
     /**

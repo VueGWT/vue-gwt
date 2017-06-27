@@ -168,6 +168,8 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
                 + ") {");
             sw.indent();
 
+            //sw.println(JsTools.class.getCanonicalName() + ".log(\"Calling method: " + expression.getBody() + "\");");
+
             if ("java.lang.String".equals(expressionReturnType) || "String".equals(
                 expressionReturnType))
             {
