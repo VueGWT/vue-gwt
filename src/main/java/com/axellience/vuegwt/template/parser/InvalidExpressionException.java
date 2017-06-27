@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.template;
+package com.axellience.vuegwt.template.parser;
 
 /**
  * @author Adrien Baron

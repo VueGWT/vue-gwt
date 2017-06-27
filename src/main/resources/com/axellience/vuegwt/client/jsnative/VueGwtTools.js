@@ -35,7 +35,7 @@ window.vueGwt = {
 
 			// Bind our onChange function to all the Collection's methods
 			for (var methodName in collection) {
-				if (!(typeof collection[methodName] == "function"))
+				if (!(typeof collection[methodName] === "function"))
 					continue;
 
 				that._bindToFunction(collection, methodName, onChange);
@@ -57,7 +57,7 @@ window.vueGwt = {
 };
 
 /**
- * Vue GWT plugin that does required transformations
+ * Vue GWT plugin that does the required transformations
  * on Vue Instances to make them compatible with Java
  */
 Vue.use(function (Vue) {

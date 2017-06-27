@@ -14,21 +14,21 @@
  * the License.
  */
 
-package com.axellience.vuegwt.client.gwtextension;
+package com.axellience.vuegwt.template;
 
+import com.axellience.vuegwt.client.gwtextension.TemplateExpressionBase;
+import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
+import com.axellience.vuegwt.client.gwtextension.TemplateResource;
 import com.axellience.vuegwt.jsr69.TemplateProviderGenerator;
 import com.axellience.vuegwt.jsr69.annotations.Computed;
-import com.axellience.vuegwt.template.ExpressionInfo;
-import com.axellience.vuegwt.template.TemplateParser;
-import com.axellience.vuegwt.template.TemplateParserResult;
-import com.axellience.vuegwt.template.VariableInfo;
+import com.axellience.vuegwt.template.parser.TemplateParser;
+import com.axellience.vuegwt.template.parser.result.TemplateExpression;
+import com.axellience.vuegwt.template.parser.result.TemplateParserResult;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
-import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.util.Util;
 import com.google.gwt.resources.client.ClientBundle.Source;
@@ -40,7 +40,6 @@ import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.user.rebind.StringSourceWriter;
 
 import java.net.URL;
-import java.util.Map.Entry;
 
 /**
  * Source: GWT Project http://www.gwtproject.org/
@@ -107,16 +106,9 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         String templateContent = Util.readURLAsString(resource);
 
         TemplateParser templateParser = new TemplateParser();
-        TemplateParserResult templateParserResult = templateParser.parseHtmlTemplate(
-            templateContent, typeOracle.findType(typeName));
+        TemplateParserResult templateParserResult =
+            templateParser.parseHtmlTemplate(templateContent, typeOracle.findType(typeName));
         templateContent = templateParserResult.getTemplateWithReplacements();
-
-        for (VariableInfo variableInfo : templateParserResult.getLocalVariables())
-        {
-            sw.println("@jsinterop.annotations.JsProperty");
-            sw.println("public " + variableInfo.getType().getQualifiedSourceName() + " " +
-                variableInfo.getJavaName() + ";");
-        }
 
         // Add computed properties
         JClassType jClassType = typeOracle.findType(typeName);
@@ -154,68 +146,70 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.outdent();
         sw.println("}");
 
-        for (Entry<String, ExpressionInfo> entry : templateParserResult.getExpressions().entrySet())
+        for (TemplateExpression expression : templateParserResult.getExpressions())
         {
-            ExpressionInfo expressionInfo = entry.getValue();
+            String expressionReturnType = expression.getReturnType();
+            if ("VOID".equals(expressionReturnType))
+                expressionReturnType = "void";
+
             sw.println("@jsinterop.annotations.JsMethod");
-            sw.println(
-                "public " + expressionInfo.getExpressionType() + " " + entry.getKey() + "() {");
+            String[] parameters = expression
+                .getParameters()
+                .stream()
+                .map(param -> param.getType() + " " + param.getName())
+                .toArray(String[]::new);
+
+            sw.println("public "
+                + expressionReturnType
+                + " "
+                + expression.getId()
+                + "("
+                + String.join(", ", parameters)
+                + ") {");
             sw.indent();
 
-            String expressionTypeName = expressionInfo.getExpressionType();
-            if ("java.lang.String".equals(expressionTypeName) || "String".equals(
-                expressionTypeName))
+            if ("java.lang.String".equals(expressionReturnType) || "String".equals(
+                expressionReturnType))
             {
-                sw.println("return (" + expressionInfo.getExpression() + ") + \"\";");
+                sw.println("return (" + expression.getBody() + ") + \"\";");
+            }
+            else if ("void".equals(expressionReturnType))
+            {
+                sw.println(expression.getBody() + ";");
             }
             else
             {
-                sw.println(
-                    "return (" + expressionTypeName + ") (" + expressionInfo.getExpression() +
-                        ");");
+                sw.println("return (" + expressionReturnType + ") (" + expression.getBody() + ");");
             }
 
             sw.outdent();
             sw.println("}");
         }
 
-        for (Entry<String, String> entry : templateParserResult.getCollectionsExpressions()
-            .entrySet())
+        sw.println("public java.util.List getTemplateExpressions() {");
+        sw.indent();
+        sw.println("java.util.List result = new java.util.LinkedList();");
+        for (TemplateExpression expression : templateParserResult.getExpressions())
         {
-            sw.println("@jsinterop.annotations.JsMethod");
-            sw.println("public Object " + entry.getKey() + "() {");
-            sw.indent();
-            sw.println("return " + entry.getValue() + ";");
-            sw.outdent();
-            sw.println("}");
+            sw.println("result.add(new "
+                + TemplateExpressionBase.class.getCanonicalName()
+                + "("
+                + TemplateExpressionKind.class.getCanonicalName()
+                + "."
+                + expression.getKind().toString()
+                + ", \""
+                + expression.getId()
+                + "\""
+                + "));");
         }
+        sw.println("return result;");
+        sw.outdent();
+        sw.println("}");
 
         sw.outdent();
         sw.println("}");
 
         return sw.toString();
-    }
-
-    public JType toPrimitiveType(JType type)
-    {
-        if ("java.lang.Boolean".equals(type.getQualifiedSourceName()))
-            return JPrimitiveType.BOOLEAN;
-        if ("java.lang.Byte".equals(type.getQualifiedSourceName()))
-            return JPrimitiveType.BYTE;
-        if ("java.lang.Character".equals(type.getQualifiedSourceName()))
-            return JPrimitiveType.CHAR;
-        if ("java.lang.Double".equals(type.getQualifiedSourceName()))
-            return JPrimitiveType.DOUBLE;
-        if ("java.lang.Float".equals(type.getQualifiedSourceName()))
-            return JPrimitiveType.FLOAT;
-        if ("java.lang.Integer".equals(type.getQualifiedSourceName()))
-            return JPrimitiveType.INT;
-        if ("java.lang.Long".equals(type.getQualifiedSourceName()))
-            return JPrimitiveType.LONG;
-        if ("java.lang.Short".equals(type.getQualifiedSourceName()))
-            return JPrimitiveType.SHORT;
-
-        return type;
     }
 
     /**

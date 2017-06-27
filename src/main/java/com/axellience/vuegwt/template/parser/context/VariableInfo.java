@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.template;
+package com.axellience.vuegwt.template.parser.context;
 
 import com.google.gwt.core.ext.typeinfo.JType;
 
@@ -40,7 +40,7 @@ public class VariableInfo
         return javaName;
     }
 
-    public boolean isHasCustomJavaName()
+    public boolean hasCustomJavaName()
     {
         return hasCustomJavaName;
     }

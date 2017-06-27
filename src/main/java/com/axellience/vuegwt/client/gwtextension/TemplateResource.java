@@ -1,8 +1,11 @@
 package com.axellience.vuegwt.client.gwtextension;
 
+import com.axellience.vuegwt.template.TemplateResourceGenerator;
 import com.google.gwt.resources.client.ResourcePrototype;
 import com.google.gwt.resources.ext.DefaultExtensions;
 import com.google.gwt.resources.ext.ResourceGeneratorType;
+
+import java.util.List;
 
 /**
  * Source: GWT Project http://www.gwtproject.org/
@@ -13,9 +16,10 @@ import com.google.gwt.resources.ext.ResourceGeneratorType;
 @ResourceGeneratorType(TemplateResourceGenerator.class)
 public interface TemplateResource extends ResourcePrototype
 {
-    String EXPRESSION_PREFIX       = "$$VUE_GWT_EXPR_";
-    String COLLECTION_PREFIX       = "VUE_GWT_COLLECTION_";
+    String EXPRESSION_PREFIX       = "VGWT_";
+    String EXPRESSION_SUFFIX       = "_EXPR";
     String COLLECTION_ARRAY_SUFFIX = "_ARRAY";
 
     String getText();
+    List<TemplateExpressionBase> getTemplateExpressions();
 }

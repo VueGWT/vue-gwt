@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.template;
+package com.axellience.vuegwt.template.parser.context;
 
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JType;

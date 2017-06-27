@@ -2,16 +2,18 @@ package com.axellience.vuegwt.client.definitions;
 
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.definitions.component.ComputedDefinition;
+import com.axellience.vuegwt.client.definitions.component.ComputedKind;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.client.definitions.component.DataFactory;
 import com.axellience.vuegwt.client.definitions.component.PropDefinition;
+import com.axellience.vuegwt.client.gwtextension.TemplateExpressionBase;
+import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 import com.axellience.vuegwt.client.gwtextension.TemplateResource;
+import com.axellience.vuegwt.client.jsnative.JsTools;
+import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 import com.axellience.vuegwt.client.jsnative.types.JSON;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
-import com.axellience.vuegwt.client.jsnative.JsTools;
-import com.axellience.vuegwt.client.jsnative.VueGwtTools;
-import com.axellience.vuegwt.client.definitions.component.ComputedKind;
 import com.google.gwt.regexp.shared.RegExp;
 import jsinterop.annotations.JsType;
 
@@ -36,10 +38,10 @@ public abstract class VueComponentDefinition
     public String template;
 
     public Object data;
-    public final JsObject        computed           = new JsObject();
-    public final JsObject        methods            = new JsObject();
-    public final JsObject        watch              = new JsObject();
-    public final JsObject        props              = new JsObject();
+    public final JsObject computed = new JsObject();
+    public final JsObject methods = new JsObject();
+    public final JsObject watch = new JsObject();
+    public final JsObject props = new JsObject();
     public final JsArray<String> vuegwt$collections = new JsArray<>();
 
     public final JsObject components = new JsObject();
@@ -79,30 +81,28 @@ public abstract class VueComponentDefinition
         }
 
         // For each expression defined on our template
-        int i = 0;
-        String expressionId = TemplateResource.EXPRESSION_PREFIX + i;
-        while (JsTools.objectHasProperty(templateResource, expressionId))
+        for (TemplateExpressionBase expression : templateResource.getTemplateExpressions())
         {
-            String expressionJavaFunction = JsTools.get(templateResource, expressionId).toString();
-            String expression = GET_FUNCTION_BODY.exec(expressionJavaFunction).getGroup(1);
-
-            expression = REPLACE_THIS.replace(expression, "$1");
-
-            templateText = templateText.replaceAll(RegExp.quote(expressionId), expression);
-            i++;
-            expressionId = TemplateResource.EXPRESSION_PREFIX + i;
+            String expressionId = expression.getId();
+            if (expression.getKind() == TemplateExpressionKind.COLLECTION)
+            {
+                vuegwt$collections.push(expressionId);
+                methods.set(expressionId, JsTools.get(templateResource, expressionId));
+            }
+            else if (expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
+            {
+                ComputedDefinition computedDefinition = new ComputedDefinition();
+                computed.set(expressionId, computedDefinition);
+                computedDefinition.get = JsTools.get(templateResource, expressionId);
+                JsTools.log(JsTools.get(templateResource, expressionId).toString());
+            }
+            else if (expression.getKind() == TemplateExpressionKind.METHOD)
+            {
+                methods.set(expressionId, JsTools.get(templateResource, expressionId));
+                JsTools.log(JsTools.get(templateResource, expressionId).toString());
+            }
         }
-
-        i = 0;
-        String listId = TemplateResource.COLLECTION_PREFIX + i;
-        while (JsTools.objectHasProperty(templateResource, listId))
-        {
-            vuegwt$collections.push(listId);
-            methods.set(listId, JsTools.get(templateResource, listId));
-
-            i++;
-            listId = TemplateResource.COLLECTION_PREFIX + i;
-        }
+        JsTools.log(templateText);
         this.setTemplate(templateText);
     }
 
@@ -125,8 +125,8 @@ public abstract class VueComponentDefinition
         // Create JsArrays for the Java collections to be copied into
         for (String collectionId : vuegwt$collections.iterate())
         {
-            dataObject.set(
-                collectionId + TemplateResource.COLLECTION_ARRAY_SUFFIX, new JsArray<>());
+            dataObject.set(collectionId + TemplateResource.COLLECTION_ARRAY_SUFFIX,
+                new JsArray<>());
         }
 
         if (useFactory)
@@ -171,15 +171,16 @@ public abstract class VueComponentDefinition
 
         JsObject watchDefinition = new JsObject();
         watchDefinition.set("deep", true);
-        watchDefinition.set(
-            "handler", JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName));
+        watchDefinition.set("handler",
+            JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName));
         watch.set(watchedPropertyName, watchDefinition);
     }
 
     protected void addLifecycleHook(String hookName)
     {
-        JsTools.setObjectProperty(
-            this, hookName, JsTools.getObjectProperty(vuegwt$javaComponentInstance, hookName));
+        JsTools.setObjectProperty(this,
+            hookName,
+            JsTools.getObjectProperty(vuegwt$javaComponentInstance, hookName));
     }
 
     protected void addProp(String javaName, String jsName, boolean required, String typeJsName)
@@ -206,8 +207,7 @@ public abstract class VueComponentDefinition
     protected void addComponent(Class<? extends VueComponent> componentClass)
     {
         this.components.set(VueGwtTools.componentToTagName(componentClass),
-            VueComponentDefinitionCache.getComponentDefinitionForClass(componentClass)
-        );
+            VueComponentDefinitionCache.getComponentDefinitionForClass(componentClass));
     }
 
     private void abstractCopyJavaMethod(JsObject container, String javaName, String jsName)

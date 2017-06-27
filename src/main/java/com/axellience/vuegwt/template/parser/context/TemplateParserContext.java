@@ -1,5 +1,6 @@
-package com.axellience.vuegwt.template;
+package com.axellience.vuegwt.template.parser.context;
 
+import com.axellience.vuegwt.template.parser.InvalidExpressionException;
 import com.google.gwt.core.ext.typeinfo.*;
 
 import java.util.ArrayDeque;
@@ -10,10 +11,10 @@ import java.util.Deque;
  */
 public class TemplateParserContext
 {
-    public static final String              CONTEXT_PREFIX = "VUE_GWT_CTX_";
-    private final       Deque<ContextLayer> contextLayers  = new ArrayDeque<>();
+    public static final String CONTEXT_PREFIX = "VUE_GWT_CTX_";
+    private final Deque<ContextLayer> contextLayers = new ArrayDeque<>();
     private final JClassType vueComponentClass;
-    private int contextNumber = 0;
+    private int contextId = 0;
 
     public TemplateParserContext(JClassType vueComponentClass)
     {
@@ -31,18 +32,18 @@ public class TemplateParserContext
         return contextLayers.getFirst().addLocalVariable(type, name);
     }
 
-    public void addContext()
+    public void addContextLayer()
     {
-        contextLayers.push(new ContextLayer(CONTEXT_PREFIX + contextNumber + "_"));
-        contextNumber++;
+        contextLayers.push(new ContextLayer(CONTEXT_PREFIX + contextId + "_"));
+        contextId++;
     }
 
-    public ContextLayer popContext()
+    public ContextLayer popContextLayer()
     {
         return contextLayers.pop();
     }
 
-    public boolean isInContext()
+    public boolean isInContextLayer()
     {
         return contextLayers.size() > 1;
     }
