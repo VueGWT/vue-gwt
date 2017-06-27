@@ -4,6 +4,7 @@ import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.template.parser.context.VariableInfo;
 import com.axellience.vuegwt.template.parser.result.TemplateExpression;
+import com.axellience.vuegwt.template.parser.result.TemplateExpressionParameter;
 import com.axellience.vuegwt.template.parser.result.TemplateParserResult;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
@@ -306,24 +307,28 @@ public class TemplateParser
         if (expression instanceof CastExpr)
         {
             CastExpr castExpr = (CastExpr) expression;
-            context.setCurrentExpressionReturnType(context.getFullyQualifiedNameForClassName(
-                castExpr.getType().toString()));
+            context.setCurrentExpressionReturnType(getCastType(castExpr, context));
             expression = castExpr.getExpression();
             expressionString = expression.toString();
         }
 
         // If we are inside a context we might have to rename variables
-        Set<VariableInfo> usedVariables = new HashSet<>();
+        Set<TemplateExpressionParameter> parameters = new HashSet<>();
         if (context.isInContextLayer())
         {
-            renameLocalVariables(expression, context, usedVariables);
+            renameLocalVariables(expression, context, parameters);
             expressionString = expression.toString();
         }
 
         return result.addExpression(context.getCurrentExpressionKind(),
             expressionString,
             context.getCurrentExpressionReturnType(),
-            usedVariables);
+            parameters);
+    }
+
+    private String getCastType(CastExpr castExpr, TemplateParserContext context)
+    {
+        return context.getFullyQualifiedNameForClassName(castExpr.getType().toString());
     }
 
     /**
@@ -357,14 +362,14 @@ public class TemplateParser
         VariableInfo variableInfo = context.addLocalVariable(loopVariableType, loopVariableName);
         loopVariableName = variableInfo.getJavaName();
 
-        Set<VariableInfo> usedVariables = new HashSet<>();
+        Set<TemplateExpressionParameter> parameters = new HashSet<>();
         if (context.isInContextLayer())
         {
-            renameLocalVariables(inExpression, context, usedVariables);
+            renameLocalVariables(inExpression, context, parameters);
         }
 
         TemplateExpression templateExpression =
-            result.addCollectionExpression(inExpression.toString(), usedVariables);
+            result.addCollectionExpression(inExpression.toString(), parameters);
         return loopVariableName + " in " + templateExpression.toTemplateString();
     }
 
@@ -374,65 +379,90 @@ public class TemplateParser
      * @param context The context containing all the local variables
      */
     private void renameLocalVariables(Expression expression, TemplateParserContext context,
-        Set<VariableInfo> usedVariables)
+        Set<TemplateExpressionParameter> parameters)
     {
         if (expression instanceof NameExpr)
         {
             NameExpr nameExpr = ((NameExpr) expression);
-            VariableInfo variableInfo = context.findVariableInContext(nameExpr.getNameAsString());
-            if (variableInfo.hasCustomJavaName())
+            String variableName = nameExpr.getNameAsString();
+            TemplateExpressionParameter parameter = null;
+            if ("$event".equals(variableName))
             {
-                nameExpr.setName(variableInfo.getJavaName());
-                usedVariables.add(variableInfo);
+                if (expression.getParentNode().isPresent() && expression
+                    .getParentNode()
+                    .get() instanceof CastExpr)
+                {
+                    CastExpr castExpr = (CastExpr) expression.getParentNode().get();
+                    parameter =
+                        new TemplateExpressionParameter(castExpr.getType().toString(), "$event");
+                }
+                else
+                {
+                    throw new InvalidExpressionException(
+                        "$event should always be casted to it's intended type.");
+                }
             }
-            return;
+            else
+            {
+                VariableInfo variableInfo = context.findVariableInContext(variableName);
+                if (variableInfo.hasCustomJavaName())
+                {
+                    nameExpr.setName(variableInfo.getJavaName());
+                    parameter = new TemplateExpressionParameter(variableInfo
+                        .getType()
+                        .getQualifiedSourceName(), variableInfo.getJavaName());
+                }
+            }
+            if (parameter != null)
+            {
+                parameters.add(parameter);
+            }
         }
         else if (expression instanceof MethodCallExpr)
         {
             for (Expression argument : ((MethodCallExpr) expression).getArguments())
-                renameLocalVariables(argument, context, usedVariables);
+                renameLocalVariables(argument, context, parameters);
 
             Optional<Expression> scope = ((MethodCallExpr) expression).getScope();
-            scope.ifPresent(expression1 -> renameLocalVariables(expression1,
-                context,
-                usedVariables));
-            return;
+            scope.ifPresent(expression1 -> renameLocalVariables(expression1, context, parameters));
         }
         else if (expression instanceof FieldAccessExpr)
         {
             // Evaluate field access
             FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expression;
             Optional<Expression> scope = fieldAccessExpr.getScope();
-            scope.ifPresent(expression1 -> renameLocalVariables(expression1,
-                context,
-                usedVariables));
-            return;
+            scope.ifPresent(expression1 -> renameLocalVariables(expression1, context, parameters));
         }
         else if (expression instanceof ConditionalExpr)
         {
             ConditionalExpr conditionalExpr = (ConditionalExpr) expression;
-            renameLocalVariables(conditionalExpr.getCondition(), context, usedVariables);
-            renameLocalVariables(conditionalExpr.getThenExpr(), context, usedVariables);
+            renameLocalVariables(conditionalExpr.getCondition(), context, parameters);
+            renameLocalVariables(conditionalExpr.getThenExpr(), context, parameters);
 
             if (conditionalExpr.getElseExpr() != null)
-                renameLocalVariables(conditionalExpr.getElseExpr(), context, usedVariables);
-            return;
+                renameLocalVariables(conditionalExpr.getElseExpr(), context, parameters);
         }
         else if (expression instanceof BinaryExpr)
         {
             BinaryExpr binaryExpr = (BinaryExpr) expression;
-            renameLocalVariables(binaryExpr.getRight(), context, usedVariables);
-            renameLocalVariables(binaryExpr.getLeft(), context, usedVariables);
-            return;
+            renameLocalVariables(binaryExpr.getRight(), context, parameters);
+            renameLocalVariables(binaryExpr.getLeft(), context, parameters);
         }
-        else if (expression instanceof LiteralExpr)
+        else if (expression instanceof CastExpr)
         {
-            return;
-        }
+            CastExpr castExpr = (CastExpr) expression;
 
-        throw new InvalidExpressionException("Unsupported expression: " + expression
-            .getClass()
-            .getCanonicalName() + " -> " + expression);
+            // Resolve cast type
+            castExpr.setType(getCastType(castExpr, context));
+
+            renameLocalVariables(castExpr.getExpression(), context, parameters);
+        }
+        else if (!(expression instanceof LiteralExpr))
+        {
+            throw new InvalidExpressionException("Unsupported expression: " + expression
+                .getClass()
+                .getCanonicalName() + " -> " + expression);
+        }
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.template.parser.result;
 
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
-import com.axellience.vuegwt.template.parser.context.VariableInfo;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,27 +27,15 @@ public class TemplateParserResult
         this.templateWithReplacements = templateWithReplacements;
     }
 
-    public TemplateExpression addCollectionExpression(String body, Set<VariableInfo> usedVariables)
+    public TemplateExpression addCollectionExpression(String body, Set<TemplateExpressionParameter> parameters)
     {
-        return addExpression(TemplateExpressionKind.COLLECTION, body, "Object", usedVariables);
+        return addExpression(TemplateExpressionKind.COLLECTION, body, "Object", parameters);
     }
 
     public TemplateExpression addExpression(TemplateExpressionKind kind, String expression,
-        String expressionType, Set<VariableInfo> usedVariables)
+        String expressionType, Set<TemplateExpressionParameter> parameters)
     {
         String id = EXPRESSION_PREFIX + this.expressions.size() + EXPRESSION_SUFFIX;
-
-        List<TemplateExpressionParameter> parameters = new LinkedList<>();
-        for (VariableInfo usedVariable : usedVariables)
-        {
-            if (usedVariable.hasCustomJavaName())
-            {
-                parameters.add(new TemplateExpressionParameter(usedVariable
-                    .getType()
-                    .getQualifiedSourceName(), usedVariable.getJavaName()));
-            }
-        }
-
         if (kind == TemplateExpressionKind.COMPUTED_PROPERTY && !parameters.isEmpty())
             kind = TemplateExpressionKind.METHOD;
 
