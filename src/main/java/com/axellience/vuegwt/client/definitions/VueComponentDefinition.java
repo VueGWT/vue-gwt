@@ -14,7 +14,7 @@ import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 import com.axellience.vuegwt.client.jsnative.types.JSON;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
-import com.google.gwt.regexp.shared.RegExp;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import java.util.List;
@@ -32,37 +32,35 @@ import java.util.List;
 @JsType
 public abstract class VueComponentDefinition
 {
-    public VueComponent vuegwt$javaComponentInstance;
+    @JsProperty
+    protected VueComponent vuegwt$javaComponentInstance;
 
-    public Object el;
-    public String template;
+    @JsProperty
+    protected Object el;
+    @JsProperty
+    protected String template;
 
-    public Object data;
-    public final JsObject computed = new JsObject();
-    public final JsObject methods = new JsObject();
-    public final JsObject watch = new JsObject();
-    public final JsObject props = new JsObject();
-    public final JsArray<String> vuegwt$collections = new JsArray<>();
+    @JsProperty
+    protected Object data;
+    @JsProperty
+    protected final JsObject computed = new JsObject();
+    @JsProperty
+    protected final JsObject methods = new JsObject();
+    @JsProperty
+    protected final JsObject watch = new JsObject();
+    @JsProperty
+    protected final JsObject props = new JsObject();
+    @JsProperty
+    protected final JsArray<String> vuegwt$collections = new JsArray<>();
 
-    public final JsObject components = new JsObject();
-    public final JsObject directives = new JsObject();
-
-    public static final RegExp GET_FUNCTION_BODY =
-        RegExp.compile("function\\s*[^)]*\\s*\\(\\)\\s*{\\s*(?:return|)\\s*([^;]*);?\\s*}");
-
-    public static final RegExp REPLACE_THIS = RegExp.compile("(^|[^A-z0-9_\\$\\%])(this\\.)");
+    @JsProperty
+    protected final JsObject components = new JsObject();
+    @JsProperty
+    protected final JsObject directives = new JsObject();
 
     public void setEl(Object el)
     {
         this.el = el;
-    }
-
-    protected void setTemplate(String template)
-    {
-        if ("".equals(template))
-            JsTools.unsetObjectProperty(this, "template");
-        else
-            this.template = template;
     }
 
     /**
@@ -95,15 +93,27 @@ public abstract class VueComponentDefinition
                 ComputedDefinition computedDefinition = new ComputedDefinition();
                 computed.set(expressionId, computedDefinition);
                 computedDefinition.get = JsTools.get(templateResource, expressionId);
-                JsTools.log(expression.getId() + " -> " + JsTools.get(templateResource, expressionId).toString());
+                JsTools.log(expression.getId() + " -> " + JsTools
+                    .get(templateResource, expressionId)
+                    .toString());
             }
             else
             {
                 methods.set(expressionId, JsTools.get(templateResource, expressionId));
-                JsTools.log(expression.getId() + " -> " + JsTools.get(templateResource, expressionId).toString());
+                JsTools.log(expression.getId() + " -> " + JsTools
+                    .get(templateResource, expressionId)
+                    .toString());
             }
         }
         this.setTemplate(templateText);
+    }
+
+    protected void setTemplate(String template)
+    {
+        if ("".equals(template))
+            JsTools.unsetObjectProperty(this, "template");
+        else
+            this.template = template;
     }
 
     protected void initData(List<DataDefinition> dataDefinitions, boolean useFactory)
