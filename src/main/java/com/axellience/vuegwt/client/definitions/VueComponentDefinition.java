@@ -73,6 +73,7 @@ public abstract class VueComponentDefinition
     protected void setTemplateResource(TemplateResource templateResource)
     {
         String templateText = templateResource.getText();
+        JsTools.log(templateText);
         // Empty template, nothing to do
         if ("".equals(templateText))
         {
@@ -94,15 +95,14 @@ public abstract class VueComponentDefinition
                 ComputedDefinition computedDefinition = new ComputedDefinition();
                 computed.set(expressionId, computedDefinition);
                 computedDefinition.get = JsTools.get(templateResource, expressionId);
-                JsTools.log(JsTools.get(templateResource, expressionId).toString());
+                JsTools.log(expression.getId() + " -> " + JsTools.get(templateResource, expressionId).toString());
             }
-            else if (expression.getKind() == TemplateExpressionKind.METHOD)
+            else
             {
                 methods.set(expressionId, JsTools.get(templateResource, expressionId));
-                JsTools.log(JsTools.get(templateResource, expressionId).toString());
+                JsTools.log(expression.getId() + " -> " + JsTools.get(templateResource, expressionId).toString());
             }
         }
-        JsTools.log(templateText);
         this.setTemplate(templateText);
     }
 
