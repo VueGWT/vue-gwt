@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 public class VueComponentDefinitionGenerator
 {
     public static String COMPONENT_DEFINITION_SUFFIX = "_ComponentDefinition";
-    public static String JCI                         = "vuegwt$javaComponentInstance";
+    public static String JCI = "vuegwt$javaComponentInstance";
 
     public static Map<String, Boolean> LIFECYCLE_HOOKS_MAP = new HashMap<>();
 
@@ -63,8 +63,8 @@ public class VueComponentDefinitionGenerator
 
     private final Messager messager;
     private final Elements elementsUtils;
-    private final Types    typeUtils;
-    private final Filer    filer;
+    private final Types typeUtils;
+    private final Filer filer;
 
     public VueComponentDefinitionGenerator(ProcessingEnvironment processingEnv)
     {
@@ -86,40 +86,43 @@ public class VueComponentDefinitionGenerator
 
         Component annotation = componentTypeElement.getAnnotation(Component.class);
 
-        Builder componentClassBuilder = TypeSpec.classBuilder(generatedTypeName)
+        Builder componentClassBuilder = TypeSpec
+            .classBuilder(generatedTypeName)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .superclass(VueComponentDefinition.class)
             .addAnnotation(JsType.class)
             .addJavadoc("Vue Component for component {@link $S}",
-                componentTypeElement.getQualifiedName().toString()
-            );
+                componentTypeElement.getQualifiedName().toString());
 
         // Static init block
-        componentClassBuilder.addStaticBlock(
-            CodeBlock.of("$T.registerComponent($T.class, new $L());",
-                VueComponentDefinitionCache.class, TypeName.get(componentTypeElement.asType()),
-                generatedTypeName
-            ));
+        componentClassBuilder.addStaticBlock(CodeBlock.of(
+            "$T.registerComponent($T.class, new $L());",
+            VueComponentDefinitionCache.class,
+            TypeName.get(componentTypeElement.asType()),
+            generatedTypeName));
 
         // Initialize constructor
         MethodSpec.Builder constructorBuilder =
             MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
 
         // Add the Java Component Instance initialization
-        constructorBuilder.addStatement(
-            "this.$L = new $T()", JCI, TypeName.get(componentTypeElement.asType()));
+        constructorBuilder.addStatement("this.$L = new $T()",
+            JCI,
+            TypeName.get(componentTypeElement.asType()));
 
         // Add template initialization
-        constructorBuilder.addStatement(
-            "this.setTemplateResource($T.INSTANCE.$L())",
-            ClassName.get(packageName, typeName + TemplateProviderGenerator.TEMPLATE_PROVIDER_SUFFIX),
-            TemplateProviderGenerator.TEMPLATE_METHOD_NAME
-        );
+        constructorBuilder.addStatement("this.setTemplateResource($T.INSTANCE.$L())",
+            ClassName.get(packageName,
+                typeName + TemplateProviderGenerator.TEMPLATE_PROVIDER_SUFFIX),
+            TemplateProviderGenerator.TEMPLATE_METHOD_NAME);
 
         // Data and props
-        constructorBuilder.addStatement(
-            "$T<$T> dataFields = new $T<>()", List.class, DataDefinition.class, LinkedList.class);
-        ElementFilter.fieldsIn(componentTypeElement.getEnclosedElements())
+        constructorBuilder.addStatement("$T<$T> dataFields = new $T<>()",
+            List.class,
+            DataDefinition.class,
+            LinkedList.class);
+        ElementFilter
+            .fieldsIn(componentTypeElement.getEnclosedElements())
             .forEach(variableElement ->
             {
                 String javaName = variableElement.getSimpleName().toString();
@@ -127,23 +130,25 @@ public class VueComponentDefinitionGenerator
 
                 if (prop != null)
                 {
-                    constructorBuilder.addStatement("this.addProp($S, $S, $L, $S)", javaName,
+                    constructorBuilder.addStatement("this.addProp($S, $S, $L, $S)",
+                        javaName,
                         !"".equals(prop.propertyName()) ? prop.propertyName() : javaName,
                         prop.required(),
-                        prop.checkType() ? getNativeNameForJavaType(variableElement.asType()) : null
-                    );
+                        prop.checkType() ? getNativeNameForJavaType(variableElement.asType()) :
+                            null);
                 }
                 else
                 {
                     constructorBuilder.addStatement("dataFields.add(new $T($S))",
-                        DataDefinition.class, javaName
-                    );
+                        DataDefinition.class,
+                        javaName);
                 }
             });
         constructorBuilder.addStatement("this.initData(dataFields, $L)", annotation.useFactory());
 
         // Methods
-        ElementFilter.methodsIn(componentTypeElement.getEnclosedElements())
+        ElementFilter
+            .methodsIn(componentTypeElement.getEnclosedElements())
             .forEach(executableElement ->
             {
                 String javaName = executableElement.getSimpleName().toString();
@@ -153,23 +158,28 @@ public class VueComponentDefinitionGenerator
 
                 if (computed != null)
                 {
-                    String jsName =
-                        !"".equals(computed.propertyName()) ? computed.propertyName() : "$" + javaName;
-                    constructorBuilder.addStatement("this.addComputed($S, $S, $T.$L)", javaName,
-                        jsName, ComputedKind.class, computed.kind()
-                    );
+                    String jsName = !"".equals(computed.propertyName()) ? computed.propertyName() :
+                        "$" + javaName;
+                    constructorBuilder.addStatement("this.addComputed($S, $S, $T.$L)",
+                        javaName,
+                        jsName,
+                        ComputedKind.class,
+                        computed.kind());
                 }
                 else if (watch != null)
                 {
                     String jsName = watch.propertyName();
-                    constructorBuilder.addStatement(
-                        "this.addWatch($S, $S, $L)", javaName, jsName, watch.isDeep());
+                    constructorBuilder.addStatement("this.addWatch($S, $S, $L)",
+                        javaName,
+                        jsName,
+                        watch.isDeep());
                 }
                 else if (propValidator != null)
                 {
                     String propertyName = propValidator.propertyName();
-                    constructorBuilder.addStatement(
-                        "this.addPropValidator($S, $S)", javaName, propertyName);
+                    constructorBuilder.addStatement("this.addPropValidator($S, $S)",
+                        javaName,
+                        propertyName);
                 }
                 else if (LIFECYCLE_HOOKS_MAP.containsKey(javaName))
                 {
@@ -185,10 +195,10 @@ public class VueComponentDefinitionGenerator
         try
         {
             Class<?>[] componentsClass = annotation.components();
-            Stream.of(componentsClass)
+            Stream
+                .of(componentsClass)
                 .forEach(clazz -> constructorBuilder.addStatement("this.addComponent($L.class)",
-                    clazz.getCanonicalName()
-                ));
+                    clazz.getCanonicalName()));
         }
         catch (MirroredTypesException mte)
         {
@@ -197,8 +207,7 @@ public class VueComponentDefinitionGenerator
             {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
                 constructorBuilder.addStatement("this.addComponent($L.class)",
-                    classTypeElement.getQualifiedName().toString()
-                );
+                    classTypeElement.getQualifiedName().toString());
             });
         }
 
@@ -206,8 +215,11 @@ public class VueComponentDefinitionGenerator
         componentClassBuilder.addMethod(constructorBuilder.build());
 
         // Build the component definition class
-        GenerationUtil.toJavaFile(
-            filer, componentClassBuilder, packageName, generatedTypeName, componentTypeElement);
+        GenerationUtil.toJavaFile(filer,
+            componentClassBuilder,
+            packageName,
+            generatedTypeName,
+            componentTypeElement);
     }
 
     private String getNativeNameForJavaType(TypeMirror typeMirror)
@@ -218,9 +230,12 @@ public class VueComponentDefinitionGenerator
             typeName = typeName.unbox();
         }
 
-        if (typeName.equals(TypeName.INT) || typeName.equals(TypeName.BYTE) ||
-            typeName.equals(TypeName.SHORT) || typeName.equals(TypeName.LONG) ||
-            typeName.equals(TypeName.FLOAT) || typeName.equals(TypeName.DOUBLE))
+        if (typeName.equals(TypeName.INT)
+            || typeName.equals(TypeName.BYTE)
+            || typeName.equals(TypeName.SHORT)
+            || typeName.equals(TypeName.LONG)
+            || typeName.equals(TypeName.FLOAT)
+            || typeName.equals(TypeName.DOUBLE))
         {
             return "Number";
         }

@@ -15,7 +15,7 @@
 
     <properties>
         <jsinterop.version>1.0.0</jsinterop.version>
-        <gwt.version>2.8.0</gwt.version>
+        <gwt.version>2.8.1</gwt.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
