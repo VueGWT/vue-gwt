@@ -31,8 +31,8 @@ public class VueComponentDefinitionCache
         if (componentDefinition != null)
             return componentDefinition;
 
-        throw new RuntimeException(
-            "Couldn't find the given Component " + vueComponentClass.getCanonicalName() +
-                ". Are you sure annotations are being processed?");
+        throw new RuntimeException("Couldn't find the given Component "
+            + vueComponentClass.getCanonicalName()
+            + ". Make sure your annotations are being processed, and that you added the -generateJsInteropExports flag to GWT.");
     }
 }
