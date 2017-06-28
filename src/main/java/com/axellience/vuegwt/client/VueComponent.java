@@ -17,7 +17,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType
-public class VueComponent
+public abstract class VueComponent
 {
     static
     {
@@ -46,10 +46,7 @@ public class VueComponent
 
     }
 
-    public void created()
-    {
-
-    }
+    public abstract void created();
 
     public void beforeMount()
     {
