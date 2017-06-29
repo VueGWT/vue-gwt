@@ -38,6 +38,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Adrien Baron
@@ -226,6 +228,11 @@ public class TemplateParser
     private String processExpression(String expressionString, TemplateParserContext context,
         TemplateParserResult result)
     {
+        if (expressionString.startsWith("[") && expressionString.endsWith("]"))
+        {
+            return processArrayExpression(expressionString, context, result);
+        }
+
         // Try to parse the expression as JSON
         try
         {
@@ -246,6 +253,17 @@ public class TemplateParser
 
         // Process as a JavaExpression instead
         return processJavaExpression(expressionString, context, result).toTemplateString();
+    }
+
+    private String processArrayExpression(String expressionString, TemplateParserContext context,
+        TemplateParserResult result)
+    {
+        String arrayContent = Stream
+            .of(expressionString.substring(1, expressionString.length() - 1).split(","))
+            .map(exp -> this.processExpression(exp, context, result))
+            .collect(Collectors.joining(","));
+
+        return "[" + arrayContent + "]";
     }
 
     /**
