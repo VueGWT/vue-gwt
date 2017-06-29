@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.gwtextension;
 
+import com.axellience.vuegwt.client.definitions.VueComponentStyle;
 import com.axellience.vuegwt.template.TemplateResourceGenerator;
 import com.google.gwt.resources.client.ResourcePrototype;
 import com.google.gwt.resources.ext.DefaultExtensions;
@@ -22,4 +23,5 @@ public interface TemplateResource extends ResourcePrototype
 
     String getText();
     List<TemplateExpressionBase> getTemplateExpressions();
+    VueComponentStyle getComponentStyle();
 }

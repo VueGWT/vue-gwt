@@ -1,15 +1,16 @@
-package com.axellience.vuegwt.jsr69;
+package com.axellience.vuegwt.jsr69.component;
 
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinitionCache;
 import com.axellience.vuegwt.client.definitions.component.ComputedKind;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
-import com.axellience.vuegwt.jsr69.annotations.Component;
-import com.axellience.vuegwt.jsr69.annotations.Computed;
-import com.axellience.vuegwt.jsr69.annotations.Prop;
-import com.axellience.vuegwt.jsr69.annotations.PropValidator;
-import com.axellience.vuegwt.jsr69.annotations.Watch;
+import com.axellience.vuegwt.jsr69.GenerationUtil;
+import com.axellience.vuegwt.jsr69.component.annotations.Component;
+import com.axellience.vuegwt.jsr69.component.annotations.Computed;
+import com.axellience.vuegwt.jsr69.component.annotations.Prop;
+import com.axellience.vuegwt.jsr69.component.annotations.PropValidator;
+import com.axellience.vuegwt.jsr69.component.annotations.Watch;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -19,7 +20,6 @@ import com.squareup.javapoet.TypeSpec.Builder;
 import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -28,7 +28,6 @@ import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,10 +40,10 @@ import java.util.stream.Stream;
  */
 public class VueComponentDefinitionGenerator
 {
-    public static String COMPONENT_DEFINITION_SUFFIX = "_ComponentDefinition";
-    public static String JCI = "vuegwt$javaComponentInstance";
+    private static String COMPONENT_DEFINITION_SUFFIX = "_ComponentDefinition";
+    private static String JCI = "vuegwt$javaComponentInstance";
 
-    public static Map<String, Boolean> LIFECYCLE_HOOKS_MAP = new HashMap<>();
+    private static Map<String, Boolean> LIFECYCLE_HOOKS_MAP = new HashMap<>();
 
     static
     {
@@ -61,16 +60,12 @@ public class VueComponentDefinitionGenerator
         LIFECYCLE_HOOKS_MAP.put("destroyed", true);
     }
 
-    private final Messager messager;
     private final Elements elementsUtils;
-    private final Types typeUtils;
     private final Filer filer;
 
     public VueComponentDefinitionGenerator(ProcessingEnvironment processingEnv)
     {
-        messager = processingEnv.getMessager();
         elementsUtils = processingEnv.getElementUtils();
-        typeUtils = processingEnv.getTypeUtils();
         filer = processingEnv.getFiler();
     }
 
@@ -91,7 +86,7 @@ public class VueComponentDefinitionGenerator
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .superclass(VueComponentDefinition.class)
             .addAnnotation(JsType.class)
-            .addJavadoc("Vue Component for component {@link $S}",
+            .addJavadoc("Vue Component Definition for component {@link $S}",
                 componentTypeElement.getQualifiedName().toString());
 
         // Static init block
@@ -112,9 +107,8 @@ public class VueComponentDefinitionGenerator
 
         // Add template initialization
         constructorBuilder.addStatement("this.setTemplateResource($T.INSTANCE.$L())",
-            ClassName.get(packageName,
-                typeName + TemplateProviderGenerator.TEMPLATE_PROVIDER_SUFFIX),
-            TemplateProviderGenerator.TEMPLATE_METHOD_NAME);
+            ClassName.get(packageName, typeName + TemplateProviderGenerator.TEMPLATE_BUNDLE_SUFFIX),
+            TemplateProviderGenerator.TEMPLATE_BUNDLE_METHOD_NAME);
 
         // Data and props
         constructorBuilder.addStatement("$T<$T> dataFields = new $T<>()",

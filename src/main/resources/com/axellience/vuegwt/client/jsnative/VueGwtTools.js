@@ -66,6 +66,9 @@ Vue.use(function (Vue) {
 			if (!this.$options.vuegwt$javaComponentInstance)
 				return;
 
+			// Inject styles
+			this.$s = this.$options.vuegwt$styles;
+
 			// This is required for GWT type checking to work
 			var jciProto = this.$options.vuegwt$javaComponentInstance.__proto__;
 			for (var protoProp in jciProto) {

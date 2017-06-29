@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.jsr69.annotations;
+package com.axellience.vuegwt.jsr69.component.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

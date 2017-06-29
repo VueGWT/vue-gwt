@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.jsr69.annotations;
+package com.axellience.vuegwt.jsr69.component.annotations;
 
 import com.axellience.vuegwt.client.definitions.component.ComputedKind;
 

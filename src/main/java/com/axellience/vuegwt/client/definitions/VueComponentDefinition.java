@@ -14,6 +14,7 @@ import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 import com.axellience.vuegwt.client.jsnative.types.JSON;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -32,32 +33,23 @@ import java.util.List;
 @JsType
 public abstract class VueComponentDefinition
 {
-    @JsProperty
-    protected VueComponent vuegwt$javaComponentInstance;
+    @JsProperty protected VueComponent vuegwt$javaComponentInstance;
 
-    @JsProperty
-    protected Object el;
-    @JsProperty
-    protected String template;
+    @JsProperty protected Object el;
+    @JsProperty protected String template;
 
-    @JsProperty
-    protected Object data;
-    @JsProperty
-    protected final JsObject computed = new JsObject();
-    @JsProperty
-    protected final JsObject methods = new JsObject();
-    @JsProperty
-    protected final JsObject watch = new JsObject();
-    @JsProperty
-    protected final JsObject props = new JsObject();
-    @JsProperty
-    protected final JsArray<String> vuegwt$collections = new JsArray<>();
+    @JsProperty protected Object data;
+    @JsProperty protected final JsObject computed = new JsObject();
+    @JsProperty protected final JsObject methods = new JsObject();
+    @JsProperty protected final JsObject watch = new JsObject();
+    @JsProperty protected final JsObject props = new JsObject();
+    @JsProperty protected final JsArray<String> vuegwt$collections = new JsArray<>();
+    @JsProperty protected VueComponentStyle vuegwt$styles;
 
-    @JsProperty
-    protected final JsObject components = new JsObject();
-    @JsProperty
-    protected final JsObject directives = new JsObject();
+    @JsProperty protected final JsObject components = new JsObject();
+    @JsProperty protected final JsObject directives = new JsObject();
 
+    @JsMethod
     public void setEl(Object el)
     {
         this.el = el;
@@ -70,6 +62,8 @@ public abstract class VueComponentDefinition
      */
     protected void setTemplateResource(TemplateResource templateResource)
     {
+        this.vuegwt$styles = templateResource.getComponentStyle();
+
         String templateText = templateResource.getText();
         JsTools.log(templateText);
         // Empty template, nothing to do
