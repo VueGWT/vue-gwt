@@ -5,5 +5,5 @@ package com.axellience.vuegwt.client.gwtextension;
  */
 public enum TemplateExpressionKind
 {
-    COLLECTION, METHOD, COMPUTED_PROPERTY
+    METHOD, COMPUTED_PROPERTY
 }

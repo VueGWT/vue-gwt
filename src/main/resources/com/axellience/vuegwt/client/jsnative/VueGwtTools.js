@@ -76,22 +76,6 @@ Vue.use(function (Vue) {
 					this[protoProp] = jciProto[protoProp];
 				}
 			}
-		},
-		beforeMount: function () {
-			if (!this.$options.vuegwt$collections)
-				return;
-
-			// Watch Java collections to convert them to JS Arrays
-			for (var i = 0; i < this.$options.vuegwt$collections.length; i++) {
-				var collectionId = this.$options.vuegwt$collections[i];
-
-				// Get a function to watch this collection
-				var watchFunc = window.vueGwt._getCollectionWatchFunction(this, collectionId);
-				// Watch the current collection instance
-				watchFunc(this[collectionId]());
-				// Whenever the collection instance change, we will watch it again
-				this.$watch(this[collectionId], watchFunc);
-			}
 		}
 	})
 });

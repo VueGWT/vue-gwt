@@ -30,12 +30,6 @@ public class TemplateParserResult
         this.templateWithReplacements = templateWithReplacements;
     }
 
-    public TemplateExpression addCollectionExpression(String body,
-        Set<TemplateExpressionParameter> parameters)
-    {
-        return addExpression(TemplateExpressionKind.COLLECTION, body, "Object", parameters);
-    }
-
     public TemplateExpression addExpression(TemplateExpressionKind kind, String expression,
         String expressionType, Set<TemplateExpressionParameter> parameters)
     {

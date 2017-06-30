@@ -12,7 +12,6 @@ import com.axellience.vuegwt.client.gwtextension.TemplateResource;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 import com.axellience.vuegwt.client.jsnative.types.JSON;
-import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.google.gwt.resources.client.CssResource;
 import jsinterop.annotations.JsMethod;
@@ -49,7 +48,6 @@ public abstract class VueComponentDefinition
     @JsProperty protected final JsObject methods = new JsObject();
     @JsProperty protected final JsObject watch = new JsObject();
     @JsProperty protected final JsObject props = new JsObject();
-    @JsProperty protected final JsArray<String> vuegwt$collections = new JsArray<>();
 
     @JsProperty protected final JsObject components = new JsObject();
     @JsProperty protected final JsObject directives = new JsObject();
@@ -101,12 +99,7 @@ public abstract class VueComponentDefinition
         for (TemplateExpressionBase expression : templateResource.getTemplateExpressions())
         {
             String expressionId = expression.getId();
-            if (expression.getKind() == TemplateExpressionKind.COLLECTION)
-            {
-                vuegwt$collections.push(expressionId);
-                methods.set(expressionId, JsTools.get(templateResource, expressionId));
-            }
-            else if (expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
+            if (expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
             {
                 ComputedDefinition computedDefinition = new ComputedDefinition();
                 computed.set(expressionId, computedDefinition);
@@ -156,13 +149,6 @@ public abstract class VueComponentDefinition
             }
 
             dataObject.set(dataDefinition.jsName, dataDefaultValue);
-        }
-
-        // Create JsArrays for the Java collections to be copied into
-        for (String collectionId : vuegwt$collections.iterate())
-        {
-            dataObject.set(collectionId + TemplateResource.COLLECTION_ARRAY_SUFFIX,
-                new JsArray<>());
         }
 
         if (useFactory)

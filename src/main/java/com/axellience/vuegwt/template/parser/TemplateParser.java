@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.template.parser;
 
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
+import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.template.parser.context.VariableInfo;
@@ -372,7 +373,6 @@ public class TemplateParser
             throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
 
         String loopVariableDefinition = splitExpression[0];
-        Expression inExpression = JavaParser.parseExpression(splitExpression[1]);
 
         String[] splitLoopVariable = loopVariableDefinition.split(" ");
         if (splitLoopVariable.length != 2)
@@ -385,14 +385,10 @@ public class TemplateParser
             context.addLocalVariable(loopVariableType, loopVariableName);
         loopVariableDefinition = variableInfo.getJavaName();
 
-        Set<TemplateExpressionParameter> parameters = new HashSet<>();
-        if (context.isInContextLayer())
-        {
-            renameLocalVariables(inExpression, context, parameters);
-        }
-
+        context.setCurrentExpressionReturnType(JsArray.class.getCanonicalName());
+        String inExpression = splitExpression[1];
         TemplateExpression templateExpression =
-            result.addCollectionExpression(inExpression.toString(), parameters);
+            this.processJavaExpression(inExpression, context, result);
         return loopVariableDefinition + " in " + templateExpression.toTemplateString();
     }
 

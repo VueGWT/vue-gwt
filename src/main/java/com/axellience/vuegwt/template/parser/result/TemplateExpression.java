@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.axellience.vuegwt.client.gwtextension.TemplateResource.COLLECTION_ARRAY_SUFFIX;
-
 /**
  * @author Adrien Baron
  */
@@ -44,9 +42,6 @@ public class TemplateExpression extends TemplateExpressionBase
 
     public String toTemplateString()
     {
-        if (getKind() == TemplateExpressionKind.COLLECTION)
-            return this.getId() + COLLECTION_ARRAY_SUFFIX;
-
         if (getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
             return this.getId();
 
