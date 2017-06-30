@@ -19,10 +19,9 @@ package com.axellience.vuegwt.template;
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionBase;
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 import com.axellience.vuegwt.client.gwtextension.TemplateResource;
-import com.axellience.vuegwt.client.definitions.VueComponentStyle;
 import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
-import com.axellience.vuegwt.jsr69.component.VueComponentStyleGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
+import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
 import com.axellience.vuegwt.template.parser.TemplateParser;
 import com.axellience.vuegwt.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.template.parser.result.TemplateParserResult;
@@ -42,6 +41,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.user.rebind.StringSourceWriter;
 
 import java.net.URL;
+import java.util.Map.Entry;
 
 /**
  * Source: GWT Project http://www.gwtproject.org/
@@ -128,22 +128,27 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             sw.println(jMethod.getReturnType().getQualifiedSourceName() + " " + propertyName + ";");
         }
 
-        // Add Componant Style Interface
-        String styleClassName = typeName + VueComponentStyleGenerator.COMPONENT_STYLE_SUFFIX;
-        sw.println("@jsinterop.annotations.JsProperty");
-        sw.println(styleClassName + " $s = new " + styleClassName + "();");
+        // Add Component Styles
+        for (Entry<String, String> entry : templateParserResult.getStyleImports().entrySet())
+        {
+            String styleInterfaceName = entry.getValue();
+            String styleInstance = styleInterfaceName
+                + StyleProviderGenerator.STYLE_BUNDLE_SUFFIX
+                + ".INSTANCE."
+                + StyleProviderGenerator.STYLE_BUNDLE_METHOD_NAME
+                + "()";
+            sw.println("private "
+                + entry.getValue()
+                + " "
+                + entry.getKey()
+                + " = "
+                + styleInstance
+                + ";");
+        }
 
-        sw.println("public "
-            + VueComponentStyle.class.getCanonicalName()
-            + " getComponentStyle() {");
-        sw.indent();
-        sw.println("return $s;");
-        sw.outdent();
-        sw.println("}");
-
+        // Add component Template String
         sw.println("public String getText() {");
         sw.indent();
-
         if (templateContent.length() > MAX_STRING_CHUNK)
         {
             writeLongString(sw, templateContent);
@@ -182,8 +187,6 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
                 + String.join(", ", parameters)
                 + ") {");
             sw.indent();
-
-            //sw.println(JsTools.class.getCanonicalName() + ".log(\"Calling method: " + expression.getBody() + "\");");
 
             if ("java.lang.String".equals(expressionReturnType) || "String".equals(
                 expressionReturnType))

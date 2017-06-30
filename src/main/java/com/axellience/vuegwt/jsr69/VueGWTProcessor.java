@@ -2,10 +2,8 @@ package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
 import com.axellience.vuegwt.jsr69.component.VueComponentDefinitionGenerator;
-import com.axellience.vuegwt.jsr69.component.VueComponentStyleGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
-import com.axellience.vuegwt.jsr69.style.VueStyleInterfaceGenerator;
 import com.axellience.vuegwt.jsr69.style.annotations.Style;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -41,17 +39,12 @@ public class VueGWTProcessor extends AbstractProcessor
             roundEnv.getElementsAnnotatedWith(Component.class);
 
         TemplateProviderGenerator templateGenerator = new TemplateProviderGenerator(processingEnv);
-
-        VueComponentStyleGenerator vueComponentStyleInterfaceGenerator =
-            new VueComponentStyleGenerator(processingEnv);
-
         VueComponentDefinitionGenerator vueComponentGenerator =
             new VueComponentDefinitionGenerator(processingEnv);
 
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
             vueComponentGenerator.generate(element);
-            vueComponentStyleInterfaceGenerator.generate(element);
             templateGenerator.generate(element);
         }
     }
@@ -60,12 +53,10 @@ public class VueGWTProcessor extends AbstractProcessor
     {
         Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(Style.class);
 
-        VueStyleInterfaceGenerator vueStyleDefinitionGenerator = new VueStyleInterfaceGenerator(processingEnv);
         StyleProviderGenerator styleProviderGenerator = new StyleProviderGenerator(processingEnv);
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
             styleProviderGenerator.generate(element);
-            vueStyleDefinitionGenerator.generate(element);
         }
     }
 }

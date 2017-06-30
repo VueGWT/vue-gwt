@@ -2,8 +2,10 @@ package com.axellience.vuegwt.template.parser.result;
 
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.axellience.vuegwt.client.gwtextension.TemplateResource.EXPRESSION_PREFIX;
@@ -16,6 +18,7 @@ public class TemplateParserResult
 {
     private String templateWithReplacements;
     private final List<TemplateExpression> expressions = new LinkedList<>();
+    private final Map<String, String> styleImports = new HashMap<>();
 
     public String getTemplateWithReplacements()
     {
@@ -27,7 +30,8 @@ public class TemplateParserResult
         this.templateWithReplacements = templateWithReplacements;
     }
 
-    public TemplateExpression addCollectionExpression(String body, Set<TemplateExpressionParameter> parameters)
+    public TemplateExpression addCollectionExpression(String body,
+        Set<TemplateExpressionParameter> parameters)
     {
         return addExpression(TemplateExpressionKind.COLLECTION, body, "Object", parameters);
     }
@@ -49,5 +53,15 @@ public class TemplateParserResult
     public List<TemplateExpression> getExpressions()
     {
         return expressions;
+    }
+
+    public void addStyleImports(String styleName, String className)
+    {
+        this.styleImports.put(styleName, className);
+    }
+
+    public Map<String, String> getStyleImports()
+    {
+        return styleImports;
     }
 }

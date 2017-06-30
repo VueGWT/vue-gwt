@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.jsr69.component.annotations;
 
 import com.axellience.vuegwt.client.VueComponent;
-import com.google.gwt.resources.client.CssResource;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -22,14 +21,9 @@ public @interface Component
      * Passing this to false will make all your components instance share the same data model
      */
     boolean useFactory() default true;
-    
-    /**
-     * Components to register on this component instance
-     */
-    Class<? extends VueComponent>[] components() default {};
 
     /**
      * Components to register on this component instance
      */
-    Class<? extends CssResource>[] styles() default {};
+    Class<? extends VueComponent>[] components() default {};
 }

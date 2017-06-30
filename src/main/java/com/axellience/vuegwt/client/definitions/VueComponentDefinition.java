@@ -14,11 +14,17 @@ import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 import com.axellience.vuegwt.client.jsnative.types.JSON;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
+import com.google.gwt.resources.client.CssResource;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static com.axellience.vuegwt.client.jsnative.types.JsObject.getOwnPropertyNames;
 
 /**
  * Java representation of a Vue Component definition
@@ -44,7 +50,6 @@ public abstract class VueComponentDefinition
     @JsProperty protected final JsObject watch = new JsObject();
     @JsProperty protected final JsObject props = new JsObject();
     @JsProperty protected final JsArray<String> vuegwt$collections = new JsArray<>();
-    @JsProperty protected VueComponentStyle vuegwt$styles;
 
     @JsProperty protected final JsObject components = new JsObject();
     @JsProperty protected final JsObject directives = new JsObject();
@@ -55,6 +60,8 @@ public abstract class VueComponentDefinition
         this.el = el;
     }
 
+    private final Map<String, CssResource> componentStyles = new HashMap<>();
+
     /**
      * Set the template resource for the component
      * Put back the JS function in the template expressions
@@ -62,18 +69,35 @@ public abstract class VueComponentDefinition
      */
     protected void setTemplateResource(TemplateResource templateResource)
     {
-        this.vuegwt$styles = templateResource.getComponentStyle();
+        this.initStyles(templateResource);
+        this.initExpressions(templateResource);
+        this.setTemplateText(templateResource.getText());
+    }
 
-        String templateText = templateResource.getText();
-        JsTools.log(templateText);
-        // Empty template, nothing to do
-        if ("".equals(templateText))
+    /**
+     * Find styles in the template resources and ensure they are injected
+     * @param templateResource
+     */
+    private void initStyles(TemplateResource templateResource)
+    {
+        for (String property : getOwnPropertyNames(templateResource).iterate())
         {
-            JsTools.unsetObjectProperty(this, "template");
-            return;
+            Object value = JsTools.get(templateResource, property);
+            if (value instanceof CssResource)
+            {
+                CssResource style = (CssResource) value;
+                style.ensureInjected();
+                componentStyles.put(property, style);
+            }
         }
+    }
 
-        // For each expression defined on our template
+    /**
+     * Add template expressions to the ComponentDefinition
+     * @param templateResource
+     */
+    private void initExpressions(TemplateResource templateResource)
+    {
         for (TemplateExpressionBase expression : templateResource.getTemplateExpressions())
         {
             String expressionId = expression.getId();
@@ -99,17 +123,25 @@ public abstract class VueComponentDefinition
                     .toString());
             }
         }
-        this.setTemplate(templateText);
     }
 
-    protected void setTemplate(String template)
+    /**
+     * Set the template text
+     * @param templateText
+     */
+    private void setTemplateText(String templateText)
     {
-        if ("".equals(template))
+        if ("".equals(templateText))
             JsTools.unsetObjectProperty(this, "template");
         else
-            this.template = template;
+            this.template = templateText;
     }
 
+    /**
+     * Initialise the data structure, then set it to either a Factory or directly on the Component
+     * @param dataDefinitions
+     * @param useFactory
+     */
     protected void initData(List<DataDefinition> dataDefinitions, boolean useFactory)
     {
         JsObject dataObject = new JsObject();
@@ -134,9 +166,27 @@ public abstract class VueComponentDefinition
         }
 
         if (useFactory)
-            this.data = (DataFactory) () -> JSON.parse(JSON.stringify(dataObject));
+        {
+            this.data = (DataFactory) () ->
+            {
+                Object data = JSON.parse(JSON.stringify(dataObject));
+                copyStyles(data);
+                return data;
+            };
+        }
         else
+        {
+            copyStyles(dataObject);
             this.data = dataObject;
+        }
+    }
+
+    private void copyStyles(Object data)
+    {
+        for (Entry<String, CssResource> style : componentStyles.entrySet())
+        {
+            JsTools.set(data, style.getKey(), style.getValue());
+        }
     }
 
     protected void addMethod(String javaName)
@@ -146,7 +196,7 @@ public abstract class VueComponentDefinition
 
     protected void addMethod(String javaName, String jsName)
     {
-        abstractCopyJavaMethod(methods, javaName, javaName);
+        abstractCopyJavaMethod(methods, javaName, jsName);
     }
 
     protected void addComputed(String javaName, String jsName, ComputedKind kind)

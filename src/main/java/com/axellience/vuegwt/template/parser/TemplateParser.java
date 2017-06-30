@@ -57,7 +57,7 @@ public class TemplateParser
         Document doc = parser.parseInput(htmlTemplate, "");
 
         TemplateParserContext parserContext = new TemplateParserContext(vueComponentClass);
-        processImports(doc, parserContext);
+        processImports(doc, parserContext, result);
         processNode(doc, parserContext, result);
 
         result.setTemplateWithReplacements(doc.body().html());
@@ -69,16 +69,25 @@ public class TemplateParser
      * @param doc The document to process
      * @param context Context of the parser
      */
-    private void processImports(Document doc, TemplateParserContext context)
+    private void processImports(Document doc, TemplateParserContext context,
+        TemplateParserResult result)
     {
         Set<Element> importElements = new HashSet<>();
         for (Element element : doc.getAllElements())
         {
-            if ("vue-gwt:import".equals(element.tagName()))
+            if (!"vue-gwt:import".equals(element.tagName()))
+                continue;
+
+            if (element.hasAttr("style"))
+            {
+                result.addStyleImports(element.attr("name"), element.attr("style"));
+            }
+            else if (element.hasAttr("class"))
             {
                 context.addImport(element.attr("class"));
-                importElements.add(element);
             }
+
+            importElements.add(element);
         }
 
         // Remove imports from the template once processed

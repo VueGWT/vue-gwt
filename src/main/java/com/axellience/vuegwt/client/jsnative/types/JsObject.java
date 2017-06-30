@@ -74,5 +74,5 @@ public class JsObject
         return this;
     }
 
-    public static native JsArray<String> getOwnPropertyNames(JsObject object);
+    public static native JsArray<String> getOwnPropertyNames(Object object);
 }
