@@ -6,12 +6,12 @@ package com.axellience.vuegwt.template.parser.context;
 public class VariableInfo
 {
     private String type;
-    private String templateName;
+    private String name;
 
-    public VariableInfo(String type, String templateName)
+    public VariableInfo(String type, String name)
     {
         this.type = type;
-        this.templateName = templateName;
+        this.name = name;
     }
 
     public String getType()
@@ -19,8 +19,8 @@ public class VariableInfo
         return type;
     }
 
-    public String getTemplateName()
+    public String getName()
     {
-        return templateName;
+        return name;
     }
 }

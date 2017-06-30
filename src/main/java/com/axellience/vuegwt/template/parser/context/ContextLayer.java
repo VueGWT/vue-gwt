@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.template.parser.context;
 
 import com.google.gwt.core.ext.typeinfo.JField;
+import com.google.gwt.core.ext.typeinfo.JType;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,14 +22,24 @@ public class ContextLayer
 
     private VariableInfo addVariable(VariableInfo variableInfo)
     {
-        variables.put(variableInfo.getTemplateName(), variableInfo);
+        variables.put(variableInfo.getName(), variableInfo);
         return variableInfo;
     }
 
-    public VariableInfo addRootVariable(JField jField)
+    public VariableInfo addVariable(JField jField)
     {
         return addVariable(new VariableInfo(jField.getType().getQualifiedSourceName(),
             jField.getName()));
+    }
+
+    public VariableInfo addVariable(Class type, String name)
+    {
+        return addVariable(new VariableInfo(type.getCanonicalName(), name));
+    }
+
+    public VariableInfo addComputedVariable(JType type, String name)
+    {
+        return addVariable(new ComputedVariableInfo(type.getQualifiedSourceName(), name));
     }
 
     public LocalVariableInfo addLocalVariable(String type, String templateName)

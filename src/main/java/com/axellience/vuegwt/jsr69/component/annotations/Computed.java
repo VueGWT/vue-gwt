@@ -16,6 +16,8 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 @Retention(CLASS)
 public @interface Computed
 {
+    String COMPUTED_SUFFIX = "$computed";
+
     String propertyName() default "";
     ComputedKind kind() default ComputedKind.GETTER;
 }

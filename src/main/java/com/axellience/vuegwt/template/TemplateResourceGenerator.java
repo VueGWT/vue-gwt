@@ -41,7 +41,9 @@ import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.user.rebind.StringSourceWriter;
 
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Source: GWT Project http://www.gwtproject.org/
@@ -114,18 +116,27 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
 
         // Add computed properties
         JClassType jClassType = typeOracle.findType(typeName);
+        Set<String> doneComputed = new HashSet<>();
         for (JMethod jMethod : jClassType.getMethods())
         {
             Computed computed = jMethod.getAnnotation(Computed.class);
             if (computed == null)
                 continue;
 
-            String propertyName = "$" + jMethod.getName();
-            if (!"".equals(computed.propertyName()))
-                propertyName = computed.propertyName();
+            String propertyName = computed.propertyName();
+            if ("".equals(propertyName))
+                propertyName = jMethod.getName();
 
+            if (doneComputed.contains(propertyName))
+                continue;
+
+            doneComputed.add(propertyName);
             sw.println("@jsinterop.annotations.JsProperty");
-            sw.println(jMethod.getReturnType().getQualifiedSourceName() + " " + propertyName + ";");
+            sw.println(jMethod.getReturnType().getQualifiedSourceName()
+                + " "
+                + propertyName
+                + Computed.COMPUTED_SUFFIX
+                + ";");
         }
 
         // Add Component Styles

@@ -5,16 +5,16 @@ package com.axellience.vuegwt.template.parser.context;
  */
 public class LocalVariableInfo extends VariableInfo
 {
-    private String javaName;
+    private String globalName;
 
-    public LocalVariableInfo(String typeQualifiedName, String templateName, String javaName)
+    public LocalVariableInfo(String typeQualifiedName, String localName, String globalName)
     {
-        super(typeQualifiedName, templateName);
-        this.javaName = javaName;
+        super(typeQualifiedName, localName);
+        this.globalName = globalName;
     }
 
-    public String getJavaName()
+    public String getGlobalName()
     {
-        return javaName;
+        return globalName;
     }
 }

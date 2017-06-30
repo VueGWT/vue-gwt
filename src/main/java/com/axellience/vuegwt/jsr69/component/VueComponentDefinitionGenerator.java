@@ -152,11 +152,11 @@ public class VueComponentDefinitionGenerator
 
                 if (computed != null)
                 {
-                    String jsName = !"".equals(computed.propertyName()) ? computed.propertyName() :
-                        "$" + javaName;
+                    String jsName =
+                        !"".equals(computed.propertyName()) ? computed.propertyName() : javaName;
                     constructorBuilder.addStatement("this.addComputed($S, $S, $T.$L)",
                         javaName,
-                        jsName,
+                        jsName + Computed.COMPUTED_SUFFIX,
                         ComputedKind.class,
                         computed.kind());
                 }

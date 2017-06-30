@@ -1,9 +1,11 @@
 package com.axellience.vuegwt.template.parser.context;
 
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
+import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwt.template.parser.InvalidExpressionException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
+import com.google.gwt.core.ext.typeinfo.JMethod;
 import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
@@ -32,9 +34,23 @@ public class TemplateParserContext
         this.vueComponentClass = vueComponentClass;
         ContextLayer root = new ContextLayer("");
         contextLayers.add(root);
+
+        root.addVariable(String.class, "_uid");
         for (JField jField : vueComponentClass.getFields())
         {
-            root.addRootVariable(jField);
+            root.addVariable(jField);
+        }
+        for (JMethod jMethod : vueComponentClass.getMethods())
+        {
+            Computed computed = jMethod.getAnnotation(Computed.class);
+            if (computed == null)
+                continue;
+
+            String name = computed.propertyName();
+            if ("".equals(name))
+                name = jMethod.getName();
+
+            root.addComputedVariable(jMethod.getReturnType(), name);
         }
     }
 
