@@ -11,16 +11,9 @@ import com.axellience.vuegwt.template.parser.result.TemplateExpressionParameter;
 import com.axellience.vuegwt.template.parser.result.TemplateParserResult;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
-import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.LiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.UnaryExpr;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +26,6 @@ import org.jsoup.parser.ParseSettings;
 import org.jsoup.parser.Parser;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -339,7 +331,7 @@ public class TemplateParser
 
         // Rename variables if needed
         Set<TemplateExpressionParameter> parameters = new HashSet<>();
-        renameExpressionVariables(expression, context, parameters);
+        processExpressionVariables(expression, context, parameters);
         expressionString = expression.toString();
 
         return result.addExpression(context.getCurrentExpressionKind(),
@@ -392,114 +384,79 @@ public class TemplateParser
     }
 
     /**
-     * Rename all local variable in the expression from the view with the one we use in Java
+     * Process all variable in the expression from the view
+     * Replace loop variables and computed properties with the ones used in Java
      * @param expression An expression from the View
      * @param context The context containing all the local variables
      */
-    private void renameExpressionVariables(Expression expression, TemplateParserContext context,
+    private void processExpressionVariables(Expression expression, TemplateParserContext context,
         Set<TemplateExpressionParameter> parameters)
     {
         if (expression instanceof NameExpr)
         {
             NameExpr nameExpr = ((NameExpr) expression);
-            String variableName = nameExpr.getNameAsString();
-            TemplateExpressionParameter parameter = null;
-            if ("$event".equals(variableName))
+            if ("$event".equals(nameExpr.getNameAsString()))
             {
-                if (expression.getParentNode().isPresent() && expression
-                    .getParentNode()
-                    .get() instanceof CastExpr)
-                {
-                    CastExpr castExpr = (CastExpr) expression.getParentNode().get();
-                    parameter =
-                        new TemplateExpressionParameter(castExpr.getType().toString(), "$event");
-                }
-                else
-                {
-                    throw new InvalidExpressionException(
-                        "$event should always be casted to it's intended type.");
-                }
+                processEventExpressionVariable(nameExpr, parameters);
             }
             else
             {
-                VariableInfo variableInfo = context.findVariableInContext(variableName);
-                if (variableInfo instanceof LocalVariableInfo)
-                {
-                    LocalVariableInfo localVariableInfo = (LocalVariableInfo) variableInfo;
-                    nameExpr.setName(localVariableInfo.getGlobalName());
-                    parameter = new TemplateExpressionParameter(variableInfo.getType(),
-                        localVariableInfo.getGlobalName());
-                }
-                else if (variableInfo instanceof ComputedVariableInfo)
-                {
-                    nameExpr.setName(((ComputedVariableInfo) variableInfo).getGlobalName());
-                }
-            }
-            if (parameter != null)
-            {
-                parameters.add(parameter);
+                processNameExpressionVariable(nameExpr, context, parameters);
             }
         }
-        else if (expression instanceof MethodCallExpr)
-        {
-            for (Expression argument : ((MethodCallExpr) expression).getArguments())
-                renameExpressionVariables(argument, context, parameters);
 
-            Optional<Expression> scope = ((MethodCallExpr) expression).getScope();
-            scope.ifPresent(expression1 -> renameExpressionVariables(expression1,
-                context,
-                parameters));
-        }
-        else if (expression instanceof FieldAccessExpr)
-        {
-            // Evaluate field access
-            FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expression;
-            Optional<Expression> scope = fieldAccessExpr.getScope();
-            scope.ifPresent(expression1 -> renameExpressionVariables(expression1,
-                context,
-                parameters));
-        }
-        else if (expression instanceof ConditionalExpr)
-        {
-            ConditionalExpr conditionalExpr = (ConditionalExpr) expression;
-            renameExpressionVariables(conditionalExpr.getCondition(), context, parameters);
-            renameExpressionVariables(conditionalExpr.getThenExpr(), context, parameters);
+        expression
+            .getChildNodes()
+            .stream()
+            .filter(Expression.class::isInstance)
+            .map(Expression.class::cast)
+            .forEach(exp -> processExpressionVariables(exp, context, parameters));
+    }
 
-            if (conditionalExpr.getElseExpr() != null)
-                renameExpressionVariables(conditionalExpr.getElseExpr(), context, parameters);
-        }
-        else if (expression instanceof BinaryExpr)
+    /**
+     * Process an event variable passed on v-on. This variable must have a valid cast in front.
+     * @param nameExpr
+     * @param parameters
+     */
+    private void processEventExpressionVariable(NameExpr nameExpr,
+        Set<TemplateExpressionParameter> parameters)
+    {
+        if (nameExpr.getParentNode().isPresent() && nameExpr
+            .getParentNode()
+            .get() instanceof CastExpr)
         {
-            BinaryExpr binaryExpr = (BinaryExpr) expression;
-            renameExpressionVariables(binaryExpr.getRight(), context, parameters);
-            renameExpressionVariables(binaryExpr.getLeft(), context, parameters);
+            CastExpr castExpr = (CastExpr) nameExpr.getParentNode().get();
+            parameters.add(new TemplateExpressionParameter(castExpr.getType().toString(),
+                "$event"));
         }
-        else if (expression instanceof CastExpr)
+        else
         {
-            CastExpr castExpr = (CastExpr) expression;
+            throw new InvalidExpressionException(
+                "$event should always be casted to it's intended type.");
+        }
+    }
 
-            // Resolve cast type
-            castExpr.setType(getCastType(castExpr, context));
-
-            renameExpressionVariables(castExpr.getExpression(), context, parameters);
-        }
-        else if (expression instanceof UnaryExpr)
+    /**
+     * Process name expression to replace loop variables and computed properties
+     * with the ones used in Java
+     * @param nameExpr
+     * @param context
+     * @param parameters
+     */
+    private void processNameExpressionVariable(NameExpr nameExpr, TemplateParserContext context,
+        Set<TemplateExpressionParameter> parameters)
+    {
+        VariableInfo variableInfo = context.findVariableInContext(nameExpr.getNameAsString());
+        if (variableInfo instanceof LocalVariableInfo)
         {
-            renameExpressionVariables(((UnaryExpr) expression).getExpression(),
-                context,
-                parameters);
+            LocalVariableInfo localVariableInfo = (LocalVariableInfo) variableInfo;
+            nameExpr.setName(localVariableInfo.getGlobalName());
+            parameters.add(new TemplateExpressionParameter(variableInfo.getType(),
+                localVariableInfo.getGlobalName()));
         }
-        else if (expression instanceof AssignExpr)
+        else if (variableInfo instanceof ComputedVariableInfo)
         {
-            AssignExpr assignExpr = (AssignExpr) expression;
-            renameExpressionVariables(assignExpr.getTarget(), context, parameters);
-            renameExpressionVariables(assignExpr.getValue(), context, parameters);
-        }
-        else if (!(expression instanceof LiteralExpr))
-        {
-            throw new InvalidExpressionException("Unsupported expression: " + expression
-                .getClass()
-                .getCanonicalName() + " -> " + expression);
+            nameExpr.setName(((ComputedVariableInfo) variableInfo).getGlobalName());
         }
     }
 
