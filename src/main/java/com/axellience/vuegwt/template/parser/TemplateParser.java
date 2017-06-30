@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.template.parser;
 
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
+import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.template.parser.context.VariableInfo;
 import com.axellience.vuegwt.template.parser.result.TemplateExpression;
@@ -17,10 +18,6 @@ import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.JParameterizedType;
-import com.google.gwt.core.ext.typeinfo.JType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.nodes.Attribute;
@@ -32,8 +29,6 @@ import org.jsoup.parser.ParseSettings;
 import org.jsoup.parser.Parser;
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -372,22 +367,23 @@ public class TemplateParser
     private String processVForValue(String vForValue, TemplateParserContext context,
         TemplateParserResult result)
     {
-        String[] splitValue = vForValue.split(" in ");
-        if (splitValue.length != 2)
+        String[] splitExpression = vForValue.split(" in ");
+        if (splitExpression.length != 2)
             throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
 
-        String loopVariableName = splitValue[0];
+        String loopVariableDefinition = splitExpression[0];
+        Expression inExpression = JavaParser.parseExpression(splitExpression[1]);
 
-        Expression inExpression = JavaParser.parseExpression(splitValue[1]);
-        JParameterizedType inExpressionType =
-            getExpressionType(inExpression, context).isParameterized();
+        String[] splitLoopVariable = loopVariableDefinition.split(" ");
+        if (splitLoopVariable.length != 2)
+            throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
 
-        if (inExpressionType == null || inExpressionType.getTypeArgs().length != 1)
-            throw new InvalidExpressionException("Couldn't determine v-for type: " + vForValue);
+        String loopVariableType = context.getFullyQualifiedNameForClassName(splitLoopVariable[0]);
+        String loopVariableName = splitLoopVariable[1];
 
-        JClassType loopVariableType = inExpressionType.getTypeArgs()[0];
-        VariableInfo variableInfo = context.addLocalVariable(loopVariableType, loopVariableName);
-        loopVariableName = variableInfo.getJavaName();
+        LocalVariableInfo variableInfo =
+            context.addLocalVariable(loopVariableType, loopVariableName);
+        loopVariableDefinition = variableInfo.getJavaName();
 
         Set<TemplateExpressionParameter> parameters = new HashSet<>();
         if (context.isInContextLayer())
@@ -397,7 +393,7 @@ public class TemplateParser
 
         TemplateExpression templateExpression =
             result.addCollectionExpression(inExpression.toString(), parameters);
-        return loopVariableName + " in " + templateExpression.toTemplateString();
+        return loopVariableDefinition + " in " + templateExpression.toTemplateString();
     }
 
     /**
@@ -432,12 +428,12 @@ public class TemplateParser
             else
             {
                 VariableInfo variableInfo = context.findVariableInContext(variableName);
-                if (variableInfo.hasCustomJavaName())
+                if (variableInfo instanceof LocalVariableInfo)
                 {
-                    nameExpr.setName(variableInfo.getJavaName());
-                    parameter = new TemplateExpressionParameter(variableInfo
-                        .getType()
-                        .getQualifiedSourceName(), variableInfo.getJavaName());
+                    LocalVariableInfo localVariableInfo = (LocalVariableInfo) variableInfo;
+                    nameExpr.setName(localVariableInfo.getJavaName());
+                    parameter = new TemplateExpressionParameter(variableInfo.getType(),
+                        localVariableInfo.getJavaName());
                 }
             }
             if (parameter != null)
@@ -490,88 +486,6 @@ public class TemplateParser
                 .getClass()
                 .getCanonicalName() + " -> " + expression);
         }
-    }
-
-    /**
-     * Evaluate an expression type based on a given context
-     * Only support method calls, field access and simple variable name
-     * @param expression The Expression to evaluate the type of
-     * @param context Context with declared variables
-     * @return The type of the expression
-     */
-    private JType getExpressionType(Expression expression, TemplateParserContext context)
-    {
-        if (expression instanceof NameExpr)
-        {
-            VariableInfo variableInfo =
-                context.findVariableInContext(((NameExpr) expression).getNameAsString());
-            if (variableInfo != null)
-                return variableInfo.getType();
-
-            throw new InvalidExpressionException("Couldn't find field "
-                + ((NameExpr) expression).getName());
-        }
-        else if (expression instanceof MethodCallExpr)
-        {
-            // Evaluate method call
-            MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
-            Optional<Expression> scope = methodCallExpr.getScope();
-
-            // Get the type of the scope, if no scope, scope is the component
-            JType scopeType = scope
-                .map(scopeExpr -> getExpressionType(scopeExpr, context))
-                .orElseGet(context::getVueComponentClass);
-
-            // Get the list of arguments
-            List<JType> argumentTypes = new LinkedList<>();
-            for (Expression argument : methodCallExpr.getArguments())
-            {
-                argumentTypes.add(getExpressionType(argument, context));
-            }
-
-            JType[] argumentTypesArr =
-                argumentTypes.isEmpty() ? new JType[0] : (JType[]) argumentTypes.toArray();
-
-            // Try to find this method on it
-            if (scopeType instanceof JClassType)
-            {
-                JClassType scopeClassType = ((JClassType) scopeType);
-                JMethod method =
-                    scopeClassType.findMethod(methodCallExpr.getNameAsString(), argumentTypesArr);
-                if (method != null)
-                    return method.getReturnType();
-            }
-
-            throw new InvalidExpressionException("Couldn't find method "
-                + methodCallExpr.getName());
-        }
-        else if (expression instanceof FieldAccessExpr)
-        {
-            // Evaluate field access
-            FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expression;
-            Optional<Expression> scope = fieldAccessExpr.getScope();
-            if (!scope.isPresent())
-            {
-                // No scope
-                throw new InvalidExpressionException("No scope for field access");
-            }
-
-            JType parentType = getExpressionType(scope.get(), context);
-
-            if (parentType instanceof JClassType)
-            {
-                for (JField jField : ((JClassType) parentType).getFields())
-                {
-                    if (jField.getName().equals(fieldAccessExpr.getNameAsString()))
-                        return jField.getType();
-                }
-            }
-
-            throw new InvalidExpressionException("Couldn't find field "
-                + fieldAccessExpr.getName());
-        }
-
-        throw new InvalidExpressionException("Couldn't determine expression type: " + expression);
     }
 
     private boolean isJSON(String value)

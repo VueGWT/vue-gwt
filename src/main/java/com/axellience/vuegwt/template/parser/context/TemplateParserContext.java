@@ -4,7 +4,6 @@ import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 import com.axellience.vuegwt.template.parser.InvalidExpressionException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JType;
 import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
@@ -39,11 +38,6 @@ public class TemplateParserContext
         }
     }
 
-    public VariableInfo addLocalVariable(JType type, String name)
-    {
-        return contextLayers.getFirst().addLocalVariable(type, name);
-    }
-
     public void addContextLayer()
     {
         contextLayers.push(new ContextLayer(CONTEXT_PREFIX + contextId + "_"));
@@ -58,6 +52,11 @@ public class TemplateParserContext
     public boolean isInContextLayer()
     {
         return contextLayers.size() > 1;
+    }
+
+    public LocalVariableInfo addLocalVariable(String typeQualifiedName, String name)
+    {
+        return contextLayers.getFirst().addLocalVariable(typeQualifiedName, name);
     }
 
     public VariableInfo findVariableInContext(String name)

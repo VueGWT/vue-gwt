@@ -1,31 +1,20 @@
 package com.axellience.vuegwt.template.parser.context;
 
-import com.google.gwt.core.ext.typeinfo.JType;
-
 /**
  * @author Adrien Baron
  */
 public class VariableInfo
 {
-    private JType   type;
-    private String  templateName;
-    private String  javaName;
-    private boolean hasCustomJavaName;
+    private String type;
+    private String templateName;
 
-    public VariableInfo(JType type, String templateName)
-    {
-        this(type, templateName, templateName);
-    }
-
-    public VariableInfo(JType type, String templateName, String javaName)
+    public VariableInfo(String type, String templateName)
     {
         this.type = type;
         this.templateName = templateName;
-        this.javaName = javaName;
-        this.hasCustomJavaName = !templateName.equals(javaName);
     }
 
-    public JType getType()
+    public String getType()
     {
         return type;
     }
@@ -33,15 +22,5 @@ public class VariableInfo
     public String getTemplateName()
     {
         return templateName;
-    }
-
-    public String getJavaName()
-    {
-        return javaName;
-    }
-
-    public boolean hasCustomJavaName()
-    {
-        return hasCustomJavaName;
     }
 }
