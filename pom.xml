@@ -7,10 +7,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.axellience</groupId>
     <artifactId>vue-gwt</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
 
     <name>Vue GWT</name>
-    <description>Let you use Vue.JS in GWT application</description>
+    <description>Let you use Vue.js in GWT application</description>
     <packaging>jar</packaging>
 
     <properties>
