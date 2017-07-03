@@ -1,4 +1,4 @@
-# Setup on your project
+# Setup on Your Project
 
 ## ✅ Get Vue GWT
 
@@ -15,7 +15,7 @@ mvn clean install
 
 ## ✅ Configure Maven
 
-### Add the dependency
+### Add the Dependency
 Add Vue GWT to your project `pom.xml`:
 
 ```xml
@@ -29,7 +29,7 @@ Add Vue GWT to your project `pom.xml`:
 </dependency>
 ```
 
-### Add Annotation processing configuration
+### Add Annotation Processing Configuration
 In the `plugins` section:
 ```xml
 <plugin>
@@ -111,7 +111,7 @@ For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-
 </plugins>
 ```
 
-## ✅ Add Vue.js library to your index.html
+## ✅ Add Vue.js Library to Your Index.html
 
 In your GWT app index.html add the following tag in the &lt;head&gt; section:
 
@@ -120,7 +120,7 @@ In your GWT app index.html add the following tag in the &lt;head&gt; section:
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 ```
 
-## IDE Configuration
+## ✅ IDE Configuration
 
 ### Eclipse
 Just import your project as a Maven project.
@@ -138,4 +138,4 @@ Open the Action window :
 
 Enter `Registry...` and enable `compiler.automake.allow.when.app.running`
 
-You are good to go!
+You are good to go! **[Let's start using Vue GWT](./introduction/index.md)**
