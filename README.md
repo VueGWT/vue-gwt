@@ -1,7 +1,7 @@
 # Vue GWT
 
-Vue GWT integrates [Vue.JS](https://vuejs.org/) with [GWT](http://www.gwtproject.org/) 2.8 using [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
-It let you write Vue.JS components in Java.
+Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT](http://www.gwtproject.org/) 2.8 using [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
+It let you write Vue.js components in Java.
 
 <p align="center">
 <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
@@ -10,7 +10,7 @@ It let you write Vue.JS components in Java.
 
 Checkout our **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)** to see it in action.
 
-It's recommended to read [Vue.JS introduction guide](https://vuejs.org/v2/guide/) if you are not familiar with it.
+It's recommended to read [Vue.js introduction guide](https://vuejs.org/v2/guide/) if you are not familiar with it.
 
 :warning: Vue GWT is in an **experimental** state.
 The syntax is not final and might change between versions.
@@ -136,7 +136,7 @@ For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-
 </plugins>
 ```
 
-### :white_check_mark: Add Vue.JS library to your index.html
+### :white_check_mark: Add Vue.js library to your index.html
 
 In your GWT app index.html add the following tag in the &lt;head&gt; section:
 
@@ -168,7 +168,7 @@ You are good to go!
 ## Simple App
 
 If you already know GWT then you should be familiar with the concept of Widgets.
-In Vue.JS the equivalent of Widgets are Components.
+In Vue.js the equivalent of Widgets are Components.
 
 Vue Components are like GWT Widgets, they are reusable and isolated pieces of your application.
 
@@ -227,7 +227,7 @@ public class RootGwtApp implements EntryPoint {
 }
 ```
 
-Behind the scene, the instance of our Component will be converted to the format that Vue.JS is expecting:
+Behind the scene, the instance of our Component will be converted to the format that Vue.js is expecting:
 ```javascript
 {
     el: "#rootComponent",
@@ -312,7 +312,7 @@ For example:
 Components can also be registered globally.
 They will then be usable in any component template in your app.
 
-This is the equivalent of calling `Vue.component(...)` in Vue.JS.
+This is the equivalent of calling `Vue.component(...)` in Vue.js.
 
 ```java
 public class RootGwtApp implements EntryPoint {

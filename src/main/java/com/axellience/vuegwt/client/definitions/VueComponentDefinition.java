@@ -29,7 +29,7 @@ import static com.axellience.vuegwt.client.jsnative.types.JsObject.getOwnPropert
  * Java representation of a Vue Component definition
  * Class extending this one are generated using the Annotation processor for each VueComponent
  * <p>
- * An instance of this Class can be immediately passed to Vue.JS instance where it's expecting a
+ * An instance of this Class can be immediately passed to Vue.js instance where it's expecting a
  * component definition object.
  * <p>
  * This is an internal Class, it shouldn't be manipulated in applications that use VueGWT.

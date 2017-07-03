@@ -24,7 +24,7 @@ public class Vue
 {
     /**
      * Create a VueComponent instance and attach it to a DOM element
-     * Equivalent to new Vue({el: element, ...}) in Vue.JS
+     * Equivalent to new Vue({el: element, ...}) in Vue.js
      * @param vueComponentClass The class of the Component to create
      */
     @JsOverlay
@@ -39,7 +39,7 @@ public class Vue
 
     /**
      * Create a VueComponent instance and attach it to a DOM element
-     * Equivalent to new Vue({el: element, ...}) in Vue.JS
+     * Equivalent to new Vue({el: element, ...}) in Vue.js
      * @param vueComponentClass The class of the Component to create
      */
     @JsOverlay
@@ -54,7 +54,7 @@ public class Vue
 
     /**
      * Extend the base Vue Class with your VueComponent definition
-     * Equivalent to Vue.extend({}) in Vue.JS
+     * Equivalent to Vue.extend({}) in Vue.js
      * @param vueComponentClass The class of the Component to use
      * @return A factory that can be used to create instance of your VueComponent
      */

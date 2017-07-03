@@ -1,5 +1,5 @@
 /**
- * This object provides methods to integrate Java in Vue.JS world
+ * This object provides methods to integrate Java in Vue.js world
  * @author Adrien Baron
  */
 window.vueGwt = {

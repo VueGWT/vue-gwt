@@ -6,7 +6,7 @@ import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 /**
  * A factory for VueComponents
  * Vue.extend returns instance of this factory
- * In Vue.JS:
+ * In Vue.js:
  * MyComponentClass = Vue.extend({});
  * instance = new MyComponentClass();
  * <p>
