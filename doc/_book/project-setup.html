@@ -1,0 +1,439 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Project Setup · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="introduction/" />
+    
+    
+    <link rel="prev" href="./" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    About Vue GWT
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2" data-path="project-setup.html">
+            
+                <a href="project-setup.html">
+            
+                    
+                    Project Setup
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="introduction/">
+            
+                <a href="introduction/">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="introduction/your-first-component.html">
+            
+                <a href="introduction/your-first-component.html">
+            
+                    
+                    Your First Component
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="introduction/conditional-and-loops.html">
+            
+                <a href="introduction/conditional-and-loops.html">
+            
+                    
+                    Conditional and Loops
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="introduction/handling-user-input.html">
+            
+                <a href="introduction/handling-user-input.html">
+            
+                    
+                    Handling User Input
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="introduction/composing-with-components.html">
+            
+                <a href="introduction/composing-with-components.html">
+            
+                    
+                    Composing with Components
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="introduction/backward-compatibility.html">
+            
+                <a href="introduction/backward-compatibility.html">
+            
+                    
+                    Backward Compatibility
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Project Setup</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="setup-on-your-project">Setup on Your Project</h1>
+<h2 id="&#x2705;-get-vue-gwt">&#x2705; Get Vue GWT</h2>
+<p>Vue GWT uses Maven.
+For now there is no Maven repository.</p>
+<p>You must clone the source on your computer and mvn install them:</p>
+<pre><code class="lang-bash">git <span class="hljs-built_in">clone</span> https://github.com/Axellience/vue-gwt.git
+<span class="hljs-built_in">cd</span> vue-gwt
+mvn clean install
+</code></pre>
+<h2 id="&#x2705;-configure-maven">&#x2705; Configure Maven</h2>
+<h3 id="add-the-dependency">Add the Dependency</h3>
+<p>Add Vue GWT to your project <code>pom.xml</code>:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">properties</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">vue-gwt.version</span>&gt;</span>1.2-SNAPSHOT<span class="hljs-tag">&lt;/<span class="hljs-name">vue-gwt.version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">properties</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.axellience<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>vue-gwt<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>${vue-gwt.version}<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+</code></pre>
+<h3 id="add-annotation-processing-configuration">Add Annotation Processing Configuration</h3>
+<p>In the <code>plugins</code> section:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- version is important to have java annotation processing correctly handled --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.3<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><span class="hljs-comment">&lt;!--$NO-MVN-MAN-VER$--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">compilerArgument</span>&gt;</span>-parameters<span class="hljs-tag">&lt;/<span class="hljs-name">compilerArgument</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">testCompilerArgument</span>&gt;</span>-parameters<span class="hljs-tag">&lt;/<span class="hljs-name">testCompilerArgument</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">useIncrementalCompilation</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">useIncrementalCompilation</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">source</span>&gt;</span>1.8<span class="hljs-tag">&lt;/<span class="hljs-name">source</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">target</span>&gt;</span>1.8<span class="hljs-tag">&lt;/<span class="hljs-name">target</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
+</code></pre>
+<p>This is useful for Eclipse:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">pluginManagement</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
+        <span class="hljs-comment">&lt;!--This plugin&apos;s configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.eclipse.m2e<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lifecycle-mapping<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">lifecycleMappingMetadata</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecutions</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecution</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecutionFilter</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>
+                                    org.codehaus.mojo
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>
+                                    gwt-maven-plugin
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">versionRange</span>&gt;</span>
+                                    [2.7.0,)
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">versionRange</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>compile<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecutionFilter</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">action</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">ignore</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ignore</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">action</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecution</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecutions</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">lifecycleMappingMetadata</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">pluginManagement</span>&gt;</span>
+</code></pre>
+<h2 id="&#x2705;-configure-jsinterop">&#x2705; Configure JsInterop</h2>
+<p>Vue GWT relies heavily on JsInterop.
+You must enable it in SuperDevMode and Maven.</p>
+<h3 id="superdevmode">SuperDevMode</h3>
+<p>For SuperDevMode, simply add this flag to your devMode parameters:</p>
+<p><code>-generateJsInteropExports</code></p>
+<h3 id="maven">Maven</h3>
+<p>For Maven, if you use <a href="https://gwt-maven-plugin.github.io/gwt-maven-plugin/" target="_blank">GWT Maven Plugin</a>, add the following in your <code>pom.xml</code>:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- Mojo&apos;s Maven Plugin for GWT --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
+        ...
+        <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+            ...
+            <span class="hljs-tag">&lt;<span class="hljs-name">generateJsInteropExports</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">generateJsInteropExports</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
+</code></pre>
+<h2 id="&#x2705;-add-vuejs-library-to-your-indexhtml">&#x2705; Add Vue.js Library to Your Index.html</h2>
+<p>In your GWT app index.html add the following tag in the &lt;head&gt; section:</p>
+<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- Vue JS Framework --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://unpkg.com/vue/dist/vue.js&quot;</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<h2 id="&#x2705;-ide-configuration">&#x2705; IDE Configuration</h2>
+<h3 id="eclipse">Eclipse</h3>
+<p>Just import your project as a Maven project.</p>
+<h3 id="intellij-idea">IntelliJ IDEA</h3>
+<p>By default IntelliJ doesn&apos;t support automatic compilation on file change.
+But don&apos;t worry, enabling it is easy!</p>
+<p>Go to <code>File -&gt; Settings -&gt; Build, Execution, Deployment -&gt; Compiler</code> and enable &#x201C;Make project automatically&#x201D;</p>
+<p>Open the Action window :</p>
+<ul>
+<li>Linux : <code>CTRL+SHIFT+A</code></li>
+<li>Mac OSX : <code>SHIFT+COMMAND+A</code></li>
+<li>Windows : <code>CTRL+ALT+SHIFT+/</code></li>
+</ul>
+<p>Enter <code>Registry...</code> and enable <code>compiler.automake.allow.when.app.running</code></p>
+<p>You are good to go! <strong><a href="introduction/">Let&apos;s start using Vue GWT</a></strong></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: About Vue GWT">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="introduction/" class="navigation navigation-next " aria-label="Next page: Introduction">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Project Setup","level":"1.2","depth":1,"next":{"title":"Introduction","level":"1.3","depth":1,"path":"introduction/index.md","ref":"introduction/index.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"path":"introduction/your-first-component.md","ref":"introduction/your-first-component.md","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]},{"title":"Backward Compatibility","level":"1.3.5","depth":2,"path":"introduction/backward-compatibility.md","ref":"introduction/backward-compatibility.md","articles":[]}]},"previous":{"title":"About Vue GWT","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"project-setup.md","mtime":"2017-07-03T15:23:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-03T15:46:54.763Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
