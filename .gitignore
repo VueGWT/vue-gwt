@@ -31,3 +31,6 @@ buildNumber.properties
 .classpath
 .project
 .settings
+
+### Gitbook
+docs-source/_book
