@@ -1,3 +1,5 @@
+!INCLUDE "../dependencies.md"
+
 # Conditional and Loops
 
 ## Conditional
@@ -8,9 +10,9 @@ Let's check this with a small example:
 ```java
 @JsType
 @Component
-public class DemoComponent extends VueComponent {
-    public String visible;
-    
+public class Example3Component extends VueComponent {
+    public boolean visible;
+
     @Override
     public void created() {
         this.visible = true;
@@ -19,12 +21,25 @@ public class DemoComponent extends VueComponent {
 ```
 
 ```html
-<p v-if="visible">
+<div v-if="visible">
     The property "visible" is set to true!
-</p>
+</div>
 ```
 
-In this case the `p` element will only be created if the property `visible` of your Component instance is set to `true`.
+As you can see bellow the `div` is created if the property `visible` of the Component instance is set to `true`.
+
+{% raw %}
+<p class="example-container" data-name="Live Example 3">
+    <span id="example3"></span>
+</p>
+{% endraw %}
+
+You can try to interact in your browser console by typing:
+```
+example3.visible = false;
+```
+The `div` will be removed from the DOM.
+
 This example demonstrates that we can bind data to not only text and attributes, but also the structure of the DOM.
 
 ## Loops
@@ -55,7 +70,7 @@ This collection will be represented as a native JavaScript array in the browser.
 ```java
 @JsType
 @Component
-public class DemoComponent extends VueComponent {
+public class Example4Component extends VueComponent {
     public JsArray<Todo> todos;
     
     @Override
@@ -80,5 +95,17 @@ public class DemoComponent extends VueComponent {
 Another difference with Vue.js is you must indicate your loop variable type.
 This is because Vue GWT compile templates expressions to Java and so need the type information.
 You can import Java types in your template by using the `vue-gwt:import` element.
+
+{% raw %}
+<p class="example-container" data-name="Live Example 4">
+    <span id="example4"></span>
+</p>
+{% endraw %}
+
+As the `Todo` class does not have the `@JsInterop` annotation it's not possible to create new Todos from the JavaScript console.
+But you can try removing a Todo in console:
+```
+example4.todos.shift();
+```
 
 **[Let users interact with our Component](./handling-user-input.md)**

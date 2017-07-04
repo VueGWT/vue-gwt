@@ -63,23 +63,23 @@ This works with all the examples of this documentation.
 
 ***GwtIndex.html***
 
-In our GWT index page we add a div to attach an instance of our `DemoComponent`.
+In our GWT index page we add a div to attach an instance of our `Example1Component`.
 
 ```html
-<div id="demoComponentContainer"></div>
+<div id="example1Container"></div>
 ```
 
 ***RootGwtApp.java***
 
 We have declared a Component, and the div to contain it.
-Now need to bootstrap an instance of our `DemoComponent` when GWT starts and attach it in our `demoComponentContainer` div.
-For that we simply call the Vue.attach() static method and pass the selector of our container and our `DemoComponent` class to it.
+Now need to bootstrap an instance of our `Example1Component` when GWT starts and attach it in our `example1Container` div.
+For that we simply call the Vue.attach() static method and pass the selector of our container and our `Example1Component` class to it.
 
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
         // When our GWT app starts, we start our Vue app.
-        Vue.attach("#demoComponentContainer", DemoComponent.class);
+        Vue.attach("#example1Container", Example1Component.class);
     }
 }
 ```
@@ -87,14 +87,14 @@ public class RootGwtApp implements EntryPoint {
 Behind the scene, the instance of our Java Component will be converted to the format that Vue.js is expecting:
 ```javascript
 {
-    el: "#demoComponent",
-    template: "<div>{{ message }}</div>",
+    el: "#example1Container",
+    template: '<a href="https://github.com/Axellience/vue-gwt">{{ linkName }}</a>',
     data: {
-        message: null
+        linkName: null
     },
     methods: {
         created: function() {
-            this.message = "Hello Vue GWT!";
+            this.linkName = "Hello Vue GWT!";
         }
     }
 }
@@ -112,7 +112,7 @@ Luckily, in addition to text interpolation, we can also bind element attributes:
 ```java
 @JsType
 @Component
-public class DemoComponent extends VueComponent {
+public class Example2Component extends VueComponent {
     public String linkTarget;
     public String linkName;
     
@@ -125,10 +125,16 @@ public class DemoComponent extends VueComponent {
 ```
 
 ```html
-<a v-bind:src="linkTarget">
+<a v-bind:href="linkTarget">
     {{ linkName }}
 </a>
 ```
+
+{% raw %}
+<p class="example-container" data-name="Live Example 2">
+    <span id="example2"></span>
+</p>
+{% endraw %}
 
 Here we are encountering something new.
 The `v-bind` attribute you are seeing is called a directive.
