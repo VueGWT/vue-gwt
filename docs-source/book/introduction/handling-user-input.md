@@ -1,6 +1,6 @@
-!INCLUDE "../dependencies.md"
-
 # Handling User Input
+
+!INCLUDE "../dependencies.md"
 
 ## Events
 To let users interact with your app, we can use the v-on directive to attach event listeners that invoke methods on our Vue instances:

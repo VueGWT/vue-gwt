@@ -1,6 +1,6 @@
-!INCLUDE "../dependencies.md"
-
 # Your First Component
+
+!INCLUDE "../dependencies.md"
 
 ## Simple Example Component
 

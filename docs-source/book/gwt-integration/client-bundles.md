@@ -1,6 +1,6 @@
-!INCLUDE "../dependencies.md"
-
 # GWT Client Bundles (Images)
+
+!INCLUDE "../dependencies.md"
 
 Vue GWT also support GWT `ClientBundles`.
 

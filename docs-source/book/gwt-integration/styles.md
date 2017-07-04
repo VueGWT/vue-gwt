@@ -1,6 +1,6 @@
-!INCLUDE "../dependencies.md"
-
 # GWT Styles
+
+!INCLUDE "../dependencies.md"
 
 ## Adding Style to Our Component
 
