@@ -45,7 +45,7 @@ VueGWT will detect it automatically and use it as our Component template.
 
 In this template we see that we use the `linkName` property from our Component between double curly braces.
 This is called String interpolation.
-At runtime, this expression will be replaced by the value we have set in your Component class.
+At runtime, this expression is replaced by the value we have set in your Component class:
 
 {% raw %}
 <p class="example-container" data-name="Live Example 1">

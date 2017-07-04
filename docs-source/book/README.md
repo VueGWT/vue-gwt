@@ -21,4 +21,4 @@ It may also contain bugs.
 * Use **regular Java objects** in your templates
 * Support most of Vue.js features
 
-When you are ready, you can get started with by **[setting it up on your project](https://axellience.github.io/vue-gwt/project-setup.html)**.
+When you are ready, you can get started with by **[setting it up on your project](./project-setup.md)**.
