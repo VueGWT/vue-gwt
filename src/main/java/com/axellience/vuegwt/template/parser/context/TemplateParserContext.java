@@ -19,6 +19,7 @@ import java.util.Map;
 public class TemplateParserContext
 {
     public static final String CONTEXT_PREFIX = "VUE_GWT_CTX_";
+    private final ContextLayer rootContext;
     private final Deque<ContextLayer> contextLayers = new ArrayDeque<>();
     private final JClassType vueComponentClass;
     private int contextId = 0;
@@ -32,13 +33,12 @@ public class TemplateParserContext
     public TemplateParserContext(JClassType vueComponentClass)
     {
         this.vueComponentClass = vueComponentClass;
-        ContextLayer root = new ContextLayer("");
-        contextLayers.add(root);
+        this.rootContext = new ContextLayer("");
 
-        root.addVariable(String.class, "_uid");
+        this.rootContext.addVariable(String.class, "_uid");
         for (JField jField : vueComponentClass.getFields())
         {
-            root.addVariable(jField);
+            this.rootContext.addVariable(jField);
         }
         for (JMethod jMethod : vueComponentClass.getMethods())
         {
@@ -50,8 +50,10 @@ public class TemplateParserContext
             if ("".equals(name))
                 name = jMethod.getName();
 
-            root.addComputedVariable(jMethod.getReturnType(), name);
+            this.rootContext.addComputedVariable(jMethod.getReturnType(), name);
         }
+
+        this.contextLayers.add(this.rootContext);
     }
 
     public void addContextLayer()
@@ -135,5 +137,10 @@ public class TemplateParserContext
             return className;
 
         return classNameToFullyQualifiedName.get(className);
+    }
+
+    public void addRootVariable(String type, String name)
+    {
+        this.rootContext.addVariable(type, name);
     }
 }

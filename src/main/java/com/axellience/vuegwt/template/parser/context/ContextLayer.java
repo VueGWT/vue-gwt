@@ -37,6 +37,11 @@ public class ContextLayer
         return addVariable(new VariableInfo(type.getCanonicalName(), name));
     }
 
+    public VariableInfo addVariable(String type, String name)
+    {
+        return addVariable(new VariableInfo(type, name));
+    }
+
     public VariableInfo addComputedVariable(JType type, String name)
     {
         return addVariable(new ComputedVariableInfo(type.getQualifiedSourceName(), name));

@@ -72,6 +72,7 @@ public class TemplateParser
             if (element.hasAttr("style"))
             {
                 result.addStyleImports(element.attr("name"), element.attr("style"));
+                context.addRootVariable(element.attr("style"), element.attr("name"));
             }
             else if (element.hasAttr("class"))
             {
