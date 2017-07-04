@@ -35,3 +35,4 @@ buildNumber.properties
 ### Gitbook
 docs-source/book/_book
 docs-source/book/node_modules
+docs-source/book/dependencies/scripts
