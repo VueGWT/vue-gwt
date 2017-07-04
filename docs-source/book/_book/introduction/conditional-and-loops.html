@@ -1,0 +1,396 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Conditional and Loops · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="handling-user-input.html" />
+    
+    
+    <link rel="prev" href="your-first-component.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About Vue GWT
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../project-setup.html">
+            
+                <a href="../project-setup.html">
+            
+                    
+                    Project Setup
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="your-first-component.html">
+            
+                <a href="your-first-component.html">
+            
+                    
+                    Your First Component
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.2" data-path="conditional-and-loops.html">
+            
+                <a href="conditional-and-loops.html">
+            
+                    
+                    Conditional and Loops
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="handling-user-input.html">
+            
+                <a href="handling-user-input.html">
+            
+                    
+                    Handling User Input
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="composing-with-components.html">
+            
+                <a href="composing-with-components.html">
+            
+                    
+                    Composing with Components
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="backward-compatibility.html">
+            
+                <a href="backward-compatibility.html">
+            
+                    
+                    Backward Compatibility
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Conditional and Loops</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="conditional-and-loops">Conditional and Loops</h1>
+<h2 id="conditional">Conditional</h2>
+<p>It&#x2019;s quite simple to toggle the presence of an element too.
+Let&apos;s check this with a small example:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-keyword">public</span> String visible;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.visible = <span class="hljs-keyword">true</span>;
+    }
+}
+</code></pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;visible&quot;</span>&gt;</span>
+    The property &quot;visible&quot; is set to true!
+<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre>
+<p>In this case the <code>p</code> element will only be created if the property <code>visible</code> of your Component instance is set to <code>true</code>.
+This example demonstrates that we can bind data to not only text and attributes, but also the structure of the DOM.</p>
+<h2 id="loops">Loops</h2>
+<p>There are quite a few other directives, each with its own special functionality.
+For example, the v-for directive can be used for displaying a list of items.</p>
+<p>Let&apos;s assume we have a <code>Todo</code> POJO:</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span>
+</span>{
+    <span class="hljs-keyword">private</span> String text;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Todo</span><span class="hljs-params">(String s)</span> </span>{
+        <span class="hljs-keyword">this</span>.text = s;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getText</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> text;
+    }
+}
+</code></pre>
+<p>We will then create a list of <code>Todo</code> in our <code>DemoComponent</code>.
+Because Vue.js is only able to observe JavaScript Arrays you must use the provided JsArray collection class in your Components.
+This collection will be represented as a native JavaScript array in the browser.</p>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-keyword">public</span> JsArray&lt;Todo&gt; todos;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">new</span> JsArray&lt;&gt;();
+        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Java&quot;</span>));
+        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Vue GWT&quot;</span>));
+        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Build something awesome&quot;</span>));
+    }
+}
+</code></pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">vue-gwt:import</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.mypackage.Todo&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ol</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;Todo todo in todos&quot;</span>&gt;</span>
+        {{ todo.getText() }}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ol</span>&gt;</span>
+</code></pre>
+<p>Another difference with Vue.js is you must indicate your loop variable type.
+This is because Vue GWT compile templates expressions to Java and so need the type information.
+You can import Java types in your template by using the <code>vue-gwt:import</code> element.</p>
+<p><strong><a href="handling-user-input.html">Let users interact with our Component</a></strong></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="your-first-component.html" class="navigation navigation-prev " aria-label="Previous page: Your First Component">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="handling-user-input.html" class="navigation navigation-next " aria-label="Next page: Handling User Input">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"next":{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},"previous":{"title":"Your First Component","level":"1.3.1","depth":2,"path":"introduction/your-first-component.md","ref":"introduction/your-first-component.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","livereload"],"pluginsConfig":{"include":{},"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/conditional-and-loops.md","mtime":"2017-07-03T15:24:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-04T08:51:04.926Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

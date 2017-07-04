@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+	<!-- This page is used to test examples -->
+	<title>Vue JS Examples</title>
+</head>
+<body>
+
+<script>
+	var EXAMPLE_COUNT = 4;
+	for (var i = 1; i <= EXAMPLE_COUNT; i++) {
+		var exampleTitle = document.createElement("h3");
+		exampleTitle.innerText = "Example " + i;
+		document.body.appendChild(exampleTitle);
+
+		var exampleContainer = document.createElement("div");
+		exampleContainer.id = "example" + i;
+		document.body.appendChild(exampleContainer);
+	}
+</script>
+
+<script type="text/javascript"
+		language="javascript"
+		src="VueGwtExamples/VueGwtExamples.nocache.js"></script>
+
+<!-- Vue JS Framework -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+</body>
+</html>

@@ -19,8 +19,8 @@ window.axellience = {
 		Object.defineProperty(object, name, def);
 	},
 
-	getNativeType: function (typeName) {
-		return window[typeName];
+	getWindow: function () {
+		return window;
 	},
 
 	objectHasProperty: function (object, property) {

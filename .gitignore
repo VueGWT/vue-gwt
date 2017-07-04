@@ -33,4 +33,5 @@ buildNumber.properties
 .settings
 
 ### Gitbook
-docs-source/_book
+docs-source/book/_book
+docs-source/book/node_modules

@@ -1,11 +1,13 @@
+!INCLUDE "../dependencies.md"
+
 # Your First Component
 
-## Simple Demo Component
+## Simple Example Component
 
 Let's create our first Component and use it in a real app.
-We will call it `DemoComponent`.
+We will call it `Example1Component`.
 
-***DemoComponent.java***
+***Example1Component.java***
 
 To create your Component, you must create a Class annotated by `@Component` and `@JsType` that extends `VueComponent`.
 
@@ -14,7 +16,7 @@ All the `public` attributes and methods of this class will be accessible in your
 ```java
 @JsType
 @Component
-public class DemoComponent extends VueComponent {
+public class Example1Component extends VueComponent {
     public String linkName;
     
     @Override
@@ -28,15 +30,15 @@ The method `created` that is overridden in our Component is mandatory.
 It will be called each time an instance of your Component is created.
 You can see it as your Component "constructor".
 
-***DemoComponent.html***
+***Example1Component.html***
 
-We will then create a template for our `DemoComponent`.
+We will then create a template for our `Example1Component`.
 It should have the same name as our Java class file.
 We place this file next to our Java class file.
 VueGWT will detect it automatically and use it as our Component template.
 
 ```html
-<a src="https://github.com/Axellience/vue-gwt">
+<a href="https://github.com/Axellience/vue-gwt">
     {{ linkName }}
 </a>
 ```
@@ -45,7 +47,19 @@ In this template we see that we use the `linkName` property from our Component b
 This is called String interpolation.
 At runtime, this expression will be replaced by the value we have set in your Component class.
 
+{% raw %}
+<p class="example-container" data-name="Live Example 1">
+    <span id="example1"></span>
+</p>
+{% endraw %}
+
 This binding is dynamic, each time you will change the value of `linkName` in your Component instance, the value will update automatically in the template.
+
+**You can try it now** on this page! Open the console of your browser and type:
+```
+example1.linkName = "This is working!";
+```
+This works with all the examples of this documentation.
 
 ***GwtIndex.html***
 
