@@ -20,5 +20,6 @@ cd ..
 rm -rf docs/*
 cp -r docs-source/book/_book/* docs/
 rm docs/dependencies.md # Useless file getting copied
+git add docs
 
 echo "Success!"
