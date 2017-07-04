@@ -6,13 +6,13 @@ If we think about it, almost any type of application interface can be abstracted
 ## Creating a Child Component
 
 Let's create a child Component called `TodoComponent`.
-We will then instantiate this component in our `DemoComponent`.
+We will then instantiate this component in an `Example7Component`.
 
 This Component will display a simple message.
 
 ***TodoComponent.java***
 
-We first create a Class like for our `DemoComponent`.
+We first create a Class like for our previous examples.
 
 ```java
 @JsType
@@ -33,22 +33,24 @@ We add this file next to our Java class as before.
 </li>
 ```
 
-***DemoComponent.java***
+***Example7Component.java***
 
-We will then make a few changes to our `DemoComponent` to use `TodoComponent`.
+We will then create our `Example7Component` that uses `TodoComponent`.
 
-We first register `TodoComponent` to be used in our `DemoComponent` by passing it to the `@Component` annotation.
+We first register `TodoComponent` to be used in our `Example7Component` by passing it to the `@Component` annotation.
 
 ```java
 @JsType
 @Component(components = {TodoComponent.class})
-public class DemoComponent extends VueComponent {
+public class Example7Component extends VueComponent {
+    @Override
+    public void created() {}
 }
 ```
 
-***DemoComponent.html***
+***Example7Component.html***
 
-Now you can compose it in our DemoComponent’s template:
+Now you can compose it in our Example7Component’s template:
 
 ```html
 <div>
@@ -57,6 +59,11 @@ Now you can compose it in our DemoComponent’s template:
     </ol>
 </div>
 ```
+{% raw %}
+<p class="example-container" data-name="Live Example 7">
+    <span id="example7"></span>
+</p>
+{% endraw %}
 
 ### How Is the Component Html Name Set?
 
@@ -117,18 +124,18 @@ The `@Prop` annotation tells Vue GWT that our `todo` property will be passed fro
 </li>
 ```
 
-***DemoComponent.java***
+***Example8Component.java***
 
 Let's see how to pass this value from the parent.
 
-There is no change in the Java from our previous `Todo` example.
+We create a list of `Todos` like in the Example 4. 
 
 ```java
 @JsType
 @Component(components = {TodoComponent.class})
-public class DemoComponent extends VueComponent
+public class Example8Component extends VueComponent
 {
-    public JsArray<String> todos;
+    public JsArray<Todo> todos;
     
     @Override
     public void created() {
@@ -140,18 +147,23 @@ public class DemoComponent extends VueComponent
 }
 ```
 
-***DemoComponent.html***
+***Example8Component.html***
 
-But now we can are able to pass the todo into each repeated component using `v-bind`:
+And now we are able to pass the `Todo` into each repeated component using `v-bind`:
 
 ```html
 <vue-gwt:import class="com.mypackage.Todo"/>
 <div>
     <ol>
-        <todo v-for="String todo in todos" v-bind:todo="todo"></todo>
+        <todo v-for="Todo todo in todos" v-bind:todo="todo"></todo>
     </ol>
 </div>
 ```
+{% raw %}
+<p class="example-container" data-name="Live Example 8">
+    <span id="example8"></span>
+</p>
+{% endraw %}
 
 This is just a contrived example, but we have managed to separate our app into two smaller units, and the child is reasonably well-decoupled from the parent via the props interface.
 We can now further improve our <todo-item> component with more complex template and logic without affecting the parent app.
