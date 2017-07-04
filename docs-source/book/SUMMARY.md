@@ -8,3 +8,7 @@
     * [Handling User Input](introduction/handling-user-input.md)
     * [Composing with Components](introduction/composing-with-components.md)
     * [Backward Compatibility](introduction/backward-compatibility.md)
+* [Integration with GWT](gwt-integration/index.md)
+    * [GWT Styles](gwt-integration/styles.md)
+    * [GWT Resources](gwt-integration/resources.md)
+    * [GWT User Panels](gwt-integration/user-panels.md)

@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Backward Compatibility · GitBook</title>
+        <title>Integration with GWT · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../gwt-integration/" />
+    <link rel="next" href="styles.html" />
     
     
-    <link rel="prev" href="composing-with-components.html" />
+    <link rel="prev" href="../introduction/backward-compatibility.html" />
     
 
     </head>
@@ -115,9 +115,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="./">
+        <li class="chapter " data-level="1.3" data-path="../introduction/">
             
-                <a href="./">
+                <a href="../introduction/">
             
                     
                     Introduction
@@ -129,9 +129,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1" data-path="your-first-component.html">
+        <li class="chapter " data-level="1.3.1" data-path="../introduction/your-first-component.html">
             
-                <a href="your-first-component.html">
+                <a href="../introduction/your-first-component.html">
             
                     
                     Your First Component
@@ -142,9 +142,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.2" data-path="conditional-and-loops.html">
+        <li class="chapter " data-level="1.3.2" data-path="../introduction/conditional-and-loops.html">
             
-                <a href="conditional-and-loops.html">
+                <a href="../introduction/conditional-and-loops.html">
             
                     
                     Conditional and Loops
@@ -155,9 +155,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.3" data-path="handling-user-input.html">
+        <li class="chapter " data-level="1.3.3" data-path="../introduction/handling-user-input.html">
             
-                <a href="handling-user-input.html">
+                <a href="../introduction/handling-user-input.html">
             
                     
                     Handling User Input
@@ -168,9 +168,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4" data-path="composing-with-components.html">
+        <li class="chapter " data-level="1.3.4" data-path="../introduction/composing-with-components.html">
             
-                <a href="composing-with-components.html">
+                <a href="../introduction/composing-with-components.html">
             
                     
                     Composing with Components
@@ -181,9 +181,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3.5" data-path="backward-compatibility.html">
+        <li class="chapter " data-level="1.3.5" data-path="../introduction/backward-compatibility.html">
             
-                <a href="backward-compatibility.html">
+                <a href="../introduction/backward-compatibility.html">
             
                     
                     Backward Compatibility
@@ -199,9 +199,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4" data-path="../gwt-integration/">
+        <li class="chapter active" data-level="1.4" data-path="./">
             
-                <a href="../gwt-integration/">
+                <a href="./">
             
                     
                     Integration with GWT
@@ -213,9 +213,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.4.1" data-path="../gwt-integration/styles.html">
+        <li class="chapter " data-level="1.4.1" data-path="styles.html">
             
-                <a href="../gwt-integration/styles.html">
+                <a href="styles.html">
             
                     
                     GWT Styles
@@ -226,7 +226,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.2" data-path="../gwt-integration/resources.md">
+        <li class="chapter " data-level="1.4.2" data-path="resources.md">
             
                 <span>
             
@@ -239,7 +239,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.3" data-path="../gwt-integration/user-panels.md">
+        <li class="chapter " data-level="1.4.3" data-path="user-panels.md">
             
                 <span>
             
@@ -287,7 +287,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Backward Compatibility</a>
+        <a href=".." >Integration with GWT</a>
     </h1>
 </div>
 
@@ -302,24 +302,14 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="backward-compatibility">Backward Compatibility</h1>
-<p>For easy backward compatibility it&apos;s possible to wrap any Vue GWT Component in a gwt-user <code>Panel</code>.
-For this you need to use <code>VueGwtPanel</code></p>
-<p>For example, let&apos;s instantiate our <code>DemoComponent</code> using this mechanism:</p>
-<p><strong><em>GwtIndex.html</em></strong></p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;childComponentAttachPoint&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<p><strong><em>RootGwtApp.java</em></strong></p>
-<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootGwtApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-comment">// Create a VueGwtPanel, it&apos;s a regular GWT Widget and can be attached to any GWT Widget</span>
-        VueGwtPanel vueGwtPanel = <span class="hljs-keyword">new</span> VueGwtPanel(DemoComponent.class);
-
-        <span class="hljs-comment">// Attach it to inside our DOM element</span>
-        RootPanel.get(<span class="hljs-string">&quot;childComponentAttachPoint&quot;</span>).add(vueGwtPanel);
-    }
-}
-</code></pre>
+                                <h1 id="gwt-integration">GWT Integration</h1>
+<p>GWT provides several technologies.
+Vue GWT integrates with them.</p>
+<ul>
+<li><a href="styles.html">GWT Styles</a></li>
+<li><a href="resources.md">GWT Resources</a></li>
+<li><a href="user-panels.md">GWT User Panels</a></li>
+</ul>
 
                                 
                                 </section>
@@ -347,12 +337,12 @@ For this you need to use <code>VueGwtPanel</code></p>
 
             
                 
-                <a href="composing-with-components.html" class="navigation navigation-prev " aria-label="Previous page: Composing with Components">
+                <a href="../introduction/backward-compatibility.html" class="navigation navigation-prev " aria-label="Previous page: Backward Compatibility">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="../gwt-integration/" class="navigation navigation-next " aria-label="Next page: Integration with GWT">
+                <a href="styles.html" class="navigation navigation-next " aria-label="Next page: GWT Styles">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -363,7 +353,7 @@ For this you need to use <code>VueGwtPanel</code></p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Backward Compatibility","level":"1.3.5","depth":2,"next":{"title":"Integration with GWT","level":"1.4","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"GWT Styles","level":"1.4.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"GWT Resources","level":"1.4.2","depth":2,"path":"gwt-integration/resources.md","ref":"gwt-integration/resources.md","articles":[]},{"title":"GWT User Panels","level":"1.4.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/backward-compatibility.md","mtime":"2017-07-03T15:07:18.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-04T14:25:51.948Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Integration with GWT","level":"1.4","depth":1,"next":{"title":"GWT Styles","level":"1.4.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},"previous":{"title":"Backward Compatibility","level":"1.3.5","depth":2,"path":"introduction/backward-compatibility.md","ref":"introduction/backward-compatibility.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/index.md","mtime":"2017-07-04T13:00:58.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-04T14:25:51.948Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -199,6 +199,64 @@
             
         </li>
     
+        <li class="chapter " data-level="1.4" data-path="../gwt-integration/">
+            
+                <a href="../gwt-integration/">
+            
+                    
+                    Integration with GWT
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../gwt-integration/styles.html">
+            
+                <a href="../gwt-integration/styles.html">
+            
+                    
+                    GWT Styles
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../gwt-integration/resources.md">
+            
+                <span>
+            
+                    
+                    GWT Resources
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../gwt-integration/user-panels.md">
+            
+                <span>
+            
+                    
+                    GWT User Panels
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
 
     
 
@@ -244,15 +302,19 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="composing-with-components">Composing with Components</h1>
+                                <script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="/dependencies/scripts/VueGwtExamples.nocache.js"></script>
+<link rel="stylesheet" href="/dependencies/style/custom-style.css">
+
+<h1 id="composing-with-components">Composing with Components</h1>
 <p>The component system is another important concept in Vue, because it&#x2019;s an abstraction that allows us to build large-scale applications composed of small, self-contained, and often reusable components.
 If we think about it, almost any type of application interface can be abstracted into a tree of components.</p>
 <h2 id="creating-a-child-component">Creating a Child Component</h2>
 <p>Let&apos;s create a child Component called <code>TodoComponent</code>.
-We will then instantiate this component in our <code>DemoComponent</code>.</p>
+We will then instantiate this component in an <code>Example7Component</code>.</p>
 <p>This Component will display a simple message.</p>
 <p><strong><em>TodoComponent.java</em></strong></p>
-<p>We first create a Class like for our <code>DemoComponent</code>.</p>
+<p>We first create a Class like for our previous examples.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
@@ -267,22 +329,29 @@ We add this file next to our Java class as before.</p>
     I&apos;m an amazing Todo!
 <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
 </code></pre>
-<p><strong><em>DemoComponent.java</em></strong></p>
-<p>We will then make a few changes to our <code>DemoComponent</code> to use <code>TodoComponent</code>.</p>
-<p>We first register <code>TodoComponent</code> to be used in our <code>DemoComponent</code> by passing it to the <code>@Component</code> annotation.</p>
+<p><strong><em>Example7Component.java</em></strong></p>
+<p>We will then create our <code>Example7Component</code> that uses <code>TodoComponent</code>.</p>
+<p>We first register <code>TodoComponent</code> to be used in our <code>Example7Component</code> by passing it to the <code>@Component</code> annotation.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>(components = {TodoComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example7Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
-<p><strong><em>DemoComponent.html</em></strong></p>
-<p>Now you can compose it in our DemoComponent&#x2019;s template:</p>
+<p><strong><em>Example7Component.html</em></strong></p>
+<p>Now you can compose it in our Example7Component&#x2019;s template:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">ol</span>&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-name">todo</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">todo</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-name">ol</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
+<p class="example-container" data-name="Live Example 7">
+    <span id="example7"></span>
+</p>
+
+
 <h3 id="how-is-the-component-html-name-set">How Is the Component Html Name Set?</h3>
 <p>The name of the html element for our Component in the template (here, <code>todo</code>) is determined using the Component&apos;s Class name.</p>
 <p>The name is converted from CamelCase to kebab-case.
@@ -326,14 +395,13 @@ We should be able to pass data from the parent scope into child components.</p>
     {{ todo.getText() }}
 <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
 </code></pre>
-<p><strong><em>DemoComponent.java</em></strong></p>
+<p><strong><em>Example8Component.java</em></strong></p>
 <p>Let&apos;s see how to pass this value from the parent.</p>
-<p>There is no change in the Java from our previous <code>Todo</code> example.</p>
+<p>We create a list of <code>Todos</code> like in the Example 4. </p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>(components = {TodoComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span>{
-    <span class="hljs-keyword">public</span> JsArray&lt;String&gt; todos;
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example8Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-keyword">public</span> JsArray&lt;Todo&gt; todos;
 
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
@@ -344,15 +412,20 @@ We should be able to pass data from the parent scope into child components.</p>
     }
 }
 </code></pre>
-<p><strong><em>DemoComponent.html</em></strong></p>
-<p>But now we can are able to pass the todo into each repeated component using <code>v-bind</code>:</p>
+<p><strong><em>Example8Component.html</em></strong></p>
+<p>And now we are able to pass the <code>Todo</code> into each repeated component using <code>v-bind</code>:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">vue-gwt:import</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.mypackage.Todo&quot;</span>/&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">ol</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">todo</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;String todo in todos&quot;</span> <span class="hljs-attr">v-bind:todo</span>=<span class="hljs-string">&quot;todo&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">todo</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">todo</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;Todo todo in todos&quot;</span> <span class="hljs-attr">v-bind:todo</span>=<span class="hljs-string">&quot;todo&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">todo</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-name">ol</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
+<p class="example-container" data-name="Live Example 8">
+    <span id="example8"></span>
+</p>
+
+
 <p>This is just a contrived example, but we have managed to separate our app into two smaller units, and the child is reasonably well-decoupled from the parent via the props interface.
 We can now further improve our <todo-item> component with more complex template and logic without affecting the parent app.</todo-item></p>
 <p>In a large application, it is necessary to divide the whole app into components to make development manageable.
@@ -410,7 +483,7 @@ We will talk a lot more about components later in the guide, but here&#x2019;s a
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Composing with Components","level":"1.3.4","depth":2,"next":{"title":"Backward Compatibility","level":"1.3.5","depth":2,"path":"introduction/backward-compatibility.md","ref":"introduction/backward-compatibility.md","articles":[]},"previous":{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/composing-with-components.md","mtime":"2017-07-03T15:25:14.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-04T10:26:55.319Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Composing with Components","level":"1.3.4","depth":2,"next":{"title":"Backward Compatibility","level":"1.3.5","depth":2,"path":"introduction/backward-compatibility.md","ref":"introduction/backward-compatibility.md","articles":[]},"previous":{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/composing-with-components.md","mtime":"2017-07-04T12:40:01.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-04T14:25:51.948Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

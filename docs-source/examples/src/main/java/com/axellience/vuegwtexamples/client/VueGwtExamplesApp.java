@@ -11,6 +11,7 @@ import com.axellience.vuegwtexamples.client.examples.example5.Example5Component;
 import com.axellience.vuegwtexamples.client.examples.example6.Example6Component;
 import com.axellience.vuegwtexamples.client.examples.example7.Example7Component;
 import com.axellience.vuegwtexamples.client.examples.example8.Example8Component;
+import com.axellience.vuegwtexamples.client.examples.example9.Example9Component;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Document;
 
@@ -32,6 +33,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("example6", Example6Component.class);
         this.addExample("example7", Example7Component.class);
         this.addExample("example8", Example8Component.class);
+        this.addExample("example9", Example9Component.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)
