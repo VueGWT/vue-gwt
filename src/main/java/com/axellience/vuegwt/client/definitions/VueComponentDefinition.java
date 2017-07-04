@@ -109,16 +109,10 @@ public abstract class VueComponentDefinition
                 ComputedDefinition computedDefinition = new ComputedDefinition();
                 computed.set(expressionId, computedDefinition);
                 computedDefinition.get = JsTools.get(templateResource, expressionId);
-                JsTools.log(expression.getId() + " -> " + JsTools
-                    .get(templateResource, expressionId)
-                    .toString());
             }
             else
             {
                 methods.set(expressionId, JsTools.get(templateResource, expressionId));
-                JsTools.log(expression.getId() + " -> " + JsTools
-                    .get(templateResource, expressionId)
-                    .toString());
             }
         }
     }
