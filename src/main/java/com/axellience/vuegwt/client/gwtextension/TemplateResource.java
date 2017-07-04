@@ -1,11 +1,13 @@
 package com.axellience.vuegwt.client.gwtextension;
 
 import com.axellience.vuegwt.template.TemplateResourceGenerator;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ResourcePrototype;
 import com.google.gwt.resources.ext.DefaultExtensions;
 import com.google.gwt.resources.ext.ResourceGeneratorType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Source: GWT Project http://www.gwtproject.org/
@@ -22,4 +24,5 @@ public interface TemplateResource extends ResourcePrototype
 
     String getText();
     List<TemplateExpressionBase> getTemplateExpressions();
+    Map<String, CssResource> getTemplateStyles();
 }

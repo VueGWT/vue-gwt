@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static com.axellience.vuegwt.client.jsnative.types.JsObject.getOwnPropertyNames;
-
 /**
  * Java representation of a Vue Component definition
  * Class extending this one are generated using the Annotation processor for each VueComponent
@@ -83,15 +81,11 @@ public abstract class VueComponentDefinition
      */
     private void initStyles(TemplateResource templateResource)
     {
-        for (String property : getOwnPropertyNames(templateResource).iterate())
+        for (Entry<String, CssResource> styleInfo : templateResource.getTemplateStyles().entrySet())
         {
-            Object value = JsTools.get(templateResource, property);
-            if (value instanceof CssResource)
-            {
-                CssResource style = (CssResource) value;
-                style.ensureInjected();
-                componentStyles.put(property, style);
-            }
+            CssResource style = styleInfo.getValue();
+            style.ensureInjected();
+            componentStyles.put(styleInfo.getKey(), style);
         }
     }
 
@@ -171,6 +165,7 @@ public abstract class VueComponentDefinition
         for (Entry<String, CssResource> style : componentStyles.entrySet())
         {
             JsTools.set(data, style.getKey(), style.getValue());
+            JsTools.log(style.getKey() + " " + style.getValue());
         }
     }
 

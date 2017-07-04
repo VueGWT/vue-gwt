@@ -33,6 +33,7 @@ import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.util.Util;
 import com.google.gwt.resources.client.ClientBundle.Source;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.ext.AbstractResourceGenerator;
 import com.google.gwt.resources.ext.ResourceContext;
 import com.google.gwt.resources.ext.ResourceGeneratorUtil;
@@ -41,7 +42,9 @@ import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.user.rebind.StringSourceWriter;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -148,6 +151,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
                 + ".INSTANCE."
                 + StyleProviderGenerator.STYLE_BUNDLE_METHOD_NAME
                 + "()";
+            sw.println("@jsinterop.annotations.JsProperty");
             sw.println("private "
                 + entry.getValue()
                 + " "
@@ -156,6 +160,19 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
                 + styleInstance
                 + ";");
         }
+
+        String mapType =
+            Map.class.getCanonicalName() + "<String, " + CssResource.class.getCanonicalName() + ">";
+        sw.println("public " + mapType + "getTemplateStyles() { ");
+        sw.indent();
+        sw.println(mapType + " result = new " + HashMap.class.getCanonicalName() + "<>();");
+        for (String styleName : templateParserResult.getStyleImports().keySet())
+        {
+            sw.println("result.put(\"" + styleName +"\", " + styleName +");");
+        }
+        sw.println("return result;");
+        sw.outdent();
+        sw.println("}");
 
         // Add component Template String
         sw.println("public String getText() {");
@@ -248,6 +265,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
      * memory error. Break up the constant and generate code that appends using a
      * buffer.
      */
+
     private void writeLongString(SourceWriter sw, String toWrite)
     {
         sw.println("StringBuilder builder = new StringBuilder();");
