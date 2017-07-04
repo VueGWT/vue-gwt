@@ -1,3 +1,5 @@
+!INCLUDE "../dependencies.md"
+
 # Composing with Components
 
 The component system is another important concept in Vue, because it’s an abstraction that allows us to build large-scale applications composed of small, self-contained, and often reusable components.
@@ -133,8 +135,7 @@ We create a list of `Todos` like in the Example 4.
 ```java
 @JsType
 @Component(components = {TodoComponent.class})
-public class Example8Component extends VueComponent
-{
+public class Example8Component extends VueComponent {
     public JsArray<Todo> todos;
     
     @Override

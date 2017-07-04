@@ -1,3 +1,5 @@
+!INCLUDE "../dependencies.md"
+
 # Handling User Input
 
 ## Events
@@ -79,7 +81,7 @@ For example if you have a property `myTodo` of type `Todo` then:
 ```
 Will only work if the `text` property in `Todo` has the `@JsProperty` annotation.
 
-`v-model` expression is also not type checked at compile time.
+`v-model` expressions are also not type checked at compile time.
 Those limitations only exists for `v-model`.
 
 A real world application is never just one Components, let's see how to **[compose Component's together](./composing-with-components.md)**.
