@@ -191,7 +191,7 @@ public class VueComponentDefinitionGenerator
             Class<?>[] componentsClass = annotation.components();
             Stream
                 .of(componentsClass)
-                .forEach(clazz -> constructorBuilder.addStatement("this.addComponent($L.class)",
+                .forEach(clazz -> constructorBuilder.addStatement("this.addChildComponent($L.class)",
                     clazz.getCanonicalName()));
         }
         catch (MirroredTypesException mte)
@@ -200,7 +200,7 @@ public class VueComponentDefinitionGenerator
             classTypeMirrors.forEach(classTypeMirror ->
             {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
-                constructorBuilder.addStatement("this.addComponent($L.class)",
+                constructorBuilder.addStatement("this.addChildComponent($L.class)",
                     classTypeElement.getQualifiedName().toString());
             });
         }

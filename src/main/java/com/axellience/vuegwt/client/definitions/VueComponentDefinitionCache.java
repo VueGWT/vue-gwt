@@ -28,8 +28,11 @@ public class VueComponentDefinitionCache
     {
         VueComponentDefinition componentDefinition =
             componentDefinitionsCache.get(vueComponentClass);
-        if (componentDefinition != null)
+
+        if (componentDefinition != null) {
+            componentDefinition.ensureChildComponentsInjected();
             return componentDefinition;
+        }
 
         throw new RuntimeException("Couldn't find the given Component "
             + vueComponentClass.getCanonicalName()

@@ -19,9 +19,11 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import static com.axellience.vuegwt.client.jsnative.types.JsObject.getOwnPropertyNames;
 
@@ -59,6 +61,9 @@ public abstract class VueComponentDefinition
     }
 
     private final Map<String, CssResource> componentStyles = new HashMap<>();
+
+    private final Set<Class<? extends VueComponent>> childComponents = new HashSet<>();
+    private boolean areChildComponentsInjected = false;
 
     /**
      * Set the template resource for the component
@@ -232,7 +237,7 @@ public abstract class VueComponentDefinition
                 JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
 
         if (typeJsName != null)
-            propDefinition.type = JsTools.getNativeType(typeJsName);
+            propDefinition.type = JsTools.getObjectProperty(JsTools.getWindow(), typeJsName);
 
         props.set(jsName, propDefinition);
     }
@@ -244,10 +249,25 @@ public abstract class VueComponentDefinition
             JsTools.getObjectProperty(vuegwt$javaComponentInstance, methodName);
     }
 
-    protected void addComponent(Class<? extends VueComponent> componentClass)
+    protected void addChildComponent(Class<? extends VueComponent> componentClass)
     {
-        this.components.set(VueGwtTools.componentToTagName(componentClass),
-            VueComponentDefinitionCache.getComponentDefinitionForClass(componentClass));
+        this.childComponents.add(componentClass);
+    }
+
+    protected void ensureChildComponentsInjected()
+    {
+        if (areChildComponentsInjected)
+            return;
+
+        this.areChildComponentsInjected = true;
+
+        for (Class<? extends VueComponent> childComponentClass : childComponents)
+        {
+            VueComponentDefinition childComponentDefinition =
+                VueComponentDefinitionCache.getComponentDefinitionForClass(childComponentClass);
+            this.components.set(VueGwtTools.componentToTagName(childComponentClass),
+                childComponentDefinition);
+        }
     }
 
     private void abstractCopyJavaMethod(JsObject container, String javaName, String jsName)

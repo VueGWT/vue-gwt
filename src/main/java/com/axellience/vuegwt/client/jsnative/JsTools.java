@@ -12,9 +12,6 @@ public class JsTools
     public static native void log(String message);
 
     @JsMethod(namespace = "axellience")
-    public static native Object getNativeType(String typeName);
-
-    @JsMethod(namespace = "axellience")
     public static native Object getWindow();
 
     @JsMethod(namespace = "axellience")
