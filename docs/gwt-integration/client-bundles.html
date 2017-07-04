@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Styles · GitBook</title>
+        <title>Client Bundles (Images) · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="client-bundles.html" />
+    <link rel="next" href="user-panels.html" />
     
     
-    <link rel="prev" href="./" />
+    <link rel="prev" href="styles.html" />
     
 
     </head>
@@ -200,7 +200,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter active" data-level="1.4.1" data-path="styles.html">
+        <li class="chapter " data-level="1.4.1" data-path="styles.html">
             
                 <a href="styles.html">
             
@@ -213,7 +213,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.2" data-path="client-bundles.html">
+        <li class="chapter active" data-level="1.4.2" data-path="client-bundles.html">
             
                 <a href="client-bundles.html">
             
@@ -274,7 +274,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Styles</a>
+        <a href=".." >Client Bundles (Images)</a>
     </h1>
 </div>
 
@@ -293,77 +293,55 @@
 <script src="/dependencies/scripts/VueGwtExamples.nocache.js"></script>
 <link rel="stylesheet" href="/dependencies/style/custom-style.css">
 
-<h1 id="gwt-styles">GWT Styles</h1>
-<h2 id="adding-style-to-our-component">Adding Style to Our Component</h2>
-<p>Vue GWT is compatible with GSS styles.
-You can declare your <code>CssResource</code> interfaces and use them within your Vue GWT Components.</p>
-<p>You also get type checking of your styles rules at compile type.
-So if you try to use <code>myStyle.bob()</code> in your template, and this style doesn&apos;t exist, the compilation will break with an explicit error.</p>
-<p>Let see it in action with a simple example.</p>
-<p>We will create a simple style that set the text color to red.</p>
-<p><strong><em>Example9ComponentStyle.java</em></strong></p>
-<p>First, we create a <code>CssResource</code> interface.
-We also add the <code>@Style</code> annotation to it.
-This annotation will automatically generate a GWT Bundle for us.</p>
-<pre><code class="lang-java"><span class="hljs-meta">@Style</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Example9ComponentStyle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CssResource</span>
+<h1 id="gwt-client-bundles-images">GWT Client Bundles (Images)</h1>
+<p>Vue GWT also support GWT <code>ClientBundles</code>.</p>
+<p>Let see how this work with an example.</p>
+<p><strong><em>Example10ClientBundle.java</em></strong></p>
+<p>First, we create a simple <code>ClientBundle</code> with an <code>ImageResource</code>:</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Example10ClientBundle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClientBundle</span>
 </span>{
-    <span class="hljs-function">String <span class="hljs-title">red</span><span class="hljs-params">()</span></span>;
+    Example10ClientBundle INSTANCE = GWT.create(Example10ClientBundle.class);
+
+    <span class="hljs-meta">@Source</span>(<span class="hljs-string">&quot;example10.jpg&quot;</span>)
+    <span class="hljs-function">ImageResource <span class="hljs-title">myImage</span><span class="hljs-params">()</span></span>;
 }
 </code></pre>
-<p><strong><em>Example9ComponentStyle.gss</em></strong></p>
-<p>We then create the style for this interface.
-It&apos;s important to give the gss file the same name as your Interface.
-This is because the binding is made automatically by Vue GWT based on the name.</p>
-<pre><code class="lang-css"><span class="hljs-selector-class">.red</span> {
-    <span class="hljs-attribute">color</span>: red;
-}
-</code></pre>
-<p><strong><em>Example9Component.java</em></strong></p>
-<p>Let&apos;s use our style in a small Component.
-For the Java part, nothing is needed, so we can just create an empty Component class.</p>
+<p>There is no need for any special annotations on it.</p>
+<p><strong><em>Example10Component.java</em></strong></p>
+<p>We then create a Component to use our <code>ClientBundle</code>.
+In this component we add a public field for our <code>Example10ClientBundle</code>.
+This will expose the bundle to the Template.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example9Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example10Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
 </span>{
+    <span class="hljs-keyword">public</span> Example10ClientBundle myBundle;
+
     <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        myBundle = Example10ClientBundle.INSTANCE;
+    }
 }
 </code></pre>
-<p><strong><em>Example9Component.html</em></strong></p>
-<p>In the template, we can now import our style.
-We just have to add an <code>vue-gwt:import</code> statement on top of our component.
-In the <code>style</code> attribute, we put the full class name of our Style interface.
-We also add a <code>name</code> attribute to give our style a name in the template.</p>
-<p>We can then simply use Vue <code>v-bind</code> directive to bind our style.</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">vue-gwt:import</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;com.mypackage.Example9ComponentStyle&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;myStyle&quot;</span>/&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;myStyle.red()&quot;</span>&gt;</span>
-    I&apos;m a red text!
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<p><strong><em>Example10Component.html</em></strong></p>
+<p>We can then simply access our bundle instance from the template:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">v-bind:src</span>=<span class="hljs-string">&quot;myBundle.myImage().getSafeUri().asString()&quot;</span>/&gt;</span>
 </code></pre>
-<p class="example-container" data-name="Live Example 9">
-    <span id="example9"></span>
+<p class="example-container" data-name="Live Example 10">
+    <span id="example10"></span>
 </p>
 
 
-<h2 id="adding-more-than-one-css-class">Adding More Than One CSS Class</h2>
-<p>You can add more than one CSS Class to your Components by using the Array syntax:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;[myStyle.red(), myStyle.bold()]&quot;</span>&gt;</span>
-    I have more than one CSS Class applied
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<h2 id="conditional-styling">Conditional Styling</h2>
-<p>You can apply a Style conditionally by using a ternary expression (be careful with the quotes):</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;isInvalid ? myStyle.red() : &quot;&quot;&apos;</span>&gt;</span>
-    I&apos;m red if isInvalid is true 
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<h2 id="conditional-styling-with-several-css-class">Conditional Styling With Several CSS Class</h2>
-<p>You can combine both the Array and the ternary syntax:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;[isInvalid ? myStyle.red() : &quot;&quot;, myStyle.bold()]&apos;</span>&gt;</span>
-    I&apos;m red if isInvalid is true, and I&apos;m always bold
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
+<h2 id="hey-couldnt-i-use-this-for-styles">Hey, Couldn&apos;t I Use This for Styles?</h2>
+<p>Yes you can.
+If you want (or have to) separate your Style interface from your GSS files it&apos;s still possible to use them in your Template.</p>
+<p>In that case:</p>
+<ul>
+<li>Don&apos;t add the <code>@Style</code> annotation on your Style interface</li>
+<li>Call <code>ensureInjected()</code> on your Styles somewhere in your App</li>
+<li>Create a <code>ClientBundle</code> for your Style (or add them to an existing one)</li>
+</ul>
+<p>You can then expose your Styles (or their <code>ClientBundle</code>) in your Component instead of using the preferred <code>vue-gwt:import</code> method.</p>
 
                                 
                                 </section>
@@ -391,12 +369,12 @@ We also add a <code>name</code> attribute to give our style a name in the templa
 
             
                 
-                <a href="./" class="navigation navigation-prev " aria-label="Previous page: Integration with GWT">
+                <a href="styles.html" class="navigation navigation-prev " aria-label="Previous page: Styles">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="client-bundles.html" class="navigation navigation-next " aria-label="Next page: Client Bundles (Images)">
+                <a href="user-panels.html" class="navigation navigation-next " aria-label="Next page: User Panels">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -407,7 +385,7 @@ We also add a <code>name</code> attribute to give our style a name in the templa
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Styles","level":"1.4.1","depth":2,"next":{"title":"Client Bundles (Images)","level":"1.4.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},"previous":{"title":"Integration with GWT","level":"1.4","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.4.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.4.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.4.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/styles.md","mtime":"2017-07-04T14:28:06.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-04T15:48:50.990Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Client Bundles (Images)","level":"1.4.2","depth":2,"next":{"title":"User Panels","level":"1.4.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]},"previous":{"title":"Styles","level":"1.4.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/client-bundles.md","mtime":"2017-07-04T15:24:20.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-04T15:48:50.990Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

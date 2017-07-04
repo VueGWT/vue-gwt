@@ -4,6 +4,7 @@ import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.Vue;
 import com.axellience.vuegwtexamples.client.examples.example1.Example1Component;
+import com.axellience.vuegwtexamples.client.examples.example10.Example10Component;
 import com.axellience.vuegwtexamples.client.examples.example2.Example2Component;
 import com.axellience.vuegwtexamples.client.examples.example3.Example3Component;
 import com.axellience.vuegwtexamples.client.examples.example4.Example4Component;
@@ -34,6 +35,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("example7", Example7Component.class);
         this.addExample("example8", Example8Component.class);
         this.addExample("example9", Example9Component.class);
+        this.addExample("example10", Example10Component.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)

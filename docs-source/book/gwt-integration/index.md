@@ -3,6 +3,6 @@
 GWT provides several technologies.
 Vue GWT integrates with them.
 
-* [GWT Styles](./styles.md)
-* [GWT Resources](./resources.md)
-* [GWT User Panels](./user-panels.md)
+* [Styles](styles.md)
+* [Client Bundles (Images)](client-bundles.md)
+* [User Panels](user-panels.md)

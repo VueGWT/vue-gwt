@@ -84,4 +84,4 @@ Will only work if the `text` property in `Todo` has the `@JsProperty` annotation
 `v-model` expressions are also not type checked at compile time.
 Those limitations only exists for `v-model`.
 
-A real world application is never just one Components, let's see how to **[compose Component's together](./composing-with-components.md)**.
+A real world application is never just one Component, let's see how to **[compose Components together](./composing-with-components.md)**.

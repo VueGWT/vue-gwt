@@ -130,7 +130,7 @@ The `@Prop` annotation tells Vue GWT that our `todo` property will be passed fro
 
 Let's see how to pass this value from the parent.
 
-We create a list of `Todos` like in the Example 4. 
+We create a list of `Todos` like in the Example 4:
 
 ```java
 @JsType
@@ -182,5 +182,5 @@ We will talk a lot more about components later in the guide, but here’s an (im
 </div>
 ```
 
-Your shiny new Vue GWT components will play nicely with existing gwt-user Widgets.
-**[Checkout the backward compatibility](./backward-compatibility.md)**. 
+Your shiny new Vue GWT Components will play nicely with GWT.
+**[Checkout integration with GWT](../gwt-integration/index.md)**. 
