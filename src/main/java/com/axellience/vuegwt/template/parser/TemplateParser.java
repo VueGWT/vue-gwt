@@ -377,6 +377,7 @@ public class TemplateParser
         loopVariableDefinition = variableInfo.getGlobalName();
 
         context.setCurrentExpressionReturnType(JsArray.class.getCanonicalName());
+        context.setCurrentExpressionKind(TemplateExpressionKind.COMPUTED_PROPERTY);
         String inExpression = splitExpression[1];
         TemplateExpression templateExpression =
             this.processJavaExpression(inExpression, context, result);
