@@ -6,6 +6,7 @@ mvn clean package
 cd ..
 
 echo "-> Copy built examples to Gitbook"
+mkdir book/dependencies/scripts
 rm book/dependencies/scripts/*
 cp examples/target/vue-gwt-examples-*/VueGwtExamples/* book/dependencies/scripts/
 
