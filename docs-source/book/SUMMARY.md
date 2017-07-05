@@ -9,6 +9,7 @@
     * [Composing with Components](introduction/composing-with-components.md)
 * [The Vue Instance](the-vue-instance.md)
 * [Template Syntax](template-syntax.md)
+* [Computed Properties and Watchers](computed-and-watchers.md)
 * [Integration with GWT](gwt-integration/index.md)
     * [Styles](gwt-integration/styles.mdw)
     * [Client Bundles (Images)](gwt-integration/client-bundles.md)

@@ -5,6 +5,7 @@ import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.Vue;
 import com.axellience.vuegwtexamples.client.examples.example1.SimpleLinkComponent;
 import com.axellience.vuegwtexamples.client.examples.example10.KittenComponent;
+import com.axellience.vuegwtexamples.client.examples.example11.ReverseComponent;
 import com.axellience.vuegwtexamples.client.examples.example2.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.example3.CanHideComponent;
 import com.axellience.vuegwtexamples.client.examples.example4.SimpleTodoListComponent;
@@ -36,6 +37,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("todoListComponent", TodoListComponent.class);
         this.addExample("melisandreComponent", MelisandreComponent.class);
         this.addExample("kittenComponent", KittenComponent.class);
+        this.addExample("reverseComponent", ReverseComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)
