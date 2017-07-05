@@ -229,10 +229,11 @@ public class TemplateParser
     private String processExpression(String expressionString, TemplateParserContext context,
         TemplateParserResult result)
     {
+        if ("".equals(expressionString))
+            return "";
+
         if (expressionString.startsWith("[") && expressionString.endsWith("]"))
-        {
             return processArrayExpression(expressionString, context, result);
-        }
 
         // Try to parse the expression as JSON
         try
