@@ -15,7 +15,7 @@ import com.axellience.vuegwt.client.jsnative.VueGwtTools;
  * instance = myComponentFactory.build()
  * @author Adrien Baron
  */
-public class VueComponentFactory
+public class VueComponentFactory<T extends VueComponent>
 {
     private JsObject extendedVueClass;
 
@@ -24,7 +24,7 @@ public class VueComponentFactory
         this.extendedVueClass = extendedVueClass;
     }
 
-    public <T extends VueComponent> T build()
+    public T build()
     {
         return VueGwtTools.createInstanceForVueClass(extendedVueClass);
     }

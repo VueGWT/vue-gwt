@@ -110,4 +110,4 @@ But you can try removing a Todo in console:
 simpleTodoListComponent.todos.shift();
 ```
 
-**[Let users interact with our Component](./handling-user-input.md)**
+**[Let users interact with our Component](./handling-user-input.md)**.

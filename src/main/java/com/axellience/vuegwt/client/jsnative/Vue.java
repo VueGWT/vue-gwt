@@ -59,10 +59,10 @@ public class Vue
      * @return A factory that can be used to create instance of your VueComponent
      */
     @JsOverlay
-    public static VueComponentFactory extend(Class<? extends VueComponent> vueComponentClass)
+    public static <T extends VueComponent> VueComponentFactory<T> extend(Class<T> vueComponentClass)
     {
         JsObject extendedVueClass = extend(getComponentDefinitionForClass(vueComponentClass));
-        return new VueComponentFactory(extendedVueClass);
+        return new VueComponentFactory<>(extendedVueClass);
     }
 
     /**
@@ -98,10 +98,8 @@ public class Vue
     @JsOverlay
     public static void component(Class<? extends VueComponent> vueComponentClass)
     {
-        Vue.component(
-            VueGwtTools.componentToTagName(vueComponentClass),
-            getComponentDefinitionForClass(vueComponentClass)
-        );
+        Vue.component(VueGwtTools.componentToTagName(vueComponentClass),
+            getComponentDefinitionForClass(vueComponentClass));
     }
 
     /**

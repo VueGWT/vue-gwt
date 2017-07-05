@@ -18,7 +18,7 @@ public class VueGwtPanel<T extends VueComponent> extends SimplePanel
     {
         super();
         this.rootComponentClass = rootComponentClass;
-        VueComponentFactory factory = Vue.extend(this.rootComponentClass);
+        VueComponentFactory<T> factory = Vue.extend(this.rootComponentClass);
         vueComponentInstance = factory.build();
     }
 

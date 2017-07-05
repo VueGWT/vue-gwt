@@ -153,4 +153,4 @@ The `v-bind` attribute you are seeing is called a directive.
 Directives are prefixed with `v-` to indicate that they are special attributes provided by Vue, and as you may have guessed, they apply special reactive behavior to the rendered DOM.
 Here it is basically saying "keep this element’s href attribute up-to-date with the `linkTarget` property on the Vue instance."
 
-**[Make it dynamic with Conditions and Loops](./conditional-and-loops.md)**
+**[Make it dynamic with Conditions and Loops](./conditional-and-loops.md)**.

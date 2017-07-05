@@ -183,5 +183,7 @@ public class RootGwtApp implements EntryPoint {
 
 This is the equivalent of calling `Vue.component(...)` in Vue.js.
 
+To understand more in depth how the Observation works, and avoid pitfalls it's recommended to read information on **[the Vue Instance](../the-vue-instance.md)**.
+
 Your shiny new Vue GWT Components will play nicely with GWT.
-**[Checkout integration with GWT](../gwt-integration/index.md)**. 
+**[Checkout integration with GWT](../gwt-integration/index.md)**.
