@@ -3,16 +3,16 @@ package com.axellience.vuegwtexamples.client;
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.Vue;
-import com.axellience.vuegwtexamples.client.examples.example1.Example1Component;
-import com.axellience.vuegwtexamples.client.examples.example10.Example10Component;
-import com.axellience.vuegwtexamples.client.examples.example2.Example2Component;
-import com.axellience.vuegwtexamples.client.examples.example3.Example3Component;
-import com.axellience.vuegwtexamples.client.examples.example4.Example4Component;
-import com.axellience.vuegwtexamples.client.examples.example5.Example5Component;
-import com.axellience.vuegwtexamples.client.examples.example6.Example6Component;
-import com.axellience.vuegwtexamples.client.examples.example7.Example7Component;
-import com.axellience.vuegwtexamples.client.examples.example8.Example8Component;
-import com.axellience.vuegwtexamples.client.examples.example9.Example9Component;
+import com.axellience.vuegwtexamples.client.examples.example1.SimpleLinkComponent;
+import com.axellience.vuegwtexamples.client.examples.example10.KittenComponent;
+import com.axellience.vuegwtexamples.client.examples.example2.LinkComponent;
+import com.axellience.vuegwtexamples.client.examples.example3.CanHideComponent;
+import com.axellience.vuegwtexamples.client.examples.example4.SimpleTodoListComponent;
+import com.axellience.vuegwtexamples.client.examples.example5.ExclamationComponent;
+import com.axellience.vuegwtexamples.client.examples.example6.MessageComponent;
+import com.axellience.vuegwtexamples.client.examples.example7.ParentComponent;
+import com.axellience.vuegwtexamples.client.examples.example8.TodoListComponent;
+import com.axellience.vuegwtexamples.client.examples.example9.MelisandreComponent;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Document;
 
@@ -26,16 +26,16 @@ public class VueGwtExamplesApp implements EntryPoint
      */
     public void onModuleLoad()
     {
-        this.addExample("example1", Example1Component.class);
-        this.addExample("example2", Example2Component.class);
-        this.addExample("example3", Example3Component.class);
-        this.addExample("example4", Example4Component.class);
-        this.addExample("example5", Example5Component.class);
-        this.addExample("example6", Example6Component.class);
-        this.addExample("example7", Example7Component.class);
-        this.addExample("example8", Example8Component.class);
-        this.addExample("example9", Example9Component.class);
-        this.addExample("example10", Example10Component.class);
+        this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
+        this.addExample("linkComponent", LinkComponent.class);
+        this.addExample("canHideComponent", CanHideComponent.class);
+        this.addExample("simpleTodoListComponent", SimpleTodoListComponent.class);
+        this.addExample("exclamationComponent", ExclamationComponent.class);
+        this.addExample("messageComponent", MessageComponent.class);
+        this.addExample("parentComponent", ParentComponent.class);
+        this.addExample("todoListComponent", TodoListComponent.class);
+        this.addExample("melisandreComponent", MelisandreComponent.class);
+        this.addExample("kittenComponent", KittenComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)

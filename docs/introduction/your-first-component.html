@@ -306,15 +306,18 @@
     document.head.appendChild(style);
 </script>
 
-<h2 id="simple-example-component">Simple Example Component</h2>
+<h2 id="simple-link-component">Simple Link Component</h2>
 <p>Let&apos;s create our first Component and use it in a real app.
-We will call it <code>Example1Component</code>.</p>
-<p><strong><em>Example1Component.java</em></strong></p>
-<p>To create your Component, you must create a Class annotated by <code>@Component</code> and <code>@JsType</code> that extends <code>VueComponent</code>.</p>
-<p>All the <code>public</code> attributes and methods of this class will be accessible in your template.</p>
+We will call it <code>SimpleLinkComponent</code>.
+This Component will simply display an html link.</p>
+<h3 id="declaring-the-component">Declaring the Component</h3>
+<h4 id="java-class">Java Class</h4>
+<p>To create our Component, we must create a Class annotated by <code>@Component</code> and <code>@JsType</code> that extends <code>VueComponent</code>.</p>
+<p>All the <code>public</code> attributes and methods of this Class will be accessible in our template.</p>
+<p><strong><em>SimpleLinkComponent.java</em></strong></p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example1Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleLinkComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-keyword">public</span> String linkName;
 
     <span class="hljs-meta">@Override</span>
@@ -326,45 +329,46 @@ We will call it <code>Example1Component</code>.</p>
 <p>The method <code>created</code> that is overridden in our Component is mandatory.
 It will be called each time an instance of your Component is created.
 You can see it as your Component &quot;constructor&quot;.</p>
-<p><strong><em>Example1Component.html</em></strong></p>
-<p>We will then create a template for our <code>Example1Component</code>.
-It should have the same name as our Java class file.
-We place this file next to our Java class file.
+<h4 id="html-template">HTML Template</h4>
+<p>We will then create a template for our <code>SimpleLinkComponent</code>.
+It should have the same name as our Java Class file and be in the same package.
 VueGWT will detect it automatically and use it as our Component template.</p>
+<p><strong><em>SimpleLinkComponent.html</em></strong></p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://github.com/Axellience/vue-gwt&quot;</span>&gt;</span>
     {{ linkName }}
 <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
 </code></pre>
-<p>In this template we see that we use the <code>linkName</code> property from our Component between double curly braces.
+<p>In this template we see that we use the <code>linkName</code> property from our Java Class between double curly braces.
 This is called String interpolation.
-At runtime, this expression is replaced by the value we have set in your Component class:</p>
-<p class="example-container" data-name="Live Example 1">
-    <span id="example1"></span>
+At runtime, this expression is replaced by the value we have set in our Class.</p>
+<p>Bellow we have instantiated an instance of our <code>SimpleLinkComponent</code>:</p>
+<p class="example-container" data-name="simpleLinkComponent">
+    <span id="simpleLinkComponent"></span>
 </p>
 
 
-<p>This binding is dynamic, each time you will change the value of <code>linkName</code> in your Component instance, the value will update automatically in the template.</p>
+<p>The bindings in the Components are dynamic, each time the value of <code>linkName</code> changes in your Component instance, the value is updated automatically in the view.</p>
 <p><strong>You can try it now</strong> on this page! Open the console of your browser and type:</p>
-<pre><code>example1.linkName = &quot;This is working!&quot;;
+<pre><code>simpleLinkComponent.linkName = &quot;This is working!&quot;;
 </code></pre><p>This works with all the examples of this documentation.</p>
+<h3 id="instantiating-the-component">Instantiating the Component</h3>
+<p>How do we create the instance of our <code>SimpleLinkComponent</code>?
+First, in our GWT index page we add a div to attach the instance:</p>
 <p><strong><em>GwtIndex.html</em></strong></p>
-<p>In our GWT index page we add a div to attach an instance of our <code>Example1Component</code>.</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;example1Container&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;simpleLinkComponentContainer&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
+<p>Then when GWT starts, we need to bootstrap an instance of our <code>SimpleLinkComponent</code> and attach it in our <code>simpleLinkComponentContainer</code> div.</p>
+<p>To do this we simply call the Vue.attach() static method and pass the selector of our container and our <code>SimpleLinkComponent</code> class to it.</p>
 <p><strong><em>RootGwtApp.java</em></strong></p>
-<p>We have declared a Component, and the div to contain it.
-Now need to bootstrap an instance of our <code>Example1Component</code> when GWT starts and attach it in our <code>example1Container</code> div.
-For that we simply call the Vue.attach() static method and pass the selector of our container and our <code>Example1Component</code> class to it.</p>
 <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootGwtApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-comment">// When our GWT app starts, we start our Vue app.</span>
-        Vue.attach(<span class="hljs-string">&quot;#example1Container&quot;</span>, Example1Component.class);
+        Vue.attach(<span class="hljs-string">&quot;#simpleLinkComponentContainer&quot;</span>, SimpleLinkComponent.class);
     }
 }
 </code></pre>
 <p>Behind the scene, the instance of our Java Component will be converted to the format that Vue.js is expecting:</p>
 <pre><code class="lang-javascript">{
-    el: <span class="hljs-string">&quot;#example1Container&quot;</span>,
+    el: <span class="hljs-string">&quot;#simpleLinkComponentContainer&quot;</span>,
     template: <span class="hljs-string">&apos;&lt;a href=&quot;https://github.com/Axellience/vue-gwt&quot;&gt;{{ linkName }}&lt;/a&gt;&apos;</span>,
     data: {
         linkName: <span class="hljs-literal">null</span>
@@ -378,12 +382,14 @@ For that we simply call the Vue.attach() static method and pass the selector of 
 </code></pre>
 <p>And passed down to the <code>new Vue()</code> JavaScript method.</p>
 <h2 id="binding-element-attributes">Binding Element Attributes</h2>
-<p>Our demo component works, but the target of our link is set in the template.
+<p>Our <code>SimpleLinkComponent</code> component works, but the target of our link is set in the template.
 What if we wanted to declare it in our Component?</p>
-<p>Luckily, in addition to text interpolation, we can also bind element attributes:</p>
+<p>Luckily, in addition to text interpolation, we can also bind element attributes.
+Let see how to do this with a new <code>LinkComponent</code>.
+This one will allow us to set the link <code>href</code> attribute in our Java Class.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example2Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LinkComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-keyword">public</span> String linkTarget;
     <span class="hljs-keyword">public</span> String linkName;
 
@@ -398,15 +404,15 @@ What if we wanted to declare it in our Component?</p>
     {{ linkName }}
 <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
 </code></pre>
-<p class="example-container" data-name="Live Example 2">
-    <span id="example2"></span>
+<p class="example-container" data-name="linkComponent">
+    <span id="linkComponent"></span>
 </p>
 
 
 <p>Here we are encountering something new.
 The <code>v-bind</code> attribute you are seeing is called a directive.</p>
 <p>Directives are prefixed with <code>v-</code> to indicate that they are special attributes provided by Vue, and as you may have guessed, they apply special reactive behavior to the rendered DOM.
-Here it is basically saying &quot;keep this element&#x2019;s href attribute up-to-date with the linkTarget property on the Vue instance.&quot;</p>
+Here it is basically saying &quot;keep this element&#x2019;s href attribute up-to-date with the <code>linkTarget</code> property on the Vue instance.&quot;</p>
 <p><strong><a href="conditional-and-loops.html">Make it dynamic with Conditions and Loops</a></strong></p>
 
                                 
@@ -451,7 +457,7 @@ Here it is basically saying &quot;keep this element&#x2019;s href attribute up-t
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Your First Component","level":"1.3.1","depth":2,"next":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"previous":{"title":"Introduction","level":"1.3","depth":1,"path":"introduction/index.md","ref":"introduction/index.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"path":"introduction/your-first-component.md","ref":"introduction/your-first-component.md","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/your-first-component.md","mtime":"2017-07-05T08:11:34.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-05T08:32:40.686Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Your First Component","level":"1.3.1","depth":2,"next":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"previous":{"title":"Introduction","level":"1.3","depth":1,"path":"introduction/index.md","ref":"introduction/index.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"path":"introduction/your-first-component.md","ref":"introduction/your-first-component.md","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/your-first-component.md","mtime":"2017-07-05T09:58:43.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-05T10:20:04.765Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

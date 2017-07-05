@@ -9,12 +9,12 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component
-public class Example10Component extends VueComponent
+public class KittenComponent extends VueComponent
 {
-    public Example10ClientBundle myBundle;
+    public KittenClientBundle myKittenBundle;
 
     @Override
     public void created() {
-        myBundle = Example10ClientBundle.INSTANCE;
+        myKittenBundle = KittenClientBundle.INSTANCE;
     }
 }

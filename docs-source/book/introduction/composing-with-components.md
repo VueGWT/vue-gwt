@@ -35,24 +35,24 @@ We add this file next to our Java class as before.
 </li>
 ```
 
-***Example7Component.java***
+***ParentComponent.java***
 
-We will then create our `Example7Component` that uses `TodoComponent`.
+We will then create our `ParentComponent` that uses `TodoComponent`.
 
-We first register `TodoComponent` to be used in our `Example7Component` by passing it to the `@Component` annotation.
+We first register `TodoComponent` to be used in our `ParentComponent` by passing it to the `@Component` annotation.
 
 ```java
 @JsType
 @Component(components = {TodoComponent.class})
-public class Example7Component extends VueComponent {
+public class ParentComponent extends VueComponent {
     @Override
     public void created() {}
 }
 ```
 
-***Example7Component.html***
+***ParentComponent.html***
 
-Now you can compose it in our Example7Component’s template:
+Now you can compose it in our `ParentComponent`’s template:
 
 ```html
 <div>
@@ -62,40 +62,10 @@ Now you can compose it in our Example7Component’s template:
 </div>
 ```
 {% raw %}
-<p class="example-container" data-name="Live Example 7">
-    <span id="example7"></span>
+<p class="example-container" data-name="parentComponent">
+    <span id="parentComponent"></span>
 </p>
 {% endraw %}
-
-### How Is the Component Html Name Set?
-
-The name of the html element for our Component in the template (here, `todo`) is determined using the Component's Class name.
-
-The name is converted from CamelCase to kebab-case.
-If the name ends with "Component" this part is dropped.
-
-For example:
-
- * `TodoComponent -> todo`
- * `TodoListComponent -> todo-list`
- * `Header -> header`
-  
-### Registering Components Globally
-
-Components can also be registered globally.
-They will then be usable in any Component in your app.
-You won't need to pass the Class of your Component to the `components` attribute in the `@Component` annotation.
-
-```java
-public class RootGwtApp implements EntryPoint {
-    public void onModuleLoad() {
-        // Register TodoComponent globally
-        Vue.registerComponent(TodoComponent.class);
-    }
-}
-```
-
-This is the equivalent of calling `Vue.component(...)` in Vue.js.
 
 ## Passing Properties to Children Components
 
@@ -126,16 +96,17 @@ The `@Prop` annotation tells Vue GWT that our `todo` property will be passed fro
 </li>
 ```
 
-***Example8Component.java***
+***TodoListComponent.java***
 
 Let's see how to pass this value from the parent.
 
-We create a list of `Todos` like in the Example 4:
+We create a list of `Todos` like before.
+Let's call it `TodoListComponent`:
 
 ```java
 @JsType
 @Component(components = {TodoComponent.class})
-public class Example8Component extends VueComponent {
+public class TodoListComponent extends VueComponent {
     public JsArray<Todo> todos;
     
     @Override
@@ -148,7 +119,7 @@ public class Example8Component extends VueComponent {
 }
 ```
 
-***Example8Component.html***
+***TodoListComponent.html***
 
 And now we are able to pass the `Todo` into each repeated component using `v-bind`:
 
@@ -161,8 +132,8 @@ And now we are able to pass the `Todo` into each repeated component using `v-bin
 </div>
 ```
 {% raw %}
-<p class="example-container" data-name="Live Example 8">
-    <span id="example8"></span>
+<p class="example-container" data-name="todoListComponent">
+    <span id="todoListComponent"></span>
 </p>
 {% endraw %}
 
@@ -181,6 +152,36 @@ We will talk a lot more about components later in the guide, but here’s an (im
   </app-view>
 </div>
 ```
+
+## How Is the Component Html Name Set?
+
+The name of the html element for our Component in the template (here, `todo`) is determined using the Component's Class name.
+
+The name is converted from CamelCase to kebab-case.
+If the name ends with "Component" this part is dropped.
+
+For example:
+
+ * `TodoComponent -> todo`
+ * `TodoListComponent -> todo-list`
+ * `Header -> header`
+  
+## Registering Components Globally
+
+Components can also be registered globally.
+They will then be usable in any Component in your app.
+You won't need to pass the Class of your Component to the `components` attribute in the `@Component` annotation.
+
+```java
+public class RootGwtApp implements EntryPoint {
+    public void onModuleLoad() {
+        // Register TodoComponent globally
+        Vue.registerComponent(TodoComponent.class);
+    }
+}
+```
+
+This is the equivalent of calling `Vue.component(...)` in Vue.js.
 
 Your shiny new Vue GWT Components will play nicely with GWT.
 **[Checkout integration with GWT](../gwt-integration/index.md)**. 

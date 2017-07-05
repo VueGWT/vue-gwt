@@ -313,17 +313,17 @@ You can declare your <code>CssResource</code> interfaces and use them within you
 So if you try to use <code>myStyle.bob()</code> in your template, and this style doesn&apos;t exist, the compilation will break with an explicit error.</p>
 <p>Let see it in action with a simple example.</p>
 <p>We will create a simple style that set the text color to red.</p>
-<p><strong><em>Example9ComponentStyle.java</em></strong></p>
+<p><strong><em>MelisandreComponentStyle.java</em></strong></p>
 <p>First, we create a <code>CssResource</code> interface.
 We also add the <code>@Style</code> annotation to it.
 This annotation will automatically generate a GWT Bundle for us.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Style</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Example9ComponentStyle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CssResource</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">MelisandreComponentStyle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CssResource</span>
 </span>{
     <span class="hljs-function">String <span class="hljs-title">red</span><span class="hljs-params">()</span></span>;
 }
 </code></pre>
-<p><strong><em>Example9ComponentStyle.gss</em></strong></p>
+<p><strong><em>MelisandreComponentStyle.gss</em></strong></p>
 <p>We then create the style for this interface.
 It&apos;s important to give the gss file the same name as your Interface.
 This is because the binding is made automatically by Vue GWT based on the name.</p>
@@ -331,49 +331,49 @@ This is because the binding is made automatically by Vue GWT based on the name.<
     <span class="hljs-attribute">color</span>: red;
 }
 </code></pre>
-<p><strong><em>Example9Component.java</em></strong></p>
+<p><strong><em>MelisandreComponent.java</em></strong></p>
 <p>Let&apos;s use our style in a small Component.
 For the Java part, nothing is needed, so we can just create an empty Component class.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example9Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MelisandreComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
 </span>{
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
-<p><strong><em>Example9Component.html</em></strong></p>
+<p><strong><em>MelisandreComponent.html</em></strong></p>
 <p>In the template, we can now import our style.
 We just have to add an <code>vue-gwt:import</code> statement on top of our component.
 In the <code>style</code> attribute, we put the full class name of our Style interface.
 We also add a <code>name</code> attribute to give our style a name in the template.</p>
 <p>We can then simply use Vue <code>v-bind</code> directive to bind our style.</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">vue-gwt:import</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;com.mypackage.Example9ComponentStyle&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;myStyle&quot;</span>/&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">vue-gwt:import</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;com.mypackage.MelisandreComponentStyle&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;myStyle&quot;</span>/&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;myStyle.red()&quot;</span>&gt;</span>
-    I&apos;m a red text!
+    For the night is dark and full of terrors.
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<p class="example-container" data-name="Live Example 9">
-    <span id="example9"></span>
+<p class="example-container" data-name="melisandreComponent">
+    <span id="melisandreComponent"></span>
 </p>
 
 
 <h2 id="adding-more-than-one-css-class">Adding More Than One CSS Class</h2>
 <p>You can add more than one CSS Class to your Components by using the Array syntax:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;[myStyle.red(), myStyle.bold()]&quot;</span>&gt;</span>
-    I have more than one CSS Class applied
+    I&apos;m both red and BOLD.
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <h2 id="conditional-styling">Conditional Styling</h2>
 <p>You can apply a Style conditionally by using a ternary expression (be careful with the quotes):</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;isInvalid ? myStyle.red() : &quot;&quot;&apos;</span>&gt;</span>
-    I&apos;m red if isInvalid is true 
+    I&apos;m red if isInvalid is true.
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <h2 id="conditional-styling-with-several-css-class">Conditional Styling With Several CSS Class</h2>
 <p>You can combine both the Array and the ternary syntax:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;[isInvalid ? myStyle.red() : &quot;&quot;, myStyle.bold()]&apos;</span>&gt;</span>
-    I&apos;m red if isInvalid is true, and I&apos;m always bold
+    I&apos;m red if isInvalid is true, and I&apos;m always BOLD.
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 
@@ -419,7 +419,7 @@ We also add a <code>name</code> attribute to give our style a name in the templa
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Styles","level":"1.4.1","depth":2,"next":{"title":"Client Bundles (Images)","level":"1.4.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},"previous":{"title":"Integration with GWT","level":"1.4","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.4.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.4.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.4.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/styles.md","mtime":"2017-07-05T08:11:34.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-05T08:32:40.686Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Styles","level":"1.4.1","depth":2,"next":{"title":"Client Bundles (Images)","level":"1.4.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},"previous":{"title":"Integration with GWT","level":"1.4","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.4.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.4.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.4.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/styles.md","mtime":"2017-07-05T09:33:03.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-05T10:20:04.765Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

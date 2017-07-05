@@ -6,7 +6,7 @@ import jsinterop.annotations.JsType;
 
 @JsType
 @Component
-public class Example2Component extends VueComponent {
+public class LinkComponent extends VueComponent {
     public String linkTarget;
     public String linkName;
 

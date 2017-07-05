@@ -7,10 +7,10 @@ import com.google.gwt.resources.client.ImageResource;
 /**
  * @author Adrien Baron
  */
-public interface Example10ClientBundle extends ClientBundle
+public interface KittenClientBundle extends ClientBundle
 {
-    Example10ClientBundle INSTANCE = GWT.create(Example10ClientBundle.class);
+    KittenClientBundle INSTANCE = GWT.create(KittenClientBundle.class);
 
-    @Source("example10.jpg")
-    ImageResource myImage();
+    @Source("kitten.jpg")
+    ImageResource myKitten();
 }

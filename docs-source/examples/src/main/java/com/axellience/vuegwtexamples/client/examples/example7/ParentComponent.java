@@ -6,7 +6,7 @@ import jsinterop.annotations.JsType;
 
 @JsType
 @Component(components = { TodoComponent.class })
-public class Example7Component extends VueComponent
+public class ParentComponent extends VueComponent
 {
     @Override
     public void created()

@@ -7,7 +7,7 @@ import com.google.gwt.resources.client.CssResource;
  * @author Adrien Baron
  */
 @Style
-public interface Example9ComponentStyle extends CssResource
+public interface MelisandreComponentStyle extends CssResource
 {
     String red();
 }

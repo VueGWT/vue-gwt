@@ -307,7 +307,7 @@
 </script>
 
 <h2 id="events">Events</h2>
-<p>To let users interact with your app, we can use the v-on directive to attach event listeners that invoke methods on our Vue instances:</p>
+<p>To let users interact with your app, we can use the <code>v-on</code> directive to attach event listeners that invoke methods on our Vue instances:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{{ message }}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;addExclamationMark()&quot;</span>&gt;</span>Add an explanation mark<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
@@ -315,7 +315,7 @@
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example5Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExclamationComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-keyword">public</span> String message;
 
     <span class="hljs-meta">@Override</span>
@@ -328,14 +328,14 @@
     }
 }
 </code></pre>
-<p class="example-container" data-name="Live Example 5">
-    <span id="example5"></span>
+<p class="example-container" data-name="exclamationComponent">
+    <span id="exclamationComponent"></span>
 </p>
 
 
 <p>Note in the addExclamationMark method we simply update the state of our app without touching the DOM - all DOM manipulations are handled by Vue, and the code you write is focused on the underlying logic.</p>
 <p>You can even call the addExclamationMark from your browser&apos;s console:</p>
-<pre><code>example5.addExclamationMark();
+<pre><code>exclamationComponent.addExclamationMark();
 </code></pre><h2 id="the-v-model-directive">The v-model Directive</h2>
 <p>Vue also provides the v-model directive that makes two-way binding between form input and app state a breeze:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
@@ -345,7 +345,7 @@
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example6Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MessageComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-keyword">public</span> String message;
 
     <span class="hljs-meta">@Override</span>
@@ -356,8 +356,8 @@
 </code></pre>
 <p>Changing the value of the input will automatically update the content of our message property.
 Changing the value of our Java property will change the value of input.</p>
-<p class="example-container" data-name="Live Example 6">
-    <span id="example6"></span>
+<p class="example-container" data-name="messageComponent">
+    <span id="messageComponent"></span>
 </p>
 
 
@@ -412,7 +412,7 @@ Those limitations only exists for <code>v-model</code>.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Handling User Input","level":"1.3.3","depth":2,"next":{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]},"previous":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/handling-user-input.md","mtime":"2017-07-05T08:11:34.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-05T08:32:40.686Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Handling User Input","level":"1.3.3","depth":2,"next":{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]},"previous":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/handling-user-input.md","mtime":"2017-07-05T10:02:33.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-05T10:20:04.765Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

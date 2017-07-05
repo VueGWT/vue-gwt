@@ -6,7 +6,7 @@ import jsinterop.annotations.JsType;
 
 @JsType
 @Component
-public class Example5Component extends VueComponent {
+public class ExclamationComponent extends VueComponent {
     public String message;
 
     @Override

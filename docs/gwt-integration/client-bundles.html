@@ -310,37 +310,37 @@
 <p>Let see how this work with an example.</p>
 <p><strong><em>Example10ClientBundle.java</em></strong></p>
 <p>First, we create a simple <code>ClientBundle</code> with an <code>ImageResource</code>:</p>
-<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Example10ClientBundle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClientBundle</span>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">KittenClientBundle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClientBundle</span>
 </span>{
-    Example10ClientBundle INSTANCE = GWT.create(Example10ClientBundle.class);
+    KittenClientBundle INSTANCE = GWT.create(KittenClientBundle.class);
 
-    <span class="hljs-meta">@Source</span>(<span class="hljs-string">&quot;example10.jpg&quot;</span>)
-    <span class="hljs-function">ImageResource <span class="hljs-title">myImage</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-meta">@Source</span>(<span class="hljs-string">&quot;kitten.jpg&quot;</span>)
+    <span class="hljs-function">ImageResource <span class="hljs-title">myKitten</span><span class="hljs-params">()</span></span>;
 }
 </code></pre>
 <p>There is no need for any special annotations on it.</p>
-<p><strong><em>Example10Component.java</em></strong></p>
+<p><strong><em>KittenClientBundle.java</em></strong></p>
 <p>We then create a Component to use our <code>ClientBundle</code>.
-In this component we add a public field for our <code>Example10ClientBundle</code>.
+In this component we add a public field for our <code>KittenClientBundle</code>.
 This will expose the bundle to the Template.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example10Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KittenComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
 </span>{
-    <span class="hljs-keyword">public</span> Example10ClientBundle myBundle;
+    <span class="hljs-keyword">public</span> KittenClientBundle myKittenBundle;
 
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
-        myBundle = Example10ClientBundle.INSTANCE;
+        myKittenBundle = KittenClientBundle.INSTANCE;
     }
 }
 </code></pre>
-<p><strong><em>Example10Component.html</em></strong></p>
+<p><strong><em>KittenClientBundle.html</em></strong></p>
 <p>We can then simply access our bundle instance from the template:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">v-bind:src</span>=<span class="hljs-string">&quot;myBundle.myImage().getSafeUri().asString()&quot;</span>/&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">v-bind:src</span>=<span class="hljs-string">&quot;myKittenBundle.myKitten().getSafeUri().asString()&quot;</span>/&gt;</span>
 </code></pre>
-<p class="example-container" data-name="Live Example 10">
-    <span id="example10"></span>
+<p class="example-container" data-name="kittenComponent">
+    <span id="kittenComponent"></span>
 </p>
 
 
@@ -397,7 +397,7 @@ If you want (or have to) separate your Style interface from your GSS files it&ap
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Client Bundles (Images)","level":"1.4.2","depth":2,"next":{"title":"User Panels","level":"1.4.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]},"previous":{"title":"Styles","level":"1.4.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/client-bundles.md","mtime":"2017-07-05T08:11:34.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-05T08:32:40.686Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Client Bundles (Images)","level":"1.4.2","depth":2,"next":{"title":"User Panels","level":"1.4.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]},"previous":{"title":"Styles","level":"1.4.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/client-bundles.md","mtime":"2017-07-05T09:37:46.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-05T10:20:04.765Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

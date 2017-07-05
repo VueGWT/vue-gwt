@@ -11,49 +11,49 @@ Let see how this work with an example.
 First, we create a simple `ClientBundle` with an `ImageResource`:
 
 ```java
-public interface Example10ClientBundle extends ClientBundle
+public interface KittenClientBundle extends ClientBundle
 {
-    Example10ClientBundle INSTANCE = GWT.create(Example10ClientBundle.class);
+    KittenClientBundle INSTANCE = GWT.create(KittenClientBundle.class);
 
-    @Source("example10.jpg")
-    ImageResource myImage();
+    @Source("kitten.jpg")
+    ImageResource myKitten();
 }
 ```
 
 There is no need for any special annotations on it.
 
-***Example10Component.java***
+***KittenClientBundle.java***
 
 We then create a Component to use our `ClientBundle`.
-In this component we add a public field for our `Example10ClientBundle`.
+In this component we add a public field for our `KittenClientBundle`.
 This will expose the bundle to the Template.
 
 ```java
 @JsType
 @Component
-public class Example10Component extends VueComponent
+public class KittenComponent extends VueComponent
 {
-    public Example10ClientBundle myBundle;
+    public KittenClientBundle myKittenBundle;
 
     @Override
     public void created() {
-        myBundle = Example10ClientBundle.INSTANCE;
+        myKittenBundle = KittenClientBundle.INSTANCE;
     }
 }
 ```
 
-***Example10Component.html***
+***KittenClientBundle.html***
 
 We can then simply access our bundle instance from the template:
 
 ```html
-<img v-bind:src="myBundle.myImage().getSafeUri().asString()"/>
+<img v-bind:src="myKittenBundle.myKitten().getSafeUri().asString()"/>
 ```
 
 
 {% raw %}
-<p class="example-container" data-name="Live Example 10">
-    <span id="example10"></span>
+<p class="example-container" data-name="kittenComponent">
+    <span id="kittenComponent"></span>
 </p>
 {% endraw %}
 

@@ -40,3 +40,10 @@ RootPanel.get("childComponentAttachPoint").add(vueGwtPanel);
 
 vueGwtPanel.vue().increaseCounter();
 ```
+
+## Cleaning Up
+If you don't need your `VueGwtPanel` anymore, you can destroy it's VueComponent instance by calling:
+
+```java
+vueGwtPanel.vue().$destroy();
+```

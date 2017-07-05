@@ -1,4 +1,4 @@
-package com.axellience.vuegwtexamples.client.examples.example4;
+package com.axellience.vuegwtexamples.client.examples.example8;
 
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
@@ -7,12 +7,14 @@ import com.axellience.vuegwtexamples.client.examples.common.Todo;
 import jsinterop.annotations.JsType;
 
 @JsType
-@Component
-public class Example4Component extends VueComponent {
+@Component(components = { TodoComponent.class })
+public class TodoListComponent extends VueComponent
+{
     public JsArray<Todo> todos;
 
     @Override
-    public void created() {
+    public void created()
+    {
         this.todos = new JsArray<>();
         this.todos.push(new Todo("Learn Java"));
         this.todos.push(new Todo("Learn Vue GWT"));

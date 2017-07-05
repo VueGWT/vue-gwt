@@ -6,7 +6,7 @@ import jsinterop.annotations.JsType;
 
 @JsType
 @Component
-public class Example1Component extends VueComponent {
+public class SimpleLinkComponent extends VueComponent {
     public String linkName;
 
     @Override

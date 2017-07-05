@@ -9,7 +9,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component
-public class Example9Component extends VueComponent
+public class MelisandreComponent extends VueComponent
 {
     @Override
     public void created() {}

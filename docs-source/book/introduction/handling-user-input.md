@@ -3,7 +3,7 @@
 !INCLUDE "../dependencies.md"
 
 ## Events
-To let users interact with your app, we can use the v-on directive to attach event listeners that invoke methods on our Vue instances:
+To let users interact with your app, we can use the `v-on` directive to attach event listeners that invoke methods on our Vue instances:
 
 ```html
 <div>
@@ -15,7 +15,7 @@ To let users interact with your app, we can use the v-on directive to attach eve
 ```java
 @JsType
 @Component
-public class Example5Component extends VueComponent {
+public class ExclamationComponent extends VueComponent {
     public String message;
     
     @Override
@@ -30,8 +30,8 @@ public class Example5Component extends VueComponent {
 ```
 
 {% raw %}
-<p class="example-container" data-name="Live Example 5">
-    <span id="example5"></span>
+<p class="example-container" data-name="exclamationComponent">
+    <span id="exclamationComponent"></span>
 </p>
 {% endraw %}
 
@@ -39,7 +39,7 @@ Note in the addExclamationMark method we simply update the state of our app with
 
 You can even call the addExclamationMark from your browser's console:
 ```
-example5.addExclamationMark();
+exclamationComponent.addExclamationMark();
 ```
 
 ## The v-model Directive
@@ -55,7 +55,7 @@ Vue also provides the v-model directive that makes two-way binding between form 
 ```java
 @JsType
 @Component
-public class Example6Component extends VueComponent {
+public class MessageComponent extends VueComponent {
     public String message;
     
     @Override
@@ -69,8 +69,8 @@ Changing the value of the input will automatically update the content of our mes
 Changing the value of our Java property will change the value of input.
 
 {% raw %}
-<p class="example-container" data-name="Live Example 6">
-    <span id="example6"></span>
+<p class="example-container" data-name="messageComponent">
+    <span id="messageComponent"></span>
 </p>
 {% endraw %}
 

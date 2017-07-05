@@ -5,12 +5,19 @@
 ## Conditional
 
 It’s quite simple to toggle the presence of an element too.
+For this we can use the `v-if` directive.
 Let's check this with a small example:
+
+```html
+<div v-if="visible">
+    The property "visible" is set to true!
+</div>
+```
 
 ```java
 @JsType
 @Component
-public class Example3Component extends VueComponent {
+public class CanHideComponent extends VueComponent {
     public boolean visible;
 
     @Override
@@ -20,23 +27,17 @@ public class Example3Component extends VueComponent {
 }
 ```
 
-```html
-<div v-if="visible">
-    The property "visible" is set to true!
-</div>
-```
-
 As you can see bellow the `div` is created if the property `visible` of the Component instance is set to `true`.
 
 {% raw %}
-<p class="example-container" data-name="Live Example 3">
-    <span id="example3"></span>
+<p class="example-container" data-name="canHideComponent">
+    <span id="canHideComponent"></span>
 </p>
 {% endraw %}
 
 You can try to interact in your browser console by typing:
 ```
-example3.visible = false;
+canHideComponent.visible = false;
 ```
 The `div` will be removed from the DOM.
 
@@ -45,7 +46,7 @@ This example demonstrates that we can bind data to not only text and attributes,
 ## Loops
 
 There are quite a few other directives, each with its own special functionality.
-For example, the v-for directive can be used for displaying a list of items.
+For example, the `v-for` directive can be used for displaying a list of items.
 
 Let's assume we have a `Todo` POJO:
 ```java
@@ -63,14 +64,15 @@ public class Todo
 }
 ```
 
-We will then create a list of `Todo` in our `DemoComponent`.
-Because Vue.js is only able to observe JavaScript Arrays you must use the provided JsArray collection class in your Components.
+We will then create a list of `Todo` in a `SimpleTodoListComponent`.
+
+Because Vue.js is only able to observe JavaScript Arrays you must use the provided `JsArray` collection class in your Components.
 This collection will be represented as a native JavaScript array in the browser.
 
 ```java
 @JsType
 @Component
-public class Example4Component extends VueComponent {
+public class SimpleTodoListComponent extends VueComponent {
     public JsArray<Todo> todos;
     
     @Override
@@ -93,19 +95,19 @@ public class Example4Component extends VueComponent {
 ```
 
 Another difference with Vue.js is you must indicate your loop variable type.
-This is because Vue GWT compile templates expressions to Java and so need the type information.
+This is because Vue GWT compile templates expressions to Java and so needs the type information.
 You can import Java types in your template by using the `vue-gwt:import` element.
 
 {% raw %}
-<p class="example-container" data-name="Live Example 4">
-    <span id="example4"></span>
+<p class="example-container" data-name="simpleTodoListComponent">
+    <span id="simpleTodoListComponent"></span>
 </p>
 {% endraw %}
 
 As the `Todo` class does not have the `@JsInterop` annotation it's not possible to create new Todos from the JavaScript console.
 But you can try removing a Todo in console:
 ```
-example4.todos.shift();
+simpleTodoListComponent.todos.shift();
 ```
 
 **[Let users interact with our Component](./handling-user-input.md)**
