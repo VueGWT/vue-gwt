@@ -14,6 +14,7 @@ import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
+import com.axellience.vuegwtexamples.client.examples.vforonobject.VForOnObjectComponent;
 import com.axellience.vuegwtexamples.client.examples.vforwithindex.VForWithIndexComponent;
 import com.axellience.vuegwtexamples.client.examples.vforwithrange.VForWithRangeComponent;
 import com.google.gwt.core.client.EntryPoint;
@@ -42,6 +43,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("reverseComponent", ReverseComponent.class);
         this.addExample("vForWithIndexComponent", VForWithIndexComponent.class);
         this.addExample("vForWithRangeComponent", VForWithRangeComponent.class);
+        this.addExample("vForOnObjectComponent", VForOnObjectComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)

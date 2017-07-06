@@ -362,32 +362,22 @@ public class TemplateParser
     {
         VForDefinition vForDef = new VForDefinition(vForValue, context);
 
-        LocalVariableInfo loopVariableInfo = vForDef.getLoopVariableInfo();
-        String variableDefinition = loopVariableInfo.getGlobalName();
-
-        if (vForDef.getIndexVariableInfo() != null)
-        {
-            LocalVariableInfo indexVariableInfo = vForDef.getIndexVariableInfo();
-            variableDefinition =
-                "(" + variableDefinition + ", " + indexVariableInfo.getGlobalName() + ")";
-        }
-
-        // Set return type
+        // Set return of the "in" expression
         context.setCurrentExpressionReturnType(vForDef.getInExpressionType());
         context.setCurrentExpressionKind(TemplateExpressionKind.COMPUTED_PROPERTY);
 
-        String processedInExpression = vForDef.getInExpression();
+        String inExpression = vForDef.getInExpression();
+
         // Process in expression if it's not just an "int"
         if (!"int".equals(vForDef.getInExpressionType()))
         {
-            // Process the array expression
             TemplateExpression templateExpression =
-                this.processJavaExpression(vForDef.getInExpression(), context, result);
-            processedInExpression = templateExpression.toTemplateString();
+                this.processJavaExpression(inExpression, context, result);
+            inExpression = templateExpression.toTemplateString();
         }
 
         // And return the newly built definition
-        return variableDefinition + " in " + processedInExpression;
+        return vForDef.getVariableDefinition() + " in " + inExpression;
     }
 
     /**

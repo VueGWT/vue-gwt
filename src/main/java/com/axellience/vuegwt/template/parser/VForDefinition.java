@@ -15,10 +15,15 @@ public class VForDefinition
     private static Pattern VFOR_VARIABLE = Pattern.compile("([^ ]*) ([^ ]*)");
     private static Pattern VFOR_VARIABLE_AND_INDEX =
         Pattern.compile("\\(([^ ]*) ([^,]*),([^\\)]*)\\)");
+    private static Pattern VFOR_VARIABLE_AND_KEY =
+        Pattern.compile("\\(([^ ]*) ([^,]*),([^\\)]*)\\)");
+    private static Pattern VFOR_VARIABLE_AND_KEY_AND_INDEX =
+        Pattern.compile("\\(([^ ]*) ([^,]*),([^,]*),([^\\)]*)\\)");
 
     private final String inExpression;
     private String inExpressionType;
     private LocalVariableInfo loopVariableInfo = null;
+    private LocalVariableInfo keyVariableInfo = null;
     private LocalVariableInfo indexVariableInfo = null;
 
     public VForDefinition(String vForValue, TemplateParserContext context)
@@ -31,23 +36,39 @@ public class VForDefinition
         if (vForOnRange(inExpression, loopVariablesDefinition, context))
             return;
 
-        if (vForSimpleVariable(loopVariablesDefinition, context))
-            return;
+        boolean iterateOnArray = !inExpression.startsWith("(Object)");
+        if (iterateOnArray)
+        {
+            inExpressionType = JsArray.class.getCanonicalName();
 
-        if (vForVariableAndIndex(loopVariablesDefinition, context))
-            return;
+            if (vForVariableAndIndex(loopVariablesDefinition, context))
+                return;
+            if (vForVariable(loopVariablesDefinition, context))
+                return;
+        }
+        else
+        {
+            inExpressionType = "Object";
+
+            if (vForVariableAndKeyAndIndex(loopVariablesDefinition, context))
+                return;
+            if (vForVariableAndKey(loopVariablesDefinition, context))
+                return;
+            if (vForVariable(loopVariablesDefinition, context))
+                return;
+        }
 
         throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
     }
 
     /**
      * v-for on an array with just a loop variable:
-     * "Item item in array"
+     * "Item item in myArray"
      * @param loopVariablesDefinition The variable definition ("Item item" above)
      * @param context The context of the parser
      * @return true if we managed the case, false otherwise
      */
-    private boolean vForSimpleVariable(String loopVariablesDefinition,
+    private boolean vForVariable(String loopVariablesDefinition,
         TemplateParserContext context)
     {
         Matcher matcher = VFOR_VARIABLE.matcher(loopVariablesDefinition);
@@ -55,7 +76,6 @@ public class VForDefinition
         {
             initLoopVariable(matcher.group(1), matcher.group(2), context);
             indexVariableInfo = null;
-            inExpressionType = JsArray.class.getCanonicalName();
             return true;
         }
 
@@ -64,7 +84,7 @@ public class VForDefinition
 
     /**
      * v-for on an array with just a loop variable and an index:
-     * "(Item item, index) in array"
+     * "(Item item, index) in myArray"
      * @param loopVariablesDefinition The variable definition ("(Item item, index)" above)
      * @param context The context of the parser
      * @return true if we managed the case, false otherwise
@@ -77,7 +97,49 @@ public class VForDefinition
         {
             initLoopVariable(matcher.group(1), matcher.group(2), context);
             initIndexVariable(matcher.group(3), context);
-            inExpressionType = JsArray.class.getCanonicalName();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * v-for on an Object with a loop variable and the key:
+     * "(Item item, key) in (Object) myObject"
+     * @param loopVariablesDefinition The variable definition ("(Item item, key)" above)
+     * @param context The context of the parser
+     * @return true if we managed the case, false otherwise
+     */
+    private boolean vForVariableAndKey(String loopVariablesDefinition,
+        TemplateParserContext context)
+    {
+        Matcher matcher = VFOR_VARIABLE_AND_KEY.matcher(loopVariablesDefinition);
+        if (matcher.matches())
+        {
+            initLoopVariable(matcher.group(1), matcher.group(2), context);
+            initKeyVariable(matcher.group(3), context);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * v-for on an Object with a loop variable, the key and the index:
+     * "(Item item, key, index) in (Object) myObject"
+     * @param loopVariablesDefinition The variable definition ("(Item item, key, index)" above)
+     * @param context The context of the parser
+     * @return true if we managed the case, false otherwise
+     */
+    private boolean vForVariableAndKeyAndIndex(String loopVariablesDefinition,
+        TemplateParserContext context)
+    {
+        Matcher matcher = VFOR_VARIABLE_AND_KEY_AND_INDEX.matcher(loopVariablesDefinition);
+        if (matcher.matches())
+        {
+            initLoopVariable(matcher.group(1), matcher.group(2), context);
+            initKeyVariable(matcher.group(3), context);
+            initIndexVariable(matcher.group(4), context);
             return true;
         }
 
@@ -130,6 +192,16 @@ public class VForDefinition
     }
 
     /**
+     * Init the key variable and add it to the parser context
+     * @param name Name of the variable
+     * @param context Context of the template parser
+     */
+    private void initKeyVariable(String name, TemplateParserContext context)
+    {
+        this.keyVariableInfo = context.addLocalVariable("String", name.trim());
+    }
+
+    /**
      * Split the value of a v-for into 2 blocks (before/after the " in " or " of ")
      * @param vForValue The value of the v-for attribute
      * @return The two
@@ -146,16 +218,6 @@ public class VForDefinition
         return splitExpression;
     }
 
-    public LocalVariableInfo getLoopVariableInfo()
-    {
-        return loopVariableInfo;
-    }
-
-    public LocalVariableInfo getIndexVariableInfo()
-    {
-        return indexVariableInfo;
-    }
-
     public String getInExpression()
     {
         return inExpression;
@@ -164,5 +226,25 @@ public class VForDefinition
     public String getInExpressionType()
     {
         return inExpressionType;
+    }
+
+    public String getVariableDefinition()
+    {
+        String variableDefinition = loopVariableInfo.getGlobalName();
+
+        if (keyVariableInfo != null || indexVariableInfo != null)
+        {
+            variableDefinition = "(" + variableDefinition;
+
+            if (keyVariableInfo != null)
+                variableDefinition += ", " + keyVariableInfo.getGlobalName();
+
+            if (indexVariableInfo != null)
+                variableDefinition += ", " + indexVariableInfo.getGlobalName();
+
+            variableDefinition += ")";
+        }
+
+        return variableDefinition;
     }
 }
