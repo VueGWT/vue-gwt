@@ -12,6 +12,6 @@
 * [Computed Properties and Watchers](computed-and-watchers.md)
 * [Class and Style Bindings](class-and-style.md)
 * [Integration with GWT](gwt-integration/index.md)
-    * [Styles](gwt-integration/styles.mdw)
+    * [Styles](gwt-integration/styles.md)
     * [Client Bundles (Images)](gwt-integration/client-bundles.md)
     * [User Panels](gwt-integration/user-panels.md)

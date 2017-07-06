@@ -128,6 +128,10 @@ That's why it's also possible to use the object syntax inside array syntax:
 <div v-bind:class="[{ 'active': 'isActive' }, errorClass]">
 ```
 
+### GWT Styles
+
+You should also check how to use [GWT GSS Styles](./gwt-integration/styles.md) in your app.
+
 ### With Components
 
 **TODO**
