@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.template.parser;
 
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
-import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.template.parser.context.ComputedVariableInfo;
 import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
@@ -374,15 +373,21 @@ public class TemplateParser
         }
 
         // Set return type
-        context.setCurrentExpressionReturnType(JsArray.class.getCanonicalName());
+        context.setCurrentExpressionReturnType(vForDef.getInExpressionType());
         context.setCurrentExpressionKind(TemplateExpressionKind.COMPUTED_PROPERTY);
 
-        // Process the array expression
-        TemplateExpression templateExpression =
-            this.processJavaExpression(vForDef.getInExpression(), context, result);
+        String processedInExpression = vForDef.getInExpression();
+        // Process in expression if it's not just an "int"
+        if (!"int".equals(vForDef.getInExpressionType()))
+        {
+            // Process the array expression
+            TemplateExpression templateExpression =
+                this.processJavaExpression(vForDef.getInExpression(), context, result);
+            processedInExpression = templateExpression.toTemplateString();
+        }
 
         // And return the newly built definition
-        return variableDefinition + " in " + templateExpression.toTemplateString();
+        return variableDefinition + " in " + processedInExpression;
     }
 
     /**

@@ -3,18 +3,19 @@ package com.axellience.vuegwtexamples.client;
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.Vue;
-import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
-import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
-import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
-import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
-import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
+import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
+import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
+import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
 import com.axellience.vuegwtexamples.client.examples.message.MessageComponent;
 import com.axellience.vuegwtexamples.client.examples.parent.ParentComponent;
+import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
+import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
+import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
-import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
 import com.axellience.vuegwtexamples.client.examples.vforwithindex.VForWithIndexComponent;
+import com.axellience.vuegwtexamples.client.examples.vforwithrange.VForWithRangeComponent;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Document;
 
@@ -40,6 +41,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("kittenComponent", KittenComponent.class);
         this.addExample("reverseComponent", ReverseComponent.class);
         this.addExample("vForWithIndexComponent", VForWithIndexComponent.class);
+        this.addExample("vForWithRangeComponent", VForWithRangeComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)

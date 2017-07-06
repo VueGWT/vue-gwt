@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.template.parser;
 
+import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 
@@ -16,6 +17,7 @@ public class VForDefinition
         Pattern.compile("\\(([^ ]*) ([^,]*),([^\\)]*)\\)");
 
     private final String inExpression;
+    private String inExpressionType;
     private LocalVariableInfo loopVariableInfo = null;
     private LocalVariableInfo indexVariableInfo = null;
 
@@ -26,31 +28,102 @@ public class VForDefinition
         String loopVariablesDefinition = splitExpression[0].trim();
         inExpression = splitExpression[1].trim();
 
+        if (vForOnRange(inExpression, loopVariablesDefinition, context))
+            return;
+
+        if (vForSimpleVariable(loopVariablesDefinition, context))
+            return;
+
+        if (vForVariableAndIndex(loopVariablesDefinition, context))
+            return;
+
+        throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
+    }
+
+    /**
+     * v-for on an array with just a loop variable:
+     * "Item item in array"
+     * @param loopVariablesDefinition The variable definition ("Item item" above)
+     * @param context The context of the parser
+     * @return true if we managed the case, false otherwise
+     */
+    private boolean vForSimpleVariable(String loopVariablesDefinition,
+        TemplateParserContext context)
+    {
         Matcher matcher = VFOR_VARIABLE.matcher(loopVariablesDefinition);
         if (matcher.matches())
         {
             initLoopVariable(matcher.group(1), matcher.group(2), context);
             indexVariableInfo = null;
-            return;
+            inExpressionType = JsArray.class.getCanonicalName();
+            return true;
         }
 
-        matcher = VFOR_VARIABLE_AND_INDEX.matcher(loopVariablesDefinition);
+        return false;
+    }
+
+    /**
+     * v-for on an array with just a loop variable and an index:
+     * "(Item item, index) in array"
+     * @param loopVariablesDefinition The variable definition ("(Item item, index)" above)
+     * @param context The context of the parser
+     * @return true if we managed the case, false otherwise
+     */
+    private boolean vForVariableAndIndex(String loopVariablesDefinition,
+        TemplateParserContext context)
+    {
+        Matcher matcher = VFOR_VARIABLE_AND_INDEX.matcher(loopVariablesDefinition);
         if (matcher.matches())
         {
             initLoopVariable(matcher.group(1), matcher.group(2), context);
             initIndexVariable(matcher.group(3), context);
-            return;
+            inExpressionType = JsArray.class.getCanonicalName();
+            return true;
         }
 
-        throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
+        return false;
     }
 
+    /**
+     * v-for on an a range
+     * "n in 5"
+     * @param inExpression The expression after "in" ("5" in the example above)
+     * @param loopVariableDefinition The variable definition ("n" above)
+     * @param context The context of the parser
+     * @return true if we managed the case, false otherwise
+     */
+    private boolean vForOnRange(String inExpression, String loopVariableDefinition,
+        TemplateParserContext context)
+    {
+        // Try to parse the inExpression as an Int
+        try {
+            Integer.parseInt(inExpression);
+            this.initLoopVariable("int", loopVariableDefinition, context);
+            inExpressionType = "int";
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Init the loop variable and add it to the parser context
+     * @param type Java type of the variable, will look for qualified class name in the context
+     * @param name Name of the variable
+     * @param context Context of the template parser
+     */
     private void initLoopVariable(String type, String name, TemplateParserContext context)
     {
         this.loopVariableInfo =
-            context.addLocalVariable(context.getFullyQualifiedNameForClassName(type.trim()), name.trim());
+            context.addLocalVariable(context.getFullyQualifiedNameForClassName(type.trim()),
+                name.trim());
     }
 
+    /**
+     * Init the index variable and add it to the parser context
+     * @param name Name of the variable
+     * @param context Context of the template parser
+     */
     private void initIndexVariable(String name, TemplateParserContext context)
     {
         this.indexVariableInfo = context.addLocalVariable("int", name.trim());
@@ -86,5 +159,10 @@ public class VForDefinition
     public String getInExpression()
     {
         return inExpression;
+    }
+
+    public String getInExpressionType()
+    {
+        return inExpressionType;
     }
 }
