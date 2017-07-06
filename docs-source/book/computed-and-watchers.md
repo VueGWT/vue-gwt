@@ -252,7 +252,7 @@ public class JohnSnowComponent extends VueComponent
 }
 ```
 
-⚠️ Like for `v-model`, only @JsInterop expression can be used as `propertyName`.
+⚠️ Like for `v-model`, only JsInterop expression can be used as `propertyName`.
 This means any attribute from your Component and any of their attributes as long as they have the `@JsProperty` annotation.
 This `@Computed(propertyName = "todo.text")` won't work if the attribute `text` of the class `Todo` doesn't have the `@JsProperty` annotation. 
 

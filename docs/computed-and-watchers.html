@@ -1,0 +1,676 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Computed Properties and Watchers · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="class-and-style.html" />
+    
+    
+    <link rel="prev" href="template-syntax.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    About Vue GWT
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="project-setup.html">
+            
+                <a href="project-setup.html">
+            
+                    
+                    Project Setup
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="introduction/">
+            
+                <a href="introduction/">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="introduction/your-first-component.html">
+            
+                <a href="introduction/your-first-component.html">
+            
+                    
+                    Your First Component
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="introduction/conditional-and-loops.html">
+            
+                <a href="introduction/conditional-and-loops.html">
+            
+                    
+                    Conditional and Loops
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="introduction/handling-user-input.html">
+            
+                <a href="introduction/handling-user-input.html">
+            
+                    
+                    Handling User Input
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="introduction/composing-with-components.html">
+            
+                <a href="introduction/composing-with-components.html">
+            
+                    
+                    Composing with Components
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="the-vue-instance.html">
+            
+                <a href="the-vue-instance.html">
+            
+                    
+                    The Vue Instance
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="template-syntax.html">
+            
+                <a href="template-syntax.html">
+            
+                    
+                    Template Syntax
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6" data-path="computed-and-watchers.html">
+            
+                <a href="computed-and-watchers.html">
+            
+                    
+                    Computed Properties and Watchers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="class-and-style.html">
+            
+                <a href="class-and-style.html">
+            
+                    
+                    Class and Style Bindings
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="conditional.html">
+            
+                <a href="conditional.html">
+            
+                    
+                    Conditional Rendering
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="list.html">
+            
+                <a href="list.html">
+            
+                    
+                    List Rendering
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="gwt-integration/">
+            
+                <a href="gwt-integration/">
+            
+                    
+                    Integration with GWT
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="gwt-integration/styles.html">
+            
+                <a href="gwt-integration/styles.html">
+            
+                    
+                    Styles
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10.2" data-path="gwt-integration/client-bundles.html">
+            
+                <a href="gwt-integration/client-bundles.html">
+            
+                    
+                    Client Bundles (Images)
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10.3" data-path="gwt-integration/user-panels.html">
+            
+                <a href="gwt-integration/user-panels.html">
+            
+                    
+                    User Panels
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Computed Properties and Watchers</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="computed-properties-and-watchers">Computed Properties and Watchers</h1>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+    var basePath = "/";
+    if (window.location.hostname === "axellience.github.io")
+        basePath = "/vue-gwt/";
+
+    var script = document.createElement("script");
+    script.src = basePath + "dependencies/scripts/VueGwtExamples.nocache.js";
+    document.head.appendChild(script);
+
+    var style = document.createElement("link");
+    style.rel = "stylesheet";
+    style.href = basePath + "dependencies/style/custom-style.css";
+    document.head.appendChild(style);
+</script>
+
+<p><em>This page comes from the <a href="https://vuejs.org/v2/guide/computed.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
+<h2 id="computed-properties">Computed Properties</h2>
+<p>In-template expressions are very convenient, but they are really only meant for simple operations.
+Putting too much logic into your templates can make them bloated and hard to maintain. For example:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;example&quot;</span>&gt;</span>
+  {{ new StringBuilder(message).reverse().toString() }}
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<p>At this point, the template is no longer simple and declarative.
+You have to look at it for a second before realizing that it displays <code>message</code> in reverse.
+The problem is made worse when you want to include the reversed message in your template more than once.</p>
+<p>That&apos;s why for any complex logic, you should use a <strong>computed property</strong>.</p>
+<h3 id="basic-example">Basic Example</h3>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;example&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Original message: &quot;{{ message }}&quot;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Computed reversed message: &quot;{{ reversedMessage }}&quot;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span>{
+    <span class="hljs-keyword">public</span> String message;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello&quot;</span>;
+    }
+
+    <span class="hljs-meta">@Computed</span> <span class="hljs-comment">// Note the annotation that tells Vue GWT that this is a Computed Properties</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">reversedMessage</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> StringBuilder(message).reverse().toString();
+    }
+}
+</code></pre>
+<p>Result:</p>
+<p class="example-container" data-name="reverseComponent">
+    <span id="reverseComponent"></span>
+</p>
+
+
+<p>Here we have declared a computed property <code>reversedMessage</code>.
+The function we provided will be used as the getter function for the property <code>reversedMessage</code> of your template.</p>
+<p>To avoid name collision in JsInterop Vue GWT rename the computed property in your template at compile time.
+The property in your Vue instance in JavaScript is actually named <code>reversedMessage$computed</code>.</p>
+<p>You can open the console and play with the example vm yourself.
+The value of <code>reverseComponent.reversedMessage$computed</code> is always dependent on the value of <code>reverseComponent.message</code>.</p>
+<pre><code class="lang-js"><span class="hljs-built_in">console</span>.log(reverseComponent.reversedMessage$computed); <span class="hljs-comment">// -&gt; &apos;olleH&apos;</span>
+reverseComponent.message = <span class="hljs-string">&apos;Goodbye&apos;</span>;
+<span class="hljs-built_in">console</span>.log(reverseComponent.reversedMessage$computed); <span class="hljs-comment">// -&gt; &apos;eybdooG&apos;</span>
+</code></pre>
+<p>You can data-bind to computed properties in templates just like a normal property.
+Vue is aware that <code>reversedMessage</code> depends on <code>message</code>, so it will update any bindings that depend on <code>reversedMessage</code> when <code>message</code> changes.
+And the best part is that we&apos;ve created this dependency relationship declaratively: the computed getter function has no side effects, which makes it easy to test and reason about.</p>
+<h3 id="computed-caching-vs-methods">Computed Caching vs Methods</h3>
+<p>You may have noticed we can achieve the same result by invoking a method in the expression:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Reversed message: &quot;{{ reverseMessage() }}&quot;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span>{
+    <span class="hljs-keyword">public</span> String message;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello&quot;</span>;
+    }
+
+    <span class="hljs-comment">// Note that there a no more @Computed annotation</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">reversedMessage</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> StringBuilder(message).reverse().toString();
+    }
+}
+</code></pre>
+<p>Instead of a computed property, we can define the same function as a method instead.
+For the end result, the two approaches are indeed exactly the same.
+However, the difference is that <strong>computed properties are cached based on their dependencies.</strong>
+A computed property will only re-evaluate when some of its dependencies have changed.
+This means as long as <code>message</code> has not changed, multiple access to the <code>reversedMessage</code> computed property will immediately return the previously computed result without having to run the function again.</p>
+<p>This also means the following computed property will never update, because <code>new Date()</code> is not a reactive dependency:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Computed</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">now</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Date().toString();
+}
+</code></pre>
+<p>In comparison, a method invocation will <strong>always</strong> run the function whenever a re-render happens.</p>
+<p>Why do we need caching?
+Imagine we have an expensive computed property <strong>A</strong>, which requires looping through a huge Array and doing a lot of computations.
+Then we may have other computed properties that in turn depend on <strong>A</strong>.
+Without caching, we would be executing <strong>A</strong>&#x2019;s getter many more times than necessary!
+In cases where you do not want caching, use a method instead.</p>
+<h3 id="computed-vs-watched-property">Computed vs Watched Property</h3>
+<p>Vue does provide a more generic way to observe and react to data changes on a Vue instance: <strong>watch properties</strong>.
+When you have some data that needs to change based on some other data, it is tempting to overuse <code>watch</code> - especially if you are coming from an AngularJS background.
+However, it is often a better idea to use a computed property rather than an imperative <code>watch</code> callback. Consider this example:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;demo&quot;</span>&gt;</span>{{ fullName }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span>{
+    <span class="hljs-keyword">public</span> String firstName;
+    <span class="hljs-keyword">public</span> String lastName;
+    <span class="hljs-keyword">public</span> String fullName;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.firstName = <span class="hljs-string">&quot;John&quot;</span>;
+        <span class="hljs-keyword">this</span>.lastName = <span class="hljs-string">&quot;Snow&quot;</span>;
+        <span class="hljs-keyword">this</span>.fullName = <span class="hljs-string">&quot;John Snow&quot;</span>;
+    }
+
+    <span class="hljs-meta">@Watch</span>(propertyName = <span class="hljs-string">&quot;firstName&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">watchFirstName</span><span class="hljs-params">(String newValue)</span> </span>{
+        <span class="hljs-keyword">this</span>.fullName = newValue + <span class="hljs-string">&quot; &quot;</span> + <span class="hljs-keyword">this</span>.lastName;
+    }
+
+    <span class="hljs-meta">@Watch</span>(propertyName = <span class="hljs-string">&quot;lastName&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">watchLastName</span><span class="hljs-params">(String newValue)</span> </span>{
+        <span class="hljs-keyword">this</span>.fullName = <span class="hljs-keyword">this</span>.firstName + <span class="hljs-string">&quot; &quot;</span> + <span class="hljs-keyword">this</span>.newValue;
+    }
+}
+</code></pre>
+<p>The above code is imperative and repetitive. Compare it with a computed property version:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span>{
+    <span class="hljs-keyword">public</span> String firstName;
+    <span class="hljs-keyword">public</span> String lastName;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.firstName = <span class="hljs-string">&quot;John&quot;</span>;
+        <span class="hljs-keyword">this</span>.lastName = <span class="hljs-string">&quot;Snow&quot;</span>;
+    }
+
+    <span class="hljs-meta">@Computed</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">fullName</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.firstName + <span class="hljs-string">&quot; &quot;</span> + <span class="hljs-keyword">this</span>.lastName;
+    }
+}
+</code></pre>
+<p>Much better, isn&apos;t it?</p>
+<h3 id="computed-setter">Computed Setter</h3>
+<p>Computed properties are by default getter-only, but you can also provide a setter when you need it:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span>{
+    <span class="hljs-keyword">public</span> String firstName;
+    <span class="hljs-keyword">public</span> String lastName;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.firstName = <span class="hljs-string">&quot;John&quot;</span>;
+        <span class="hljs-keyword">this</span>.lastName = <span class="hljs-string">&quot;Snow&quot;</span>;
+    }
+
+    <span class="hljs-meta">@Computed</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">fullName</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.firstName + <span class="hljs-string">&quot; &quot;</span> + <span class="hljs-keyword">this</span>.lastName;
+    }
+
+    <span class="hljs-meta">@Computed</span>(propertyName = <span class="hljs-string">&quot;fullName&quot;</span>, kind = ComputedKind.SETTER)
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setFullName</span><span class="hljs-params">(String fullName)</span> </span>{
+        String[] split = fullName.split(<span class="hljs-string">&quot; &quot;</span>);
+        <span class="hljs-keyword">this</span>.firstName = split[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">this</span>.lastName = split[<span class="hljs-number">1</span>];
+    }
+}
+</code></pre>
+<p>Now when you run <code>this.fullName = &apos;John Doe&apos;</code>, the setter will be invoked and <code>this.firstName</code> and <code>this.lastName</code> will be updated accordingly.</p>
+<h2 id="watchers">Watchers</h2>
+<p>While computed properties are more appropriate in most cases, there are times when a custom watcher is necessary.
+That&apos;s why Vue provides a more generic way to react to data changes through the <code>watch</code> option.
+This is most useful when you want to perform asynchronous or expensive operations in response to changing data.</p>
+<p>In Vue GWT we use the <code>@Watch</code> annotation on a method to indicate it as a watcher.
+The mandatory <code>propertyName</code> attribute of the annotation indicate the property to watch.</p>
+<p>Here is an example:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span>{
+    <span class="hljs-keyword">public</span> String message;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello World!&quot;</span>;
+    }
+
+    <span class="hljs-meta">@Watch</span>(propertyName = <span class="hljs-string">&quot;message&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">watchMessage</span><span class="hljs-params">(String newValue, String oldValue)</span> </span>{
+        <span class="hljs-comment">// Do something asynchroneous</span>
+    }
+}
+</code></pre>
+<p>&#x26A0;&#xFE0F; Like for <code>v-model</code>, only JsInterop expression can be used as <code>propertyName</code>.
+This means any attribute from your Component and any of their attributes as long as they have the <code>@JsProperty</code> annotation.
+This <code>@Computed(propertyName = &quot;todo.text&quot;)</code> won&apos;t work if the attribute <code>text</code> of the class <code>Todo</code> doesn&apos;t have the <code>@JsProperty</code> annotation. </p>
+<p>In addition to the <code>watch</code> option, you can also use the imperative <a href="https://vuejs.org/v2/api/#vm-watch" target="_blank">vm.$watch API</a>.
+This allow you to watch non <code>@JsInterop</code> properties:</p>
+<pre><code class="lang-java"><span class="hljs-keyword">this</span>.$watch(
+    () -&gt; <span class="hljs-keyword">this</span>.todo.text,
+    (newValue, oldValue) -&gt; {
+        <span class="hljs-comment">// Do something</span>
+    }
+);
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="template-syntax.html" class="navigation navigation-prev " aria-label="Previous page: Template Syntax">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="class-and-style.html" class="navigation navigation-next " aria-label="Next page: Class and Style Bindings">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"1.6","depth":1,"next":{"title":"Class and Style Bindings","level":"1.7","depth":1,"path":"class-and-style.md","ref":"class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"1.5","depth":1,"path":"template-syntax.md","ref":"template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"computed-and-watchers.md","mtime":"2017-07-06T08:56:50.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-06T08:57:40.142Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
