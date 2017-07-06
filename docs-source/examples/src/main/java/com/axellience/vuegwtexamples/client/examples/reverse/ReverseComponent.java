@@ -1,4 +1,4 @@
-package com.axellience.vuegwtexamples.client.examples.example11;
+package com.axellience.vuegwtexamples.client.examples.reverse;
 
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;

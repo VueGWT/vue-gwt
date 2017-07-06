@@ -3,17 +3,18 @@ package com.axellience.vuegwtexamples.client;
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.Vue;
-import com.axellience.vuegwtexamples.client.examples.example1.SimpleLinkComponent;
-import com.axellience.vuegwtexamples.client.examples.example10.KittenComponent;
-import com.axellience.vuegwtexamples.client.examples.example11.ReverseComponent;
-import com.axellience.vuegwtexamples.client.examples.example2.LinkComponent;
-import com.axellience.vuegwtexamples.client.examples.example3.CanHideComponent;
-import com.axellience.vuegwtexamples.client.examples.example4.SimpleTodoListComponent;
-import com.axellience.vuegwtexamples.client.examples.example5.ExclamationComponent;
-import com.axellience.vuegwtexamples.client.examples.example6.MessageComponent;
-import com.axellience.vuegwtexamples.client.examples.example7.ParentComponent;
-import com.axellience.vuegwtexamples.client.examples.example8.TodoListComponent;
-import com.axellience.vuegwtexamples.client.examples.example9.MelisandreComponent;
+import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
+import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
+import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
+import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
+import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
+import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
+import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
+import com.axellience.vuegwtexamples.client.examples.message.MessageComponent;
+import com.axellience.vuegwtexamples.client.examples.parent.ParentComponent;
+import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
+import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
+import com.axellience.vuegwtexamples.client.examples.vforwithindex.VForWithIndexComponent;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Document;
 
@@ -38,6 +39,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("melisandreComponent", MelisandreComponent.class);
         this.addExample("kittenComponent", KittenComponent.class);
         this.addExample("reverseComponent", ReverseComponent.class);
+        this.addExample("vForWithIndexComponent", VForWithIndexComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)

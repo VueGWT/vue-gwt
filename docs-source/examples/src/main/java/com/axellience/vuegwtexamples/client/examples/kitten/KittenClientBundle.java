@@ -1,4 +1,4 @@
-package com.axellience.vuegwtexamples.client.examples.example10;
+package com.axellience.vuegwtexamples.client.examples.kitten;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;

@@ -1,15 +1,12 @@
-package com.axellience.vuegwtexamples.client.examples.example7;
+package com.axellience.vuegwtexamples.client.examples.parent;
 
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import jsinterop.annotations.JsType;
 
-/**
- * @author Adrien Baron
- */
 @JsType
-@Component
-public class TodoComponent extends VueComponent
+@Component(components = { TodoComponent.class })
+public class ParentComponent extends VueComponent
 {
     @Override
     public void created()
