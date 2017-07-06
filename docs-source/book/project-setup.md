@@ -86,8 +86,8 @@ This is useful for Eclipse:
 </pluginManagement>
 ```
 
-## ✅ Configure JsInterop
-Vue GWT relies heavily on JsInterop.
+## ✅ Configure `JsInterop`
+Vue GWT relies heavily on `JsInterop`.
 You must enable it in SuperDevMode and Maven.
 
 ### SuperDevMode

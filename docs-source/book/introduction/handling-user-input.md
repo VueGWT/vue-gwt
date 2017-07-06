@@ -74,7 +74,7 @@ Changing the value of our Java property will change the value of input.
 </p>
 {% endraw %}
 
-⚠️  It's important to note that for now in Vue GWT only JsInterop properties can be used in `v-model`.
+⚠️  It's important to note that for now in Vue GWT only `JsInterop` properties can be used in `v-model`.
 For example if you have a property `myTodo` of type `Todo` then:
 ```html
 <input v-model="myTodo.text">

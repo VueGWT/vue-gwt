@@ -1,0 +1,29 @@
+.example-container {
+	position:         relative;
+	padding:          1rem;
+	background-color: #F0F0F0;
+	border-radius:    4px;
+	border:           1px solid #DDDDDD;
+}
+
+.example-container::before {
+	content:   attr(data-name);
+	position:  absolute;
+	right:     0.4rem;
+	top:       0;
+	color:     #E96A3B;
+	font-size: 1.4rem;
+}
+
+.markdown-section a,
+.book-summary ul.summary li.active > a {
+	color: #E96A3B;
+}
+
+.markdown-section code {
+	color: #B5512C;
+}
+
+.markdown-section pre > code {
+	color: #333333;
+}

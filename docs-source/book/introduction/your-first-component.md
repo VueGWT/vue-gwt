@@ -14,7 +14,15 @@ This Component will simply display an html link.
 #### Java Class
 To create our Component, we must create a Class annotated by `@Component` and `@JsType` that extends `VueComponent`.
 
-All the `public` attributes and methods of this Class will be accessible in our template.
+All the `JsInterop` attributes and methods of our Component Class will be accessible in our template.
+
+Meaning either:
+
+ * `public` attributes/methods
+ * `protected` attributes/methods annotated with `@JsProperty`/`@JsMethod`
+
+In this documentation we chose to set all our properties to `public` for brevity.
+But `@JsProperty protected` would also work without problems.
 
 ***SimpleLinkComponent.java***
 ```java

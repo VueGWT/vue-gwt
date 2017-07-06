@@ -60,7 +60,7 @@ Result:
 Here we have declared a computed property `reversedMessage`.
 The function we provided will be used as the getter function for the property `reversedMessage` of your template.
 
-To avoid name collision in JsInterop Vue GWT rename the computed property in your template at compile time.
+To avoid name collision in `JsInterop` Vue GWT rename the computed property in your template at compile time.
 The property in your Vue instance in JavaScript is actually named `reversedMessage$computed`.
 
 You can open the console and play with the example vm yourself.
@@ -252,12 +252,12 @@ public class JohnSnowComponent extends VueComponent
 }
 ```
 
-⚠️ Like for `v-model`, only JsInterop expression can be used as `propertyName`.
+⚠️ Like for `v-model`, only `JsInterop` expression can be used as `propertyName`.
 This means any attribute from your Component and any of their attributes as long as they have the `@JsProperty` annotation.
 This `@Computed(propertyName = "todo.text")` won't work if the attribute `text` of the class `Todo` doesn't have the `@JsProperty` annotation. 
 
 In addition to the `watch` option, you can also use the imperative [vm.$watch API](https://vuejs.org/v2/api/#vm-watch).
-This allow you to watch non `@JsInterop` properties:
+This allow you to watch non `JsInterop` properties:
 ```java
 this.$watch(
     () -> this.todo.text,
