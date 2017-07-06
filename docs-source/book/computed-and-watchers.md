@@ -1,5 +1,7 @@
 # Computed Properties and Watchers
 
+!INCLUDE "dependencies.md"
+
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/computed.html) and has been adapted for Vue GWT.*
 
 ## Computed Properties
