@@ -27,7 +27,6 @@ demoComponent.$mount("#myContainer");
 ```
 
 Although it is possible to create extended instances imperatively, most of the time it is recommended to compose them declaratively in templates as custom elements.
-We will talk about [the component system](components.html) in detail later.
 For now, you just need to know that all Vue components are essentially extended Vue instances.
 Vue GWT configure those instance for you, but in the browser they really are just regular Vue instance.
 
