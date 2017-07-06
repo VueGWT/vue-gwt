@@ -46,7 +46,7 @@ You can see it as your Component "constructor".
 
 We will then create a template for our `SimpleLinkComponent`.
 It should have the same name as our Java Class file and be in the same package.
-VueGWT will detect it automatically and use it as our Component template.
+Vue GWT will detect it automatically and use it as our Component template.
 
 ***SimpleLinkComponent.html***
 

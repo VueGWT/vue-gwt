@@ -6,7 +6,7 @@
     	basePath = "/vue-gwt/";
     
     var script = document.createElement("script");
-    script.src = basePath + "dependencies/scripts/VueGwtExamples.nocache.js";
+    script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
     document.head.appendChild(script);
 </script>
 {% endraw %}

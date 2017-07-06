@@ -10,9 +10,7 @@ It let you write Vue.js components in Java.
 
 Checkout our **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)** to see it in action.
 
-⚠️ Vue GWT is in an **experimental** state.
-The syntax is not final and might change between versions.
-It may also contain bugs.
+Want to learn how it works? See our **[online documentation](https://axellience.github.io/vue-gwt/)**.
 
 ## Features
 
@@ -22,3 +20,16 @@ It may also contain bugs.
 * Support most of Vue.js features
 
 When you are ready, you can get started with by **[setting it up on your project](https://axellience.github.io/vue-gwt/project-setup.html)**.
+
+⚠️ Vue GWT is in an **experimental** state.
+The syntax is not final and might change between versions.
+It may also contain bugs.
+
+## Who Made This?
+
+<p align="center">
+    Vue GWT is developed by the awesome people at<br/>
+    <a href="https://www.genmymodel.com" target="_blank">
+        <img src="https://axellience.github.io/vue-gwt/resources/images/GenMyModel-Logo-Black.png" alt="GenMyModel"/>
+    </a>
+</p>

@@ -130,7 +130,7 @@ public class Todo {
 In addition to data properties, Vue instances expose a number of useful instance properties and methods.
 These properties and methods are prefixed with `$` to differentiate them from proxied data properties.
 
-In VueGWT these methods and properties are defined in `VueComponent`, usually with the same name.
+In Vue GWT these methods and properties are defined in `VueComponent`, usually with the same name.
 Because your Components inherits from `VueComponent` you can simply access them in your Components.
 
 For example:

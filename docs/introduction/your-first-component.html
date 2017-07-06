@@ -34,6 +34,8 @@
 
     
         
+        <link rel="stylesheet" href="../styles/website.css">
+        
     
         
     
@@ -375,13 +377,8 @@
         basePath = "/vue-gwt/";
 
     var script = document.createElement("script");
-    script.src = basePath + "dependencies/scripts/VueGwtExamples.nocache.js";
+    script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
     document.head.appendChild(script);
-
-    var style = document.createElement("link");
-    style.rel = "stylesheet";
-    style.href = basePath + "dependencies/style/custom-style.css";
-    document.head.appendChild(style);
 </script>
 
 <h2 id="simple-link-component">Simple Link Component</h2>
@@ -391,7 +388,14 @@ This Component will simply display an html link.</p>
 <h3 id="declaring-the-component">Declaring the Component</h3>
 <h4 id="java-class">Java Class</h4>
 <p>To create our Component, we must create a Class annotated by <code>@Component</code> and <code>@JsType</code> that extends <code>VueComponent</code>.</p>
-<p>All the <code>public</code> attributes and methods of this Class will be accessible in our template.</p>
+<p>All the <code>JsInterop</code> attributes and methods of our Component Class will be accessible in our template.</p>
+<p>Meaning either:</p>
+<ul>
+<li><code>public</code> attributes/methods</li>
+<li><code>protected</code> attributes/methods annotated with <code>@JsProperty</code>/<code>@JsMethod</code></li>
+</ul>
+<p>In this documentation we chose to set all our properties to <code>public</code> for brevity.
+But <code>@JsProperty protected</code> would also work without problems.</p>
 <p><strong><em>SimpleLinkComponent.java</em></strong></p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
@@ -410,7 +414,7 @@ You can see it as your Component &quot;constructor&quot;.</p>
 <h4 id="html-template">HTML Template</h4>
 <p>We will then create a template for our <code>SimpleLinkComponent</code>.
 It should have the same name as our Java Class file and be in the same package.
-VueGWT will detect it automatically and use it as our Component template.</p>
+Vue GWT will detect it automatically and use it as our Component template.</p>
 <p><strong><em>SimpleLinkComponent.html</em></strong></p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://github.com/Axellience/vue-gwt&quot;</span>&gt;</span>
     {{ linkName }}
@@ -535,7 +539,7 @@ Here it is basically saying &quot;keep this element&#x2019;s href attribute up-t
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Your First Component","level":"1.3.1","depth":2,"next":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"previous":{"title":"Introduction","level":"1.3","depth":1,"path":"introduction/index.md","ref":"introduction/index.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"path":"introduction/your-first-component.md","ref":"introduction/your-first-component.md","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/your-first-component.md","mtime":"2017-07-05T14:39:17.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-06T08:57:40.142Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Your First Component","level":"1.3.1","depth":2,"next":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"previous":{"title":"Introduction","level":"1.3","depth":1,"path":"introduction/index.md","ref":"introduction/index.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"path":"introduction/your-first-component.md","ref":"introduction/your-first-component.md","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/your-first-component.md","mtime":"2017-07-06T10:00:40.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-06T10:22:31.579Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
