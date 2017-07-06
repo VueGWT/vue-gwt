@@ -14,9 +14,12 @@ import jsinterop.annotations.JsType;
 public class VForWithIndexComponent extends VueComponent
 {
     public JsArray<Todo> todos;
+    public String parentMessage;
 
     @Override
     public void created() {
+        this.parentMessage = "Message from parent";
+
         this.todos = new JsArray<>();
         this.todos.push(new Todo("Learn Java"));
         this.todos.push(new Todo("Learn Vue GWT"));

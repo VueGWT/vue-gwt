@@ -15,6 +15,8 @@ import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkCompon
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobject.VForOnObjectComponent;
+import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkey.VForOnObjectWithKeyComponent;
+import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkeyandindex.VForOnObjectWithKeyAndIndexComponent;
 import com.axellience.vuegwtexamples.client.examples.vforwithindex.VForWithIndexComponent;
 import com.axellience.vuegwtexamples.client.examples.vforwithrange.VForWithRangeComponent;
 import com.google.gwt.core.client.EntryPoint;
@@ -44,6 +46,9 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("vForWithIndexComponent", VForWithIndexComponent.class);
         this.addExample("vForWithRangeComponent", VForWithRangeComponent.class);
         this.addExample("vForOnObjectComponent", VForOnObjectComponent.class);
+        this.addExample("vForOnObjectWithKeyComponent", VForOnObjectWithKeyComponent.class);
+        this.addExample("vForOnObjectWithKeyAndIndexComponent",
+            VForOnObjectWithKeyAndIndexComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)

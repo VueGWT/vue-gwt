@@ -44,8 +44,51 @@ Result:
 </p>
 {% endraw %}
 
-Vue.js [support getting the index of the current element](https://vuejs.org/v2/guide/list.html#Basic-Usage) being looped on.
-This is not yet supported in Vue GWT.
+Inside `v-for` blocks we have full access to parent scope properties.
+`v-for` also supports an optional second argument for the index of the current item.
+
+```html
+<vue-gwt:import class="com.axellience.vuegwtexamples.client.examples.common.Todo"/>
+<ul>
+    <li v-for="(Todo todo, index)  in  todos">
+        {{ parentMessage }} - {{ index }} -> {{ todo.getText() }}
+    </li>
+</ul>
+```
+
+```java
+@JsType
+@Component
+public class VForWithIndexComponent extends VueComponent
+{
+    public JsArray<Todo> todos;
+    public String parentMessage;
+
+    @Override
+    public void created() {
+        this.parentMessage = "Message from parent";
+
+        this.todos = new JsArray<>();
+        this.todos.push(new Todo("Learn Java"));
+        this.todos.push(new Todo("Learn Vue GWT"));
+        this.todos.push(new Todo("Build something awesome"));
+    }
+}
+```
+
+Result:
+
+{% raw %}
+<p class="example-container" data-name="vForWithIndexComponent">
+    <span id="vForWithIndexComponent"></span>
+</p>
+{% endraw %}
+
+You can also use `of` as the delimiter instead of `in`, so that it is closer to JavaScript's syntax for iterators:
+
+```html
+<li v-for="Todo todo of todos">
+```
 
 ### Template `v-for`
 
@@ -63,11 +106,94 @@ Similar to template `v-if`, you can also use a `<template>` tag with `v-for` to 
 
 ### Object `v-for`
 
-[Iterating on Object properties](https://vuejs.org/v2/guide/list.html#Object-v-for) is not supported yet by Vue GWT.
+You can also use `v-for` to iterate through the properties of an `Object`.
+
+For this you have to cast to `Object` in your `v-for`.
+This tells Vue GWT that you are iterating on an `Object` and not a `JsArray`.
+
+```html
+<ul>
+    <li v-for="Object value in (Object) myObject">
+        {{ value }}
+    </li>
+</ul>
+```
+
+```java
+@JsType
+@Component
+public class VForOnObjectComponent extends VueComponent
+{
+    public JsObject myObject;
+
+    @Override
+    public void created() {
+        this.myObject = new JsObject();
+        this.myObject.set("myString", "Hello World");
+        this.myObject.set("myInt", 12);
+        this.myObject.set("myTodo", new Todo("I'm a Todo"));
+    }
+}
+```
+
+Result:
+
+{% raw %}
+<p class="example-container" data-name="vForOnObjectComponent">
+    <span id="vForOnObjectComponent"></span>
+</p>
+{% endraw %}
+
+You can also provide a second argument for the key:
+
+```html
+<ul>
+    <li v-for="(Object value, key) in (Object) myObject">
+        {{ key }}: {{ value }}
+    </li>
+</ul>
+```
+
+{% raw %}
+<p class="example-container" data-name="vForOnObjectWithKeyComponent">
+    <span id="vForOnObjectWithKeyComponent"></span>
+</p>
+{% endraw %}
+
+And another for the index:
+
+```html
+<ul>
+    <li v-for="(Object value, key, index) in (Object) myObject">
+        {{ index }}. {{ key }}: {{ value }}
+    </li>
+</ul>
+```
+
+{% raw %}
+<p class="example-container" data-name="vForOnObjectWithKeyAndIndexComponent">
+    <span id="vForOnObjectWithKeyAndIndexComponent"></span>
+</p>
+{% endraw %}
+
+> ℹ️ When iterating over an object, the order is based on the key enumeration order of `Object.keys()`, which is **not** guaranteed to be consistent across JavaScript engine implementations.
 
 ### Range `v-for`
 
-[Repeating on a fix number](https://vuejs.org/v2/guide/list.html#Range-v-for) is not yet supported in Vue GWT.
+`v-for` can also take an integer.
+In this case it will repeat the template that many times.
+
+```html
+<div>
+    <span v-for="n in 5">{{ n }} </span>
+</div>
+```
+
+{% raw %}
+<p class="example-container" data-name="vForWithRangeComponent">
+    <span id="vForWithRangeComponent"></span>
+</p>
+{% endraw %}
 
 ### Components and `v-for`
 

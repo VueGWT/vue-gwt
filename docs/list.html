@@ -413,8 +413,42 @@ The <code>v-for</code> directive requires a special syntax in the form of <code>
 </p>
 
 
-<p>Vue.js <a href="https://vuejs.org/v2/guide/list.html#Basic-Usage" target="_blank">support getting the index of the current element</a> being looped on.
-This is not yet supported in Vue GWT.</p>
+<p>Inside <code>v-for</code> blocks we have full access to parent scope properties.
+<code>v-for</code> also supports an optional second argument for the index of the current item.</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">vue-gwt:import</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.axellience.vuegwtexamples.client.examples.common.Todo&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;(Todo todo, index)  in  todos&quot;</span>&gt;</span>
+        {{ parentMessage }} - {{ index }} -&gt; {{ todo.getText() }}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VForWithIndexComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span>{
+    <span class="hljs-keyword">public</span> JsArray&lt;Todo&gt; todos;
+    <span class="hljs-keyword">public</span> String parentMessage;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.parentMessage = <span class="hljs-string">&quot;Message from parent&quot;</span>;
+
+        <span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">new</span> JsArray&lt;&gt;();
+        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Java&quot;</span>));
+        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Vue GWT&quot;</span>));
+        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Build something awesome&quot;</span>));
+    }
+}
+</code></pre>
+<p>Result:</p>
+<p class="example-container" data-name="vForWithIndexComponent">
+    <span id="vForWithIndexComponent"></span>
+</p>
+
+
+<p>You can also use <code>of</code> as the delimiter instead of <code>in</code>, so that it is closer to JavaScript&apos;s syntax for iterators:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;Todo todo of todos&quot;</span>&gt;</span>
+</code></pre>
 <h3 id="template-v-for">Template <code>v-for</code></h3>
 <p>Similar to template <code>v-if</code>, you can also use a <code>&lt;template&gt;</code> tag with <code>v-for</code> to render a block of multiple elements. For example:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">vue-gwt:import</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.mypackage.Todo&quot;</span>/&gt;</span>
@@ -426,9 +460,75 @@ This is not yet supported in Vue GWT.</p>
 <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
 </code></pre>
 <h3 id="object-v-for">Object <code>v-for</code></h3>
-<p><a href="https://vuejs.org/v2/guide/list.html#Object-v-for" target="_blank">Iterating on Object properties</a> is not supported yet by Vue GWT.</p>
+<p>You can also use <code>v-for</code> to iterate through the properties of an <code>Object</code>.</p>
+<p>For this you have to cast to <code>Object</code> in your <code>v-for</code>.
+This tells Vue GWT that you are iterating on an <code>Object</code> and not a <code>JsArray</code>.</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;Object value in (Object) myObject&quot;</span>&gt;</span>
+        {{ value }}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VForOnObjectComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span>{
+    <span class="hljs-keyword">public</span> JsObject myObject;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.myObject = <span class="hljs-keyword">new</span> JsObject();
+        <span class="hljs-keyword">this</span>.myObject.set(<span class="hljs-string">&quot;myString&quot;</span>, <span class="hljs-string">&quot;Hello World&quot;</span>);
+        <span class="hljs-keyword">this</span>.myObject.set(<span class="hljs-string">&quot;myInt&quot;</span>, <span class="hljs-number">12</span>);
+        <span class="hljs-keyword">this</span>.myObject.set(<span class="hljs-string">&quot;myTodo&quot;</span>, <span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;I&apos;m a Todo&quot;</span>));
+    }
+}
+</code></pre>
+<p>Result:</p>
+<p class="example-container" data-name="vForOnObjectComponent">
+    <span id="vForOnObjectComponent"></span>
+</p>
+
+
+<p>You can also provide a second argument for the key:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;(Object value, key) in (Object) myObject&quot;</span>&gt;</span>
+        {{ key }}: {{ value }}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+</code></pre>
+<p class="example-container" data-name="vForOnObjectWithKeyComponent">
+    <span id="vForOnObjectWithKeyComponent"></span>
+</p>
+
+
+<p>And another for the index:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;(Object value, key, index) in (Object) myObject&quot;</span>&gt;</span>
+        {{ index }}. {{ key }}: {{ value }}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+</code></pre>
+<p class="example-container" data-name="vForOnObjectWithKeyAndIndexComponent">
+    <span id="vForOnObjectWithKeyAndIndexComponent"></span>
+</p>
+
+
+<blockquote>
+<p>&#x2139;&#xFE0F; When iterating over an object, the order is based on the key enumeration order of <code>Object.keys()</code>, which is <strong>not</strong> guaranteed to be consistent across JavaScript engine implementations.</p>
+</blockquote>
 <h3 id="range-v-for">Range <code>v-for</code></h3>
-<p><a href="https://vuejs.org/v2/guide/list.html#Range-v-for" target="_blank">Repeating on a fix number</a> is not yet supported in Vue GWT.</p>
+<p><code>v-for</code> can also take an integer.
+In this case it will repeat the template that many times.</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;n in 5&quot;</span>&gt;</span>{{ n }} <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<p class="example-container" data-name="vForWithRangeComponent">
+    <span id="vForWithRangeComponent"></span>
+</p>
+
+
 <h3 id="components-and-v-for">Components and <code>v-for</code></h3>
 <p>You can directly use <code>v-for</code> on a custom component, like any normal element:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">vue-gwt:import</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.mypackage.Item&quot;</span>/&gt;</span>
@@ -567,7 +667,7 @@ Vue implements some smart heuristics to maximize DOM element reuse, so replacing
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"1.9","depth":1,"next":{"title":"Integration with GWT","level":"1.10","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.10.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.10.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.10.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Conditional Rendering","level":"1.8","depth":1,"path":"conditional.md","ref":"conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"list.md","mtime":"2017-07-06T08:47:15.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-06T12:40:44.455Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"1.9","depth":1,"next":{"title":"Integration with GWT","level":"1.10","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.10.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.10.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.10.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Conditional Rendering","level":"1.8","depth":1,"path":"conditional.md","ref":"conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"list.md","mtime":"2017-07-06T19:11:06.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-06T19:19:21.729Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
