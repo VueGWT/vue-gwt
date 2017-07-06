@@ -11,6 +11,7 @@
 * [Template Syntax](template-syntax.md)
 * [Computed Properties and Watchers](computed-and-watchers.md)
 * [Class and Style Bindings](class-and-style.md)
+* [Conditional Rendering](conditional.md)
 * [Integration with GWT](gwt-integration/index.md)
     * [Styles](gwt-integration/styles.md)
     * [Client Bundles (Images)](gwt-integration/client-bundles.md)
