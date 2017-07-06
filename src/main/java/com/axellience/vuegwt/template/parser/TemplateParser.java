@@ -361,29 +361,28 @@ public class TemplateParser
     private String processVForValue(String vForValue, TemplateParserContext context,
         TemplateParserResult result)
     {
-        String[] splitExpression = vForValue.split(" in ");
-        if (splitExpression.length != 2)
-            throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
+        VForDefinition vForDef = new VForDefinition(vForValue, context);
 
-        String loopVariableDefinition = splitExpression[0];
+        LocalVariableInfo loopVariableInfo = vForDef.getLoopVariableInfo();
+        String variableDefinition = loopVariableInfo.getGlobalName();
 
-        String[] splitLoopVariable = loopVariableDefinition.split(" ");
-        if (splitLoopVariable.length != 2)
-            throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
+        if (vForDef.getIndexVariableInfo() != null)
+        {
+            LocalVariableInfo indexVariableInfo = vForDef.getIndexVariableInfo();
+            variableDefinition =
+                "(" + variableDefinition + ", " + indexVariableInfo.getGlobalName() + ")";
+        }
 
-        String loopVariableType = context.getFullyQualifiedNameForClassName(splitLoopVariable[0]);
-        String loopVariableName = splitLoopVariable[1];
-
-        LocalVariableInfo variableInfo =
-            context.addLocalVariable(loopVariableType, loopVariableName);
-        loopVariableDefinition = variableInfo.getGlobalName();
-
+        // Set return type
         context.setCurrentExpressionReturnType(JsArray.class.getCanonicalName());
         context.setCurrentExpressionKind(TemplateExpressionKind.COMPUTED_PROPERTY);
-        String inExpression = splitExpression[1];
+
+        // Process the array expression
         TemplateExpression templateExpression =
-            this.processJavaExpression(inExpression, context, result);
-        return loopVariableDefinition + " in " + templateExpression.toTemplateString();
+            this.processJavaExpression(vForDef.getInExpression(), context, result);
+
+        // And return the newly built definition
+        return variableDefinition + " in " + templateExpression.toTemplateString();
     }
 
     /**
