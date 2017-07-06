@@ -31,7 +31,7 @@ It may also contain bugs.
 <p align="center">
     Vue GWT is developed by the awesome people at<br/>
     <a href="https://www.genmymodel.com" target="_blank">
-        <img src="https://axellience.github.io/vue-gwt/resources/images/GenMyModel-Logo-Black.png" alt="GenMyModel"/>
+        <img src="https://axellience.github.io/vue-gwt/resources/images/GenMyModel-Logo-Black.png" alt="GenMyModel" height="50"/>
     </a>
 </p>
 {% endraw %}
