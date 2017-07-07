@@ -210,6 +210,12 @@ public class TemplateParser
                 context.setCurrentExpressionReturnType("boolean");
             }
 
+            if ((":style".equals(attributeName) || "v-bind:style".equals(attributeName)) && isJSON(
+                attribute.getValue()))
+            {
+                context.setCurrentExpressionReturnType("String");
+            }
+
             attribute.setValue(processExpression(attribute.getValue(), context, result));
         }
 
