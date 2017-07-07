@@ -22,7 +22,7 @@ import java.util.Iterator;
  * Original Source: https://github.com/ltearno/angular2-gwt/
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Array")
-public class JsArray<T>
+public class JsArray<T> implements Iterable<T>
 {
     public int length;
 
@@ -183,12 +183,13 @@ public class JsArray<T>
         JsTools.set(this, index, value);
     }
 
-    @JsOverlay
-    public final Iterable<T> iterate()
+    @Override
+    public Iterator<T> iterator()
     {
-        return () -> new Iterator<T>()
+        return new Iterator<T>()
         {
             int index = 0;
+            boolean hasCalledNext;
 
             @Override
             public boolean hasNext()
@@ -201,13 +202,18 @@ public class JsArray<T>
             {
                 T result = get(index);
                 index++;
+                hasCalledNext = true;
                 return result;
             }
 
             @Override
             public void remove()
             {
-                throw new RuntimeException();
+                if (!hasCalledNext)
+                    throw new IllegalStateException();
+
+                hasCalledNext = false;
+                splice(index - 1, 1);
             }
         };
     }
