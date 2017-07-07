@@ -7,7 +7,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface JsReduce<T, T2>
+public interface JsReduceWithIndex<T, T2>
 {
-    T2 execute(T2 accumulator, T value);
+    T2 execute(T2 accumulator, T value, int currentIndex);
 }

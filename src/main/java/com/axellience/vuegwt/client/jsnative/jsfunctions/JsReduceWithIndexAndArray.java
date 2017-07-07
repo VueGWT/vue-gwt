@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.jsnative.jsfunctions;
 
+import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import jsinterop.annotations.JsFunction;
 
 /**
@@ -7,7 +8,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface JsReduce<T, T2>
+public interface JsReduceWithIndexAndArray<T, T2>
 {
-    T2 execute(T2 accumulator, T value);
+    T2 execute(T2 accumulator, T value, int currentIndex, JsArray<T> array);
 }

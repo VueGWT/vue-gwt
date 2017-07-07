@@ -8,6 +8,8 @@ import com.axellience.vuegwt.client.jsnative.jsfunctions.JsPredicate;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsPredicateWithIndex;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsPredicateWithIndexAndArray;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsReduce;
+import com.axellience.vuegwt.client.jsnative.jsfunctions.JsReduceWithIndex;
+import com.axellience.vuegwt.client.jsnative.jsfunctions.JsReduceWithIndexAndArray;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -123,6 +125,30 @@ public class JsArray<T>
 
     @JsMethod
     public native <T2> T2 reduceRight(JsReduce<T, T2> reduce, T2 initialValue);
+
+    @JsMethod
+    public native <T2> T2 reduce(JsReduceWithIndex<T, T2> reduce);
+
+    @JsMethod
+    public native <T2> T2 reduce(JsReduceWithIndex<T, T2> reduce, T2 initialValue);
+
+    @JsMethod
+    public native <T2> T2 reduceRight(JsReduceWithIndex<T, T2> reduce);
+
+    @JsMethod
+    public native <T2> T2 reduceRight(JsReduceWithIndex<T, T2> reduce, T2 initialValue);
+
+    @JsMethod
+    public native <T2> T2 reduce(JsReduceWithIndexAndArray<T, T2> reduce);
+
+    @JsMethod
+    public native <T2> T2 reduce(JsReduceWithIndexAndArray<T, T2> reduce, T2 initialValue);
+
+    @JsMethod
+    public native <T2> T2 reduceRight(JsReduceWithIndexAndArray<T, T2> reduce);
+
+    @JsMethod
+    public native <T2> T2 reduceRight(JsReduceWithIndexAndArray<T, T2> reduce, T2 initialValue);
 
     @JsMethod
     public native boolean some(JsPredicate<T> every);
