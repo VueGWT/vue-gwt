@@ -52,12 +52,6 @@
             <version>1.10.2</version>
         </dependency>
         <dependency>
-            <!-- JSON parsing -->
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20160810</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
             <version>3.0.1</version>
@@ -80,6 +74,11 @@
             <version>2.7.1</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-json</artifactId>
+			<version>3.8.6</version>
+		</dependency>
     </dependencies>
 
     <build>

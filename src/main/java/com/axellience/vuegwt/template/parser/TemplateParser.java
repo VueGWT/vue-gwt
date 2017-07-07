@@ -14,8 +14,9 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import org.json.JSONException;
-import org.json.JSONObject;
+import jodd.json.JsonException;
+import jodd.json.JsonParser;
+import jodd.json.JsonSerializer;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,12 +25,14 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.ParseSettings;
 import org.jsoup.parser.Parser;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Adrien Baron
@@ -38,6 +41,18 @@ public class TemplateParser
 {
     private static Pattern VUE_ATTR_PATTERN = Pattern.compile("^(v-|:|@).*");
     private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
+
+    private final JsonParser jsonParser;
+    private final JsonSerializer jsonSerializer;
+
+    public TemplateParser()
+    {
+        this.jsonParser = new JsonParser();
+        this.jsonParser.looseMode(true);
+
+        this.jsonSerializer = new JsonSerializer();
+        this.jsonSerializer.deep(true);
+    }
 
     public TemplateParserResult parseHtmlTemplate(String htmlTemplate, JClassType vueComponentClass)
     {
@@ -204,13 +219,13 @@ public class TemplateParser
                 context.setCurrentExpressionReturnType("boolean");
             }
 
-            if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName)) && isJSON(
+            if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName)) && isJSONObject(
                 attribute.getValue()))
             {
                 context.setCurrentExpressionReturnType("boolean");
             }
 
-            if ((":style".equals(attributeName) || "v-bind:style".equals(attributeName)) && isJSON(
+            if ((":style".equals(attributeName) || "v-bind:style".equals(attributeName)) && isJSONObject(
                 attribute.getValue()))
             {
                 context.setCurrentExpressionReturnType("String");
@@ -237,23 +252,13 @@ public class TemplateParser
         if ("".equals(expressionString))
             return "";
 
-        if (expressionString.startsWith("[") && expressionString.endsWith("]"))
-            return processArrayExpression(expressionString, context, result);
-
-        // Try to parse the expression as JSON
+        // Try to parse the expression as JSON Object or Array
         try
         {
-            JSONObject jsonObject = new JSONObject(expressionString);
-            String jsonString = processJSONExpression(jsonObject, context, result).toString();
-
-            // Transform the JSON object into a JS object
-            return jsonString
-                .replaceAll("\"<<VUE_GWT_JSON_KEY ", "'")
-                .replaceAll(" VUE_GWT_JSON_KEY>>\"", "'")
-                .replaceAll("\"<<VUE_GWT_JSON_VALUE ", "")
-                .replaceAll(" VUE_GWT_JSON_VALUE>>\"", "");
+            Object mapOrList = jsonParser.parse(expressionString);
+            return processMapOrList(mapOrList, context, result);
         }
-        catch (JSONException ignore)
+        catch (JsonException ignore)
         {
             // Ignore exception
         }
@@ -262,46 +267,49 @@ public class TemplateParser
         return processJavaExpression(expressionString, context, result).toTemplateString();
     }
 
-    private String processArrayExpression(String expressionString, TemplateParserContext context,
+    private String processMapOrList(Object mapOrList, TemplateParserContext context,
         TemplateParserResult result)
     {
-        String arrayContent = Stream
-            .of(expressionString.substring(1, expressionString.length() - 1).split(","))
-            .map(exp -> this.processExpression(exp, context, result))
-            .collect(Collectors.joining(","));
+        if (mapOrList instanceof List)
+        {
+            return processArrayExpression((List) mapOrList, context, result);
+        }
+        else if (mapOrList instanceof Map)
+        {
+            return processMapExpression((Map<String, Object>) mapOrList, context, result);
+        }
 
-        return "[" + arrayContent + "]";
+        return processJavaExpression(mapOrList.toString(), context, result).toTemplateString();
+    }
+
+    private String processArrayExpression(List<Object> listOfExpression,
+        TemplateParserContext context, TemplateParserResult result)
+    {
+        listOfExpression = listOfExpression
+            .stream()
+            .map(exp -> markValue(this.processMapOrList(exp, context, result)))
+            .collect(Collectors.toList());
+
+        return unquoteMarkedValues(jsonSerializer.serialize(listOfExpression));
     }
 
     /**
      * Process all the keys in a given JSON object
-     * @param jsonObject the JSON object to process
+     * @param map the JSON object to process
      * @param context The current context
      * @param result The result of the template parser
      * @return
      */
-    private JSONObject processJSONExpression(JSONObject jsonObject, TemplateParserContext context,
+    private String processMapExpression(Map<String, Object> map, TemplateParserContext context,
         TemplateParserResult result)
     {
-        JSONObject resultJson = new JSONObject();
-        for (String key : jsonObject.keySet())
+        Map<String, String> resultMap = new HashMap<>();
+        for (String key : map.keySet())
         {
-            Object value = jsonObject.get(key);
-            String targetKey = "<<VUE_GWT_JSON_KEY " + key + " VUE_GWT_JSON_KEY>>";
-            if (value instanceof JSONObject)
-            {
-                resultJson.put(targetKey,
-                    processJSONExpression((JSONObject) value, context, result));
-            }
-            else
-            {
-                resultJson.put(targetKey,
-                    "<<VUE_GWT_JSON_VALUE " + processJavaExpression(value.toString(),
-                        context,
-                        result).toTemplateString() + " VUE_GWT_JSON_VALUE>>");
-            }
+            resultMap.put(key, markValue(processMapOrList(map.get(key), context, result)));
         }
-        return resultJson;
+
+        return unquoteMarkedValues(jsonSerializer.serialize(resultMap));
     }
 
     /**
@@ -463,12 +471,24 @@ public class TemplateParser
         }
     }
 
-    private boolean isJSON(String value)
+    private String markValue(String value)
+    {
+        return "<<$VUE_GWT_VALUE " + value + " $VUE_GWT_VALUE>>";
+    }
+
+    private String unquoteMarkedValues(String expression)
+    {
+        return expression
+            .replaceAll("\"<<\\$VUE_GWT_VALUE ", "")
+            .replaceAll(" \\$VUE_GWT_VALUE>>\"", "");
+    }
+
+    private boolean isJSONObject(String value)
     {
         try
         {
-            new JSONObject(value);
-            return true;
+            Object mapOrList = jsonParser.parse(value);
+            return mapOrList instanceof Map;
         }
         catch (Exception ignored)
         {

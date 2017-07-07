@@ -72,6 +72,7 @@ public abstract class VueComponentDefinition
     {
         this.initStyles(templateResource);
         this.initExpressions(templateResource);
+        JsTools.log(templateResource.getText());
         this.setTemplateText(templateResource.getText());
     }
 
@@ -165,7 +166,6 @@ public abstract class VueComponentDefinition
         for (Entry<String, CssResource> style : componentStyles.entrySet())
         {
             JsTools.set(data, style.getKey(), style.getValue());
-            JsTools.log(style.getKey() + " " + style.getValue());
         }
     }
 

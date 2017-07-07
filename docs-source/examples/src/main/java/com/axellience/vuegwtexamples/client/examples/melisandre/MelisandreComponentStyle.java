@@ -10,4 +10,5 @@ import com.google.gwt.resources.client.CssResource;
 public interface MelisandreComponentStyle extends CssResource
 {
     String red();
+    String bold();
 }

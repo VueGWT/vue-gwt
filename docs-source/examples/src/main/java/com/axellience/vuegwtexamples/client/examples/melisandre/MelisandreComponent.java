@@ -11,6 +11,10 @@ import jsinterop.annotations.JsType;
 @Component
 public class MelisandreComponent extends VueComponent
 {
+    public boolean isRed;
+
     @Override
-    public void created() {}
+    public void created() {
+        this.isRed = true;
+    }
 }
