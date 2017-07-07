@@ -6,7 +6,7 @@ Vue GWT also support GWT `ClientBundles`.
 
 Let see how this work with an example.
 
-***Example10ClientBundle.java***
+***KittenClientBundle.java***
 
 First, we create a simple `ClientBundle` with an `ImageResource`:
 

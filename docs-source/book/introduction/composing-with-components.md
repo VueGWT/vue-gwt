@@ -8,7 +8,7 @@ If we think about it, almost any type of application interface can be abstracted
 ## Creating a Child Component
 
 Let's create a child Component called `TodoComponent`.
-We will then instantiate this component in an `Example7Component`.
+We will then instantiate this component in an `ParentComponent`.
 
 This Component will display a simple message.
 
