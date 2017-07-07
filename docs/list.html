@@ -324,6 +324,64 @@
             
         </li>
     
+        <li class="chapter " data-level="1.11" data-path="js-interop/">
+            
+                <a href="js-interop/">
+            
+                    
+                    JsInterop
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.11.1" data-path="js-interop/js-object.html">
+            
+                <a href="js-interop/js-object.html">
+            
+                    
+                    JsObject
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.2" data-path="js-interop/js-array.html">
+            
+                <a href="js-interop/js-array.html">
+            
+                    
+                    JsArray
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11.3" data-path="js-interop/js-tools.html">
+            
+                <a href="js-interop/js-tools.html">
+            
+                    
+                    JsTools
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
 
     
 
@@ -602,11 +660,7 @@ For example: <code>simpleTodoListComponent.todos.shift()</code>.</p>
 <p>Mutation methods, as the name suggests, mutate the original array they are called on.
 In comparison, there are also non-mutating methods, e.g. <code>filter()</code>, <code>concat()</code> and <code>slice()</code>, which do not mutate the original array but <strong>always return a new array</strong>.
 When working with non-mutating methods, you can just replace the old array with the new one:</p>
-<pre><code class="lang-java">JsArray&lt;Todo&gt; notDoneTodos = <span class="hljs-keyword">new</span> JsArray&lt;&gt;();
-<span class="hljs-keyword">for</span> (Todo todo : <span class="hljs-keyword">this</span>.todos.iterate())
-    <span class="hljs-keyword">if</span> (!todo.isDone())
-        notDoneTodos.push(todo);
-<span class="hljs-keyword">this</span>.todos = notDoneTodos;
+<pre><code class="lang-java"><span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">this</span>.todos.filter(todo -&gt; !todo.isDone());
 </code></pre>
 <p>You might think this will cause Vue to throw away the existing DOM and re-render the entire list - luckily, that is not the case.
 Vue implements some smart heuristics to maximize DOM element reuse, so replacing an array with another array containing overlapping objects is a very efficient operation.</p>
@@ -620,10 +674,55 @@ Vue implements some smart heuristics to maximize DOM element reuse, so replacing
 <pre><code class="lang-java"><span class="hljs-keyword">this</span>.todos.splice(indexOfItem, <span class="hljs-number">1</span>, newValue);
 </code></pre>
 <p>To deal with caveat 2, you can use <code>splice</code>:</p>
-<pre><code class="lang-js"><span class="hljs-keyword">this</span>.todos.splice(newLength)
+<pre><code class="lang-java"><span class="hljs-keyword">this</span>.todos.splice(newLength);
 </code></pre>
 <h2 id="displaying-filteredsorted-results">Displaying Filtered/Sorted Results</h2>
-<p><strong>TODO</strong> You can check <a href="https://vuejs.org/v2/guide/list.html#Displaying-Filtered-Sorted-Results" target="_blank">Vue.js documentation on this</a> in the meantime.</p>
+<p>Sometimes we want to display a filtered or sorted version of an array without actually mutating or resetting the original data.
+In this case, you can create a computed property that returns the filtered or sorted array.</p>
+<p>For example:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;int n in evenNumbers&quot;</span>&gt;</span>{{ n }} <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvenNumbersComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-keyword">public</span> JsArray&lt;Integer&gt; numbers;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.numbers = JsArray.of(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>);
+    }
+
+    <span class="hljs-meta">@Computed</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> JsArray&lt;Integer&gt; <span class="hljs-title">evenNumbers</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.numbers.filter(number -&gt; number % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>);
+    }
+}
+</code></pre>
+<p class="example-container" data-name="evenNumbersComponent">
+    <span id="evenNumbersComponent"></span>
+</p>
+
+
+<p>In situations where computed properties are not feasible (e.g. inside nested <code>v-for</code> loops), you can just use a method:</p>
+<pre><code class="lang-html">...
+<span class="hljs-comment">&lt;!-- The variable numbers comes from a v-for in the template --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;int n in even(numbers)&quot;</span>&gt;</span>{{ n }} <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+...
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvenNumbersComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
+
+    <span class="hljs-comment">// No @Computed annotation</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> JsArray&lt;Integer&gt; <span class="hljs-title">even</span><span class="hljs-params">(JsArray&lt;Integer&gt; numbers)</span> </span>{
+        <span class="hljs-keyword">return</span> numbers.filter(number -&gt; number % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>);
+    }
+}
+</code></pre>
 
                                 
                                 </section>
@@ -667,7 +766,7 @@ Vue implements some smart heuristics to maximize DOM element reuse, so replacing
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"1.9","depth":1,"next":{"title":"Integration with GWT","level":"1.10","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.10.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.10.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.10.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Conditional Rendering","level":"1.8","depth":1,"path":"conditional.md","ref":"conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"list.md","mtime":"2017-07-06T19:11:06.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-06T19:19:21.729Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"1.9","depth":1,"next":{"title":"Integration with GWT","level":"1.10","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.10.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.10.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.10.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Conditional Rendering","level":"1.8","depth":1,"path":"conditional.md","ref":"conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"list.md","mtime":"2017-07-07T09:21:44.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-07T16:58:18.842Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

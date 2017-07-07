@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Handling User Input · GitBook</title>
+        <title>JsObject · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -59,10 +59,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="composing-with-components.html" />
+    <link rel="next" href="js-array.html" />
     
     
-    <link rel="prev" href="conditional-and-loops.html" />
+    <link rel="prev" href="./" />
     
 
     </head>
@@ -117,9 +117,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="./">
+        <li class="chapter " data-level="1.3" data-path="../introduction/">
             
-                <a href="./">
+                <a href="../introduction/">
             
                     
                     Introduction
@@ -131,9 +131,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1" data-path="your-first-component.html">
+        <li class="chapter " data-level="1.3.1" data-path="../introduction/your-first-component.html">
             
-                <a href="your-first-component.html">
+                <a href="../introduction/your-first-component.html">
             
                     
                     Your First Component
@@ -144,9 +144,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.2" data-path="conditional-and-loops.html">
+        <li class="chapter " data-level="1.3.2" data-path="../introduction/conditional-and-loops.html">
             
-                <a href="conditional-and-loops.html">
+                <a href="../introduction/conditional-and-loops.html">
             
                     
                     Conditional and Loops
@@ -157,9 +157,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3.3" data-path="handling-user-input.html">
+        <li class="chapter " data-level="1.3.3" data-path="../introduction/handling-user-input.html">
             
-                <a href="handling-user-input.html">
+                <a href="../introduction/handling-user-input.html">
             
                     
                     Handling User Input
@@ -170,9 +170,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4" data-path="composing-with-components.html">
+        <li class="chapter " data-level="1.3.4" data-path="../introduction/composing-with-components.html">
             
-                <a href="composing-with-components.html">
+                <a href="../introduction/composing-with-components.html">
             
                     
                     Composing with Components
@@ -324,9 +324,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11" data-path="../js-interop/">
+        <li class="chapter " data-level="1.11" data-path="./">
             
-                <a href="../js-interop/">
+                <a href="./">
             
                     
                     JsInterop
@@ -338,9 +338,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.11.1" data-path="../js-interop/js-object.html">
+        <li class="chapter active" data-level="1.11.1" data-path="js-object.html">
             
-                <a href="../js-interop/js-object.html">
+                <a href="js-object.html">
             
                     
                     JsObject
@@ -351,9 +351,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11.2" data-path="../js-interop/js-array.html">
+        <li class="chapter " data-level="1.11.2" data-path="js-array.html">
             
-                <a href="../js-interop/js-array.html">
+                <a href="js-array.html">
             
                     
                     JsArray
@@ -364,9 +364,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11.3" data-path="../js-interop/js-tools.html">
+        <li class="chapter " data-level="1.11.3" data-path="js-tools.html">
             
-                <a href="../js-interop/js-tools.html">
+                <a href="js-tools.html">
             
                     
                     JsTools
@@ -412,7 +412,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Handling User Input</a>
+        <a href=".." >JsObject</a>
     </h1>
 </div>
 
@@ -427,81 +427,25 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="handling-user-input">Handling User Input</h1>
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
-<script>
-    var basePath = "/";
-    if (window.location.hostname === "axellience.github.io")
-        basePath = "/vue-gwt/";
-
-    var script = document.createElement("script");
-    script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
-    document.head.appendChild(script);
-</script>
-
-<h2 id="events">Events</h2>
-<p>To let users interact with your app, we can use the <code>v-on</code> directive to attach event listeners that invoke methods on our Vue instances:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{{ message }}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;addExclamationMark()&quot;</span>&gt;</span>Add an explanation mark<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                <h1 id="jsobject"><code>JsObject</code></h1>
+<p>Represent a JavaScript Native Object in the Java world.</p>
+<p>You can see a <code>JsObject</code> as an instance of <code>Map&lt;String, Object&gt;</code>.</p>
+<h2 id="how-to-create-an-instance">How to Create an Instance</h2>
+<p>You create <code>JsObject</code> exactly like any Java Object:</p>
+<pre><code class="lang-java">JsObject myObject = <span class="hljs-keyword">new</span> JsObject();
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExclamationComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
-    <span class="hljs-keyword">public</span> String message;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello Vue GWT!&quot;</span>;
-    }
-
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addExclamationMark</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">this</span>.message += <span class="hljs-string">&quot;!&quot;</span>;
-    }
-}
+<p>When your program run this will be executed:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> myObject = {};
 </code></pre>
-<p class="example-container" data-name="exclamationComponent">
-    <span id="exclamationComponent"></span>
-</p>
-
-
-<p>Note in the addExclamationMark method we simply update the state of our app without touching the DOM - all DOM manipulations are handled by Vue, and the code you write is focused on the underlying logic.</p>
-<p>You can even call the addExclamationMark from your browser&apos;s console:</p>
-<pre><code>exclamationComponent.addExclamationMark();
-</code></pre><h2 id="the-v-model-directive">The v-model Directive</h2>
-<p>Vue also provides the v-model directive that makes two-way binding between form input and app state a breeze:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{{ message }}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;message&quot;</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<h2 id="setting-a-property">Setting a Property</h2>
+<pre><code class="lang-java">myObject.set(<span class="hljs-string">&quot;myProperty&quot;</span>, myValue);
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MessageComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
-    <span class="hljs-keyword">public</span> String message;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello Vue GWT!&quot;</span>;
-    }
-}
+<h2 id="getting-a-property">Getting a Property</h2>
+<pre><code class="lang-java">Object myValue = myObject.get(<span class="hljs-string">&quot;myProperty&quot;</span>);
 </code></pre>
-<p>Changing the value of the input will automatically update the content of our message property.
-Changing the value of our Java property will change the value of input.</p>
-<p class="example-container" data-name="messageComponent">
-    <span id="messageComponent"></span>
-</p>
-
-
-<p>&#x26A0;&#xFE0F;  It&apos;s important to note that for now in Vue GWT only <code>JsInterop</code> properties can be used in <code>v-model</code>.
-For example if you have a property <code>myTodo</code> of type <code>Todo</code> then:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;myTodo.text&quot;</span>&gt;</span>
+<h2 id="getting-the-list-of-properties-keys">Getting the list of Properties (keys)</h2>
+<pre><code class="lang-java">JsArray&lt;String&gt; myPropertyNames = myObject.getOwnPropertyNames();
 </code></pre>
-<p>Will only work if the <code>text</code> property in <code>Todo</code> has the <code>@JsProperty</code> annotation.</p>
-<p><code>v-model</code> expressions are also not type checked at compile time.
-Those limitations only exists for <code>v-model</code>.</p>
-<p>A real world application is never just one Component, let&apos;s see how to <strong><a href="composing-with-components.html">compose Components together</a></strong>.</p>
 
                                 
                                 </section>
@@ -529,12 +473,12 @@ Those limitations only exists for <code>v-model</code>.</p>
 
             
                 
-                <a href="conditional-and-loops.html" class="navigation navigation-prev " aria-label="Previous page: Conditional and Loops">
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: JsInterop">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="composing-with-components.html" class="navigation navigation-next " aria-label="Next page: Composing with Components">
+                <a href="js-array.html" class="navigation navigation-next " aria-label="Next page: JsArray">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -545,7 +489,7 @@ Those limitations only exists for <code>v-model</code>.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Handling User Input","level":"1.3.3","depth":2,"next":{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]},"previous":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/handling-user-input.md","mtime":"2017-07-07T08:45:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-07T16:58:18.842Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"JsObject","level":"1.11.1","depth":2,"next":{"title":"JsArray","level":"1.11.2","depth":2,"path":"js-interop/js-array.md","ref":"js-interop/js-array.md","articles":[]},"previous":{"title":"JsInterop","level":"1.11","depth":1,"path":"js-interop/index.md","ref":"js-interop/index.md","articles":[{"title":"JsObject","level":"1.11.1","depth":2,"path":"js-interop/js-object.md","ref":"js-interop/js-object.md","articles":[]},{"title":"JsArray","level":"1.11.2","depth":2,"path":"js-interop/js-array.md","ref":"js-interop/js-array.md","articles":[]},{"title":"JsTools","level":"1.11.3","depth":2,"path":"js-interop/js-tools.md","ref":"js-interop/js-tools.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"js-interop/js-object.md","mtime":"2017-07-07T16:23:40.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-07T16:58:18.842Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
