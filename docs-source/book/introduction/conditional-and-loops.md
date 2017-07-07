@@ -66,8 +66,8 @@ public class Todo
 
 We will then create a list of `Todo` in a `SimpleTodoListComponent`.
 
-Because Vue.js is only able to observe JavaScript Arrays you must use the provided `JsArray` collection class in your Components.
-This collection will be represented as a native JavaScript array in the browser.
+Because Vue.js is only able to observe JavaScript Arrays you must use the [provided `JsArray` object](../js-interop/js-array.md) class in your Components.
+This object will be represented as a native JavaScript Array in the browser.
 
 ```java
 @JsType
