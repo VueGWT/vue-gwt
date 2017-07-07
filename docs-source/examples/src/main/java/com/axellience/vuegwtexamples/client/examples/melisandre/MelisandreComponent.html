@@ -10,4 +10,7 @@
     <div v-bind:class='isRed ? myStyle.red() : ""'>
         For the night is dark, full of terrors and might or not be red.
     </div>
+    <div v-bind:class='["isRed ? myStyle.red() : \"\"", myStyle.bold()]'>
+        For the night is dark, full of terrors, might or not be red and always BOLD.
+    </div>
 </div>

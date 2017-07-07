@@ -25,6 +25,7 @@ This annotation will automatically generate a GWT Bundle for us.
 public interface MelisandreComponentStyle extends CssResource
 {
     String red();
+    String bold();
 }
 ```
 
@@ -37,6 +38,9 @@ This is because the binding is made automatically by Vue GWT based on the name.
 ```css
 .red {
     color: red;
+}
+.bold {
+	font-weight: bold;
 }
 ```
 
@@ -67,15 +71,9 @@ We can then simply use Vue `v-bind` directive to bind our style.
 ```html
 <vue-gwt:import style="com.mypackage.MelisandreComponentStyle" name="myStyle"/>
 <div v-bind:class="myStyle.red()">
-	For the night is dark and full of terrors.
+    For the night is dark and full of terrors.
 </div>
 ```
-
-{% raw %}
-<p class="example-container" data-name="melisandreComponent">
-    <span id="melisandreComponent"></span>
-</p>
-{% endraw %}
 
 ## Adding More Than One CSS Class
 
@@ -83,17 +81,34 @@ You can add more than one CSS Class to your Components by using the Array syntax
 
 ```html
 <div v-bind:class="[myStyle.red(), myStyle.bold()]">
-	I'm both red and BOLD.
+    For the night is dark, full of terrors and bold.
 </div>
 ```
 
 ## Conditional Styling
 
-You can apply a Style conditionally by using a ternary expression (be careful with the quotes):
+You can apply a Style conditionally.
+First we add a boolean in our `MelisandreComponent`:
+
+```java
+@JsType
+@Component
+public class MelisandreComponent extends VueComponent
+{
+    public boolean isRed;
+
+    @Override
+    public void created() {
+        this.isRed = true;
+    }
+}
+```
+ 
+Then we simply use a ternary expression (be careful with the quotes):
 
 ```html
-<div v-bind:class='isInvalid ? myStyle.red() : ""'>
-	I'm red if isInvalid is true.
+<div v-bind:class='isRed ? myStyle.red() : ""'>
+    For the night is dark, full of terrors and might or not be red.
 </div>
 ```
 
@@ -102,7 +117,27 @@ You can apply a Style conditionally by using a ternary expression (be careful wi
 You can combine both the Array and the ternary syntax:
  
 ```html
-<div v-bind:class='[isInvalid ? myStyle.red() : "", myStyle.bold()]'>
-	I'm red if isInvalid is true, and I'm always BOLD.
+<div v-bind:class='["isRed ? myStyle.red() : \"\"", myStyle.bold()]'>
+    For the night is dark, full of terrors, might or not be red and always BOLD.
 </div>
+```
+
+Notice that in this case we have to put the expression between quotes.
+This is for the same reason as with expression in JSON.
+We use [jodd JSON parser](http://jodd.org/doc/json/json-parser.html) to parse Array expressions.
+It accepts literals without quotes, but sadly not expressions.
+If you make a mistake (forget the quotes), it will break at compile time with an explicit error.
+
+## Here is our finished `MelisandreComponent`
+
+{% raw %}
+<p class="example-container" data-name="melisandreComponent">
+    <span id="melisandreComponent"></span>
+</p>
+{% endraw %}
+
+You can try toggling the red color on the two bottom sentences by typing in your browser console:
+
+```
+melisandreComponent.isRed = false;
 ```
