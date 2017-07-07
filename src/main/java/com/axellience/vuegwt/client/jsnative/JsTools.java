@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.jsnative;
 
-import com.axellience.vuegwt.client.jsnative.types.JsIterator;
+import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import jsinterop.annotations.JsMethod;
 
 /**
@@ -12,7 +12,7 @@ public class JsTools
     public static native void log(String message);
 
     @JsMethod(namespace = "axellience")
-    public static native Object getWindow();
+    public static native JsObject getWindow();
 
     @JsMethod(namespace = "axellience")
     public static native boolean objectHasProperty(Object object, String property);
@@ -45,15 +45,6 @@ public class JsTools
 
     @JsMethod(namespace = "axellience")
     public static native void setArrayItem(Object array, int index, Object value);
-
-    @JsMethod(namespace = "axellience")
-    public static native <T> JsIterator<T> getObjectIterator(Object object);
-
-    @JsMethod(namespace = "axellience")
-    public static native <T> T convertObject(String prototypeName, Object template);
-
-    @JsMethod(namespace = "window.history")
-    public static native void historyGoBack();
 
     public static <T> T get(Object o, int index)
     {

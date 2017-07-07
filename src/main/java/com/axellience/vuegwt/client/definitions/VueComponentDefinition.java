@@ -226,7 +226,7 @@ public abstract class VueComponentDefinition
                 JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
 
         if (typeJsName != null)
-            propDefinition.type = JsTools.getObjectProperty(JsTools.getWindow(), typeJsName);
+            propDefinition.type = JsTools.getWindow().get(typeJsName);
 
         props.set(jsName, propDefinition);
     }

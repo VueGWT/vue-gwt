@@ -51,46 +51,5 @@ window.axellience = {
 
 	setArrayItem: function (array, index, value) {
 		array[index] = value;
-	},
-
-	getObjectIterator: function (object) {
-		if (object[Symbol.iterator])
-			return object[Symbol.iterator]();
-		return null;
-	},
-
-	debugPackage: function (pack, packageName) {
-		packageName = packageName || '';
-		for (var childName in pack) {
-			var child = pack[childName];
-			if (typeof child === 'object')
-				lteconsulting.debugPackage(child, packageName + '.' + childName);
-			else if (typeof child === 'function')
-				console.log('jsName:' + child.name + ' javaName:' + packageName + '.' + childName);
-		}
-	},
-
-	convertObject: (function (prototypes) {
-		return function (prototypeName, source) {
-			function internal(prototypeName, source) {
-				var prototype = prototypes[prototypeName];
-				if (!prototype) {
-					prototype = window;
-					var parts = prototypeName.split('.');
-					for (var i in parts)
-						prototype = prototype[parts[i]];
-					prototypes[prototypeName] = prototype;
-				}
-
-				var result = Object.create(prototype.prototype);
-				if (source) {
-					for (var prop in source)
-						result[prop] = source[prop];
-				}
-				return result;
-			}
-
-			return internal(prototypeName, source);
-		}
-	})({})
+	}
 };

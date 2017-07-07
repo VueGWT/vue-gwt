@@ -61,7 +61,7 @@ public class VueGwtExamplesApp implements EntryPoint
         if (Document.get().getElementById(exampleId) != null)
         {
             VueComponent exampleInstance = Vue.attach("#" + exampleId, exampleClass);
-            JsTools.setObjectProperty(JsTools.getWindow(), exampleId, exampleInstance);
+            JsTools.getWindow().set(exampleId, exampleInstance);
         }
     }
 }
