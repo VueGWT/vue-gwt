@@ -72,7 +72,6 @@ public abstract class VueComponentDefinition
     {
         this.initStyles(templateResource);
         this.initExpressions(templateResource);
-        JsTools.log(templateResource.getText());
         this.setTemplateText(templateResource.getText());
     }
 
