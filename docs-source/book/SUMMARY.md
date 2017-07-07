@@ -17,3 +17,6 @@
     * [Styles](gwt-integration/styles.md)
     * [Client Bundles (Images)](gwt-integration/client-bundles.md)
     * [User Panels](gwt-integration/user-panels.md)
+* [JsInterop](js-interop/index.md)
+    * [JsObject](js-interop/js-object.md)
+    * [JsArray](js-interop/js-array.md)
