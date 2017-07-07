@@ -319,10 +319,67 @@ this.todos.splice(indexOfItem, 1, newValue);
 
 To deal with caveat 2, you can use `splice`:
 
-```js
-this.todos.splice(newLength)
+```java
+this.todos.splice(newLength);
 ```
+
 
 ## Displaying Filtered/Sorted Results
 
-**TODO** You can check [Vue.js documentation on this](https://vuejs.org/v2/guide/list.html#Displaying-Filtered-Sorted-Results) in the meantime.
+Sometimes we want to display a filtered or sorted version of an array without actually mutating or resetting the original data.
+In this case, you can create a computed property that returns the filtered or sorted array.
+
+For example:
+
+```html
+<div>
+    <span v-for="int n in evenNumbers">{{ n }} </span>
+</div>
+```
+
+```java
+@JsType
+@Component
+public class EvenNumbersComponent extends VueComponent {
+    public JsArray<Integer> numbers;
+
+    @Override
+    public void created() {
+        this.numbers = JsArray.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    }
+
+    @Computed
+    public JsArray<Integer> evenNumbers() {
+        return this.numbers.filter(number -> number % 2 == 0);
+    }
+}
+```
+
+{% raw %}
+<p class="example-container" data-name="evenNumbersComponent">
+    <span id="evenNumbersComponent"></span>
+</p>
+{% endraw %}
+
+In situations where computed properties are not feasible (e.g. inside nested `v-for` loops), you can just use a method:
+
+```html
+...
+<!-- The variable numbers comes from a v-for in the template -->
+<span v-for="int n in even(numbers)">{{ n }} </span>
+...
+```
+
+```java
+@JsType
+@Component
+public class EvenNumbersComponent extends VueComponent {
+    @Override
+    public void created() {}
+
+    // No @Computed annotation
+    public JsArray<Integer> even(JsArray<Integer> numbers) {
+        return numbers.filter(number -> number % 2 == 0);
+    }
+}
+```

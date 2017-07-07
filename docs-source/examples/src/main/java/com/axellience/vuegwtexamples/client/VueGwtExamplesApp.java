@@ -4,6 +4,7 @@ import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.Vue;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
+import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
 import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
 import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
@@ -49,6 +50,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("vForOnObjectWithKeyComponent", VForOnObjectWithKeyComponent.class);
         this.addExample("vForOnObjectWithKeyAndIndexComponent",
             VForOnObjectWithKeyAndIndexComponent.class);
+        this.addExample("evenNumbersComponent", EvenNumbersComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)
