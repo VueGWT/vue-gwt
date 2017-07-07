@@ -20,3 +20,4 @@
 * [JsInterop](js-interop/index.md)
     * [JsObject](js-interop/js-object.md)
     * [JsArray](js-interop/js-array.md)
+    * [JsTools](js-interop/js-tools.md)
