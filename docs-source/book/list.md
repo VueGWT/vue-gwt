@@ -298,11 +298,7 @@ In comparison, there are also non-mutating methods, e.g. `filter()`, `concat()` 
 When working with non-mutating methods, you can just replace the old array with the new one:
 
 ```java
-JsArray<Todo> notDoneTodos = new JsArray<>();
-for (Todo todo : this.todos.iterate())
-    if (!todo.isDone())
-        notDoneTodos.push(todo);
-this.todos = notDoneTodos;
+this.todos = this.todos.filter(todo -> !todo.isDone());
 ```
 
 You might think this will cause Vue to throw away the existing DOM and re-render the entire list - luckily, that is not the case.

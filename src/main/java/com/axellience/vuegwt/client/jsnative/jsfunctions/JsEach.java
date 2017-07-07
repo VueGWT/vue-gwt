@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.client.jsnative;
+package com.axellience.vuegwt.client.jsnative.jsfunctions;
 
 import jsinterop.annotations.JsFunction;
 
@@ -7,7 +7,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface JsPredicate<T>
+public interface JsEach<T>
 {
-    boolean execute(T value);
+    void execute(T value);
 }
