@@ -94,7 +94,7 @@ public class StylishComponent extends VueComponent
     }
 
     @Computed
-    public JsObject classObject() {
+    public JsObject getClassObject() {
         JsObject classObject = new JsObject();
         classObject.set("active", this.isActive && this.error == null);
         classObject.set("text-danger", this.error != null && this.error.getType() == ErrorType.FATAL);

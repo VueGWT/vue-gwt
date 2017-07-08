@@ -349,7 +349,7 @@ public class EvenNumbersComponent extends VueComponent {
     }
 
     @Computed
-    public JsArray<Integer> evenNumbers() {
+    public JsArray<Integer> getEvenNumbers() {
         return this.numbers.filter(number -> number % 2 == 0);
     }
 }
@@ -366,7 +366,7 @@ In situations where computed properties are not feasible (e.g. inside nested `v-
 ```html
 ...
 <!-- The variable numbers comes from a v-for in the template -->
-<span v-for="int n in even(numbers)">{{ n }} </span>
+<span v-for="int n in getEven(numbers)">{{ n }} </span>
 ...
 ```
 
@@ -378,7 +378,7 @@ public class EvenNumbersComponent extends VueComponent {
     public void created() {}
 
     // No @Computed annotation
-    public JsArray<Integer> even(JsArray<Integer> numbers) {
+    public JsArray<Integer> getEven(JsArray<Integer> numbers) {
         return numbers.filter(number -> number % 2 == 0);
     }
 }

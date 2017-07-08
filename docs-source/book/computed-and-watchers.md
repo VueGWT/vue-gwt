@@ -43,7 +43,7 @@ public class ReverseComponent extends VueComponent
     }
 
     @Computed // Note the annotation that tells Vue GWT that this is a Computed Properties
-    public String reversedMessage() {
+    public String getReversedMessage() {
         return new StringBuilder(message).reverse().toString();
     }
 }
@@ -58,18 +58,16 @@ Result:
 {% endraw %}
 
 Here we have declared a computed property `reversedMessage`.
-The function we provided will be used as the getter function for the property `reversedMessage` of your template.
-
-To avoid name collision in `JsInterop` Vue GWT rename the computed property in your template at compile time.
-The property in your Vue instance in JavaScript is actually named `reversedMessage$computed`.
+For this we declared a getter method `getReversedMessage()` following the Java bean naming convention.
+The method we provided will be used as the getter function for the property `reversedMessage` of your template.
 
 You can open the console and play with the example vm yourself.
-The value of `reverseComponent.reversedMessage$computed` is always dependent on the value of `reverseComponent.message`.
+The value of `reverseComponent.reversedMessage` is always dependent on the value of `reverseComponent.message`.
 
 ```js
-console.log(reverseComponent.reversedMessage$computed); // -> 'olleH'
+console.log(reverseComponent.reversedMessage); // -> 'olleH'
 reverseComponent.message = 'Goodbye';
-console.log(reverseComponent.reversedMessage$computed); // -> 'eybdooG'
+console.log(reverseComponent.reversedMessage); // -> 'eybdooG'
 ```
 
 You can data-bind to computed properties in templates just like a normal property.
@@ -81,7 +79,7 @@ And the best part is that we've created this dependency relationship declarative
 You may have noticed we can achieve the same result by invoking a method in the expression:
 
 ```html
-<p>Reversed message: "{{ reverseMessage() }}"</p>
+<p>Reversed message: "{{ getReversedMessage() }}"</p>
 ```
 
 ```java
@@ -97,7 +95,7 @@ public class ReverseComponent extends VueComponent
     }
 
     // Note that there a no more @Computed annotation
-    public String reversedMessage() {
+    public String getReversedMessage() {
         return new StringBuilder(message).reverse().toString();
     }
 }
@@ -113,7 +111,7 @@ This also means the following computed property will never update, because `new 
 
 ```java
 @Computed
-public String now() {
+public String getNow() {
     return new Date().toString();
 }
 ```
@@ -181,7 +179,7 @@ public class JohnSnowComponent extends VueComponent
     }
     
     @Computed
-    public String fullName() {
+    public String getFullName() {
         return this.firstName + " " + this.lastName;
     }
 }
@@ -208,11 +206,11 @@ public class JohnSnowComponent extends VueComponent
     }
 
     @Computed
-    public String fullName() {
+    public String getFullName() {
         return this.firstName + " " + this.lastName;
     }
 
-    @Computed(propertyName = "fullName", kind = ComputedKind.SETTER)
+    @Computed
     public void setFullName(String fullName) {
         String[] split = fullName.split(" ");
         this.firstName = split[0];
@@ -222,6 +220,15 @@ public class JohnSnowComponent extends VueComponent
 ```
 
 Now when you run `this.fullName = 'John Doe'`, the setter will be invoked and `this.firstName` and `this.lastName` will be updated accordingly.
+
+We also follow the Java bean naming convention, so `setFullName` is a setter for the `fullName` property.
+If you need/want to, you can override the name of the property by passing it to the `@Computed` annotation:
+```java
+@Computed(propertyName = "myProperty")
+public String someMethodName() {
+    // Return something
+}
+```
 
 ## Watchers
 
@@ -254,13 +261,13 @@ public class JohnSnowComponent extends VueComponent
 
 ⚠️ Like for `v-model`, only `JsInterop` expression can be used as `propertyName`.
 This means any attribute from your Component and any of their attributes as long as they have the `@JsProperty` annotation.
-This `@Computed(propertyName = "todo.text")` won't work if the attribute `text` of the class `Todo` doesn't have the `@JsProperty` annotation. 
+The following: `@Watch(propertyName = "todo.text")` won't work if the attribute `text` of the class `Todo` doesn't have the `@JsProperty` annotation. 
 
 In addition to the `watch` option, you can also use the imperative [vm.$watch API](https://vuejs.org/v2/api/#vm-watch).
 This allow you to watch non `JsInterop` properties:
 ```java
 this.$watch(
-    () -> this.todo.text,
+    () -> this.todo.getText(),
     (newValue, oldValue) -> {
         // Do something
     }
