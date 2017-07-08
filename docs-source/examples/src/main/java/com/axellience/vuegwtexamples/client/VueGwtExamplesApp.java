@@ -4,9 +4,11 @@ import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.Vue;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
+import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
 import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
+import com.axellience.vuegwtexamples.client.examples.greet.GreetComponent;
 import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
 import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
@@ -21,6 +23,7 @@ import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkey.VForOnO
 import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkeyandindex.VForOnObjectWithKeyAndIndexComponent;
 import com.axellience.vuegwtexamples.client.examples.vforwithindex.VForWithIndexComponent;
 import com.axellience.vuegwtexamples.client.examples.vforwithrange.VForWithRangeComponent;
+import com.axellience.vuegwtexamples.client.examples.vonwithdomevent.VOnWithDOMEventComponent;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Document;
 
@@ -53,6 +56,9 @@ public class VueGwtExamplesApp implements EntryPoint
             VForOnObjectWithKeyAndIndexComponent.class);
         this.addExample("evenNumbersComponent", EvenNumbersComponent.class);
         this.addExample("bindInlineStyleComponent", BindInlineStyleComponent.class);
+        this.addExample("buttonPlusOneComponent", ButtonPlusOneComponent.class);
+        this.addExample("greetComponent", GreetComponent.class);
+        this.addExample("vOnWithDOMEventComponent", VOnWithDOMEventComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)
