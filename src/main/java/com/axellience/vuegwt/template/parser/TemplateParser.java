@@ -219,14 +219,14 @@ public class TemplateParser
                 context.setCurrentExpressionReturnType("boolean");
             }
 
-            if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName)) && isJSONObject(
-                attribute.getValue()))
+            if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName))
+                && isJSONObject(attribute.getValue()))
             {
                 context.setCurrentExpressionReturnType("boolean");
             }
 
-            if ((":style".equals(attributeName) || "v-bind:style".equals(attributeName)) && isJSONObject(
-                attribute.getValue()))
+            if ((":style".equals(attributeName) || "v-bind:style".equals(attributeName))
+                && isJSONObject(attribute.getValue()))
             {
                 context.setCurrentExpressionReturnType("String");
             }
@@ -336,7 +336,7 @@ public class TemplateParser
                 + context.getCurrentNode());
         }
 
-        // If there is a cast, we use this as type for our expression
+        // If there is a cast first, we use this as the type of our expression and remove it
         if (expression instanceof CastExpr)
         {
             CastExpr castExpr = (CastExpr) expression;
@@ -344,11 +344,12 @@ public class TemplateParser
             expression = castExpr.getExpression();
         }
 
-        // Rename variables if needed
+        // Process expression variables
         Set<TemplateExpressionParameter> parameters = new HashSet<>();
         processExpressionVariables(expression, context, parameters);
         expressionString = expression.toString();
 
+        // Add the resulting expression to our template expressions
         return result.addExpression(context.getCurrentExpressionKind(),
             expressionString,
             context.getCurrentExpressionReturnType(),
@@ -395,14 +396,23 @@ public class TemplateParser
     }
 
     /**
-     * Process all variable in the expression from the view
+     * Process all variables in the expression from the view
      * Replace loop variables and computed properties with the ones used in Java
+     * Process $event variables and resolve casts
      * @param expression An expression from the View
      * @param context The context containing all the local variables
      */
     private void processExpressionVariables(Expression expression, TemplateParserContext context,
         Set<TemplateExpressionParameter> parameters)
     {
+        // Resolve Cast types based on imports
+        if (expression instanceof CastExpr)
+        {
+            CastExpr castExpr = ((CastExpr) expression);
+            castExpr.setType(getCastType(castExpr, context));
+        }
+
+        //
         if (expression instanceof NameExpr)
         {
             NameExpr nameExpr = ((NameExpr) expression);
