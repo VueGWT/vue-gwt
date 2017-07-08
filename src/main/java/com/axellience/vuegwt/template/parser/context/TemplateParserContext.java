@@ -6,6 +6,7 @@ import com.axellience.vuegwt.template.parser.InvalidExpressionException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.dom.client.NativeEvent;
 import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
@@ -33,6 +34,11 @@ public class TemplateParserContext
     public TemplateParserContext(JClassType vueComponentClass)
     {
         this.vueComponentClass = vueComponentClass;
+
+        // Add some useful imports
+        this.addImport(NativeEvent.class.getCanonicalName());
+
+        // Init root context
         this.rootContext = new ContextLayer("");
 
         this.rootContext.addVariable(String.class, "_uid");
