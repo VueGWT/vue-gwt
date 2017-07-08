@@ -44,7 +44,7 @@ exclamationComponent.addExclamationMark();
 
 ## The v-model Directive
 
-Vue also provides the v-model directive that makes two-way binding between form input and app state a breeze:
+Vue also provides the [v-model directive](../forms.md) that makes two-way binding between form input and app state a breeze:
 ```html
 <div>
     <p>{{ message }}</p>

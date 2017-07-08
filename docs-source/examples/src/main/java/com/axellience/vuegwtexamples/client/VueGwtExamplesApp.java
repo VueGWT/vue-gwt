@@ -18,6 +18,8 @@ import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
+import com.axellience.vuegwtexamples.client.examples.todotext.TodoTextComponent;
+import com.axellience.vuegwtexamples.client.examples.todotextcomputed.TodoTextComputedComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobject.VForOnObjectComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkey.VForOnObjectWithKeyComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkeyandindex.VForOnObjectWithKeyAndIndexComponent;
@@ -59,6 +61,8 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("buttonPlusOneComponent", ButtonPlusOneComponent.class);
         this.addExample("greetComponent", GreetComponent.class);
         this.addExample("vOnWithDOMEventComponent", VOnWithDOMEventComponent.class);
+        this.addExample("todoTextComponent", TodoTextComponent.class);
+        this.addExample("todoTextComputedComponent", TodoTextComputedComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)
