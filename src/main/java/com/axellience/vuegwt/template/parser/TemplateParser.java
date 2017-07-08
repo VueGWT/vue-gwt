@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.template.parser;
 
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
-import com.axellience.vuegwt.template.parser.context.ComputedVariableInfo;
 import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.template.parser.context.VariableInfo;
@@ -475,9 +474,9 @@ public class TemplateParser
             parameters.add(new TemplateExpressionParameter(variableInfo.getType(),
                 localVariableInfo.getGlobalName()));
         }
-        else if (variableInfo instanceof ComputedVariableInfo)
+        else
         {
-            nameExpr.setName(((ComputedVariableInfo) variableInfo).getGlobalName());
+            nameExpr.setName(variableInfo.getName());
         }
     }
 

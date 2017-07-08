@@ -21,6 +21,7 @@ import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -152,13 +153,7 @@ public class VueComponentDefinitionGenerator
 
                 if (computed != null)
                 {
-                    String jsName =
-                        !"".equals(computed.propertyName()) ? computed.propertyName() : javaName;
-                    constructorBuilder.addStatement("this.addComputed($S, $S, $T.$L)",
-                        javaName,
-                        jsName + Computed.COMPUTED_SUFFIX,
-                        ComputedKind.class,
-                        computed.kind());
+                    addComputed(javaName, computed, executableElement, constructorBuilder);
                 }
                 else if (watch != null)
                 {
@@ -214,6 +209,20 @@ public class VueComponentDefinitionGenerator
             packageName,
             generatedTypeName,
             componentTypeElement);
+    }
+
+    private void addComputed(String javaName, Computed computed, ExecutableElement method,
+        MethodSpec.Builder constructorBuilder)
+    {
+        ComputedKind kind = ComputedKind.GETTER;
+        if ("void".equals(method.getReturnType().toString()))
+            kind = ComputedKind.SETTER;
+
+        constructorBuilder.addStatement("this.addComputed($S, $S, $T.$L)",
+            javaName,
+            GenerationUtil.getComputedPropertyName(computed, method.getSimpleName().toString()),
+            ComputedKind.class,
+            kind);
     }
 
     private String getNativeNameForJavaType(TypeMirror typeMirror)

@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.jsr69;
 
+import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ClientBundle.Source;
@@ -18,6 +19,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
+import java.beans.Introspector;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -26,6 +28,20 @@ import java.io.Writer;
  */
 public class GenerationUtil
 {
+    public static String getComputedPropertyName(Computed computed, String methodName)
+    {
+        if (!"".equals(computed.propertyName()))
+            return computed.propertyName();
+
+        if (methodName.startsWith("get") || methodName.startsWith("set"))
+            return Introspector.decapitalize(methodName.substring(3));
+
+        if (methodName.startsWith("is"))
+            return Introspector.decapitalize(methodName.substring(2));
+
+        return methodName;
+    }
+
     public static void toJavaFile(Filer filer, Builder classBuilder, String packageName,
         String className, TypeElement... originatingElement)
     {
@@ -47,8 +63,8 @@ public class GenerationUtil
     }
 
     public static void generateGwtBundle(TypeElement typeElement, String bundleSuffix,
-        String bundleMethodName, TypeName resourceType,
-        String resourceExtension, Filer filer, Elements elementsUtils)
+        String bundleMethodName, TypeName resourceType, String resourceExtension, Filer filer,
+        Elements elementsUtils)
     {
         // Template provider
         String bundlePackage =

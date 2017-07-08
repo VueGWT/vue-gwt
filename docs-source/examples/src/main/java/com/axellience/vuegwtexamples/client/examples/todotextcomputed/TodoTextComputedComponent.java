@@ -1,7 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.todotextcomputed;
 
 import com.axellience.vuegwt.client.VueComponent;
-import com.axellience.vuegwt.client.definitions.component.ComputedKind;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -23,12 +22,12 @@ public class TodoTextComputedComponent extends VueComponent
     }
 
     @Computed
-    public String todoText()
+    public String getTodoText()
     {
         return this.todo.getText();
     }
 
-    @Computed(kind = ComputedKind.SETTER, propertyName = "todoText")
+    @Computed
     public void setTodoText(String text)
     {
         this.todo.setText(text);

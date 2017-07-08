@@ -19,6 +19,7 @@ package com.axellience.vuegwt.template;
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionBase;
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 import com.axellience.vuegwt.client.gwtextension.TemplateResource;
+import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
@@ -126,10 +127,8 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             if (computed == null)
                 continue;
 
-            String propertyName = computed.propertyName();
-            if ("".equals(propertyName))
-                propertyName = jMethod.getName();
-
+            String propertyName =
+                GenerationUtil.getComputedPropertyName(computed, jMethod.getName());
             if (doneComputed.contains(propertyName))
                 continue;
 
@@ -138,7 +137,6 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             sw.println(jMethod.getReturnType().getQualifiedSourceName()
                 + " "
                 + propertyName
-                + Computed.COMPUTED_SUFFIX
                 + ";");
         }
 
@@ -168,7 +166,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println(mapType + " result = new " + HashMap.class.getCanonicalName() + "<>();");
         for (String styleName : templateParserResult.getStyleImports().keySet())
         {
-            sw.println("result.put(\"" + styleName +"\", " + styleName +");");
+            sw.println("result.put(\"" + styleName + "\", " + styleName + ");");
         }
         sw.println("return result;");
         sw.outdent();

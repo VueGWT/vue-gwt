@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.template.parser.context;
 
 import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JType;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,11 +39,6 @@ public class ContextLayer
     public VariableInfo addVariable(String type, String name)
     {
         return addVariable(new VariableInfo(type, name));
-    }
-
-    public VariableInfo addComputedVariable(JType type, String name)
-    {
-        return addVariable(new ComputedVariableInfo(type.getQualifiedSourceName(), name));
     }
 
     public LocalVariableInfo addLocalVariable(String type, String templateName)

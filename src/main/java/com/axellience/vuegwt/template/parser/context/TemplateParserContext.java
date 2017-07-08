@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.template.parser.context;
 
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
+import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwt.template.parser.InvalidExpressionException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -52,11 +53,8 @@ public class TemplateParserContext
             if (computed == null)
                 continue;
 
-            String name = computed.propertyName();
-            if ("".equals(name))
-                name = jMethod.getName();
-
-            this.rootContext.addComputedVariable(jMethod.getReturnType(), name);
+            String name = GenerationUtil.getComputedPropertyName(computed, jMethod.getName());
+            this.rootContext.addVariable(jMethod.getReturnType().getQualifiedSourceName(), name);
         }
 
         this.contextLayers.add(this.rootContext);

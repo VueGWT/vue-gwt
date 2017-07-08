@@ -8,16 +8,19 @@ import jsinterop.annotations.JsType;
 
 @JsType
 @Component
-public class EvenNumbersComponent extends VueComponent {
+public class EvenNumbersComponent extends VueComponent
+{
     public JsArray<Integer> numbers;
 
     @Override
-    public void created() {
+    public void created()
+    {
         this.numbers = JsArray.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }
 
     @Computed
-    public JsArray<Integer> evenNumbers() {
+    public JsArray<Integer> getEvenNumbers()
+    {
         return this.numbers.filter(number -> number % 2 == 0);
     }
 }

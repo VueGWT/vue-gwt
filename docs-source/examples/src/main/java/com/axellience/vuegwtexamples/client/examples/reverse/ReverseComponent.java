@@ -21,7 +21,7 @@ public class ReverseComponent extends VueComponent
     }
 
     @Computed
-    public String reversedMessage()
+    public String getReversedMessage()
     {
         return new StringBuilder(message).reverse().toString();
     }
