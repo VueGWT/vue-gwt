@@ -12,5 +12,5 @@ public class JSON
 {
     public static native String stringify(Object object);
 
-    public static native Object parse(String string);
+    public static native JsObject parse(String string);
 }

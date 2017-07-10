@@ -150,7 +150,7 @@ public abstract class VueComponentDefinition
         {
             this.data = (DataFactory) () ->
             {
-                Object data = JSON.parse(JSON.stringify(dataObject));
+                JsObject data = JSON.parse(JSON.stringify(dataObject));
                 copyStyles(data);
                 return data;
             };
@@ -162,7 +162,7 @@ public abstract class VueComponentDefinition
         }
     }
 
-    private void copyStyles(Object data)
+    private void copyStyles(JsObject data)
     {
         for (Entry<String, CssResource> style : componentStyles.entrySet())
         {
