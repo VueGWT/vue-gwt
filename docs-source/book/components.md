@@ -867,8 +867,8 @@ You might have a `tree-folder` component with this template:
 
 ```html
 <p>
-    <span>{{ folder.getName() }}</span>
-    <tree-folder-content v-if="folder.hasContent()" :content="folder.getContent()"/>
+    <span>{{ myFolder.name }}</span>
+    <tree-folder-content v-if="myFolder.hasContent()" :content="myFolder.getContent()"/>
 </p>
 ```
 
