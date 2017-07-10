@@ -6,6 +6,7 @@ import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
 import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
+import com.axellience.vuegwt.client.jsnative.vue.VueConfig;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
@@ -22,6 +23,8 @@ import static com.axellience.vuegwt.client.definitions.VueComponentDefinitionCac
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Vue
 {
+    public static VueConfig config;
+
     /**
      * Create a VueComponent instance and attach it to a DOM element
      * Equivalent to new Vue({el: element, ...}) in Vue.js
