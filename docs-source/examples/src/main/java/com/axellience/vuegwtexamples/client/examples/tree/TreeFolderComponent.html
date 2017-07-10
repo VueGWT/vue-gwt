@@ -1,0 +1,4 @@
+<p>
+    <span>{{ folder.getName() }}</span>
+    <tree-folder-content v-if="folder.hasContent()" :content="folder.getContent()"/>
+</p>

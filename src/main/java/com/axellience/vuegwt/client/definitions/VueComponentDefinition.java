@@ -40,6 +40,8 @@ public abstract class VueComponentDefinition
 {
     @JsProperty protected VueComponent vuegwt$javaComponentInstance;
 
+    @JsProperty protected String name;
+
     @JsProperty protected Object el;
     @JsProperty protected String template;
 

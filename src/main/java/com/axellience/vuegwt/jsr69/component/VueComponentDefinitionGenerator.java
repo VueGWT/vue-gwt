@@ -106,6 +106,12 @@ public class VueComponentDefinitionGenerator
             JCI,
             TypeName.get(componentTypeElement.asType()));
 
+        // Set the name of the component
+        if (!"".equals(annotation.name()))
+        {
+            constructorBuilder.addStatement("this.name = $S", annotation.name());
+        }
+
         // Add template initialization
         constructorBuilder.addStatement("this.setTemplateResource($T.INSTANCE.$L())",
             ClassName.get(packageName, typeName + TemplateProviderGenerator.TEMPLATE_BUNDLE_SUFFIX),
@@ -228,10 +234,6 @@ public class VueComponentDefinitionGenerator
     private String getNativeNameForJavaType(TypeMirror typeMirror)
     {
         TypeName typeName = TypeName.get(typeMirror);
-        if (typeName.isBoxedPrimitive())
-        {
-            typeName = typeName.unbox();
-        }
 
         if (typeName.equals(TypeName.INT)
             || typeName.equals(TypeName.BYTE)

@@ -16,6 +16,8 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 @Retention(SOURCE)
 public @interface Component
 {
+    String name() default "";
+
     /**
      * Should use a factory for the data model
      * Passing this to false will make all your components instance share the same data model

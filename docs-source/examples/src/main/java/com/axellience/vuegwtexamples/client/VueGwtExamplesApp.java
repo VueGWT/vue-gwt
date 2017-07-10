@@ -6,6 +6,7 @@ import com.axellience.vuegwt.client.jsnative.Vue;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
+import com.axellience.vuegwtexamples.client.examples.counterwithevent.CounterWithEventComponent;
 import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
 import com.axellience.vuegwtexamples.client.examples.greet.GreetComponent;
@@ -14,12 +15,15 @@ import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
 import com.axellience.vuegwtexamples.client.examples.message.MessageComponent;
 import com.axellience.vuegwtexamples.client.examples.parent.ParentComponent;
+import com.axellience.vuegwtexamples.client.examples.recursive.RecursiveComponent;
 import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
+import com.axellience.vuegwtexamples.client.examples.shareddatamodel.SharedDataModelComponent;
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todotext.TodoTextComponent;
 import com.axellience.vuegwtexamples.client.examples.todotextcomputed.TodoTextComputedComponent;
+import com.axellience.vuegwtexamples.client.examples.tree.TreeComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobject.VForOnObjectComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkey.VForOnObjectWithKeyComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkeyandindex.VForOnObjectWithKeyAndIndexComponent;
@@ -39,6 +43,8 @@ public class VueGwtExamplesApp implements EntryPoint
      */
     public void onModuleLoad()
     {
+        Vue.component(RecursiveComponent.class);
+
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
         this.addExample("linkComponent", LinkComponent.class);
         this.addExample("canHideComponent", CanHideComponent.class);
@@ -63,6 +69,12 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("vOnWithDOMEventComponent", VOnWithDOMEventComponent.class);
         this.addExample("todoTextComponent", TodoTextComponent.class);
         this.addExample("todoTextComputedComponent", TodoTextComputedComponent.class);
+        this.addExample("sharedDataModelComponent1", SharedDataModelComponent.class);
+        this.addExample("sharedDataModelComponent2", SharedDataModelComponent.class);
+        this.addExample("sharedDataModelComponent3", SharedDataModelComponent.class);
+        this.addExample("counterWithEventComponent", CounterWithEventComponent.class);
+        this.addExample("treeComponent", TreeComponent.class);
+        this.addExample("recursiveComponent", RecursiveComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)
