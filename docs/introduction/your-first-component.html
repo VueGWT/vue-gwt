@@ -266,7 +266,46 @@
             
         </li>
     
-        <li class="chapter " data-level="1.10" data-path="../gwt-integration/">
+        <li class="chapter " data-level="1.10" data-path="../events.html">
+            
+                <a href="../events.html">
+            
+                    
+                    Event Handling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="../forms.html">
+            
+                <a href="../forms.html">
+            
+                    
+                    Form Input Bindings
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="../components.html">
+            
+                <a href="../components.html">
+            
+                    
+                    Components
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13" data-path="../gwt-integration/">
             
                 <a href="../gwt-integration/">
             
@@ -280,7 +319,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.10.1" data-path="../gwt-integration/styles.html">
+        <li class="chapter " data-level="1.13.1" data-path="../gwt-integration/styles.html">
             
                 <a href="../gwt-integration/styles.html">
             
@@ -293,7 +332,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.10.2" data-path="../gwt-integration/client-bundles.html">
+        <li class="chapter " data-level="1.13.2" data-path="../gwt-integration/client-bundles.html">
             
                 <a href="../gwt-integration/client-bundles.html">
             
@@ -306,7 +345,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.10.3" data-path="../gwt-integration/user-panels.html">
+        <li class="chapter " data-level="1.13.3" data-path="../gwt-integration/user-panels.html">
             
                 <a href="../gwt-integration/user-panels.html">
             
@@ -324,7 +363,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11" data-path="../js-interop/">
+        <li class="chapter " data-level="1.14" data-path="../js-interop/">
             
                 <a href="../js-interop/">
             
@@ -338,7 +377,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.11.1" data-path="../js-interop/js-object.html">
+        <li class="chapter " data-level="1.14.1" data-path="../js-interop/js-object.html">
             
                 <a href="../js-interop/js-object.html">
             
@@ -351,7 +390,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11.2" data-path="../js-interop/js-array.html">
+        <li class="chapter " data-level="1.14.2" data-path="../js-interop/js-array.html">
             
                 <a href="../js-interop/js-array.html">
             
@@ -364,7 +403,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11.3" data-path="../js-interop/js-tools.html">
+        <li class="chapter " data-level="1.14.3" data-path="../js-interop/js-tools.html">
             
                 <a href="../js-interop/js-tools.html">
             
@@ -445,15 +484,14 @@ We will call it <code>SimpleLinkComponent</code>.
 This Component will simply display an html link.</p>
 <h3 id="declaring-the-component">Declaring the Component</h3>
 <h4 id="java-class">Java Class</h4>
-<p>To create our Component, we must create a Class annotated by <code>@Component</code> and <code>@JsType</code> that extends <code>VueComponent</code>.</p>
+<p>To create our Component, we must create a Class annotated by <code>@Component</code> that extends <code>VueComponent</code>.</p>
 <p>All the <code>JsInterop</code> attributes and methods of our Component Class will be accessible in our template.</p>
 <p>Meaning either:</p>
 <ul>
-<li><code>public</code> attributes/methods</li>
-<li><code>protected</code> attributes/methods annotated with <code>@JsProperty</code>/<code>@JsMethod</code></li>
+<li>Adding the <code>@JsType</code> annotation to our Class and setting attributes/methods to <code>public</code></li>
+<li>Adding the <code>@JsProperty</code>/<code>@JsMethod</code> annotation to each attribute/method and setting them to <code>protected</code></li>
 </ul>
-<p>In this documentation we chose to set all our properties to <code>public</code> for brevity.
-But <code>@JsProperty protected</code> would also work without problems.</p>
+<p>In this documentation we chose to use the <code>@JsType</code> annotation and to set all our properties/methods to <code>public</code> for brevity.</p>
 <p><strong><em>SimpleLinkComponent.java</em></strong></p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
@@ -597,7 +635,7 @@ Here it is basically saying &quot;keep this element&#x2019;s href attribute up-t
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Your First Component","level":"1.3.1","depth":2,"next":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"previous":{"title":"Introduction","level":"1.3","depth":1,"path":"introduction/index.md","ref":"introduction/index.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"path":"introduction/your-first-component.md","ref":"introduction/your-first-component.md","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/your-first-component.md","mtime":"2017-07-07T08:45:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-07T17:21:53.526Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Your First Component","level":"1.3.1","depth":2,"next":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"previous":{"title":"Introduction","level":"1.3","depth":1,"path":"introduction/index.md","ref":"introduction/index.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"path":"introduction/your-first-component.md","ref":"introduction/your-first-component.md","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/your-first-component.md","mtime":"2017-07-10T12:05:22.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T12:29:53.263Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

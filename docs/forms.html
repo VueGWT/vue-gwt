@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Conditional Rendering · GitBook</title>
+        <title>Form Input Bindings · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -59,10 +59,10 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="list.html" />
+    <link rel="next" href="components.html" />
     
     
-    <link rel="prev" href="class-and-style.html" />
+    <link rel="prev" href="events.html" />
     
 
     </head>
@@ -240,7 +240,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.8" data-path="conditional.html">
+        <li class="chapter " data-level="1.8" data-path="conditional.html">
             
                 <a href="conditional.html">
             
@@ -279,7 +279,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11" data-path="forms.html">
+        <li class="chapter active" data-level="1.11" data-path="forms.html">
             
                 <a href="forms.html">
             
@@ -451,7 +451,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Conditional Rendering</a>
+        <a href="." >Form Input Bindings</a>
     </h1>
 </div>
 
@@ -466,9 +466,89 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="conditional-rendering">Conditional Rendering</h1>
-<p>There is nothing specific to Vue GWT in this part.
-You can just <strong><a href="https://vuejs.org/v2/guide/conditional.html" target="_blank">see Vue.js documentation about Conditional Rendering</a></strong>.</p>
+                                <h1 id="form-input-bindings">Form Input Bindings</h1>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+    var basePath = "/";
+    if (window.location.hostname === "axellience.github.io")
+        basePath = "/vue-gwt/";
+
+    var script = document.createElement("script");
+    script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
+    document.head.appendChild(script);
+</script>
+
+<h2 id="the-v-model-directive">The <code>v-model</code> Directive</h2>
+<p>This section is about the <code>v-model</code> directive.</p>
+<p>It&apos;s important to note that for now in Vue GWT only <code>JsInterop</code> properties can be used directly in <code>v-model</code>.
+For example if you have a property <code>myTodo</code> of type <code>Todo</code> then:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;myTodo.text&quot;</span>&gt;</span>
+</code></pre>
+<p>Will only work if the <code>text</code> property in <code>Todo</code> has the <code>@JsProperty</code> annotation (or is public, and <code>Todo</code> has the <code>@JsType</code> annotation).</p>
+<p><code>v-model</code> expressions are also not type checked at compile time.</p>
+<p>Apart from this limitations, <code>v-model</code> works the same way in Vue GWT than in Vue.js.</p>
+<p>You can just <strong><a href="https://vuejs.org/v2/guide/forms.html" target="_blank">see Vue.js documentation about Form Input Bindings</a></strong>.</p>
+<h2 id="making-v-model-work-with-regular-java-objects">Making <code>v-model</code> Work with Regular Java Objects</h2>
+<h3 id="using-a-computed-property">Using a Computed Property</h3>
+<p>You can use a computed properties along with the regular <code>v-model</code>:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoTextComputedComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-keyword">public</span> Todo todo;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.todo = <span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Hello World!&quot;</span>);
+    }
+
+    <span class="hljs-meta">@Computed</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getTodoText</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.todo.getText();
+    }
+
+    <span class="hljs-meta">@Computed</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setTodoText</span><span class="hljs-params">(String text)</span> </span>{
+        <span class="hljs-keyword">this</span>.todo.setText(text);
+    }
+}
+</code></pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;todoText&quot;</span>/&gt;</span>
+    Todo Text: {{ todoText }}
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<p class="example-container" data-name="todoTextComputedComponent">
+    <span id="todoTextComputedComponent"></span>
+</p>
+
+
+<h3 id="binding-to-inputs-without-the-v-model-directive">Binding to Inputs Without The <code>v-model</code> Directive</h3>
+<p>In some case you can&apos;t use computed properties.
+For example inside a <code>v-for</code> on the loop variable.</p>
+<p>In those case you can use the following syntax:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">:value</span>=<span class="hljs-string">&quot;todo.getText()&quot;</span> @<span class="hljs-attr">input</span>=<span class="hljs-string">&quot;updateTodoText((NativeEvent) $event)&quot;</span>/&gt;</span>
+    Todo Text: {{ todo.getText() }}
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoTextComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-keyword">public</span> Todo todo;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.todo = <span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Hello World!&quot;</span>);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">updateMessage</span><span class="hljs-params">(NativeEvent event)</span> </span>{
+        <span class="hljs-keyword">this</span>.todo.setText(JsTools.get(event.getEventTarget(), <span class="hljs-string">&quot;value&quot;</span>));
+    }
+}
+</code></pre>
+<p class="example-container" data-name="todoTextComponent">
+    <span id="todoTextComponent"></span>
+</p>
 
                                 
                                 </section>
@@ -496,12 +576,12 @@ You can just <strong><a href="https://vuejs.org/v2/guide/conditional.html" targe
 
             
                 
-                <a href="class-and-style.html" class="navigation navigation-prev " aria-label="Previous page: Class and Style Bindings">
+                <a href="events.html" class="navigation navigation-prev " aria-label="Previous page: Event Handling">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="list.html" class="navigation navigation-next " aria-label="Next page: List Rendering">
+                <a href="components.html" class="navigation navigation-next " aria-label="Next page: Components">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -512,7 +592,7 @@ You can just <strong><a href="https://vuejs.org/v2/guide/conditional.html" targe
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Conditional Rendering","level":"1.8","depth":1,"next":{"title":"List Rendering","level":"1.9","depth":1,"path":"list.md","ref":"list.md","articles":[]},"previous":{"title":"Class and Style Bindings","level":"1.7","depth":1,"path":"class-and-style.md","ref":"class-and-style.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"conditional.md","mtime":"2017-07-07T08:45:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T12:29:53.263Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Form Input Bindings","level":"1.11","depth":1,"next":{"title":"Components","level":"1.12","depth":1,"path":"components.md","ref":"components.md","articles":[]},"previous":{"title":"Event Handling","level":"1.10","depth":1,"path":"events.md","ref":"events.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"forms.md","mtime":"2017-07-10T12:28:40.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T12:29:53.263Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

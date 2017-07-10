@@ -266,7 +266,46 @@
             
         </li>
     
-        <li class="chapter " data-level="1.10" data-path="gwt-integration/">
+        <li class="chapter " data-level="1.10" data-path="events.html">
+            
+                <a href="events.html">
+            
+                    
+                    Event Handling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="forms.html">
+            
+                <a href="forms.html">
+            
+                    
+                    Form Input Bindings
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="components.html">
+            
+                <a href="components.html">
+            
+                    
+                    Components
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13" data-path="gwt-integration/">
             
                 <a href="gwt-integration/">
             
@@ -280,7 +319,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.10.1" data-path="gwt-integration/styles.html">
+        <li class="chapter " data-level="1.13.1" data-path="gwt-integration/styles.html">
             
                 <a href="gwt-integration/styles.html">
             
@@ -293,7 +332,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.10.2" data-path="gwt-integration/client-bundles.html">
+        <li class="chapter " data-level="1.13.2" data-path="gwt-integration/client-bundles.html">
             
                 <a href="gwt-integration/client-bundles.html">
             
@@ -306,7 +345,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.10.3" data-path="gwt-integration/user-panels.html">
+        <li class="chapter " data-level="1.13.3" data-path="gwt-integration/user-panels.html">
             
                 <a href="gwt-integration/user-panels.html">
             
@@ -324,7 +363,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11" data-path="js-interop/">
+        <li class="chapter " data-level="1.14" data-path="js-interop/">
             
                 <a href="js-interop/">
             
@@ -338,7 +377,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.11.1" data-path="js-interop/js-object.html">
+        <li class="chapter " data-level="1.14.1" data-path="js-interop/js-object.html">
             
                 <a href="js-interop/js-object.html">
             
@@ -351,7 +390,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11.2" data-path="js-interop/js-array.html">
+        <li class="chapter " data-level="1.14.2" data-path="js-interop/js-array.html">
             
                 <a href="js-interop/js-array.html">
             
@@ -364,7 +403,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11.3" data-path="js-interop/js-tools.html">
+        <li class="chapter " data-level="1.14.3" data-path="js-interop/js-tools.html">
             
                 <a href="js-interop/js-tools.html">
             
@@ -469,7 +508,7 @@ The problem is made worse when you want to include the reversed message in your 
     }
 
     <span class="hljs-meta">@Computed</span> <span class="hljs-comment">// Note the annotation that tells Vue GWT that this is a Computed Properties</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">reversedMessage</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getReversedMessage</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> StringBuilder(message).reverse().toString();
     }
 }
@@ -481,21 +520,20 @@ The problem is made worse when you want to include the reversed message in your 
 
 
 <p>Here we have declared a computed property <code>reversedMessage</code>.
-The function we provided will be used as the getter function for the property <code>reversedMessage</code> of your template.</p>
-<p>To avoid name collision in <code>JsInterop</code> Vue GWT rename the computed property in your template at compile time.
-The property in your Vue instance in JavaScript is actually named <code>reversedMessage$computed</code>.</p>
+For this we declared a getter method <code>getReversedMessage()</code> following the Java bean naming convention.
+The method we provided will be used as the getter function for the property <code>reversedMessage</code> of your template.</p>
 <p>You can open the console and play with the example vm yourself.
-The value of <code>reverseComponent.reversedMessage$computed</code> is always dependent on the value of <code>reverseComponent.message</code>.</p>
-<pre><code class="lang-js"><span class="hljs-built_in">console</span>.log(reverseComponent.reversedMessage$computed); <span class="hljs-comment">// -&gt; &apos;olleH&apos;</span>
+The value of <code>reverseComponent.reversedMessage</code> is always dependent on the value of <code>reverseComponent.message</code>.</p>
+<pre><code class="lang-js"><span class="hljs-built_in">console</span>.log(reverseComponent.reversedMessage); <span class="hljs-comment">// -&gt; &apos;olleH&apos;</span>
 reverseComponent.message = <span class="hljs-string">&apos;Goodbye&apos;</span>;
-<span class="hljs-built_in">console</span>.log(reverseComponent.reversedMessage$computed); <span class="hljs-comment">// -&gt; &apos;eybdooG&apos;</span>
+<span class="hljs-built_in">console</span>.log(reverseComponent.reversedMessage); <span class="hljs-comment">// -&gt; &apos;eybdooG&apos;</span>
 </code></pre>
 <p>You can data-bind to computed properties in templates just like a normal property.
 Vue is aware that <code>reversedMessage</code> depends on <code>message</code>, so it will update any bindings that depend on <code>reversedMessage</code> when <code>message</code> changes.
 And the best part is that we&apos;ve created this dependency relationship declaratively: the computed getter function has no side effects, which makes it easy to test and reason about.</p>
 <h3 id="computed-caching-vs-methods">Computed Caching vs Methods</h3>
 <p>You may have noticed we can achieve the same result by invoking a method in the expression:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Reversed message: &quot;{{ reverseMessage() }}&quot;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Reversed message: &quot;{{ getReversedMessage() }}&quot;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
@@ -509,7 +547,7 @@ And the best part is that we&apos;ve created this dependency relationship declar
     }
 
     <span class="hljs-comment">// Note that there a no more @Computed annotation</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">reversedMessage</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getReversedMessage</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> StringBuilder(message).reverse().toString();
     }
 }
@@ -521,7 +559,7 @@ A computed property will only re-evaluate when some of its dependencies have cha
 This means as long as <code>message</code> has not changed, multiple access to the <code>reversedMessage</code> computed property will immediately return the previously computed result without having to run the function again.</p>
 <p>This also means the following computed property will never update, because <code>new Date()</code> is not a reactive dependency:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Computed</span>
-<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">now</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getNow</span><span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Date().toString();
 }
 </code></pre>
@@ -578,7 +616,7 @@ However, it is often a better idea to use a computed property rather than an imp
     }
 
     <span class="hljs-meta">@Computed</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">fullName</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getFullName</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.firstName + <span class="hljs-string">&quot; &quot;</span> + <span class="hljs-keyword">this</span>.lastName;
     }
 }
@@ -600,11 +638,11 @@ However, it is often a better idea to use a computed property rather than an imp
     }
 
     <span class="hljs-meta">@Computed</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">fullName</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getFullName</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.firstName + <span class="hljs-string">&quot; &quot;</span> + <span class="hljs-keyword">this</span>.lastName;
     }
 
-    <span class="hljs-meta">@Computed</span>(propertyName = <span class="hljs-string">&quot;fullName&quot;</span>, kind = ComputedKind.SETTER)
+    <span class="hljs-meta">@Computed</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setFullName</span><span class="hljs-params">(String fullName)</span> </span>{
         String[] split = fullName.split(<span class="hljs-string">&quot; &quot;</span>);
         <span class="hljs-keyword">this</span>.firstName = split[<span class="hljs-number">0</span>];
@@ -613,6 +651,13 @@ However, it is often a better idea to use a computed property rather than an imp
 }
 </code></pre>
 <p>Now when you run <code>this.fullName = &apos;John Doe&apos;</code>, the setter will be invoked and <code>this.firstName</code> and <code>this.lastName</code> will be updated accordingly.</p>
+<p>We also follow the Java bean naming convention, so <code>setFullName</code> is a setter for the <code>fullName</code> property.
+If you need/want to, you can override the name of the property by passing it to the <code>@Computed</code> annotation:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Computed</span>(propertyName = <span class="hljs-string">&quot;myProperty&quot;</span>)
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">someMethodName</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-comment">// Return something</span>
+}
+</code></pre>
 <h2 id="watchers">Watchers</h2>
 <p>While computed properties are more appropriate in most cases, there are times when a custom watcher is necessary.
 That&apos;s why Vue provides a more generic way to react to data changes through the <code>watch</code> option.
@@ -639,11 +684,11 @@ The mandatory <code>propertyName</code> attribute of the annotation indicate the
 </code></pre>
 <p>&#x26A0;&#xFE0F; Like for <code>v-model</code>, only <code>JsInterop</code> expression can be used as <code>propertyName</code>.
 This means any attribute from your Component and any of their attributes as long as they have the <code>@JsProperty</code> annotation.
-This <code>@Computed(propertyName = &quot;todo.text&quot;)</code> won&apos;t work if the attribute <code>text</code> of the class <code>Todo</code> doesn&apos;t have the <code>@JsProperty</code> annotation. </p>
+The following: <code>@Watch(propertyName = &quot;todo.text&quot;)</code> won&apos;t work if the attribute <code>text</code> of the class <code>Todo</code> doesn&apos;t have the <code>@JsProperty</code> annotation. </p>
 <p>In addition to the <code>watch</code> option, you can also use the imperative <a href="https://vuejs.org/v2/api/#vm-watch" target="_blank">vm.$watch API</a>.
 This allow you to watch non <code>JsInterop</code> properties:</p>
 <pre><code class="lang-java"><span class="hljs-keyword">this</span>.$watch(
-    () -&gt; <span class="hljs-keyword">this</span>.todo.text,
+    () -&gt; <span class="hljs-keyword">this</span>.todo.getText(),
     (newValue, oldValue) -&gt; {
         <span class="hljs-comment">// Do something</span>
     }
@@ -692,7 +737,7 @@ This allow you to watch non <code>JsInterop</code> properties:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"1.6","depth":1,"next":{"title":"Class and Style Bindings","level":"1.7","depth":1,"path":"class-and-style.md","ref":"class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"1.5","depth":1,"path":"template-syntax.md","ref":"template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"computed-and-watchers.md","mtime":"2017-07-07T08:45:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-07T17:21:53.526Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"1.6","depth":1,"next":{"title":"Class and Style Bindings","level":"1.7","depth":1,"path":"class-and-style.md","ref":"class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"1.5","depth":1,"path":"template-syntax.md","ref":"template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"computed-and-watchers.md","mtime":"2017-07-10T11:56:29.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T12:29:53.263Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

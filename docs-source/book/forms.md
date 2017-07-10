@@ -1,10 +1,12 @@
 # Form Input Bindings
 
-## The v-model Directive
+!INCLUDE "dependencies.md"
+
+## The `v-model` Directive
 
 This section is about the `v-model` directive.
 
-It's important to note that for now in Vue GWT only `JsInterop` properties can be used in `v-model`.
+It's important to note that for now in Vue GWT only `JsInterop` properties can be used directly in `v-model`.
 For example if you have a property `myTodo` of type `Todo` then:
 ```html
 <input v-model="myTodo.text">
@@ -17,15 +19,60 @@ Apart from this limitations, `v-model` works the same way in Vue GWT than in Vue
 
 You can just **[see Vue.js documentation about Form Input Bindings](https://vuejs.org/v2/guide/forms.html)**.
 
-## Binding to Inputs Without The v-model Directive
+## Making `v-model` Work with Regular Java Objects
 
-It's possible of course to bind to an input without using the v-model directive.
-For example if you want to set directly the property of a non `JsInterop` object.
+### Using a Computed Property
 
-You can use the following syntax:
+You can use a computed properties along with the regular `v-model`:
+
+```java
+@JsType
+@Component
+public class TodoTextComputedComponent extends VueComponent {
+    public Todo todo;
+
+    @Override
+    public void created() {
+        this.todo = new Todo("Hello World!");
+    }
+
+    @Computed
+    public String getTodoText() {
+        return this.todo.getText();
+    }
+
+    @Computed
+    public void setTodoText(String text) {
+        this.todo.setText(text);
+    }
+}
+```
 
 ```html
-<input :value="todo.getText()" @input="updateTodoText((NativeEvent) $event)">
+<div>
+    <input v-model="todoText"/>
+    Todo Text: {{ todoText }}
+</div>
+```
+
+{% raw %}
+<p class="example-container" data-name="todoTextComputedComponent">
+    <span id="todoTextComputedComponent"></span>
+</p>
+{% endraw %}
+
+### Binding to Inputs Without The `v-model` Directive
+
+In some case you can't use computed properties.
+For example inside a `v-for` on the loop variable.
+
+In those case you can use the following syntax:
+
+```html
+<div>
+    <input :value="todo.getText()" @input="updateTodoText((NativeEvent) $event)"/>
+    Todo Text: {{ todo.getText() }}
+</div>
 ```
 
 ```java
@@ -44,3 +91,9 @@ public class TodoTextComponent extends VueComponent {
     }
 }
 ```
+
+{% raw %}
+<p class="example-container" data-name="todoTextComponent">
+    <span id="todoTextComponent"></span>
+</p>
+{% endraw %}
