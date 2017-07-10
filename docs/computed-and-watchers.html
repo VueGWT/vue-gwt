@@ -514,9 +514,9 @@ The problem is made worse when you want to include the reversed message in your 
 }
 </code></pre>
 <p>Result:</p>
-<p class="example-container" data-name="reverseComponent">
+<div class="example-container" data-name="reverseComponent">
     <span id="reverseComponent"></span>
-</p>
+</div>
 
 
 <p>Here we have declared a computed property <code>reversedMessage</code>.
@@ -682,9 +682,12 @@ The mandatory <code>propertyName</code> attribute of the annotation indicate the
     }
 }
 </code></pre>
-<p>&#x26A0;&#xFE0F; Like for <code>v-model</code>, only <code>JsInterop</code> expression can be used as <code>propertyName</code>.
-This means any attribute from your Component and any of their attributes as long as they have the <code>@JsProperty</code> annotation.
-The following: <code>@Watch(propertyName = &quot;todo.text&quot;)</code> won&apos;t work if the attribute <code>text</code> of the class <code>Todo</code> doesn&apos;t have the <code>@JsProperty</code> annotation. </p>
+<p class="warning-panel">
+    Like for <code>v-model</code>, only <code>JsInterop</code> expression can be used as <code>propertyName</code>.
+    This means any attribute from your Component and any of their attributes as long as they have the <code>@JsProperty</code> annotation.<br>
+    The following: <code>@Watch(propertyName = &quot;todo.text&quot;)</code> won&apos;t work if the attribute <code>text</code> of the class <code>Todo</code> doesn&apos;t have the <code>@JsProperty</code> annotation.
+</p>
+
 <p>In addition to the <code>watch</code> option, you can also use the imperative <a href="https://vuejs.org/v2/api/#vm-watch" target="_blank">vm.$watch API</a>.
 This allow you to watch non <code>JsInterop</code> properties:</p>
 <pre><code class="lang-java"><span class="hljs-keyword">this</span>.$watch(
@@ -737,7 +740,7 @@ This allow you to watch non <code>JsInterop</code> properties:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"1.6","depth":1,"next":{"title":"Class and Style Bindings","level":"1.7","depth":1,"path":"class-and-style.md","ref":"class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"1.5","depth":1,"path":"template-syntax.md","ref":"template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"computed-and-watchers.md","mtime":"2017-07-10T11:56:29.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T12:29:53.263Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"1.6","depth":1,"next":{"title":"Class and Style Bindings","level":"1.7","depth":1,"path":"class-and-style.md","ref":"class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"1.5","depth":1,"path":"template-syntax.md","ref":"template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"computed-and-watchers.md","mtime":"2017-07-10T13:11:48.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T13:27:16.616Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

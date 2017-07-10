@@ -505,9 +505,9 @@ The <code>v-for</code> directive requires a special syntax in the form of <code>
 }
 </code></pre>
 <p>Result:</p>
-<p class="example-container" data-name="simpleTodoListComponent">
+<div class="example-container" data-name="simpleTodoListComponent">
     <span id="simpleTodoListComponent"></span>
-</p>
+</div>
 
 
 <p>Inside <code>v-for</code> blocks we have full access to parent scope properties.
@@ -538,9 +538,9 @@ The <code>v-for</code> directive requires a special syntax in the form of <code>
 }
 </code></pre>
 <p>Result:</p>
-<p class="example-container" data-name="vForWithIndexComponent">
+<div class="example-container" data-name="vForWithIndexComponent">
     <span id="vForWithIndexComponent"></span>
-</p>
+</div>
 
 
 <p>You can also use <code>of</code> as the delimiter instead of <code>in</code>, so that it is closer to JavaScript&apos;s syntax for iterators:</p>
@@ -582,9 +582,9 @@ This tells Vue GWT that you are iterating on an <code>Object</code> and not a <c
 }
 </code></pre>
 <p>Result:</p>
-<p class="example-container" data-name="vForOnObjectComponent">
+<div class="example-container" data-name="vForOnObjectComponent">
     <span id="vForOnObjectComponent"></span>
-</p>
+</div>
 
 
 <p>You can also provide a second argument for the key:</p>
@@ -594,9 +594,9 @@ This tells Vue GWT that you are iterating on an <code>Object</code> and not a <c
     <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
 </code></pre>
-<p class="example-container" data-name="vForOnObjectWithKeyComponent">
+<div class="example-container" data-name="vForOnObjectWithKeyComponent">
     <span id="vForOnObjectWithKeyComponent"></span>
-</p>
+</div>
 
 
 <p>And another for the index:</p>
@@ -606,14 +606,15 @@ This tells Vue GWT that you are iterating on an <code>Object</code> and not a <c
     <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
 </code></pre>
-<p class="example-container" data-name="vForOnObjectWithKeyAndIndexComponent">
+<div class="example-container" data-name="vForOnObjectWithKeyAndIndexComponent">
     <span id="vForOnObjectWithKeyAndIndexComponent"></span>
+</div>
+
+
+<p class="info-panel">
+    When iterating over an object, the order is based on the key enumeration order of <code>Object.keys()</code>, which is <bold>not</bold> guaranteed to be consistent across JavaScript engine implementations.
 </p>
 
-
-<blockquote>
-<p>&#x2139;&#xFE0F; When iterating over an object, the order is based on the key enumeration order of <code>Object.keys()</code>, which is <strong>not</strong> guaranteed to be consistent across JavaScript engine implementations.</p>
-</blockquote>
 <h3 id="range-v-for">Range <code>v-for</code></h3>
 <p><code>v-for</code> can also take an integer.
 In this case it will repeat the template that many times.</p>
@@ -621,9 +622,9 @@ In this case it will repeat the template that many times.</p>
     <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;n in 5&quot;</span>&gt;</span>{{ n }} <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<p class="example-container" data-name="vForWithRangeComponent">
+<div class="example-container" data-name="vForWithRangeComponent">
     <span id="vForWithRangeComponent"></span>
-</p>
+</div>
 
 
 <h3 id="components-and-v-for">Components and <code>v-for</code></h3>
@@ -739,9 +740,9 @@ In this case, you can create a computed property that returns the filtered or so
     }
 }
 </code></pre>
-<p class="example-container" data-name="evenNumbersComponent">
+<div class="example-container" data-name="evenNumbersComponent">
     <span id="evenNumbersComponent"></span>
-</p>
+</div>
 
 
 <p>In situations where computed properties are not feasible (e.g. inside nested <code>v-for</code> loops), you can just use a method:</p>
@@ -805,7 +806,7 @@ In this case, you can create a computed property that returns the filtered or so
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"1.9","depth":1,"next":{"title":"Event Handling","level":"1.10","depth":1,"path":"events.md","ref":"events.md","articles":[]},"previous":{"title":"Conditional Rendering","level":"1.8","depth":1,"path":"conditional.md","ref":"conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"list.md","mtime":"2017-07-10T11:56:20.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T12:29:53.263Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"1.9","depth":1,"next":{"title":"Event Handling","level":"1.10","depth":1,"path":"events.md","ref":"events.md","articles":[]},"previous":{"title":"Conditional Rendering","level":"1.8","depth":1,"path":"conditional.md","ref":"conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"list.md","mtime":"2017-07-10T13:21:28.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T13:27:16.616Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

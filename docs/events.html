@@ -499,18 +499,19 @@
 }
 </code></pre>
 <p>Result:</p>
-<p class="example-container" data-name="buttonPlusOneComponent">
+<div class="example-container" data-name="buttonPlusOneComponent">
     <span id="buttonPlusOneComponent"></span>
-</p>
+</div>
 
 
 <h2 id="method-event-handlers">Method Event Handlers</h2>
 <p>The logic for many event handlers will be more complex though, so keeping your JavaScript in the value of the <code>v-on</code> attribute simply isn&apos;t feasible.
 That&apos;s why <code>v-on</code> can also accept a method call.</p>
-<blockquote>
-<p>Vue.js supports passing the method name (without the parenthesis), this doesn&apos;t work in Vue GWT.
-Vue GWT always expect statements in a <code>v-on</code> to be valid Java. </p>
-</blockquote>
+<p class="info-panel">
+    Vue.js supports passing the method name (without the parenthesis), this doesn&apos;t work in Vue GWT.
+    Vue GWT always expect statements in a <code>v-on</code> to be valid Java.
+</p>
+
 <p>For example:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;greet()&quot;</span>&gt;</span>Greet<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 </code></pre>
@@ -526,9 +527,9 @@ Vue GWT always expect statements in a <code>v-on</code> to be valid Java. </p>
 }
 </code></pre>
 <p>Result:</p>
-<p class="example-container" data-name="greetComponent">
+<div class="example-container" data-name="greetComponent">
     <span id="greetComponent"></span>
-</p>
+</div>
 
 
 <p>You can also invoke the method in JavaScript.
@@ -559,9 +560,9 @@ This is to indicate the type of the <code>$event</code> variable to Vue GWT.</p>
 It&apos;s already imported by default for convenience.</p>
 <p>You&apos;ll see further that <code>$event</code> can also be used when communicating between Components.
 In those case you might cast it to another type, like <code>Todo</code> for example.</p>
-<p class="example-container" data-name="vOnWithDOMEventComponent">
+<div class="example-container" data-name="vOnWithDOMEventComponent">
     <span id="vOnWithDOMEventComponent"></span>
-</p>
+</div>
 
 
 <h2 id="event-modifiers">Event Modifiers</h2>
@@ -596,8 +597,11 @@ Recall that modifiers are directive postfixes denoted by a dot.</p>
 <span class="hljs-comment">&lt;!-- i.e. not from a child element --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-on:click.self</span>=<span class="hljs-string">&quot;doThat()&quot;</span>&gt;</span>...<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<p>&#x2139;&#xFE0F;  Order matters when using modifiers because the relevant code is generated in the same order.
-Therefore using <code>@click.prevent.self</code> will prevent <strong>all clicks</strong> while <code>@click.self.prevent</code> will only prevent clicks on the element itself.</p>
+<p class="info-panel">
+    Order matters when using modifiers because the relevant code is generated in the same order.
+    Therefore using <code>@click.prevent.self</code> will prevent <strong>all clicks</strong> while <code>@click.self.prevent</code> will only prevent clicks on the element itself.
+</p>
+
 <blockquote>
 <p>New in Vue.js 2.1.4</p>
 </blockquote>
@@ -660,9 +664,12 @@ On Symbolics keyboards, meta is labeled &#x201C;META&#x201D; or &#x201C;Meta&#x2
 <span class="hljs-comment">&lt;!-- Ctrl + Click --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">div</span> @<span class="hljs-attr">click.ctrl</span>=<span class="hljs-string">&quot;doSomething()&quot;</span>&gt;</span>Do something<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<p>&#x2139;&#xFE0F;  Note that modifier keys are different from regular keys and when used with <code>keyup</code> events, they have to be pressed when the event is emitted.
-In other words, <code>keyup.ctrl</code> will only trigger if you release a key while holding down <code>ctrl</code>.
-It won&apos;t trigger if you release the <code>ctrl</code> key alone.</p>
+<p class="info-panel">
+    Note that modifier keys are different from regular keys and when used with <code>keyup</code> events, they have to be pressed when the event is emitted.
+    In other words, <code>keyup.ctrl</code> will only trigger if you release a key while holding down <code>ctrl</code>.
+    It won&apos;t trigger if you release the <code>ctrl</code> key alone.
+</p>
+
 <h3 id="mouse-button-modifiers">Mouse Button Modifiers</h3>
 <blockquote>
 <p>New in Vue.js 2.2.0</p>
@@ -728,7 +735,7 @@ In fact, there are several benefits in using <code>v-on</code>:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Event Handling","level":"1.10","depth":1,"next":{"title":"Form Input Bindings","level":"1.11","depth":1,"path":"forms.md","ref":"forms.md","articles":[]},"previous":{"title":"List Rendering","level":"1.9","depth":1,"path":"list.md","ref":"list.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"events.md","mtime":"2017-07-10T11:56:23.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T12:29:53.263Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Event Handling","level":"1.10","depth":1,"next":{"title":"Form Input Bindings","level":"1.11","depth":1,"path":"forms.md","ref":"forms.md","articles":[]},"previous":{"title":"List Rendering","level":"1.9","depth":1,"path":"list.md","ref":"list.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"events.md","mtime":"2017-07-10T13:19:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T13:27:16.616Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

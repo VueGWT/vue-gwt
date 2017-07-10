@@ -1,6 +1,7 @@
 .example-container {
 	position:         relative;
 	padding:          1rem;
+	margin-bottom:    .85em;
 	background-color: #F0F0F0;
 	border-radius:    4px;
 	border:           1px solid #DDDDDD;
@@ -26,4 +27,25 @@
 
 .markdown-section pre > code {
 	color: #333333;
+}
+
+.warning-panel {
+	border-left:  4px solid #FFD480;
+	padding-left: 15px;
+}
+
+.warning-panel::before {
+	content:      '⚠️';
+	margin-right: 4px;
+}
+
+.info-panel {
+	border-left:  4px solid #BFD0D8;
+	padding-left: 15px;
+}
+
+.info-panel::before {
+	content:      'ℹ️';
+	margin-right: 4px;
+	font-size:    1.4rem;
 }

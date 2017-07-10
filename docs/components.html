@@ -502,7 +502,10 @@ In some cases, they may also appear as a native HTML element extended with the s
 <p>To register a global component, you can use <code>Vue.component(tagName, MyComponentClass.class)</code>. For example:</p>
 <pre><code class="lang-java">Vue.component(<span class="hljs-string">&apos;my-component&apos;</span>, MyComponent.class)
 </code></pre>
-<p>&#x2139;&#xFE0F; Note that Vue does not enforce the <a href="http://www.w3.org/TR/custom-elements/#concepts" target="_blank">W3C rules</a> for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.</p>
+<p class="info-panel">
+    Note that Vue does not enforce the <a href="http://www.w3.org/TR/custom-elements/#concepts" target="_blank">W3C Rules</a> for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.
+</p>
+
 <p>Once registered, a component can be used in an instance&apos;s template as a custom element, <code>&lt;my-component&gt;&lt;/my-component&gt;</code>.
 Make sure the component is registered <strong>before</strong> you instantiate the root Component.
 Here&apos;s the full example:</p>
@@ -612,11 +615,9 @@ The same <code>dataObject</code> instance will be passed to all your instance of
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;counter++&quot;</span>&gt;</span>{{ counter }}<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 </code></pre>
 <p>We then instantiate 3 of those Components:</p>
-<p class="example-container" data-name="sharedDataModelComponent1, 2 and 3">
-    <span id="sharedDataModelComponent1"></span>
-    <span id="sharedDataModelComponent2"></span>
-    <span id="sharedDataModelComponent3"></span>
-</p>
+<div class="example-container" data-name="simpleLinkComponent">
+    <span id="simpleLinkComponent"></span>
+</div>
 
 
 <h3 id="composing-components">Composing Components</h3>
@@ -737,7 +738,10 @@ If you do, Vue will warn you in the console.</p>
     }
 }
 </code></pre>
-<p>&#x2139;&#xFE0F; Note that objects and arrays in JavaScript are passed by reference, so if the prop is an array or object, mutating the object or array itself inside the child <strong>will</strong> affect parent state.</p>
+<p class="info-panel">
+    Note that objects and arrays in JavaScript (like in Java) are passed by reference, so if the prop is an array or object, mutating the object or array itself inside the child <bold>will</bold> affect parent state.
+</p>
+
 <h3 id="prop-validation">Prop Validation</h3>
 <p>In Vue.js, it is possible for a component to specify requirements for the props it is receiving.
 If a requirement is not met, Vue will emit warnings.
@@ -781,12 +785,18 @@ This is where Vue&apos;s custom event system comes in.</p>
 <li>Listen to an event using <code>$on(eventName)</code></li>
 <li>Trigger an event using <code>$emit(eventName)</code></li>
 </ul>
-<p>&#x2139;&#xFE0F; Note that Vue&apos;s event system is separate from the browser&apos;s <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget" target="_blank">EventTarget API</a>.
-Though they work similarly, <code>$on</code> and <code>$emit</code> are <strong>not</strong> aliases for <code>addEventListener</code> and <code>dispatchEvent</code>.</p>
+<p class="info-panel">
+    Note that Vue&apos;s event system is separate from the browser&apos;s <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget" target="_blank">EventTarget API</a>.
+    Though they work similarly, <code>$on</code> and <code>$emit</code> are <strong>not<strong> aliases for <code>addEventListener</code> and <code>dispatchEvent</code>.
+</strong></strong></p>
+
 <p>In addition, a parent component can listen to the events emitted from a child component using <code>v-on</code> directly in the template where the child component is used.</p>
-<p>&#x2139;&#xFE0F; You cannot use <code>$on</code> to listen to events emitted by children. You must use <code>v-on</code> directly in the template, as in the example below.</p>
+<p class="info-panel">
+    You cannot use <code>$on</code> to listen to events emitted by children. You must use <code>v-on</code> directly in the template, as in the example below.
+</p>
+
 <p>Here&apos;s an example:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;increment()&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;increment()&quot;</span>&gt;</span>{{ counter }}<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
@@ -807,7 +817,7 @@ Though they work similarly, <code>$on</code> and <code>$emit</code> are <strong>
 }
 </code></pre>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{{ total }}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal()&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal()&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
@@ -828,9 +838,9 @@ Though they work similarly, <code>$on</code> and <code>$emit</code> are <strong>
     }
 }
 </code></pre>
-<p class="example-container" data-name="counterWithEventComponent">
-    <div id="counterWithEventComponent"></div>
-</p>
+<div class="example-container" data-name="counterWithEventComponent">
+    <span id="counterWithEventComponent"></span>
+</div>
 
 
 <p>In this example, it&apos;s important to note that the child component is still completely decoupled from what happens outside of it.
@@ -908,7 +918,7 @@ Vue.js implements a content distribution API that is modeled after the current <
 <p>Before we dig into the API, let&apos;s first clarify which scope the contents are compiled in.
 Imagine a template like this:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">child-component</span>&gt;</span>
-
+  {{ message }}
 <span class="hljs-tag">&lt;/<span class="hljs-name">child-component</span>&gt;</span>
 </code></pre>
 <p>Should the <code>message</code> be bound to the parent&apos;s data or the child data?
@@ -1089,8 +1099,11 @@ To achieve this you have to assign a reference ID to the child component using <
 }
 </code></pre>
 <p>When <code>ref</code> is used together with <code>v-for</code>, the ref you get will be an array containing the child components mirroring the data source.</p>
-<p>&#x2139;&#xFE0F; <code>$refs</code> are only populated after the component has been rendered, and it is not reactive.
-It is only meant as an escape hatch for direct child manipulation - you should avoid using <code>$refs</code> in templates or computed properties.</p>
+<p class="info-panel">
+    <code>$refs</code> are only populated after the component has been rendered, and it is not reactive.
+    It is only meant as an escape hatch for direct child manipulation - you should avoid using <code>$refs</code> in templates or computed properties.
+</p>
+
 <h3 id="async-components">Async Components</h3>
 <p>Vue.js supports <a href="https://vuejs.org/v2/guide/components.html#Async-Components" target="_blank">dynamically loading components with caching</a>.
 This is not yet supported by Vue GWT.</p>
@@ -1101,7 +1114,7 @@ This is not yet supported by Vue GWT.</p>
 <p>Let&apos;s say you&apos;re building a file directory tree, like in Finder or File Explorer.
 You might have a <code>tree-folder</code> component with this template:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{{ myFolder.name }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">tree-folder-content</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;myFolder.hasContent()&quot;</span> <span class="hljs-attr">:content</span>=<span class="hljs-string">&quot;myFolder.getContent()&quot;</span>/&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
 </code></pre>
@@ -1116,9 +1129,9 @@ You might have a <code>tree-folder</code> component with this template:</p>
 <p>When you look closely, you&apos;ll see that these components will actually be each other&apos;s descendent <em>and</em> ancestor in the render tree - a paradox!
 In Vue GWT (like in Vue.js) this paradox is solved automatically, whether you declare your components globally or by passing them to the <code>@Component</code> annotation.</p>
 <p>Here is a working and running tree example for you:</p>
-<p class="example-container" data-name="treeComponent">
+<div class="example-container" data-name="treeComponent">
     <span id="treeComponent"></span>
-</p>
+</div>
 
 
 <h3 id="inline-templates">Inline Templates</h3>
@@ -1178,7 +1191,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Components","level":"1.12","depth":1,"next":{"title":"Integration with GWT","level":"1.13","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.13.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.13.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.13.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Form Input Bindings","level":"1.11","depth":1,"path":"forms.md","ref":"forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"components.md","mtime":"2017-07-10T11:56:16.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T12:29:53.263Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Components","level":"1.12","depth":1,"next":{"title":"Integration with GWT","level":"1.13","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.13.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.13.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.13.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Form Input Bindings","level":"1.11","depth":1,"path":"forms.md","ref":"forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"components.md","mtime":"2017-07-10T13:24:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T13:27:16.616Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

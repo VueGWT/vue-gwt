@@ -500,9 +500,9 @@
     }
 }
 </code></pre>
-<p class="example-container" data-name="exclamationComponent">
+<div class="example-container" data-name="exclamationComponent">
     <span id="exclamationComponent"></span>
-</p>
+</div>
 
 
 <p>Note in the addExclamationMark method we simply update the state of our app without touching the DOM - all DOM manipulations are handled by Vue, and the code you write is focused on the underlying logic.</p>
@@ -527,19 +527,17 @@
 }
 </code></pre>
 <p>Changing the value of the input will automatically update the content of our message property.
-Changing the value of our Java property will change the value of input.</p>
-<p class="example-container" data-name="messageComponent">
+Changing the value of our Java property will change the value of input:</p>
+<div class="example-container" data-name="messageComponent">
     <span id="messageComponent"></span>
+</div>
+
+
+<p class="warning-panel">
+    It&apos;s important to note that for now in Vue GWT only <code>JsInterop</code> properties can be used directly in <code>v-model</code>.
+    <a href="../forms.html">Check here to see why and get solutions</a>.
 </p>
 
-
-<p>&#x26A0;&#xFE0F;  It&apos;s important to note that for now in Vue GWT only <code>JsInterop</code> properties can be used in <code>v-model</code>.
-For example if you have a property <code>myTodo</code> of type <code>Todo</code> then:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;myTodo.text&quot;</span>&gt;</span>
-</code></pre>
-<p>Will only work if the <code>text</code> property in <code>Todo</code> has the <code>@JsProperty</code> annotation.</p>
-<p><code>v-model</code> expressions are also not type checked at compile time.
-Those limitations only exists for <code>v-model</code>.</p>
 <p>A real world application is never just one Component, let&apos;s see how to <strong><a href="composing-with-components.html">compose Components together</a></strong>.</p>
 
                                 
@@ -584,7 +582,7 @@ Those limitations only exists for <code>v-model</code>.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Handling User Input","level":"1.3.3","depth":2,"next":{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]},"previous":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/handling-user-input.md","mtime":"2017-07-08T11:09:10.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T12:29:53.263Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Handling User Input","level":"1.3.3","depth":2,"next":{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]},"previous":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/handling-user-input.md","mtime":"2017-07-10T13:08:44.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-10T13:27:16.616Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
