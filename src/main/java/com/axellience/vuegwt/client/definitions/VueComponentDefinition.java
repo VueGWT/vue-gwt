@@ -36,7 +36,7 @@ import java.util.Set;
  * @author Adrien Baron
  */
 @JsType
-public abstract class VueComponentDefinition
+public abstract class VueComponentDefinition extends JsObject
 {
     @JsProperty protected VueComponent vuegwt$javaComponentInstance;
 
@@ -166,7 +166,7 @@ public abstract class VueComponentDefinition
     {
         for (Entry<String, CssResource> style : componentStyles.entrySet())
         {
-            JsTools.set(data, style.getKey(), style.getValue());
+            data.set(style.getKey(), style.getValue());
         }
     }
 
@@ -213,9 +213,7 @@ public abstract class VueComponentDefinition
 
     protected void addLifecycleHook(String hookName)
     {
-        JsTools.setObjectProperty(this,
-            hookName,
-            JsTools.getObjectProperty(vuegwt$javaComponentInstance, hookName));
+        set(hookName, JsTools.getObjectProperty(vuegwt$javaComponentInstance, hookName));
     }
 
     protected void addProp(String javaName, String jsName, boolean required, String typeJsName)
