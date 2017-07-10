@@ -21,19 +21,19 @@ Curious about the implementation? See the sources in our public **[Github reposi
 
 When you are ready, you can get started with by **[setting it up on your project](./project-setup.md)**.
 
-⚠️ Vue GWT is in an **experimental** state.
-The syntax is not final and might change between versions.
-It may also contain bugs.
+<p class="warning-panel">
+    Vue GWT is in an <strong>experimental</strong> state.
+    The syntax is not final and might change between versions.
+    It may also contain bugs.
+</p>
 
 *This documentation was last updated for [Vue.js v2.3.4](https://github.com/vuejs/vue/releases/tag/v2.3.4) and Vue GWT 0.1-SNAPSHOT*
 
 ## Who Made This?
 
-{% raw %}
 <p align="center">
     Vue GWT is developed by the awesome people at<br/>
     <a href="https://www.genmymodel.com" target="_blank">
         <img src="https://axellience.github.io/vue-gwt/resources/images/GenMyModel-Logo-Black.png" alt="GenMyModel" height="50"/>
     </a>
 </p>
-{% endraw %}

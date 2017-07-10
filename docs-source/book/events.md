@@ -42,8 +42,10 @@ Result:
 The logic for many event handlers will be more complex though, so keeping your JavaScript in the value of the `v-on` attribute simply isn't feasible.
 That's why `v-on` can also accept a method call.
 
-> Vue.js supports passing the method name (without the parenthesis), this doesn't work in Vue GWT.
-Vue GWT always expect statements in a `v-on` to be valid Java. 
+<p class="info-panel">
+    Vue.js supports passing the method name (without the parenthesis), this doesn't work in Vue GWT.
+    Vue GWT always expect statements in a <code>v-on</code> to be valid Java.
+</p>
 
 For example:
 
@@ -156,8 +158,10 @@ Recall that modifiers are directive postfixes denoted by a dot.
 <div v-on:click.self="doThat()">...</div>
 ```
 
-ℹ️  Order matters when using modifiers because the relevant code is generated in the same order.
-Therefore using `@click.prevent.self` will prevent **all clicks** while `@click.self.prevent` will only prevent clicks on the element itself.
+<p class="info-panel">
+    Order matters when using modifiers because the relevant code is generated in the same order.
+    Therefore using <code>@click.prevent.self</code> will prevent <strong>all clicks</strong> while <code>@click.self.prevent</code> will only prevent clicks on the element itself.
+</p>
 
 > New in Vue.js 2.1.4
 
@@ -236,9 +240,11 @@ For example:
 <div @click.ctrl="doSomething()">Do something</div>
 ```
 
-ℹ️  Note that modifier keys are different from regular keys and when used with `keyup` events, they have to be pressed when the event is emitted.
-In other words, `keyup.ctrl` will only trigger if you release a key while holding down `ctrl`.
-It won't trigger if you release the `ctrl` key alone.
+<p class="info-panel">
+    Note that modifier keys are different from regular keys and when used with <code>keyup</code> events, they have to be pressed when the event is emitted.
+    In other words, <code>keyup.ctrl</code> will only trigger if you release a key while holding down <code>ctrl</code>.
+    It won't trigger if you release the <code>ctrl</code> key alone.
+</p>
 
 ### Mouse Button Modifiers
 

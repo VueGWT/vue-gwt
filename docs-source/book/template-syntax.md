@@ -40,8 +40,10 @@ The contents of this `div` will be replaced with the value of the `rawHtml` prop
 Note that you cannot use `v-html` to compose template partials, because Vue is not a string-based templating engine.
 Instead, components are preferred as the fundamental unit for UI reuse and composition.
 
-⚠️ Dynamically rendering arbitrary HTML on your website can be very dangerous because it can easily lead to [XSS vulnerabilities](https://en.wikipedia.org/wiki/Cross-site_scripting).
-Only use HTML interpolation on trusted content and **never** on user-provided content.
+<p class="warning-panel">
+    Dynamically rendering arbitrary HTML on your website can be very dangerous because it can easily lead to <a href="https://en.wikipedia.org/wiki/Cross-site_scripting">XSS vulnerabilities</a>.
+    Only use HTML interpolation on trusted content and <strong>never</strong> on user-provided content.
+</p>
 
 ### Attributes
 

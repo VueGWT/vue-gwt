@@ -66,7 +66,7 @@ public class MessageComponent extends VueComponent {
 ```
 
 Changing the value of the input will automatically update the content of our message property.
-Changing the value of our Java property will change the value of input.
+Changing the value of our Java property will change the value of input:
 
 {% raw %}
 <div class="example-container" data-name="messageComponent">
@@ -74,14 +74,9 @@ Changing the value of our Java property will change the value of input.
 </div>
 {% endraw %}
 
-⚠️  It's important to note that for now in Vue GWT only `JsInterop` properties can be used in `v-model`.
-For example if you have a property `myTodo` of type `Todo` then:
-```html
-<input v-model="myTodo.text">
-```
-Will only work if the `text` property in `Todo` has the `@JsProperty` annotation.
-
-`v-model` expressions are also not type checked at compile time.
-Those limitations only exists for `v-model`.
+<p class="warning-panel">
+    It's important to note that for now in Vue GWT only <code>JsInterop</code> properties can be used directly in <code>v-model</code>.
+    <a href="../forms.html">Check here to see why and get solutions</a>.
+</p>
 
 A real world application is never just one Component, let's see how to **[compose Components together](./composing-with-components.md)**.

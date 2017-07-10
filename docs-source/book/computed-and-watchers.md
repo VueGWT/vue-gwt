@@ -259,9 +259,11 @@ public class JohnSnowComponent extends VueComponent
 }
 ```
 
-⚠️ Like for `v-model`, only `JsInterop` expression can be used as `propertyName`.
-This means any attribute from your Component and any of their attributes as long as they have the `@JsProperty` annotation.
-The following: `@Watch(propertyName = "todo.text")` won't work if the attribute `text` of the class `Todo` doesn't have the `@JsProperty` annotation. 
+<p class="warning-panel">
+    Like for <code>v-model</code>, only <code>JsInterop</code> expression can be used as <code>propertyName</code>.
+    This means any attribute from your Component and any of their attributes as long as they have the <code>@JsProperty</code> annotation.<br/>
+    The following: <code>@Watch(propertyName = "todo.text")</code> won't work if the attribute <code>text</code> of the class <code>Todo</code> doesn't have the <code>@JsProperty</code> annotation.
+</p>
 
 In addition to the `watch` option, you can also use the imperative [vm.$watch API](https://vuejs.org/v2/api/#vm-watch).
 This allow you to watch non `JsInterop` properties:

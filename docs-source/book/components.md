@@ -39,7 +39,9 @@ To register a global component, you can use `Vue.component(tagName, MyComponentC
 Vue.component('my-component', MyComponent.class)
 ```
 
-ℹ️ Note that Vue does not enforce the [W3C rules](http://www.w3.org/TR/custom-elements/#concepts) for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.
+<p class="info-panel">
+    Note that Vue does not enforce the <a href="http://www.w3.org/TR/custom-elements/#concepts">W3C Rules</a> for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.
+</p>
 
 Once registered, a component can be used in an instance's template as a custom element, `<my-component></my-component>`.
 Make sure the component is registered **before** you instantiate the root Component.
@@ -356,7 +358,9 @@ public class MyComponent extends VueComponent {
 }
 ```
 
-ℹ️ Note that objects and arrays in JavaScript are passed by reference, so if the prop is an array or object, mutating the object or array itself inside the child **will** affect parent state.
+<p class="info-panel">
+    Note that objects and arrays in JavaScript (like in Java) are passed by reference, so if the prop is an array or object, mutating the object or array itself inside the child <bold>will</bold> affect parent state.
+</p>
 
 ### Prop Validation
 
@@ -423,12 +427,16 @@ Every Vue instance implements an [events interface](https://vuejs.org/v2/api/#In
 - Listen to an event using `$on(eventName)`
 - Trigger an event using `$emit(eventName)`
 
-ℹ️ Note that Vue's event system is separate from the browser's [EventTarget API](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget).
-Though they work similarly, `$on` and `$emit` are __not__ aliases for `addEventListener` and `dispatchEvent`.
+<p class="info-panel">
+    Note that Vue's event system is separate from the browser's <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget">EventTarget API</a>.
+    Though they work similarly, <code>$on</code> and <code>$emit</code> are <strong>not<strong> aliases for <code>addEventListener</code> and <code>dispatchEvent</code>.
+</p>
 
 In addition, a parent component can listen to the events emitted from a child component using `v-on` directly in the template where the child component is used.
 
-ℹ️ You cannot use `$on` to listen to events emitted by children. You must use `v-on` directly in the template, as in the example below.
+<p class="info-panel">
+    You cannot use <code>$on</code> to listen to events emitted by children. You must use <code>v-on</code> directly in the template, as in the example below.
+</p>
 
 Here's an example:
 
@@ -845,8 +853,10 @@ public class ParentComponent extends VueComponent
 
 When `ref` is used together with `v-for`, the ref you get will be an array containing the child components mirroring the data source.
 
-ℹ️ `$refs` are only populated after the component has been rendered, and it is not reactive.
-It is only meant as an escape hatch for direct child manipulation - you should avoid using `$refs` in templates or computed properties.
+<p class="info-panel">
+    <code>$refs</code> are only populated after the component has been rendered, and it is not reactive.
+    It is only meant as an escape hatch for direct child manipulation - you should avoid using <code>$refs</code> in templates or computed properties.
+</p>
 
 ### Async Components
 

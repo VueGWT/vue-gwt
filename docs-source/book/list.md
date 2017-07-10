@@ -176,7 +176,9 @@ And another for the index:
 </div>
 {% endraw %}
 
-> ℹ️ When iterating over an object, the order is based on the key enumeration order of `Object.keys()`, which is **not** guaranteed to be consistent across JavaScript engine implementations.
+<p class="info-panel">
+    When iterating over an object, the order is based on the key enumeration order of <code>Object.keys()</code>, which is <bold>not</bold> guaranteed to be consistent across JavaScript engine implementations.
+</p>
 
 ### Range `v-for`
 
