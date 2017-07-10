@@ -25,6 +25,8 @@ When you are ready, you can get started with by **[setting it up on your project
 The syntax is not final and might change between versions.
 It may also contain bugs.
 
+*This documentation was last updated for [Vue.js v2.3.4](https://github.com/vuejs/vue/releases/tag/v2.3.4) and Vue GWT 0.1-SNAPSHOT*
+
 ## Who Made This?
 
 {% raw %}
