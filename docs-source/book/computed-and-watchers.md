@@ -52,9 +52,9 @@ public class ReverseComponent extends VueComponent
 Result:
 
 {% raw %}
-<p class="example-container" data-name="reverseComponent">
+<div class="example-container" data-name="reverseComponent">
     <span id="reverseComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 Here we have declared a computed property `reversedMessage`.

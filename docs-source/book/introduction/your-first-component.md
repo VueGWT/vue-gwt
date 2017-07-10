@@ -61,9 +61,9 @@ At runtime, this expression is replaced by the value we have set in our Class.
 Bellow we have instantiated an instance of our `SimpleLinkComponent`:
 
 {% raw %}
-<p class="example-container" data-name="simpleLinkComponent">
+<div class="example-container" data-name="simpleLinkComponent">
     <span id="simpleLinkComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 The bindings in the Components are dynamic, each time the value of `linkName` changes in your Component instance, the value is updated automatically in the view.
@@ -148,9 +148,9 @@ public class LinkComponent extends VueComponent {
 ```
 
 {% raw %}
-<p class="example-container" data-name="linkComponent">
+<div class="example-container" data-name="linkComponent">
     <span id="linkComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 Here we are encountering something new.

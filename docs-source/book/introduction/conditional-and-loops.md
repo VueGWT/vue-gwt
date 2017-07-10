@@ -30,9 +30,9 @@ public class CanHideComponent extends VueComponent {
 As you can see bellow the `div` is created if the property `visible` of the Component instance is set to `true`.
 
 {% raw %}
-<p class="example-container" data-name="canHideComponent">
+<div class="example-container" data-name="canHideComponent">
     <span id="canHideComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 You can try to interact in your browser console by typing:
@@ -99,9 +99,9 @@ This is because Vue GWT compile templates expressions to Java and so needs the t
 You can import Java types in your template by using the `vue-gwt:import` element.
 
 {% raw %}
-<p class="example-container" data-name="simpleTodoListComponent">
+<div class="example-container" data-name="simpleTodoListComponent">
     <span id="simpleTodoListComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 As the `Todo` class does not have the `@JsInterop` annotation it's not possible to create new Todos from the JavaScript console.

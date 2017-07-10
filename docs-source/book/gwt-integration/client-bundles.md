@@ -52,9 +52,9 @@ We can then simply access our bundle instance from the template:
 
 
 {% raw %}
-<p class="example-container" data-name="kittenComponent">
+<div class="example-container" data-name="kittenComponent">
     <span id="kittenComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 ## Hey, Couldn't I Use This for Styles?

@@ -196,9 +196,9 @@ this.fontSize = 20;
 ```
 
 {% raw %}
-<p class="example-container" data-name="bindInlineStyleComponent">
+<div class="example-container" data-name="bindInlineStyleComponent">
     <span id="bindInlineStyleComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 It is often a good idea to bind to a style object directly so that the template is cleaner:

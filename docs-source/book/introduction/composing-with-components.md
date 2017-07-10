@@ -62,9 +62,9 @@ Now you can compose it in our `ParentComponent`’s template:
 </div>
 ```
 {% raw %}
-<p class="example-container" data-name="parentComponent">
+<div class="example-container" data-name="parentComponent">
     <span id="parentComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 ## Passing Properties to Children Components
@@ -132,9 +132,9 @@ And now we are able to pass the `Todo` into each repeated component using `v-bin
 </div>
 ```
 {% raw %}
-<p class="example-container" data-name="todoListComponent">
+<div class="example-container" data-name="todoListComponent">
     <span id="todoListComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 This is just a contrived example, but we have managed to separate our app into two smaller units, and the child is reasonably well-decoupled from the parent via the props interface.

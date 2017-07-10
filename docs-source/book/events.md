@@ -32,9 +32,9 @@ public class ButtonPlusOneComponent extends VueComponent {
 Result:
 
 {% raw %}
-<p class="example-container" data-name="buttonPlusOneComponent">
+<div class="example-container" data-name="buttonPlusOneComponent">
     <span id="buttonPlusOneComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 ## Method Event Handlers
@@ -67,9 +67,9 @@ public class GreetComponent extends VueComponent {
 Result:
 
 {% raw %}
-<p class="example-container" data-name="greetComponent">
+<div class="example-container" data-name="greetComponent">
     <span id="greetComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 You can also invoke the method in JavaScript.
@@ -115,9 +115,9 @@ In those case you might cast it to another type, like `Todo` for example.
 
 
 {% raw %}
-<p class="example-container" data-name="vOnWithDOMEventComponent">
+<div class="example-container" data-name="vOnWithDOMEventComponent">
     <span id="vOnWithDOMEventComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 ## Event Modifiers

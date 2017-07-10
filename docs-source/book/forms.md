@@ -56,9 +56,9 @@ public class TodoTextComputedComponent extends VueComponent {
 ```
 
 {% raw %}
-<p class="example-container" data-name="todoTextComputedComponent">
+<div class="example-container" data-name="todoTextComputedComponent">
     <span id="todoTextComputedComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 ### Binding to Inputs Without The `v-model` Directive
@@ -93,7 +93,7 @@ public class TodoTextComponent extends VueComponent {
 ```
 
 {% raw %}
-<p class="example-container" data-name="todoTextComponent">
+<div class="example-container" data-name="todoTextComponent">
     <span id="todoTextComponent"></span>
-</p>
+</div>
 {% endraw %}

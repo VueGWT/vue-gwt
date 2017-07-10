@@ -30,9 +30,9 @@ public class ExclamationComponent extends VueComponent {
 ```
 
 {% raw %}
-<p class="example-container" data-name="exclamationComponent">
+<div class="example-container" data-name="exclamationComponent">
     <span id="exclamationComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 Note in the addExclamationMark method we simply update the state of our app without touching the DOM - all DOM manipulations are handled by Vue, and the code you write is focused on the underlying logic.
@@ -69,9 +69,9 @@ Changing the value of the input will automatically update the content of our mes
 Changing the value of our Java property will change the value of input.
 
 {% raw %}
-<p class="example-container" data-name="messageComponent">
+<div class="example-container" data-name="messageComponent">
     <span id="messageComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 ⚠️  It's important to note that for now in Vue GWT only `JsInterop` properties can be used in `v-model`.

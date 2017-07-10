@@ -196,11 +196,9 @@ public class SharedDataModelComponent extends VueComponent
 We then instantiate 3 of those Components:
 
 {% raw %}
-<p class="example-container" data-name="sharedDataModelComponent1, 2 and 3">
-    <span id="sharedDataModelComponent1"></span>
-    <span id="sharedDataModelComponent2"></span>
-    <span id="sharedDataModelComponent3"></span>
-</p>
+<div class="example-container" data-name="simpleLinkComponent">
+    <span id="simpleLinkComponent"></span>
+</div>
 {% endraw %}
 
 ### Composing Components
@@ -337,7 +335,7 @@ public class MyComponent extends VueComponent {
         this.counter = this.initialCounter;
     }
 }
-  ```
+```
 
 2. Define a computed property that is computed from the prop's value:
 
@@ -485,9 +483,9 @@ public class CounterWithEventComponent extends VueComponent
 ```
 
 {% raw %}
-<p class="example-container" data-name="counterWithEventComponent">
-    <div id="counterWithEventComponent"></div>
-</p>
+<div class="example-container" data-name="counterWithEventComponent">
+    <span id="counterWithEventComponent"></span>
+</div>
 {% endraw %}
 
 In this example, it's important to note that the child component is still completely decoupled from what happens outside of it.
@@ -889,9 +887,9 @@ In Vue GWT (like in Vue.js) this paradox is solved automatically, whether you de
 Here is a working and running tree example for you:
 
 {% raw %}
-<p class="example-container" data-name="treeComponent">
+<div class="example-container" data-name="treeComponent">
     <span id="treeComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 ### Inline Templates

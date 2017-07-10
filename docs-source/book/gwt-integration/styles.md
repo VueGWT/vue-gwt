@@ -131,9 +131,9 @@ If you make a mistake (forget the quotes), it will break at compile time with an
 ## Here is our finished `MelisandreComponent`
 
 {% raw %}
-<p class="example-container" data-name="melisandreComponent">
+<div class="example-container" data-name="melisandreComponent">
     <span id="melisandreComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 You can try toggling the red color on the two bottom sentences by typing in your browser console:

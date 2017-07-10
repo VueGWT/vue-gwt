@@ -39,9 +39,9 @@ public class SimpleTodoListComponent extends VueComponent {
 Result:
 
 {% raw %}
-<p class="example-container" data-name="simpleTodoListComponent">
+<div class="example-container" data-name="simpleTodoListComponent">
     <span id="simpleTodoListComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 Inside `v-for` blocks we have full access to parent scope properties.
@@ -79,9 +79,9 @@ public class VForWithIndexComponent extends VueComponent
 Result:
 
 {% raw %}
-<p class="example-container" data-name="vForWithIndexComponent">
+<div class="example-container" data-name="vForWithIndexComponent">
     <span id="vForWithIndexComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 You can also use `of` as the delimiter instead of `in`, so that it is closer to JavaScript's syntax for iterators:
@@ -139,9 +139,9 @@ public class VForOnObjectComponent extends VueComponent
 Result:
 
 {% raw %}
-<p class="example-container" data-name="vForOnObjectComponent">
+<div class="example-container" data-name="vForOnObjectComponent">
     <span id="vForOnObjectComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 You can also provide a second argument for the key:
@@ -155,9 +155,9 @@ You can also provide a second argument for the key:
 ```
 
 {% raw %}
-<p class="example-container" data-name="vForOnObjectWithKeyComponent">
+<div class="example-container" data-name="vForOnObjectWithKeyComponent">
     <span id="vForOnObjectWithKeyComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 And another for the index:
@@ -171,9 +171,9 @@ And another for the index:
 ```
 
 {% raw %}
-<p class="example-container" data-name="vForOnObjectWithKeyAndIndexComponent">
+<div class="example-container" data-name="vForOnObjectWithKeyAndIndexComponent">
     <span id="vForOnObjectWithKeyAndIndexComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 > ℹ️ When iterating over an object, the order is based on the key enumeration order of `Object.keys()`, which is **not** guaranteed to be consistent across JavaScript engine implementations.
@@ -190,9 +190,9 @@ In this case it will repeat the template that many times.
 ```
 
 {% raw %}
-<p class="example-container" data-name="vForWithRangeComponent">
+<div class="example-container" data-name="vForWithRangeComponent">
     <span id="vForWithRangeComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 ### Components and `v-for`
@@ -356,9 +356,9 @@ public class EvenNumbersComponent extends VueComponent {
 ```
 
 {% raw %}
-<p class="example-container" data-name="evenNumbersComponent">
+<div class="example-container" data-name="evenNumbersComponent">
     <span id="evenNumbersComponent"></span>
-</p>
+</div>
 {% endraw %}
 
 In situations where computed properties are not feasible (e.g. inside nested `v-for` loops), you can just use a method:
