@@ -4,7 +4,6 @@ import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.VueDirectiveBinding;
 import com.axellience.vuegwt.jsr69.directive.annotations.Directive;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
 
 /**
  * @author Adrien Baron
@@ -15,7 +14,6 @@ public class FocusDirective extends VueDirective
     @Override
     public void inserted(Element el, VueDirectiveBinding binding)
     {
-        if (el instanceof InputElement)
-            el.focus();
+        el.focus();
     }
 }
