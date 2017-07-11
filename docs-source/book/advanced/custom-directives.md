@@ -30,8 +30,7 @@ public class FocusDirective extends VueDirective
     @Override
     public void inserted(Element el, VueDirectiveBinding binding)
     {
-        if (el instanceof InputElement)
-            el.focus();
+        el.focus();
     }
 }
 ```
