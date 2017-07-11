@@ -13,7 +13,8 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-import static com.axellience.vuegwt.client.definitions.VueComponentDefinitionCache.getComponentDefinitionForClass;
+import static com.axellience.vuegwt.client.definitions.VueDefinitionCache.getComponentDefinitionForClass;
+import static com.axellience.vuegwt.client.definitions.VueDefinitionCache.getDirectiveDefinitionForClass;
 
 /**
  * JsInterop representation of the main Vue instance
@@ -96,7 +97,7 @@ public class Vue
      * Register a component globally
      * It will be usable in any component of your app.
      * The name will be automatically computed based on the component class name
-     * @param vueComponentClass The class of the Component to
+     * @param vueComponentClass The class of the Component to register
      */
     @JsOverlay
     public static void component(Class<? extends VueComponent> vueComponentClass)
@@ -108,21 +109,22 @@ public class Vue
     /**
      * Register a directive globally
      * It will be usable in any component of your app.
-     * @param vueDirective The directive to register. You should inherit from VueDirective and pass
-     * an instance of your directive here.
+     * The name will be automatically computed based on the directive class name
+     * @param vueDirectiveClass The class of the Directive to register
      */
     @JsOverlay
-    public static void directive(VueDirective vueDirective)
+    public static void directive(Class<? extends VueDirective> vueDirectiveClass)
     {
-
+        Vue.directive(VueGwtTools.directiveToTagName(vueDirectiveClass),
+            getDirectiveDefinitionForClass(vueDirectiveClass));
     }
+
+    public static native void component(String id, VueComponentDefinition componentDefinition);
+
+    public static native void directive(String name, VueDirectiveDefinition directiveDefinition);
 
     private static native JsObject extend(VueComponentDefinition componentDefinition);
 
-    private static native void component(String id, VueComponentDefinition componentDefinition);
-
     @JsMethod(name = "component")
     private static native JsObject getRegisteredComponent(String id);
-
-    private static native void directive(String directiveName, VueDirectiveDefinition vueDirective);
 }

@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.jsr69.component;
 
 import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
-import com.axellience.vuegwt.client.definitions.VueComponentDefinitionCache;
+import com.axellience.vuegwt.client.definitions.VueDefinitionCache;
 import com.axellience.vuegwt.client.definitions.component.ComputedKind;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
@@ -93,7 +93,7 @@ public class VueComponentDefinitionGenerator
         // Static init block
         componentClassBuilder.addStaticBlock(CodeBlock.of(
             "$T.registerComponent($T.class, new $L());",
-            VueComponentDefinitionCache.class,
+            VueDefinitionCache.class,
             TypeName.get(componentTypeElement.asType()),
             generatedTypeName));
 

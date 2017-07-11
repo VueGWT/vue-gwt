@@ -9,6 +9,12 @@ window.vueGwt = {
 	createInstanceForVueClass: function (extendedVueClass) {
 		return new extendedVueClass();
 	},
+	getFunctionBody: function(myFunction) {
+		// Get content between first { and last }
+		var m = myFunction.toString().match(/\{([\s\S]*)\}/m)[1];
+		// Strip comments
+		return m.replace(/^\s*\/\/.*$/mg,'').trim();
+	},
 	/**
 	 * Return a method that will transform a Java Collection
 	 * to a JS Array whenever one of it's method is called

@@ -32,7 +32,7 @@ import java.util.Set;
  * An instance of this Class can be immediately passed to Vue.js instance where it's expecting a
  * component definition object.
  * <p>
- * This is an internal Class, it shouldn't be manipulated in applications that use VueGWT.
+ * This is an internal Class, it shouldn't be extended in applications that use VueGWT.
  * @author Adrien Baron
  */
 @JsType
@@ -252,7 +252,7 @@ public abstract class VueComponentDefinition extends JsObject
         for (Class<? extends VueComponent> childComponentClass : childComponents)
         {
             VueComponentDefinition childComponentDefinition =
-                VueComponentDefinitionCache.getComponentDefinitionForClass(childComponentClass);
+                VueDefinitionCache.getComponentDefinitionForClass(childComponentClass);
             this.components.set(VueGwtTools.componentToTagName(childComponentClass),
                 childComponentDefinition);
         }

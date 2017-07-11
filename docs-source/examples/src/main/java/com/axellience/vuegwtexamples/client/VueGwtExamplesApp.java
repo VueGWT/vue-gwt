@@ -18,6 +18,8 @@ import com.axellience.vuegwtexamples.client.examples.parent.ParentComponent;
 import com.axellience.vuegwtexamples.client.examples.recursive.RecursiveComponent;
 import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
 import com.axellience.vuegwtexamples.client.examples.shareddatamodel.SharedDataModelComponent;
+import com.axellience.vuegwtexamples.client.examples.simpledirective.DirectiveExampleComponent;
+import com.axellience.vuegwtexamples.client.examples.simpledirective.SimpleDirective;
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
@@ -43,6 +45,7 @@ public class VueGwtExamplesApp implements EntryPoint
      */
     public void onModuleLoad()
     {
+        Vue.directive(SimpleDirective.class);
         Vue.component(RecursiveComponent.class);
 
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
@@ -75,6 +78,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("counterWithEventComponent", CounterWithEventComponent.class);
         this.addExample("treeComponent", TreeComponent.class);
         this.addExample("recursiveComponent", RecursiveComponent.class);
+        this.addExample("directiveExampleComponent", DirectiveExampleComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)

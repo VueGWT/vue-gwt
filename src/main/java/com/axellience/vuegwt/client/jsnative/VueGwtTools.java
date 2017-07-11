@@ -25,6 +25,9 @@ public class VueGwtTools
     public static native <T extends VueComponent> T createInstanceForVueClass(
         JsObject extendedVueClass);
 
+    @JsMethod(namespace = "vueGwt")
+    public static native String getFunctionBody(Object jsFunction);
+
     /**
      * Return the default name to register a component based on it's class name
      * The name of the tag is the name of the component converted to kebab-case
@@ -46,9 +49,9 @@ public class VueGwtTools
      * If the component class ends with "Directive", this part is ignored
      * @param vueDirective
      */
-    public static String directiveToTagName(VueDirective vueDirective)
+    public static String directiveToTagName(Class<? extends VueDirective> vueDirective)
     {
-        String name = vueDirective.getClass().getSimpleName();
+        String name = vueDirective.getSimpleName();
         // Drop "Component" at the end of the class name
         name = directiveEnd.replace(name, "");
         // Convert from CamelCase to kebab-case

@@ -11,6 +11,9 @@ public class JsTools
     @JsMethod(namespace = "console")
     public static native void log(String message);
 
+    @JsMethod(namespace = "console")
+    public static native void log(Object object);
+
     @JsMethod(namespace = "axellience")
     public static native JsObject getWindow();
 
