@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Integration with GWT · GitBook</title>
+        <title>Custom Directives · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -59,10 +59,8 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="styles.html" />
+    <link rel="next" href="../gwt-integration/" />
     
-    
-    <link rel="prev" href="../advanced/custom-directives.html" />
     
 
     </head>
@@ -338,9 +336,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.5.1" data-path="../advanced/custom-directives.html">
+        <li class="chapter active" data-level="1.5.1" data-path="custom-directives.html">
             
-                <a href="../advanced/custom-directives.html">
+                <a href="custom-directives.html">
             
                     
                     Custom Directives
@@ -356,9 +354,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.6" data-path="./">
+        <li class="chapter " data-level="1.6" data-path="../gwt-integration/">
             
-                <a href="./">
+                <a href="../gwt-integration/">
             
                     
                     Integration with GWT
@@ -370,9 +368,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.6.1" data-path="styles.html">
+        <li class="chapter " data-level="1.6.1" data-path="../gwt-integration/styles.html">
             
-                <a href="styles.html">
+                <a href="../gwt-integration/styles.html">
             
                     
                     Styles
@@ -383,9 +381,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.6.2" data-path="client-bundles.html">
+        <li class="chapter " data-level="1.6.2" data-path="../gwt-integration/client-bundles.html">
             
-                <a href="client-bundles.html">
+                <a href="../gwt-integration/client-bundles.html">
             
                     
                     Client Bundles (Images)
@@ -396,9 +394,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.6.3" data-path="user-panels.html">
+        <li class="chapter " data-level="1.6.3" data-path="../gwt-integration/user-panels.html">
             
-                <a href="user-panels.html">
+                <a href="../gwt-integration/user-panels.html">
             
                     
                     User Panels
@@ -502,7 +500,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Integration with GWT</a>
+        <a href=".." >Custom Directives</a>
     </h1>
 </div>
 
@@ -517,14 +515,112 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="gwt-integration">GWT Integration</h1>
-<p>GWT provides several technologies.
-Vue GWT integrates with them.</p>
+                                <h1 id="custom-directives">Custom Directives</h1>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+    var basePath = "/";
+    if (window.location.hostname === "axellience.github.io")
+        basePath = "/vue-gwt/";
+
+    var script = document.createElement("script");
+    script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
+    document.head.appendChild(script);
+</script>
+
+<p><em>This page comes from the <a href="https://vuejs.org/v2/guide/custom-directive.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
+<h2 id="intro">Intro</h2>
+<p>In addition to the default set of directives shipped in core (<code>v-model</code> and <code>v-show</code>), Vue also allows you to register your own custom directives.
+Note that in Vue 2.0, the primary form of code reuse and abstraction is components - however there may be cases where you just need some low-level DOM access on plain elements, and this is where custom directives would still be useful.
+An example would be focusing on an input element, like this one:</p>
+<div class="example-container" data-name="focusDirectiveComponent">
+    <span id="focusDirectiveComponent"></span>
+</div>
+
+
+<p>When the page loads, that element gains focus (note: autofocus doesn&apos;t work on mobile Safari).
+In fact, if you haven&apos;t clicked on anything else since visiting this page, the input above should be focused now.
+Now let&apos;s build the directive that accomplishes this.</p>
+<p>Fist we declare a Java class, like for our Components.
+Except that we extend <code>VueDirective</code> and add the <code>@Directive</code> annotation.</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Directive</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FocusDirective</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueDirective</span>
+</span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">inserted</span><span class="hljs-params">(Element el, VueDirectiveBinding binding)</span>
+    </span>{
+        <span class="hljs-keyword">if</span> (el <span class="hljs-keyword">instanceof</span> InputElement)
+            el.focus();
+    }
+}
+</code></pre>
+<p>We can then register our Directive globally:</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VueGwtExamplesApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
+        Vue.directive(FocusDirective.class);
+    }
+}
+</code></pre>
+<p>The name of our directive is determined by the Class name (same as Component).
+So in this case the directive will be named <code>v-focus</code>.
+For <code>FocusAndHighlightDirective</code> the name would have been <code>v-focus-and-highlight</code>.</p>
+<p>If you want to register a directive locally instead, the <code>@Component</code> also accept a <code>directives</code> option:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(directives = FocusDirective.class)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FocusDirectiveComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span></code></pre>
+<p>Then in a template, you can use the new <code>v-focus</code> attribute on any element, like this:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">v-focus</span>&gt;</span>
+</code></pre>
+<h2 id="hook-functions">Hook Functions</h2>
+<p>A directive definition object can override several hook functions (all optional):</p>
 <ul>
-<li><a href="styles.html">Styles</a></li>
-<li><a href="client-bundles.html">Client Bundles (Images)</a></li>
-<li><a href="user-panels.html">User Panels</a></li>
+<li><p><code>bind</code>: called only once, when the directive is first bound to the element.
+This is where you can do one-time setup work.</p>
+</li>
+<li><p><code>inserted</code>: called when the bound element has been inserted into its parent node (this only guarantees parent node presence, not necessarily in-document).</p>
+</li>
+<li><p><code>update</code>: called after the containing component has updated, <strong>but possibly before its children have updated</strong>.
+The directive&apos;s value may or may not have changed, but you can skip unnecessary updates by comparing the binding&apos;s current and old values (see below on hook arguments).</p>
+</li>
+<li><p><code>componentUpdated</code>: called after the containing component <strong>and its children</strong> have updated.</p>
+</li>
+<li><p><code>unbind</code>: called only once, when the directive is unbound from the element.</p>
+</li>
 </ul>
+<p>We&apos;ll explore the arguments passed into these hooks (i.e. <code>el</code> and <code>binding</code>) in the next section.</p>
+<h2 id="directive-hook-arguments">Directive Hook Arguments</h2>
+<p>Directive hooks are passed these arguments:</p>
+<ul>
+<li><strong>el</strong>: The element the directive is bound to. This can be used to directly manipulate the DOM.</li>
+<li><strong>binding</strong>: An object containing the following properties.<ul>
+<li><strong>name</strong>: The name of the directive, without the <code>v-</code> prefix.</li>
+<li><strong>value</strong>: The value passed to the directive. For example in <code>v-my-directive=&quot;1 + 1&quot;</code>, the value would be <code>2</code>.</li>
+<li><strong>oldValue</strong>: The previous value, only available in <code>update</code> and <code>componentUpdated</code>. It is available whether or not the value has changed.</li>
+<li><strong>expression</strong>: The expression of the binding as a string. For example in <code>v-my-directive=&quot;1 + 1&quot;</code>, the expression would be <code>&quot;1 + 1&quot;</code>.</li>
+<li><strong>arg</strong>: The argument passed to the directive, if any. For example in <code>v-my-directive:foo</code>, the arg would be <code>&quot;foo&quot;</code>.</li>
+<li><strong>modifiers</strong>: An object containing modifiers, if any. For example in <code>v-my-directive.foo.bar</code>, the modifiers object would be <code>{ foo: true, bar: true }</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Vue.js also <a href="https://vuejs.org/v2/guide/custom-directive.html#Directive-Hook-Arguments" target="_blank">provide v-nodes</a>.
+This is not yet supported by Vue GWT.</p>
+<p class="info-panel">
+Apart from <code>el</code>, you should treat these arguments as read-only and never modify them.
+If you need to share information across hooks, it is recommended to do so through element&apos;s <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset" target="_blank">dataset</a>.
+</p>
+
+<p>You can see an <a href="https://vuejs.org/v2/guide/custom-directive.html#Directive-Hook-Arguments" target="_blank">example of these arguments values</a> in the official Vue.js doc.</p>
+<h2 id="object-literals">Object Literals</h2>
+<p>If your directive needs multiple values, you can also pass in a JSON object literal.</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-demo</span>=<span class="hljs-string">&apos;{ color: &quot;\&quot;white\&quot;&quot;, text: &quot;\&quot;hello!\&quot;&quot; }&gt;&lt;/div&gt;
+</span></span></code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">inserted</span><span class="hljs-params">(Element el, VueDirectiveBinding binding)</span>
+</span>{
+    JsObject value = (JsObject) binding.value;
+    value.get(<span class="hljs-string">&quot;color&quot;</span>) <span class="hljs-comment">// white</span>
+    value.get(<span class="hljs-string">&quot;text&quot;</span>) <span class="hljs-comment">// hello!</span>
+}
+</code></pre>
 
                                 
                                 </section>
@@ -552,12 +648,8 @@ Vue GWT integrates with them.</p>
 
             
                 
-                <a href="../advanced/custom-directives.html" class="navigation navigation-prev " aria-label="Previous page: Custom Directives">
-                    <i class="fa fa-angle-left"></i>
-                </a>
                 
-                
-                <a href="styles.html" class="navigation navigation-next " aria-label="Next page: Styles">
+                <a href="../gwt-integration/" class="navigation navigation-next navigation-unique" aria-label="Next page: Integration with GWT">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -568,7 +660,7 @@ Vue GWT integrates with them.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Integration with GWT","level":"1.6","depth":1,"next":{"title":"Styles","level":"1.6.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},"previous":{"title":"Custom Directives","level":"1.5.1","depth":2,"path":"advanced/custom-directives.md","ref":"advanced/custom-directives.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/index.md","mtime":"2017-07-05T08:11:34.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-11T14:32:41.261Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Custom Directives","level":"1.5.1","depth":2,"next":{"title":"Integration with GWT","level":"1.6","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.6.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.6.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.6.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Advanced Topics","level":"1.5","depth":1,"ref":"","articles":[{"title":"Custom Directives","level":"1.5.1","depth":2,"path":"advanced/custom-directives.md","ref":"advanced/custom-directives.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/custom-directives.md","mtime":"2017-07-11T14:31:28.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-11T14:32:41.261Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
