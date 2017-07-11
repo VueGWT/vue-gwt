@@ -9,6 +9,7 @@ import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
 import com.axellience.vuegwtexamples.client.examples.counterwithevent.CounterWithEventComponent;
 import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
+import com.axellience.vuegwtexamples.client.examples.focus.FocusDirectiveComponent;
 import com.axellience.vuegwtexamples.client.examples.greet.GreetComponent;
 import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
 import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
@@ -18,7 +19,6 @@ import com.axellience.vuegwtexamples.client.examples.parent.ParentComponent;
 import com.axellience.vuegwtexamples.client.examples.recursive.RecursiveComponent;
 import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
 import com.axellience.vuegwtexamples.client.examples.shareddatamodel.SharedDataModelComponent;
-import com.axellience.vuegwtexamples.client.examples.simpledirective.DirectiveExampleComponent;
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
@@ -76,7 +76,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("counterWithEventComponent", CounterWithEventComponent.class);
         this.addExample("treeComponent", TreeComponent.class);
         this.addExample("recursiveComponent", RecursiveComponent.class);
-        this.addExample("directiveExampleComponent", DirectiveExampleComponent.class);
+        this.addExample("focusDirectiveComponent", FocusDirectiveComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)
