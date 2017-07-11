@@ -1,6 +1,6 @@
 # Custom Directives
 
-!INCLUDE "dependencies.md"
+!INCLUDE "../dependencies.md"
 
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/custom-directive.html) and has been adapted for Vue GWT.*
 
@@ -79,7 +79,7 @@ The directive's value may or may not have changed, but you can skip unnecessary 
 
 - `unbind`: called only once, when the directive is unbound from the element.
 
-We'll explore the arguments passed into these hooks (i.e. `el`, `binding`, `vnode`, and `oldVnode`) in the next section.
+We'll explore the arguments passed into these hooks (i.e. `el` and `binding`) in the next section.
 
 ## Directive Hook Arguments
 

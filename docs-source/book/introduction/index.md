@@ -1,6 +1,8 @@
 # Introduction to Vue GWT
 
-**Disclaimer:** *This documentation comes from the [Vue.js introduction guide](https://vuejs.org/v2/guide/) and has been adapted to Vue GWT.*
+<p class="info-panel">
+    This documentation comes from <a href="https://vuejs.org/v2/guide/">the official Vue.js guide</a> and has been adapted for Vue GWT.
+</p>
 
 If you already know GWT then you should be familiar with the concept of Widgets.
 In Vue.js the equivalent of Widgets are Components.

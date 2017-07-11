@@ -73,7 +73,7 @@ this.classObject.set("text-danger", true);
 A `JsObject` is a special Java class that will be represented as a native JS Object in the browser.
 You can see it as a Map (key/values).
 
-This will render the same result. We can also bind to a [computed property](./computed-and-watchers.md) that returns a JsObject.
+This will render the same result. We can also bind to a [computed property](computed-and-watchers.md) that returns a JsObject.
 This is a common and powerful pattern:
 
 ```html
@@ -142,7 +142,7 @@ That's why it's also possible to use the object syntax inside array syntax:
 
 ### GWT Styles
 
-You should also check how to use [GWT GSS Styles](./gwt-integration/styles.md) in your app.
+You should also check how to use [GWT GSS Styles](../gwt-integration/styles.md) in your app.
 
 ### With Components
 

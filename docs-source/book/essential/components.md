@@ -1,6 +1,6 @@
 # Components
 
-!INCLUDE "dependencies.md"
+!INCLUDE "../dependencies.md"
 
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/components.html) and has been adapted for Vue GWT.*
 

@@ -1,6 +1,6 @@
 # Form Input Bindings
 
-!INCLUDE "dependencies.md"
+!INCLUDE "../dependencies.md"
 
 ## The `v-model` Directive
 
