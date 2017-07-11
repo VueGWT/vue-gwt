@@ -25,11 +25,9 @@ Except that we extend `VueDirective` and add the `@Directive` annotation.
 
 ```java
 @Directive
-public class FocusDirective extends VueDirective
-{
+public class FocusDirective extends VueDirective {
     @Override
-    public void inserted(Element el, VueDirectiveBinding binding)
-    {
+    public void inserted(Element el, VueDirectiveBinding binding) {
         el.focus();
     }
 }
