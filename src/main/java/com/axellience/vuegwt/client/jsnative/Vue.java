@@ -72,6 +72,18 @@ public class Vue
     /**
      * Register a component globally
      * It will be usable in any component of your app.
+     * The name will be automatically computed based on the component class name
+     * @param vueComponentClass The class of the Component to register
+     */
+    @JsOverlay
+    public static void component(Class<? extends VueComponent> vueComponentClass)
+    {
+        Vue.component(VueGwtTools.componentToTagName(vueComponentClass), vueComponentClass);
+    }
+
+    /**
+     * Register a component globally
+     * It will be usable in any component of your app.
      * @param id Register under the given id
      * @param vueComponentClass The class of the Component to
      */
@@ -82,28 +94,13 @@ public class Vue
     }
 
     /**
-     * Register a component globally
-     * It will be usable in any component of your app.
-     * The name will be automatically computed based on the component class name
+     * Return the factory for a given registered component ID
      */
     @JsOverlay
     public static VueComponentFactory component(String id)
     {
         JsObject extendedVueClass = getRegisteredComponent(id);
         return new VueComponentFactory(extendedVueClass);
-    }
-
-    /**
-     * Register a component globally
-     * It will be usable in any component of your app.
-     * The name will be automatically computed based on the component class name
-     * @param vueComponentClass The class of the Component to register
-     */
-    @JsOverlay
-    public static void component(Class<? extends VueComponent> vueComponentClass)
-    {
-        Vue.component(VueGwtTools.componentToTagName(vueComponentClass),
-            getComponentDefinitionForClass(vueComponentClass));
     }
 
     /**
@@ -115,13 +112,24 @@ public class Vue
     @JsOverlay
     public static void directive(Class<? extends VueDirective> vueDirectiveClass)
     {
-        Vue.directive(VueGwtTools.directiveToTagName(vueDirectiveClass),
-            getDirectiveDefinitionForClass(vueDirectiveClass));
+        Vue.directive(VueGwtTools.directiveToTagName(vueDirectiveClass), vueDirectiveClass);
     }
 
-    public static native void component(String id, VueComponentDefinition componentDefinition);
+    /**
+     * Register a directive globally
+     * It will be usable in any component of your app.
+     * @param name Register under the given name
+     * @param vueDirectiveClass The class of the Directive to register
+     */
+    @JsOverlay
+    public static void directive(String name, Class<? extends VueDirective> vueDirectiveClass)
+    {
+        Vue.directive(name, getDirectiveDefinitionForClass(vueDirectiveClass));
+    }
 
-    public static native void directive(String name, VueDirectiveDefinition directiveDefinition);
+    private static native void component(String id, VueComponentDefinition componentDefinition);
+
+    private static native void directive(String name, VueDirectiveDefinition directiveDefinition);
 
     private static native JsObject extend(VueComponentDefinition componentDefinition);
 
