@@ -186,25 +186,9 @@ public class VueComponentDefinitionGenerator
                 }
             });
 
-        // Components
-        try
-        {
-            Class<?>[] componentsClass = annotation.components();
-            Stream
-                .of(componentsClass)
-                .forEach(clazz -> constructorBuilder.addStatement("this.addChildComponent($L.class)",
-                    clazz.getCanonicalName()));
-        }
-        catch (MirroredTypesException mte)
-        {
-            List<DeclaredType> classTypeMirrors = (List<DeclaredType>) mte.getTypeMirrors();
-            classTypeMirrors.forEach(classTypeMirror ->
-            {
-                TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
-                constructorBuilder.addStatement("this.addChildComponent($L.class)",
-                    classTypeElement.getQualifiedName().toString());
-            });
-        }
+        registerLocalComponents(annotation, constructorBuilder);
+
+        registerLocalDirectives(annotation, constructorBuilder);
 
         // Finish building the constructor and add to the component definition
         componentClassBuilder.addMethod(constructorBuilder.build());
@@ -215,6 +199,62 @@ public class VueComponentDefinitionGenerator
             packageName,
             generatedTypeName,
             componentTypeElement);
+    }
+
+    /**
+     * Register components passed to the annotation
+     * @param annotation
+     * @param constructorBuilder
+     */
+    private void registerLocalComponents(Component annotation, MethodSpec.Builder constructorBuilder)
+    {
+        // Components
+        try
+        {
+            Class<?>[] componentsClass = annotation.components();
+            Stream
+                .of(componentsClass)
+                .forEach(clazz -> constructorBuilder.addStatement("this.addLocalComponent($L.class)",
+                    clazz.getCanonicalName()));
+        }
+        catch (MirroredTypesException mte)
+        {
+            List<DeclaredType> classTypeMirrors = (List<DeclaredType>) mte.getTypeMirrors();
+            classTypeMirrors.forEach(classTypeMirror ->
+            {
+                TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
+                constructorBuilder.addStatement("this.addLocalComponent($L.class)",
+                    classTypeElement.getQualifiedName().toString());
+            });
+        }
+    }
+
+    /**
+     * Register directives passed to the annotation
+     * @param annotation
+     * @param constructorBuilder
+     */
+    private void registerLocalDirectives(Component annotation, MethodSpec.Builder constructorBuilder)
+    {
+        // Directives
+        try
+        {
+            Class<?>[] directivesClass = annotation.directives();
+            Stream
+                .of(directivesClass)
+                .forEach(clazz -> constructorBuilder.addStatement("this.addLocalDirective($L.class)",
+                    clazz.getCanonicalName()));
+        }
+        catch (MirroredTypesException mte)
+        {
+            List<DeclaredType> classTypeMirrors = (List<DeclaredType>) mte.getTypeMirrors();
+            classTypeMirrors.forEach(classTypeMirror ->
+            {
+                TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
+                constructorBuilder.addStatement("this.addLocalDirective($L.class)",
+                    classTypeElement.getQualifiedName().toString());
+            });
+        }
     }
 
     private void addComputed(String javaName, Computed computed, ExecutableElement method,

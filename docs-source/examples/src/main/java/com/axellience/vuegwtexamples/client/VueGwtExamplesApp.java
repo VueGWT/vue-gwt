@@ -19,7 +19,6 @@ import com.axellience.vuegwtexamples.client.examples.recursive.RecursiveComponen
 import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
 import com.axellience.vuegwtexamples.client.examples.shareddatamodel.SharedDataModelComponent;
 import com.axellience.vuegwtexamples.client.examples.simpledirective.DirectiveExampleComponent;
-import com.axellience.vuegwtexamples.client.examples.simpledirective.SimpleDirective;
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
@@ -45,7 +44,6 @@ public class VueGwtExamplesApp implements EntryPoint
      */
     public void onModuleLoad()
     {
-        Vue.directive(SimpleDirective.class);
         Vue.component(RecursiveComponent.class);
 
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);

@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.client.definitions;
 
 import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.VueDirective;
 import com.axellience.vuegwt.client.definitions.component.ComputedDefinition;
 import com.axellience.vuegwt.client.definitions.component.ComputedKind;
 import com.axellience.vuegwt.client.definitions.component.DataDefinition;
@@ -62,8 +63,9 @@ public abstract class VueComponentDefinition extends JsObject
 
     private final Map<String, CssResource> componentStyles = new HashMap<>();
 
-    private final Set<Class<? extends VueComponent>> childComponents = new HashSet<>();
-    private boolean areChildComponentsInjected = false;
+    private final Set<Class<? extends VueComponent>> localComponents = new HashSet<>();
+    private final Set<Class<? extends VueDirective>> localDirectives = new HashSet<>();
+    private boolean areDependenciesInjected = false;
 
     /**
      * Set the template resource for the component
@@ -237,24 +239,40 @@ public abstract class VueComponentDefinition extends JsObject
             JsTools.getObjectProperty(vuegwt$javaComponentInstance, methodName);
     }
 
-    protected void addChildComponent(Class<? extends VueComponent> componentClass)
+    protected void addLocalComponent(Class<? extends VueComponent> componentClass)
     {
-        this.childComponents.add(componentClass);
+        this.localComponents.add(componentClass);
     }
 
-    protected void ensureChildComponentsInjected()
+    protected void addLocalDirective(Class<? extends VueDirective> directiveClass)
     {
-        if (areChildComponentsInjected)
+        this.localDirectives.add(directiveClass);
+    }
+
+    /**
+     * Get the definitions of local components and directives
+     * This will be called each time a Component definition is retrieved
+     */
+    protected void ensureDependenciesInjected()
+    {
+        if (areDependenciesInjected)
             return;
+        this.areDependenciesInjected = true;
 
-        this.areChildComponentsInjected = true;
-
-        for (Class<? extends VueComponent> childComponentClass : childComponents)
+        for (Class<? extends VueComponent> childComponentClass : localComponents)
         {
             VueComponentDefinition childComponentDefinition =
                 VueDefinitionCache.getComponentDefinitionForClass(childComponentClass);
             this.components.set(VueGwtTools.componentToTagName(childComponentClass),
                 childComponentDefinition);
+        }
+
+        for (Class<? extends VueDirective> childDirectiveClass : localDirectives)
+        {
+            VueDirectiveDefinition childDirectiveDefinition =
+                VueDefinitionCache.getDirectiveDefinitionForClass(childDirectiveClass);
+            this.directives.set(VueGwtTools.directiveToTagName(childDirectiveClass),
+                childDirectiveDefinition);
         }
     }
 

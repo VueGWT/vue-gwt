@@ -8,7 +8,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType
-@Component
+@Component(directives = SimpleDirective.class)
 public class DirectiveExampleComponent extends VueComponent
 {
     @Override

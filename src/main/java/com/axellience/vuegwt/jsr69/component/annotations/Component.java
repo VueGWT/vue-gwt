@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.jsr69.component.annotations;
 
 import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.VueDirective;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -28,4 +29,9 @@ public @interface Component
      * Components to register on this component instance
      */
     Class<? extends VueComponent>[] components() default {};
+
+    /**
+     * Directives to register on this component instance
+     */
+    Class<? extends VueDirective>[] directives() default {};
 }

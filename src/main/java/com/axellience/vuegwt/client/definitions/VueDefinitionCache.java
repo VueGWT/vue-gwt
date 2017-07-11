@@ -43,7 +43,7 @@ public class VueDefinitionCache
             componentDefinitionsCache.get(vueComponentClass);
 
         if (componentDefinition != null) {
-            componentDefinition.ensureChildComponentsInjected();
+            componentDefinition.ensureDependenciesInjected();
             return componentDefinition;
         }
 
