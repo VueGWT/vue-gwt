@@ -3,8 +3,8 @@ package com.axellience.vuegwt.client.jsnative;
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.VueComponentFactory;
 import com.axellience.vuegwt.client.VueDirective;
-import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
-import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
+import com.axellience.vuegwt.client.options.VueComponentOptions;
+import com.axellience.vuegwt.client.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.axellience.vuegwt.client.jsnative.vue.VueConfig;
 import com.google.gwt.dom.client.Element;
@@ -13,8 +13,8 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-import static com.axellience.vuegwt.client.definitions.VueDefinitionCache.getComponentDefinitionForClass;
-import static com.axellience.vuegwt.client.definitions.VueDefinitionCache.getDirectiveDefinitionForClass;
+import static com.axellience.vuegwt.client.options.VueOptionsCache.getComponentOptions;
+import static com.axellience.vuegwt.client.options.VueOptionsCache.getDirectiveOptions;
 
 /**
  * JsInterop representation of the main Vue instance
@@ -34,8 +34,8 @@ public class Vue
     @JsOverlay
     public static <T extends VueComponent> T attach(String element, Class<T> vueComponentClass)
     {
-        VueComponentDefinition componentDefinition =
-            getComponentDefinitionForClass(vueComponentClass);
+        VueComponentOptions<T> componentDefinition =
+            getComponentOptions(vueComponentClass);
         componentDefinition.setEl(element);
 
         return VueGwtTools.createVueInstance(componentDefinition);
@@ -49,15 +49,15 @@ public class Vue
     @JsOverlay
     public static <T extends VueComponent> T attach(Element element, Class<T> vueComponentClass)
     {
-        VueComponentDefinition componentDefinition =
-            getComponentDefinitionForClass(vueComponentClass);
+        VueComponentOptions<T> componentDefinition =
+            getComponentOptions(vueComponentClass);
         componentDefinition.setEl(element);
 
         return VueGwtTools.createVueInstance(componentDefinition);
     }
 
     /**
-     * Extend the base Vue Class with your VueComponent definition
+     * Extend the base Vue Class with your VueComponentOptions
      * Equivalent to Vue.extend({}) in Vue.js
      * @param vueComponentClass The class of the Component to use
      * @return A factory that can be used to create instance of your VueComponent
@@ -65,7 +65,7 @@ public class Vue
     @JsOverlay
     public static <T extends VueComponent> VueComponentFactory<T> extend(Class<T> vueComponentClass)
     {
-        JsObject extendedVueClass = extend(getComponentDefinitionForClass(vueComponentClass));
+        JsObject extendedVueClass = extend(getComponentOptions(vueComponentClass));
         return new VueComponentFactory<>(extendedVueClass);
     }
 
@@ -88,9 +88,9 @@ public class Vue
      * @param vueComponentClass The class of the Component to
      */
     @JsOverlay
-    public static void component(String id, Class<? extends VueComponent> vueComponentClass)
+    public static <T extends VueComponent> void component(String id, Class<T> vueComponentClass)
     {
-        Vue.component(id, getComponentDefinitionForClass(vueComponentClass));
+        Vue.component(id, getComponentOptions(vueComponentClass));
     }
 
     /**
@@ -124,14 +124,14 @@ public class Vue
     @JsOverlay
     public static void directive(String name, Class<? extends VueDirective> vueDirectiveClass)
     {
-        Vue.directive(name, getDirectiveDefinitionForClass(vueDirectiveClass));
+        Vue.directive(name, getDirectiveOptions(vueDirectiveClass));
     }
 
-    private static native void component(String id, VueComponentDefinition componentDefinition);
+    private static native void component(String id, VueComponentOptions componentOptions);
 
-    private static native void directive(String name, VueDirectiveDefinition directiveDefinition);
+    private static native void directive(String name, VueDirectiveOptions directiveOptions);
 
-    private static native JsObject extend(VueComponentDefinition componentDefinition);
+    private static native JsObject extend(VueComponentOptions componentOptions);
 
     @JsMethod(name = "component")
     private static native JsObject getRegisteredComponent(String id);

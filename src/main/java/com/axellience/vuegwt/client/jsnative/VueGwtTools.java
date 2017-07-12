@@ -2,7 +2,7 @@ package com.axellience.vuegwt.client.jsnative;
 
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.VueDirective;
-import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
+import com.axellience.vuegwt.client.options.VueComponentOptions;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.google.gwt.regexp.shared.RegExp;
 import jsinterop.annotations.JsMethod;
@@ -19,7 +19,7 @@ public class VueGwtTools
 
     @JsMethod(namespace = "vueGwt")
     public static native <T extends VueComponent> T createVueInstance(
-        VueComponentDefinition vueComponentDefinition);
+        VueComponentOptions vueComponentOptions);
 
     @JsMethod(namespace = "vueGwt")
     public static native <T extends VueComponent> T createInstanceForVueClass(

@@ -1,10 +1,10 @@
 package com.axellience.vuegwt.jsr69.component;
 
-import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
-import com.axellience.vuegwt.client.definitions.VueDefinitionCache;
-import com.axellience.vuegwt.client.definitions.component.ComputedKind;
-import com.axellience.vuegwt.client.definitions.component.DataDefinition;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
+import com.axellience.vuegwt.client.options.VueComponentOptions;
+import com.axellience.vuegwt.client.options.VueOptionsCache;
+import com.axellience.vuegwt.client.options.component.ComputedKind;
+import com.axellience.vuegwt.client.options.component.DataDefinition;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -14,6 +14,7 @@ import com.axellience.vuegwt.jsr69.component.annotations.Watch;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -36,13 +37,12 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /**
- * Generate VueComponentDefinitions from the user VueComponent classes
+ * Generate VueComponentOptions from the user VueComponent classes
  * @author Adrien Baron
  */
-public class VueComponentDefinitionGenerator
+public class VueComponentOptionsGenerator
 {
-    private static String COMPONENT_DEFINITION_SUFFIX = "_ComponentDefinition";
-    private static String JCI = "vuegwt$javaComponentInstance";
+    private static String COMPONENT_OPTIONS_SUFFIX = "_Options";
 
     private static Map<String, Boolean> LIFECYCLE_HOOKS_MAP = new HashMap<>();
 
@@ -64,7 +64,7 @@ public class VueComponentDefinitionGenerator
     private final Elements elementsUtils;
     private final Filer filer;
 
-    public VueComponentDefinitionGenerator(ProcessingEnvironment processingEnv)
+    public VueComponentOptionsGenerator(ProcessingEnvironment processingEnv)
     {
         elementsUtils = processingEnv.getElementUtils();
         filer = processingEnv.getFiler();
@@ -78,22 +78,23 @@ public class VueComponentDefinitionGenerator
         String packageName =
             elementsUtils.getPackageOf(componentTypeElement).getQualifiedName().toString();
         String typeName = componentTypeElement.getSimpleName().toString();
-        String generatedTypeName = typeName + COMPONENT_DEFINITION_SUFFIX;
+        String generatedTypeName = typeName + COMPONENT_OPTIONS_SUFFIX;
 
         Component annotation = componentTypeElement.getAnnotation(Component.class);
 
         Builder componentClassBuilder = TypeSpec
             .classBuilder(generatedTypeName)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-            .superclass(VueComponentDefinition.class)
+            .superclass(ParameterizedTypeName.get(ClassName.get(VueComponentOptions.class),
+                ClassName.get(componentTypeElement)))
             .addAnnotation(JsType.class)
-            .addJavadoc("Vue Component Definition for component {@link $S}",
+            .addJavadoc("Vue Component Options for Component {@link $S}",
                 componentTypeElement.getQualifiedName().toString());
 
         // Static init block
         componentClassBuilder.addStaticBlock(CodeBlock.of(
-            "$T.registerComponent($T.class, new $L());",
-            VueDefinitionCache.class,
+            "$T.registerComponentOptions($T.class, new $L());",
+            VueOptionsCache.class,
             TypeName.get(componentTypeElement.asType()),
             generatedTypeName));
 
@@ -102,8 +103,7 @@ public class VueComponentDefinitionGenerator
             MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
 
         // Add the Java Component Instance initialization
-        constructorBuilder.addStatement("this.$L = new $T()",
-            JCI,
+        constructorBuilder.addStatement("this.setJavaComponentInstance(new $T())",
             TypeName.get(componentTypeElement.asType()));
 
         // Set the name of the component
@@ -190,10 +190,10 @@ public class VueComponentDefinitionGenerator
 
         registerLocalDirectives(annotation, constructorBuilder);
 
-        // Finish building the constructor and add to the component definition
+        // Finish building the constructor
         componentClassBuilder.addMethod(constructorBuilder.build());
 
-        // Build the component definition class
+        // Build the ComponentOptions class
         GenerationUtil.toJavaFile(filer,
             componentClassBuilder,
             packageName,
@@ -206,7 +206,8 @@ public class VueComponentDefinitionGenerator
      * @param annotation
      * @param constructorBuilder
      */
-    private void registerLocalComponents(Component annotation, MethodSpec.Builder constructorBuilder)
+    private void registerLocalComponents(Component annotation,
+        MethodSpec.Builder constructorBuilder)
     {
         // Components
         try
@@ -234,7 +235,8 @@ public class VueComponentDefinitionGenerator
      * @param annotation
      * @param constructorBuilder
      */
-    private void registerLocalDirectives(Component annotation, MethodSpec.Builder constructorBuilder)
+    private void registerLocalDirectives(Component annotation,
+        MethodSpec.Builder constructorBuilder)
     {
         // Directives
         try

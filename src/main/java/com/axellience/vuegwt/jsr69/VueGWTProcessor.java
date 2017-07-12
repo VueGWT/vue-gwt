@@ -1,9 +1,9 @@
 package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
-import com.axellience.vuegwt.jsr69.component.VueComponentDefinitionGenerator;
+import com.axellience.vuegwt.jsr69.component.VueComponentOptionsGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import com.axellience.vuegwt.jsr69.directive.VueDirectiveDefinitionGenerator;
+import com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator;
 import com.axellience.vuegwt.jsr69.directive.annotations.Directive;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
 import com.axellience.vuegwt.jsr69.style.annotations.Style;
@@ -43,12 +43,12 @@ public class VueGWTProcessor extends AbstractProcessor
             roundEnv.getElementsAnnotatedWith(Component.class);
 
         TemplateProviderGenerator templateGenerator = new TemplateProviderGenerator(processingEnv);
-        VueComponentDefinitionGenerator vueComponentDefinitionGenerator =
-            new VueComponentDefinitionGenerator(processingEnv);
+        VueComponentOptionsGenerator vueComponentOptionsGenerator =
+            new VueComponentOptionsGenerator(processingEnv);
 
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
-            vueComponentDefinitionGenerator.generate(element);
+            vueComponentOptionsGenerator.generate(element);
             templateGenerator.generate(element);
         }
     }
@@ -58,11 +58,11 @@ public class VueGWTProcessor extends AbstractProcessor
         Set<? extends Element> annotatedElements =
             roundEnv.getElementsAnnotatedWith(Directive.class);
 
-        VueDirectiveDefinitionGenerator vueDirectiveDefinitionGenerator =
-            new VueDirectiveDefinitionGenerator(processingEnv);
+        VueDirectiveOptionsGenerator vueDirectiveOptionsGenerator =
+            new VueDirectiveOptionsGenerator(processingEnv);
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
-            vueDirectiveDefinitionGenerator.generate(element);
+            vueDirectiveOptionsGenerator.generate(element);
         }
     }
 

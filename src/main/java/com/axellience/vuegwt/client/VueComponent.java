@@ -1,13 +1,14 @@
 package com.axellience.vuegwt.client;
 
+import com.axellience.vuegwt.client.options.VueComponentOptions;
 import com.axellience.vuegwt.client.functions.ChangeTrigger;
 import com.axellience.vuegwt.client.functions.OnEvent;
 import com.axellience.vuegwt.client.functions.OnNextTick;
 import com.axellience.vuegwt.client.functions.OnValueChange;
 import com.axellience.vuegwt.client.functions.WatcherRegistration;
+import com.axellience.vuegwt.client.jsnative.VueGwtToolsInjector;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
-import com.axellience.vuegwt.client.jsnative.VueGwtToolsInjector;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsType;
 
@@ -25,17 +26,28 @@ public abstract class VueComponent
         VueGwtToolsInjector.inject();
     }
 
-    public JsObject              $data;
-    public Element               $el;
-    public JsObject              $options;
-    public VueComponent          $parent;
-    public VueComponent          $root;
+    public JsObject $data;
+    public Element $el;
+    public JsObject $options;
+    public VueComponent $parent;
+    public VueComponent $root;
     public JsArray<VueComponent> $children;
-    public JsObject              $slots;
-    public JsObject              $scopedSlots;
-    public JsObject              $refs;
-    public boolean               $isServer;
-    public String                _uid;
+    public JsObject $slots;
+    public JsObject $scopedSlots;
+    public JsObject $refs;
+    public boolean $isServer;
+    public String _uid;
+
+    /**
+     * Used to customize VueComponentOptions for this VueComponent
+     * This is called once when creating the VueComponentOptions of our Component
+     * This VueComponentOptions will be passed to Vue when registering your Component
+     * This can be used to set custom properties for plugins like Vue Router
+     */
+    public void customizeOptions(VueComponentOptions componentOptions)
+    {
+
+    }
 
     /**
      * Lifecycle hooks
