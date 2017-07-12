@@ -19,6 +19,8 @@
     * [Components](essential/components.md)
 * Advanced Topics
     * [Custom Directives](advanced/custom-directives.md)
+    * [Plugins](advanced/plugins.md)
+    * [Routing](advanced/routing.md)
 * [Integration with GWT](gwt-integration/index.md)
     * [Styles](gwt-integration/styles.md)
     * [Client Bundles (Images)](gwt-integration/client-bundles.md)
