@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.jsr69.directive;
 
-import com.axellience.vuegwt.client.definitions.VueDefinitionCache;
-import com.axellience.vuegwt.client.definitions.VueDirectiveDefinition;
+import com.axellience.vuegwt.client.options.VueDirectiveOptions;
+import com.axellience.vuegwt.client.options.VueOptionsCache;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -17,18 +17,18 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
 /**
- * Generate VueComponentDefinitions from the user VueComponent classes
+ * Generate VueDirectiveOptions from the user VueDirective classes
  * @author Adrien Baron
  */
-public class VueDirectiveDefinitionGenerator
+public class VueDirectiveOptionsGenerator
 {
-    private static String DIRECTIVE_DEFINITION_SUFFIX = "_DirectiveDefinition";
+    private static String DIRECTIVE_OPTIONS_SUFFIX = "_Options";
     private static String JDI = "vuegwt$javaDirectiveInstance";
 
     private final Elements elementsUtils;
     private final Filer filer;
 
-    public VueDirectiveDefinitionGenerator(ProcessingEnvironment processingEnv)
+    public VueDirectiveOptionsGenerator(ProcessingEnvironment processingEnv)
     {
         elementsUtils = processingEnv.getElementUtils();
         filer = processingEnv.getFiler();
@@ -42,20 +42,20 @@ public class VueDirectiveDefinitionGenerator
         String packageName =
             elementsUtils.getPackageOf(directiveTypeElement).getQualifiedName().toString();
         String typeName = directiveTypeElement.getSimpleName().toString();
-        String generatedTypeName = typeName + DIRECTIVE_DEFINITION_SUFFIX;
+        String generatedTypeName = typeName + DIRECTIVE_OPTIONS_SUFFIX;
 
         Builder componentClassBuilder = TypeSpec
             .classBuilder(generatedTypeName)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-            .superclass(VueDirectiveDefinition.class)
+            .superclass(VueDirectiveOptions.class)
             .addAnnotation(JsType.class)
-            .addJavadoc("Vue Directive Definition for directive {@link $S}",
+            .addJavadoc("Vue Directive Options for directive {@link $S}",
                 directiveTypeElement.getQualifiedName().toString());
 
         // Static init block
         componentClassBuilder.addStaticBlock(CodeBlock.of(
-            "$T.registerDirective($T.class, new $L());",
-            VueDefinitionCache.class,
+            "$T.registerDirectiveOptions($T.class, new $L());",
+            VueOptionsCache.class,
             TypeName.get(directiveTypeElement.asType()),
             generatedTypeName));
 
@@ -70,10 +70,10 @@ public class VueDirectiveDefinitionGenerator
         // Call the method to copy hooks functions
         constructorBuilder.addStatement("this.copyHooks()");
 
-        // Finish building the constructor and add to the component definition
+        // Finish building the constructor
         componentClassBuilder.addMethod(constructorBuilder.build());
 
-        // Build the component definition class
+        // Build the DirectiveOptions class
         GenerationUtil.toJavaFile(filer,
             componentClassBuilder,
             packageName,

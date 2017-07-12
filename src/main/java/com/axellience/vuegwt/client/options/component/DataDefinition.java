@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.client.definitions.component;
+package com.axellience.vuegwt.client.options.component;
 
 /**
  * Used to register the the data properties of the component based on the Java class attributes

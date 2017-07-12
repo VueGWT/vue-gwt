@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client;
 
-import com.axellience.vuegwt.client.definitions.VueComponentDefinition;
+import com.axellience.vuegwt.client.options.VueComponentOptions;
 import com.axellience.vuegwt.client.functions.ChangeTrigger;
 import com.axellience.vuegwt.client.functions.OnEvent;
 import com.axellience.vuegwt.client.functions.OnNextTick;
@@ -39,12 +39,12 @@ public abstract class VueComponent
     public String _uid;
 
     /**
-     * Used to customize the Definition of this Component
-     * This is called once when creating the Vue Component Definition of our Component
-     * This Vue Component Definition will be passed to Vue when creating instance of your Component
+     * Used to customize VueComponentOptions for this VueComponent
+     * This is called once when creating the VueComponentOptions of our Component
+     * This VueComponentOptions will be passed to Vue when registering your Component
      * This can be used to set custom properties for plugins like Vue Router
      */
-    public void customizeDefinition(VueComponentDefinition definition)
+    public void customizeOptions(VueComponentOptions componentOptions)
     {
 
     }

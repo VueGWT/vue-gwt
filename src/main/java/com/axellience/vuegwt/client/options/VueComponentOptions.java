@@ -1,12 +1,12 @@
-package com.axellience.vuegwt.client.definitions;
+package com.axellience.vuegwt.client.options;
 
 import com.axellience.vuegwt.client.VueComponent;
 import com.axellience.vuegwt.client.VueDirective;
-import com.axellience.vuegwt.client.definitions.component.ComputedDefinition;
-import com.axellience.vuegwt.client.definitions.component.ComputedKind;
-import com.axellience.vuegwt.client.definitions.component.DataDefinition;
-import com.axellience.vuegwt.client.definitions.component.DataFactory;
-import com.axellience.vuegwt.client.definitions.component.PropDefinition;
+import com.axellience.vuegwt.client.options.component.ComputedDefinition;
+import com.axellience.vuegwt.client.options.component.ComputedKind;
+import com.axellience.vuegwt.client.options.component.DataDefinition;
+import com.axellience.vuegwt.client.options.component.DataFactory;
+import com.axellience.vuegwt.client.options.component.PropDefinition;
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionBase;
 import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
 import com.axellience.vuegwt.client.gwtextension.TemplateResource;
@@ -28,17 +28,17 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Java representation of a Vue Component definition
+ * Java representation of VueComponentOptions
  * Class extending this one are generated using the Annotation processor for each VueComponent
  * <p>
  * An instance of this Class can be immediately passed to Vue.js instance where it's expecting a
- * component definition object.
+ * component options object.
  * <p>
  * This is an internal Class, it shouldn't be extended in applications that use VueGWT.
  * @author Adrien Baron
  */
 @JsType
-public abstract class VueComponentDefinition<T extends VueComponent> extends JsObject
+public abstract class VueComponentOptions<T extends VueComponent> extends JsObject
 {
     @JsProperty protected T vuegwt$javaComponentInstance;
 
@@ -69,19 +69,19 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     private boolean areDependenciesInjected = false;
 
     /**
-     * Set the Java Component Instance on this definition
-     * This instance will be used to retrieve the methods from our Definition
+     * Set the Java Component Instance on this Options
+     * This instance will be used to retrieve the methods from our Options
      * @param javaComponentInstance An instance of the VueComponent class for this Component
      */
     protected void setJavaComponentInstance(T javaComponentInstance)
     {
         this.vuegwt$javaComponentInstance = javaComponentInstance;
-        this.vuegwt$javaComponentInstance.customizeDefinition(this);
+        this.vuegwt$javaComponentInstance.customizeOptions(this);
     }
 
     /**
-     * Return the Java Component Instance for this definition
-     * This instance is used to retrieve the methods from our Definition
+     * Return the Java Component Instance for this Options
+     * This instance is used to retrieve the methods from our Options
      * @return An instance of the VueComponent class for this Component
      */
     @JsIgnore
@@ -92,7 +92,7 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
 
     /**
      * Set the template resource for the component
-     * Add all the expression from the template to this definition
+     * Add all the expression from the template to this Options
      * @param templateResource A generated TemplateResource
      */
     protected void setTemplateResource(TemplateResource templateResource)
@@ -117,7 +117,7 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     }
 
     /**
-     * Add template expressions to the ComponentDefinition
+     * Add template expressions to the ComponentOptions
      * @param templateResource A generated TemplateResource
      */
     private void initExpressions(TemplateResource templateResource)
@@ -188,8 +188,8 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     }
 
     /**
-     * Copy the Component styles from GWT to the data of the Component Definition
-     * @param data The data of the Component Definition
+     * Copy the Component styles from GWT to the data of the ComponentOptions
+     * @param data The data of the ComponentOptions
      */
     private void copyStyles(JsObject data)
     {
@@ -200,7 +200,7 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     }
 
     /**
-     * Add a method to this Component Definition
+     * Add a method to this ComponentOptions
      * @param javaName Name of the method in the Java Component
      */
     protected void addMethod(String javaName)
@@ -209,9 +209,9 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     }
 
     /**
-     * Add a method to this Component Definition
+     * Add a method to this ComponentOptions
      * @param javaName Name of the method in the Java Component
-     * @param jsName Name of the method in the Template and the Component Definition
+     * @param jsName Name of the method in the Template and the ComponentOptions
      */
     protected void addMethod(String javaName, String jsName)
     {
@@ -219,10 +219,10 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     }
 
     /**
-     * Add a computed property to this Component Definition
+     * Add a computed property to this ComponentOptions
      * If the computed has both a getter and a setter, this will be called twice, once for each.
      * @param javaName Name of the method in the Java Component
-     * @param jsName Name of the computed property in the Template and the Component Definition
+     * @param jsName Name of the computed property in the Template and the ComponentOptions
      * @param kind Kind of the computed method (getter or setter)
      */
     protected void addComputed(String javaName, String jsName, ComputedKind kind)
@@ -263,7 +263,7 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     }
 
     /**
-     * Add the given lifecycle hook to the Component Definition
+     * Add the given lifecycle hook to the ComponentOptions
      * @param hookName Name of the hook to add
      */
     protected void addLifecycleHook(String hookName)
@@ -272,10 +272,10 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     }
 
     /**
-     * Add a prop to our Component Definition
+     * Add a prop to our ComponentOptions
      * This will allow to receive data from the outside of our Component
      * @param javaName The name of the property in our Java Component
-     * @param jsName The name of the property in the Template and the Component Definition
+     * @param jsName The name of the property in the Template and the ComponentOptions
      * @param required Is the property required (mandatory)
      * @param typeJsName JS name of the type of this property, if not null we will ask Vue to type
      * check based on it
@@ -307,8 +307,8 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     }
 
     /**
-     * Register a local component in the components property of our Component Definition
-     * The registration will actually take place the first time our Component Definition is accessed
+     * Register a local component in the components property of our ComponentOptions
+     * The registration will actually take place the first time our ComponentOptions is accessed
      * @param componentClass
      */
     protected void addLocalComponent(Class<? extends VueComponent> componentClass)
@@ -317,8 +317,8 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
     }
 
     /**
-     * Register a local directive in the components property of our Component Definition
-     * The registration will actually take place the first time our Component Definition is accessed
+     * Register a local directive in the components property of our ComponentOptions
+     * The registration will actually take place the first time our ComponentOptions is accessed
      * @param directiveClass
      */
     protected void addLocalDirective(Class<? extends VueDirective> directiveClass)
@@ -338,16 +338,16 @@ public abstract class VueComponentDefinition<T extends VueComponent> extends JsO
 
         for (Class<? extends VueComponent> childComponentClass : localComponents)
         {
-            VueComponentDefinition childComponentDefinition =
-                VueDefinitionCache.getComponentDefinitionForClass(childComponentClass);
+            VueComponentOptions childComponentOptions =
+                VueOptionsCache.getComponentOptions(childComponentClass);
             this.components.set(VueGwtTools.componentToTagName(childComponentClass),
-                childComponentDefinition);
+                childComponentOptions);
         }
 
         for (Class<? extends VueDirective> childDirectiveClass : localDirectives)
         {
-            VueDirectiveDefinition childDirectiveDefinition =
-                VueDefinitionCache.getDirectiveDefinitionForClass(childDirectiveClass);
+            VueDirectiveOptions childDirectiveDefinition =
+                VueOptionsCache.getDirectiveOptions(childDirectiveClass);
             this.directives.set(VueGwtTools.directiveToTagName(childDirectiveClass),
                 childDirectiveDefinition);
         }

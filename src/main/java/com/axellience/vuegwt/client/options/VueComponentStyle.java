@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.client.definitions;
+package com.axellience.vuegwt.client.options;
 
 /**
  * Definition of a Style usable in Vue Components
