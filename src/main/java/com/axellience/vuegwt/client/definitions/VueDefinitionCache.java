@@ -23,26 +23,29 @@ public class VueDefinitionCache
 
     /**
      * Register a component in the cache, called by VueComponentDefinitions static block
-     * @param vueComponentClass The class of the VueComponent to store the VueComponentDefinition for
+     * @param vueComponentClass The class of the VueComponent to store the VueComponentDefinition
+     * for
      * @param componentDefinition The VueComponentDefinition instance
      */
-    public static void registerComponent(Class<? extends VueComponent> vueComponentClass,
-        VueComponentDefinition componentDefinition)
+    public static <T extends VueComponent> void registerComponent(Class<T> vueComponentClass,
+        VueComponentDefinition<T> componentDefinition)
     {
         componentDefinitionsCache.put(vueComponentClass, componentDefinition);
     }
 
     /**
      * Return the Definition for a given VueComponent
-     * @param vueComponentClass The class of the VueComponent we want the VueComponentDefinition from
+     * @param vueComponentClass The class of the VueComponent we want the VueComponentDefinition
+     * from
      */
-    public static VueComponentDefinition getComponentDefinitionForClass(
-        Class<? extends VueComponent> vueComponentClass)
+    public static <T extends VueComponent> VueComponentDefinition<T> getComponentDefinitionForClass(
+        Class<T> vueComponentClass)
     {
-        VueComponentDefinition componentDefinition =
+        VueComponentDefinition<T> componentDefinition =
             componentDefinitionsCache.get(vueComponentClass);
 
-        if (componentDefinition != null) {
+        if (componentDefinition != null)
+        {
             componentDefinition.ensureDependenciesInjected();
             return componentDefinition;
         }
@@ -54,7 +57,8 @@ public class VueDefinitionCache
 
     /**
      * Register a directive in the cache, called by VueDirectiveDefinitions static block
-     * @param vueDirectiveClass The class of the VueDirective to store the VueDirectiveDefinition for
+     * @param vueDirectiveClass The class of the VueDirective to store the VueDirectiveDefinition
+     * for
      * @param directiveDefinition The VueDirectiveDefinition instance
      */
     public static void registerDirective(Class<? extends VueDirective> vueDirectiveClass,
@@ -65,7 +69,8 @@ public class VueDefinitionCache
 
     /**
      * Return the Definition for a given VueComponent
-     * @param vueDirectiveClass The class of the VueComponent we want the VueComponentDefinition from
+     * @param vueDirectiveClass The class of the VueComponent we want the VueComponentDefinition
+     * from
      */
     public static VueDirectiveDefinition getDirectiveDefinitionForClass(
         Class<? extends VueDirective> vueDirectiveClass)
@@ -73,7 +78,8 @@ public class VueDefinitionCache
         VueDirectiveDefinition directiveDefinition =
             directiveDefinitionsCache.get(vueDirectiveClass);
 
-        if (directiveDefinition != null) {
+        if (directiveDefinition != null)
+        {
             return directiveDefinition;
         }
 

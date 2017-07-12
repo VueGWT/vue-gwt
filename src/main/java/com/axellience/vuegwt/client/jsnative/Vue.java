@@ -34,7 +34,7 @@ public class Vue
     @JsOverlay
     public static <T extends VueComponent> T attach(String element, Class<T> vueComponentClass)
     {
-        VueComponentDefinition componentDefinition =
+        VueComponentDefinition<T> componentDefinition =
             getComponentDefinitionForClass(vueComponentClass);
         componentDefinition.setEl(element);
 
@@ -49,7 +49,7 @@ public class Vue
     @JsOverlay
     public static <T extends VueComponent> T attach(Element element, Class<T> vueComponentClass)
     {
-        VueComponentDefinition componentDefinition =
+        VueComponentDefinition<T> componentDefinition =
             getComponentDefinitionForClass(vueComponentClass);
         componentDefinition.setEl(element);
 
@@ -88,7 +88,7 @@ public class Vue
      * @param vueComponentClass The class of the Component to
      */
     @JsOverlay
-    public static void component(String id, Class<? extends VueComponent> vueComponentClass)
+    public static <T extends VueComponent> void component(String id, Class<T> vueComponentClass)
     {
         Vue.component(id, getComponentDefinitionForClass(vueComponentClass));
     }

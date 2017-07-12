@@ -14,6 +14,7 @@ import com.axellience.vuegwt.jsr69.component.annotations.Watch;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -42,7 +43,6 @@ import java.util.stream.Stream;
 public class VueComponentDefinitionGenerator
 {
     private static String COMPONENT_DEFINITION_SUFFIX = "_ComponentDefinition";
-    private static String JCI = "vuegwt$javaComponentInstance";
 
     private static Map<String, Boolean> LIFECYCLE_HOOKS_MAP = new HashMap<>();
 
@@ -85,7 +85,8 @@ public class VueComponentDefinitionGenerator
         Builder componentClassBuilder = TypeSpec
             .classBuilder(generatedTypeName)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-            .superclass(VueComponentDefinition.class)
+            .superclass(ParameterizedTypeName.get(ClassName.get(VueComponentDefinition.class),
+                ClassName.get(componentTypeElement)))
             .addAnnotation(JsType.class)
             .addJavadoc("Vue Component Definition for component {@link $S}",
                 componentTypeElement.getQualifiedName().toString());
@@ -102,8 +103,7 @@ public class VueComponentDefinitionGenerator
             MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
 
         // Add the Java Component Instance initialization
-        constructorBuilder.addStatement("this.$L = new $T()",
-            JCI,
+        constructorBuilder.addStatement("this.setJavaComponentInstance(new $T())",
             TypeName.get(componentTypeElement.asType()));
 
         // Set the name of the component
@@ -206,7 +206,8 @@ public class VueComponentDefinitionGenerator
      * @param annotation
      * @param constructorBuilder
      */
-    private void registerLocalComponents(Component annotation, MethodSpec.Builder constructorBuilder)
+    private void registerLocalComponents(Component annotation,
+        MethodSpec.Builder constructorBuilder)
     {
         // Components
         try
@@ -234,7 +235,8 @@ public class VueComponentDefinitionGenerator
      * @param annotation
      * @param constructorBuilder
      */
-    private void registerLocalDirectives(Component annotation, MethodSpec.Builder constructorBuilder)
+    private void registerLocalDirectives(Component annotation,
+        MethodSpec.Builder constructorBuilder)
     {
         // Directives
         try
