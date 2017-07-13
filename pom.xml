@@ -8,12 +8,35 @@
     <groupId>com.axellience</groupId>
     <artifactId>vue-gwt</artifactId>
     <version>0.1-SNAPSHOT</version>
-
-    <name>Vue GWT</name>
-    <description>Let you use Vue.js in GWT application</description>
     <packaging>jar</packaging>
 
-    <properties>
+    <name>Vue GWT</name>
+    <description>Let you use Vue.js Components in GWT application and code Vue.js Components in Java</description>
+    <url>https://github.com/Axellience/vue-gwt</url>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Adrien Baron</name>
+			<email>adrien.baron@axellience.com</email>
+			<organization>Axellience</organization>
+			<organizationUrl>http://www.genmymodel.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/Axellience/vue-gwt.git</connection>
+		<developerConnection>scm:git:ssh://github.com:Axellience/vue-gwt.git</developerConnection>
+		<url>https://github.com/Axellience/vue-gwt/tree/master</url>
+	</scm>
+
+	<properties>
         <jsinterop.version>1.0.0</jsinterop.version>
         <gwt.version>2.8.0</gwt.version>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -81,6 +104,17 @@
 		</dependency>
     </dependencies>
 
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
     <build>
         <resources>
             <resource>
@@ -104,36 +138,6 @@
 					<!-- Disable annotation processing for ourselves.-->
 					<compilerArgument>-proc:none</compilerArgument>
 				</configuration>
-			</plugin>
-
-			<!-- Include Java source -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Include Java doc -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<!-- Maven test plugin -->
@@ -160,4 +164,73 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Include Java source -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.0.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Include Java doc -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.10.4</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Signing plugin -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>package</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Sonatype -->
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.7</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
