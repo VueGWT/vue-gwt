@@ -123,4 +123,22 @@ public class VueOptionsCache
             + vueDirectiveClassCanonicalName
             + ". Make sure your annotations are being processed, and that you added the -generateJsInteropExports flag to GWT.");
     }
+
+    /**
+     * Return the whole component options cache map
+     * @return The {@link VueComponentOptions} cache map
+     */
+    public static Map<String, VueComponentOptions> getComponentOptionsCache()
+    {
+        return componentOptionsCache;
+    }
+
+    /**
+     * Return the whole directive options cache map
+     * @return The {@link VueDirectiveOptions} cache map
+     */
+    public static Map<String, VueDirectiveOptions> getDirectiveOptionsCache()
+    {
+        return directiveOptionsCache;
+    }
 }
