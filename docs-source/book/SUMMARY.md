@@ -17,10 +17,6 @@
     * [Event Handling](essential/events.md)
     * [Form Input Bindings](essential/forms.md)
     * [Components](essential/components.md)
-* Advanced Topics
-    * [Custom Directives](advanced/custom-directives.md)
-    * [Plugins](advanced/plugins.md)
-    * [Routing](advanced/routing.md)
 * [Integration with GWT](gwt-integration/index.md)
     * [Styles](gwt-integration/styles.md)
     * [Client Bundles (Images)](gwt-integration/client-bundles.md)
@@ -29,3 +25,8 @@
     * [JsObject](js-interop/js-object.md)
     * [JsArray](js-interop/js-array.md)
     * [JsTools](js-interop/js-tools.md)
+* Advanced Topics
+    * [Custom Directives](advanced/custom-directives.md)
+    * [Plugins](advanced/plugins.md)
+    * [Routing](advanced/routing.md)
+    * [And more!](advanced/and-more.md)
