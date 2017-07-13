@@ -8,10 +8,6 @@ It let you write Vue.js components in Java.
 <a href="https://gitter.im/Axellience/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
 </p>
 
-Checkout our **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)** to see it in action.
-
-Want to learn how it works? See our **[online documentation](https://axellience.github.io/vue-gwt/)**.
-
 ## Features
 
 * **Vue.js** Components with a **Java controller**
@@ -19,11 +15,31 @@ Want to learn how it works? See our **[online documentation](https://axellience.
 * Use **regular Java objects** in your templates
 * Support most of Vue.js features
 
-When you are ready, you can get started with by **[setting it up on your project](https://axellience.github.io/vue-gwt/project-setup.html)**.
+## Who is this for?
 
-⚠️ Vue GWT is in an **experimental** state.
+* You want to code a **Vue app with type checking**, and take advantage of GWT optimizations. 
+* You have **GWT app**, and you want **easy to write views** with 2 way data binding.
+* You have a **Vue app** and you need to **use a Java library in a Component**.
+
+## What does it look like?
+
+You can start reading **[our documentation](introduction/your-first-component.md)** it contains live examples. 
+You can also checkout the **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)**.
+
+Curious about the implementation? See the sources in our public **[Github repository](https://github.com/Axellience/vue-gwt)**.
+
+## Let's do this!
+
+When you are ready, you can get started with by **[setting it up on your project](./project-setup.md)**.
+
+> ⚠️ Vue GWT is in an **experimental** state.
 The syntax is not final and might change between versions.
 It may also contain bugs.
+
+> We are looking for feedback and contributions.
+If you use it on a small project, please [let us know how it goes](https://gitter.im/Axellience/vue-gwt).
+
+*This documentation was last updated for [Vue.js v2.3.4](https://github.com/vuejs/vue/releases/tag/v2.3.4) and Vue GWT 0.1-SNAPSHOT*
 
 ## Who Made This?
 
