@@ -1,50 +1,62 @@
 # Setup on Your Project
 
-## ✅ Get Vue GWT
+## ✅ Configure Maven
 
 Vue GWT uses Maven.
-For now there is no Maven repository.
-
-You must clone the source on your computer and mvn install them:
-
-```bash
-git clone https://github.com/Axellience/vue-gwt.git
-cd vue-gwt
-mvn clean install
-```
-
-## ✅ Configure Maven
 
 ### Add the Dependency
 Add Vue GWT to your project `pom.xml`:
 
 ```xml
-<properties>
-    <vue-gwt.version>1.2-SNAPSHOT</vue-gwt.version>
-</properties>
-<dependency>
-    <groupId>com.axellience</groupId>
-    <artifactId>vue-gwt</artifactId>
-    <version>${vue-gwt.version}</version>
-</dependency>
+<project>
+    <properties>
+        ...
+        <vue-gwt.version>0.1-SNAPSHOT</vue-gwt.version>
+    </properties>
+    
+    <dependencies>
+        ...
+        <dependency>
+            <groupId>com.axellience</groupId>
+            <artifactId>vue-gwt</artifactId>
+            <version>${vue-gwt.version}</version>
+        </dependency>
+    </dependencies>
+    
+    <!-- For now we only have SNAPSHOT releases, so you need to add the SonaType repository to get them -->
+    <repositories>
+        ...
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+</project>
 ```
 
 ### Add Annotation Processing Configuration
-In the `plugins` section:
+In the `plugins` section of your `pom.xml`:
 ```xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <!-- version is important to have java annotation processing correctly handled -->
-    <version>3.3</version><!--$NO-MVN-MAN-VER$-->
-    <configuration>
-        <compilerArgument>-parameters</compilerArgument>
-        <testCompilerArgument>-parameters</testCompilerArgument>
-        <useIncrementalCompilation>false</useIncrementalCompilation>
-        <source>1.8</source>
-        <target>1.8</target>
-    </configuration>
-</plugin>
+<project>
+
+    <plugins>
+        ...
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <!-- version is important to have java annotation processing correctly handled -->
+            <version>3.3</version><!--$NO-MVN-MAN-VER$-->
+            <configuration>
+                <compilerArgument>-parameters</compilerArgument>
+                <testCompilerArgument>-parameters</testCompilerArgument>
+                <useIncrementalCompilation>false</useIncrementalCompilation>
+                <source>1.8</source>
+                <target>1.8</target>
+            </configuration>
+        </plugin>
+    </plugins>
+    
+</project>
 ```
 
 This is useful for Eclipse:
