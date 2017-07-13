@@ -36,6 +36,8 @@ public class VueDirectiveOptionsGenerator
 
     /**
      * Generate and save the Java file for the typeElement passed to the constructor
+     * @param directiveTypeElement The {@link com.axellience.vuegwt.client.VueDirective} class to
+     * generate {@link VueDirectiveOptions} from
      */
     public void generate(TypeElement directiveTypeElement)
     {
@@ -64,7 +66,8 @@ public class VueDirectiveOptionsGenerator
             MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
 
         // Add the Java Component Instance initialization
-        constructorBuilder.addStatement("this.$L = new $T()", JDI,
+        constructorBuilder.addStatement("this.$L = new $T()",
+            JDI,
             TypeName.get(directiveTypeElement.asType()));
 
         // Call the method to copy hooks functions

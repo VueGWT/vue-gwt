@@ -13,8 +13,9 @@ import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsType;
 
 /**
- * The Java representation of a VueComponent
- * Whenever you want to add a component to your application you should extends this class.
+ * The Java representation of a Vue Component.
+ * Whenever you want to add a component to your application you should extends this class and add the
+ * {@link com.axellience.vuegwt.jsr69.component.annotations.Component} annotation.
  * @author Adrien Baron
  */
 @JsType
@@ -39,10 +40,12 @@ public abstract class VueComponent
     public String _uid;
 
     /**
-     * Used to customize VueComponentOptions for this VueComponent
-     * This is called once when creating the VueComponentOptions of our Component
-     * This VueComponentOptions will be passed to Vue when registering your Component
-     * This can be used to set custom properties for plugins like Vue Router
+     * Used to customize {@link VueComponentOptions} for this {@link VueComponent}.
+     * <p>
+     * This is called once when creating the {@link VueComponentOptions} of our Component.
+     * This {@link VueComponentOptions} will be passed to Vue when registering your Component.
+     * This can be used to set custom properties for plugins like Vue Router.
+     * @param componentOptions The options that we can customize in the method
      */
     public void customizeOptions(VueComponentOptions componentOptions)
     {

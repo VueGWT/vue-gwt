@@ -309,7 +309,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     /**
      * Register a local component in the components property of our ComponentOptions
      * The registration will actually take place the first time our ComponentOptions is accessed
-     * @param componentClass
+     * @param componentClass The class of the {@link VueComponent} to register locally
      */
     protected void addLocalComponent(Class<? extends VueComponent> componentClass)
     {
@@ -319,7 +319,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     /**
      * Register a local directive in the components property of our ComponentOptions
      * The registration will actually take place the first time our ComponentOptions is accessed
-     * @param directiveClass
+     * @param directiveClass The class of the {@link VueDirective} to register locally
      */
     protected void addLocalDirective(Class<? extends VueDirective> directiveClass)
     {

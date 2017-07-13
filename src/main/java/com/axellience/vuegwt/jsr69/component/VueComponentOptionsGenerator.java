@@ -71,7 +71,9 @@ public class VueComponentOptionsGenerator
     }
 
     /**
-     * Generate and save the Java file for the typeElement passed to the constructor
+     * Generate and save the Java file for the typeElement passed to the constructor.
+     * @param componentTypeElement The {@link com.axellience.vuegwt.client.VueComponent} class to
+     * generate {@link VueComponentOptions} from
      */
     public void generate(TypeElement componentTypeElement)
     {

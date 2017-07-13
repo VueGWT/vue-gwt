@@ -22,10 +22,11 @@ public class VueOptionsCache
         new HashMap<>();
 
     /**
-     * Register a component in the cache, called by VueComponentOptions static block
-     * @param vueComponentClass The class of the VueComponent to store the VueComponentOptions
+     * Register a component in the cache, called by {@link VueComponentOptions} static block.
+     * @param vueComponentClass The class of the {@link VueComponent} to store the {@link VueComponentOptions}
      * for
-     * @param componentOptions The VueComponentOptions instance
+     * @param componentOptions The options we want to register
+     * @param <T> The {@link VueComponent} we want to register the options for
      */
     public static <T extends VueComponent> void registerComponentOptions(Class<T> vueComponentClass,
         VueComponentOptions<T> componentOptions)
@@ -34,9 +35,11 @@ public class VueOptionsCache
     }
 
     /**
-     * Return the VueComponentOptions for a given VueComponent
-     * @param vueComponentClass The class of the VueComponent we want the VueComponentOptions
+     * Return the {@link VueComponentOptions} for a given {@link VueComponent}.
+     * @param vueComponentClass The class of the {@link VueComponent} we want the {@link VueComponentOptions}
      * from
+     * @param <T> The {@link VueComponent} we want to register the options for
+     * @return The {@link VueComponentOptions} for the given {@link VueComponent}
      */
     public static <T extends VueComponent> VueComponentOptions<T> getComponentOptions(
         Class<T> vueComponentClass)
@@ -55,7 +58,7 @@ public class VueOptionsCache
     }
 
     /**
-     * Register a directive in the cache, called by VueDirectiveOptions static block
+     * Register a directive in the cache, called by VueDirectiveOptions static block.
      * @param vueDirectiveClass The class of the VueDirective to store the VueDirectiveOptions
      * for
      * @param directiveOptions The VueDirectiveOptions instance
@@ -67,9 +70,10 @@ public class VueOptionsCache
     }
 
     /**
-     * Return the VueDirectiveOptions for a given VueDirective
-     * @param vueDirectiveClass The class of the VueDirective we want the VueDirectiveOptions
+     * Return the {@link VueDirectiveOptions} for a given {@link VueDirective}.
+     * @param vueDirectiveClass The class of the {@link VueDirective} we want the {@link VueDirectiveOptions}
      * from
+     * @return The {@link VueDirectiveOptions} for the given {@link VueDirective}
      */
     public static VueDirectiveOptions getDirectiveOptions(
         Class<? extends VueDirective> vueDirectiveClass)

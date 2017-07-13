@@ -16,15 +16,20 @@ public @interface Prop
 {
     /**
      * Name of the property
+     * @return The name of the property. If "" (default), then we use the Java name
      */
     String propertyName() default "";
+
     /**
      * Is the property required
+     * @return true if the property is required, false otherwise. Default to false.
      */
     boolean required() default false;
+
     /**
-     * Should check the type of the property
-     * By default check based on the Java type
+     * Should check the type of the property.
+     * By default check based on the Java type.
+     * @return true if we should check the type, false otherwise. Default to true.
      */
     boolean checkType() default true;
 }

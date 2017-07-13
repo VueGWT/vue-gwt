@@ -17,8 +17,8 @@ import static com.axellience.vuegwt.client.options.VueOptionsCache.getComponentO
 import static com.axellience.vuegwt.client.options.VueOptionsCache.getDirectiveOptions;
 
 /**
- * JsInterop representation of the main Vue instance
- * Provide some methods that are specific to VueGWT
+ * JsInterop representation of the main Vue instance.<br>
+ * Provide some methods that are specific to VueGWT.
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
@@ -27,9 +27,12 @@ public class Vue
     public static VueConfig config;
 
     /**
-     * Create a VueComponent instance and attach it to a DOM element
-     * Equivalent to new Vue({el: element, ...}) in Vue.js
+     * Create a {@link VueComponent} instance and attach it to a DOM element.
+     * Equivalent to new Vue({el: element, ...}) in Vue.js.
+     * @param element CSS selector for the element to attach in
      * @param vueComponentClass The class of the Component to create
+     * @param <T> {@link VueComponent} we want to attach
+     * @return The created and attached instance of our Component
      */
     @JsOverlay
     public static <T extends VueComponent> T attach(String element, Class<T> vueComponentClass)
@@ -42,9 +45,12 @@ public class Vue
     }
 
     /**
-     * Create a VueComponent instance and attach it to a DOM element
-     * Equivalent to new Vue({el: element, ...}) in Vue.js
+     * Create a {@link VueComponent} instance and attach it to a DOM element.
+     * Equivalent to new Vue({el: element, ...}) in Vue.js.
+     * @param element DOM Element we want to attach our component in
      * @param vueComponentClass The class of the Component to create
+     * @param <T> {@link VueComponent} we want to attach
+     * @return The created and attached instance of our Component
      */
     @JsOverlay
     public static <T extends VueComponent> T attach(Element element, Class<T> vueComponentClass)
@@ -57,9 +63,10 @@ public class Vue
     }
 
     /**
-     * Extend the base Vue Class with your VueComponentOptions
-     * Equivalent to Vue.extend({}) in Vue.js
+     * Extend the base Vue Class with your {@link VueComponentOptions}.
+     * Equivalent to Vue.extend({}) in Vue.js.
      * @param vueComponentClass The class of the Component to use
+     * @param <T> {@link VueComponent} we want to attach
      * @return A factory that can be used to create instance of your VueComponent
      */
     @JsOverlay
@@ -70,9 +77,9 @@ public class Vue
     }
 
     /**
-     * Register a component globally
+     * Register a component globally.
      * It will be usable in any component of your app.
-     * The name will be automatically computed based on the component class name
+     * The name will be automatically computed based on the component class name.
      * @param vueComponentClass The class of the Component to register
      */
     @JsOverlay
@@ -82,10 +89,11 @@ public class Vue
     }
 
     /**
-     * Register a component globally
+     * Register a component globally.
      * It will be usable in any component of your app.
      * @param id Register under the given id
      * @param vueComponentClass The class of the Component to
+     * @param <T> {@link VueComponent} we want to attach
      */
     @JsOverlay
     public static <T extends VueComponent> void component(String id, Class<T> vueComponentClass)
@@ -94,7 +102,9 @@ public class Vue
     }
 
     /**
-     * Return the factory for a given registered component ID
+     * Return the factory for a given registered component ID.
+     * @param id Id of the {@link VueComponent} we want the factory of
+     * @return A {@link VueComponentFactory} that you can use to build instance of your {@link VueComponent}
      */
     @JsOverlay
     public static VueComponentFactory component(String id)
@@ -104,10 +114,10 @@ public class Vue
     }
 
     /**
-     * Register a directive globally
+     * Register a directive globally.
      * It will be usable in any component of your app.
-     * The name will be automatically computed based on the directive class name
-     * @param vueDirectiveClass The class of the Directive to register
+     * The name will be automatically computed based on the directive class name.
+     * @param vueDirectiveClass The class of the {@link VueDirective} to register
      */
     @JsOverlay
     public static void directive(Class<? extends VueDirective> vueDirectiveClass)
@@ -116,10 +126,10 @@ public class Vue
     }
 
     /**
-     * Register a directive globally
+     * Register a directive globally.
      * It will be usable in any component of your app.
      * @param name Register under the given name
-     * @param vueDirectiveClass The class of the Directive to register
+     * @param vueDirectiveClass The class of the {@link VueDirective} to register
      */
     @JsOverlay
     public static void directive(String name, Class<? extends VueDirective> vueDirectiveClass)

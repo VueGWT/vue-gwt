@@ -29,10 +29,11 @@ public class VueGwtTools
     public static native String getFunctionBody(Object jsFunction);
 
     /**
-     * Return the default name to register a component based on it's class name
-     * The name of the tag is the name of the component converted to kebab-case
-     * If the component class ends with "Component", this part is ignored
-     * @param vueComponentClass
+     * Return the default name to register a component based on it's class name.
+     * The name of the tag is the name of the component converted to kebab-case.
+     * If the component class ends with "Component", this part is ignored.
+     * @param vueComponentClass The class of the {@link VueComponent}
+     * @return The name of the component
      */
     public static String componentToTagName(Class<? extends VueComponent> vueComponentClass)
     {
@@ -47,7 +48,8 @@ public class VueGwtTools
      * Return the default name to register a directive based on it's class name
      * The name of the tag is the name of the component converted to kebab-case
      * If the component class ends with "Directive", this part is ignored
-     * @param vueDirective
+     * @param vueDirective The class of the {@link VueDirective}
+     * @return The name of the directive
      */
     public static String directiveToTagName(Class<? extends VueDirective> vueDirective)
     {
