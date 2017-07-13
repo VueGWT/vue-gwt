@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.client;
 
-import com.axellience.vuegwt.client.options.VueComponentOptions;
 import com.axellience.vuegwt.client.functions.ChangeTrigger;
 import com.axellience.vuegwt.client.functions.OnEvent;
 import com.axellience.vuegwt.client.functions.OnNextTick;
@@ -9,16 +8,18 @@ import com.axellience.vuegwt.client.functions.WatcherRegistration;
 import com.axellience.vuegwt.client.jsnative.VueGwtToolsInjector;
 import com.axellience.vuegwt.client.jsnative.types.JsArray;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
+import com.axellience.vuegwt.client.options.VueComponentOptions;
 import com.google.gwt.dom.client.Element;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsProperty;
 
 /**
  * The Java representation of a Vue Component.
- * Whenever you want to add a component to your application you should extends this class and add the
+ * Whenever you want to add a component to your application you should extends this class and add
+ * the
  * {@link com.axellience.vuegwt.jsr69.component.annotations.Component} annotation.
  * @author Adrien Baron
  */
-@JsType
 public abstract class VueComponent
 {
     static
@@ -27,17 +28,17 @@ public abstract class VueComponent
         VueGwtToolsInjector.inject();
     }
 
-    public JsObject $data;
-    public Element $el;
-    public JsObject $options;
-    public VueComponent $parent;
-    public VueComponent $root;
-    public JsArray<VueComponent> $children;
-    public JsObject $slots;
-    public JsObject $scopedSlots;
-    public JsObject $refs;
-    public boolean $isServer;
-    public String _uid;
+    @JsProperty protected JsObject $data;
+    @JsProperty protected Element $el;
+    @JsProperty protected VueComponentOptions $options;
+    @JsProperty protected VueComponent $parent;
+    @JsProperty protected VueComponent $root;
+    @JsProperty protected JsArray<VueComponent> $children;
+    @JsProperty protected Object $refs;
+    @JsProperty protected JsObject $slots;
+    @JsProperty protected JsObject $scopedSlots;
+    @JsProperty protected boolean $isServer;
+    @JsProperty protected String _uid;
 
     /**
      * Used to customize {@link VueComponentOptions} for this {@link VueComponent}.
@@ -56,100 +57,133 @@ public abstract class VueComponent
      * Lifecycle hooks
      * By default they are not copied, they are here to facilitate development
      */
-    public void beforeCreate()
+    @JsMethod
+    protected void beforeCreate()
     {
 
     }
 
-    public abstract void created();
+    @JsMethod
+    protected abstract void created();
 
-    public void beforeMount()
+    @JsMethod
+    protected void beforeMount()
     {
 
     }
 
-    public void mounted()
+    @JsMethod
+    protected void mounted()
     {
 
     }
 
-    public void beforeUpdate()
+    @JsMethod
+    protected void beforeUpdate()
     {
 
     }
 
-    public void updated()
+    @JsMethod
+    protected void updated()
     {
 
     }
 
-    public void activated()
+    @JsMethod
+    protected void activated()
     {
 
     }
 
-    public void deactivated()
+    @JsMethod
+    protected void deactivated()
     {
 
     }
 
-    public void beforeDestroy()
+    @JsMethod
+    protected void beforeDestroy()
     {
 
     }
 
-    public void destroyed()
+    @JsMethod
+    protected void destroyed()
     {
 
     }
 
     // Data
+    @JsMethod
     public native WatcherRegistration $watch(String toWatch, OnValueChange onValueChange);
 
+    @JsMethod
     public native WatcherRegistration $watch(ChangeTrigger changeTrigger,
         OnValueChange onValueChange);
 
+    @JsMethod
     public native Object $set(Object object, String key, Object value);
 
+    @JsMethod
     public native Object $set(Object object, String key, boolean value);
 
+    @JsMethod
     public native Object $set(Object object, String key, byte value);
 
+    @JsMethod
     public native Object $set(Object object, String key, char value);
 
+    @JsMethod
     public native Object $set(Object object, String key, float value);
 
+    @JsMethod
     public native Object $set(Object object, String key, int value);
 
+    @JsMethod
     public native Object $set(Object object, String key, short value);
 
+    @JsMethod
     public native Object $set(Object object, String key, double value);
 
+    @JsMethod
     public native Object $delete(Object object, String key);
 
     // Events
+    @JsMethod
     public native void $on(String name, OnEvent callback);
 
+    @JsMethod
     public native void $once(String name, OnEvent callback);
 
+    @JsMethod
     public native void $off(String name, OnEvent callback);
 
+    @JsMethod
     public native void $emit(String name, Object... param);
 
     // Lifecycle
+    @JsMethod
     public native VueComponent $mount();
 
+    @JsMethod
     public native VueComponent $mount(Element element);
 
+    @JsMethod
     public native VueComponent $mount(String element);
 
+    @JsMethod
     public native VueComponent $mount(Element element, boolean hydrating);
 
+    @JsMethod
     public native VueComponent $mount(String element, boolean hydrating);
 
+    @JsMethod
     public native void $forceUpdate();
 
+    @JsMethod
     public native void $nextTick(OnNextTick onNextTick);
 
+    @JsMethod
     public native void $destroy();
 }
