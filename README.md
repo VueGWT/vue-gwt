@@ -23,14 +23,14 @@ It let you write Vue.js components in Java.
 
 ## What does it look like?
 
-You can start reading **[our documentation](introduction/your-first-component.md)** it contains live examples. 
+You can start reading **[our documentation](https://axellience.github.io/vue-gwt/introduction/your-first-component.html)** it contains live examples. 
 You can also checkout the **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)**.
 
 Curious about the implementation? See the sources in our public **[Github repository](https://github.com/Axellience/vue-gwt)**.
 
 ## Let's do this!
 
-When you are ready, you can get started with by **[setting it up on your project](./project-setup.md)**.
+When you are ready, you can get started with by **[setting it up on your project](https://axellience.github.io/vue-gwt/project-setup.html)**.
 
 > ⚠️ Vue GWT is in an **experimental** state.
 The syntax is not final and might change between versions.
