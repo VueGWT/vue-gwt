@@ -39,8 +39,6 @@ It may also contain bugs.
 > We are looking for feedback and contributions.
 If you use it on a small project, please [let us know how it goes](https://gitter.im/Axellience/vue-gwt).
 
-*This documentation was last updated for [Vue.js v2.3.4](https://github.com/vuejs/vue/releases/tag/v2.3.4) and Vue GWT 0.1-SNAPSHOT*
-
 ## Who Made This?
 
 <p align="center">
