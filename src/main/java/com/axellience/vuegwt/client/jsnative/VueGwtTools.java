@@ -17,15 +17,15 @@ public class VueGwtTools
     private static RegExp componentEnd     = RegExp.compile("Component$");
     private static RegExp directiveEnd     = RegExp.compile("Directive$");
 
-    @JsMethod(namespace = "vueGwt")
+    @JsMethod(namespace = "vueGwtTools")
     public static native <T extends VueComponent> T createVueInstance(
         VueComponentOptions vueComponentOptions);
 
-    @JsMethod(namespace = "vueGwt")
+    @JsMethod(namespace = "vueGwtTools")
     public static native <T extends VueComponent> T createInstanceForVueClass(
         JsObject extendedVueClass);
 
-    @JsMethod(namespace = "vueGwt")
+    @JsMethod(namespace = "vueGwtTools")
     public static native String getFunctionBody(Object jsFunction);
 
     /**

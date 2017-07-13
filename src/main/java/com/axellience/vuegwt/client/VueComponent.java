@@ -28,17 +28,23 @@ public abstract class VueComponent
         VueGwtToolsInjector.inject();
     }
 
-    @JsProperty protected JsObject $data;
-    @JsProperty protected Element $el;
-    @JsProperty protected VueComponentOptions $options;
-    @JsProperty protected VueComponent $parent;
-    @JsProperty protected VueComponent $root;
-    @JsProperty protected JsArray<VueComponent> $children;
-    @JsProperty protected Object $refs;
-    @JsProperty protected JsObject $slots;
-    @JsProperty protected JsObject $scopedSlots;
-    @JsProperty protected boolean $isServer;
-    @JsProperty protected String _uid;
+    @JsProperty public JsObject $data;
+    @JsProperty public Element $el;
+    @JsProperty public VueComponentOptions $options;
+    @JsProperty public VueComponent $parent;
+    @JsProperty public VueComponent $root;
+    @JsProperty public JsArray<VueComponent> $children;
+    @JsProperty public Object $refs;
+    @JsProperty public JsObject $slots;
+    @JsProperty public JsObject $scopedSlots;
+    @JsProperty public boolean $isServer;
+    @JsProperty public Object $ssrContext;
+    @JsProperty public Object $props;
+    @JsProperty public Object $vnode;
+    @JsProperty public JsObject $attrs;
+    @JsProperty public Object $listeners;
+
+    @JsProperty public String _uid;
 
     /**
      * Used to customize {@link VueComponentOptions} for this {@link VueComponent}.

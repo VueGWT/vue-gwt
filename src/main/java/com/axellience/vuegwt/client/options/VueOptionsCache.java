@@ -15,15 +15,13 @@ import java.util.Map;
  */
 public class VueOptionsCache
 {
-    private static Map<Class<? extends VueComponent>, VueComponentOptions> componentOptionsCache =
-        new HashMap<>();
-
-    private static Map<Class<? extends VueDirective>, VueDirectiveOptions> directiveOptionsCache =
-        new HashMap<>();
+    private static Map<String, VueComponentOptions> componentOptionsCache = new HashMap<>();
+    private static Map<String, VueDirectiveOptions> directiveOptionsCache = new HashMap<>();
 
     /**
      * Register a component in the cache, called by {@link VueComponentOptions} static block.
-     * @param vueComponentClass The class of the {@link VueComponent} to store the {@link VueComponentOptions}
+     * @param vueComponentClass The class of the {@link VueComponent} to store the {@link
+     * VueComponentOptions}
      * for
      * @param componentOptions The options we want to register
      * @param <T> The {@link VueComponent} we want to register the options for
@@ -31,20 +29,34 @@ public class VueOptionsCache
     public static <T extends VueComponent> void registerComponentOptions(Class<T> vueComponentClass,
         VueComponentOptions<T> componentOptions)
     {
-        componentOptionsCache.put(vueComponentClass, componentOptions);
+        componentOptionsCache.put(vueComponentClass.getCanonicalName(), componentOptions);
     }
 
     /**
      * Return the {@link VueComponentOptions} for a given {@link VueComponent}.
-     * @param vueComponentClass The class of the {@link VueComponent} we want the {@link VueComponentOptions}
-     * from
+     * @param vueComponentClass The class of the {@link VueComponent} we want the
+     * {@link VueComponentOptions} from
      * @param <T> The {@link VueComponent} we want to register the options for
      * @return The {@link VueComponentOptions} for the given {@link VueComponent}
      */
     public static <T extends VueComponent> VueComponentOptions<T> getComponentOptions(
         Class<T> vueComponentClass)
     {
-        VueComponentOptions<T> componentOptions = componentOptionsCache.get(vueComponentClass);
+        return getComponentOptions(vueComponentClass.getCanonicalName());
+    }
+
+    /**
+     * Return the {@link VueComponentOptions} for a given {@link VueComponent}.
+     * @param vueComponentClassCanonicalName The canonical name of the {@link VueComponent} class
+     * we want the {@link VueComponentOptions} of
+     * @param <T> The {@link VueComponent} we want to register the options for
+     * @return The {@link VueComponentOptions} for the given {@link VueComponent}
+     */
+    public static <T extends VueComponent> VueComponentOptions<T> getComponentOptions(
+        String vueComponentClassCanonicalName)
+    {
+        VueComponentOptions<T> componentOptions =
+            componentOptionsCache.get(vueComponentClassCanonicalName);
 
         if (componentOptions != null)
         {
@@ -53,25 +65,26 @@ public class VueOptionsCache
         }
 
         throw new RuntimeException("Couldn't find the given Component "
-            + vueComponentClass.getCanonicalName()
+            + vueComponentClassCanonicalName
             + ". Make sure your annotations are being processed, and that you added the -generateJsInteropExports flag to GWT.");
     }
 
     /**
      * Register a directive in the cache, called by VueDirectiveOptions static block.
-     * @param vueDirectiveClass The class of the VueDirective to store the VueDirectiveOptions
-     * for
+     * @param vueDirectiveClass The class of the {@link VueDirective} to store the
+     * {@link VueDirectiveOptions} for
      * @param directiveOptions The VueDirectiveOptions instance
      */
     public static void registerDirectiveOptions(Class<? extends VueDirective> vueDirectiveClass,
         VueDirectiveOptions directiveOptions)
     {
-        directiveOptionsCache.put(vueDirectiveClass, directiveOptions);
+        directiveOptionsCache.put(vueDirectiveClass.getCanonicalName(), directiveOptions);
     }
 
     /**
      * Return the {@link VueDirectiveOptions} for a given {@link VueDirective}.
-     * @param vueDirectiveClass The class of the {@link VueDirective} we want the {@link VueDirectiveOptions}
+     * @param vueDirectiveClass The class of the {@link VueDirective} we want the {@link
+     * VueDirectiveOptions}
      * from
      * @return The {@link VueDirectiveOptions} for the given {@link VueDirective}
      */
@@ -87,6 +100,27 @@ public class VueOptionsCache
 
         throw new RuntimeException("Couldn't find the given Directive "
             + vueDirectiveClass.getCanonicalName()
+            + ". Make sure your annotations are being processed, and that you added the -generateJsInteropExports flag to GWT.");
+    }
+
+    /**
+     * Return the {@link VueDirectiveOptions} for a given {@link VueDirective}.
+     * @param vueDirectiveClassCanonicalName The canonical name of the {@link VueDirective} class
+     * we want the {@link VueDirectiveOptions} from
+     * @return The {@link VueDirectiveOptions} for the given {@link VueDirective}
+     */
+    public static VueDirectiveOptions getDirectiveOptions(String vueDirectiveClassCanonicalName)
+    {
+        VueDirectiveOptions directiveOptions =
+            directiveOptionsCache.get(vueDirectiveClassCanonicalName);
+
+        if (directiveOptions != null)
+        {
+            return directiveOptions;
+        }
+
+        throw new RuntimeException("Couldn't find the given Directive "
+            + vueDirectiveClassCanonicalName
             + ". Make sure your annotations are being processed, and that you added the -generateJsInteropExports flag to GWT.");
     }
 }
