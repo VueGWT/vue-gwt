@@ -9,11 +9,11 @@ import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.VueGwtTools;
 import com.axellience.vuegwt.client.jsnative.types.JSON;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
-import com.axellience.vuegwt.client.options.component.ComputedDefinition;
+import com.axellience.vuegwt.client.options.component.ComputedOptions;
 import com.axellience.vuegwt.client.options.component.ComputedKind;
 import com.axellience.vuegwt.client.options.component.DataDefinition;
 import com.axellience.vuegwt.client.options.component.DataFactory;
-import com.axellience.vuegwt.client.options.component.PropDefinition;
+import com.axellience.vuegwt.client.options.component.PropOptions;
 import com.google.gwt.resources.client.CssResource;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
@@ -48,10 +48,10 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     @JsProperty protected String template;
 
     @JsProperty protected Object data;
-    @JsProperty protected final JsObject<ComputedDefinition> computed = new JsObject<>();
+    @JsProperty protected final JsObject computed = new JsObject();
     @JsProperty protected final JsObject methods = new JsObject();
     @JsProperty protected final JsObject watch = new JsObject();
-    @JsProperty protected final JsObject<PropDefinition> props = new JsObject<>();
+    @JsProperty protected final JsObject props = new JsObject();
 
     @JsProperty protected final JsObject<VueComponentOptions> components = new JsObject<>();
     @JsProperty protected final JsObject<VueDirectiveOptions> directives = new JsObject<>();
@@ -127,7 +127,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
             String expressionId = expression.getId();
             if (expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
             {
-                ComputedDefinition computedDefinition = new ComputedDefinition();
+                ComputedOptions computedDefinition = new ComputedOptions();
                 computed.set(expressionId, computedDefinition);
                 computedDefinition.get = JsTools.get(templateResource, expressionId);
             }
@@ -227,10 +227,10 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
      */
     protected void addComputed(String javaName, String jsName, ComputedKind kind)
     {
-        ComputedDefinition computedDefinition = (ComputedDefinition) computed.get(jsName);
+        ComputedOptions computedDefinition = (ComputedOptions) computed.get(jsName);
         if (computedDefinition == null)
         {
-            computedDefinition = new ComputedDefinition();
+            computedDefinition = new ComputedOptions();
             computed.set(jsName, computedDefinition);
         }
 
@@ -282,7 +282,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
      */
     protected void addProp(String javaName, String jsName, boolean required, String typeJsName)
     {
-        PropDefinition propDefinition = new PropDefinition();
+        PropOptions propDefinition = new PropOptions();
         propDefinition.required = required;
         if (JsTools.objectHasProperty(vuegwt$javaComponentInstance, javaName))
             propDefinition.defaultValue =
@@ -301,7 +301,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
      */
     protected void addPropValidator(String methodName, String propertyName)
     {
-        PropDefinition propDefinition = (PropDefinition) props.get(propertyName);
+        PropOptions propDefinition = (PropOptions) props.get(propertyName);
         propDefinition.validator =
             JsTools.getObjectProperty(vuegwt$javaComponentInstance, methodName);
     }

@@ -3,10 +3,10 @@ package com.axellience.vuegwt.client.options.component;
 import jsinterop.annotations.JsProperty;
 
 /**
- * Definition of a property
+ * Definition of a property.
  * @author Adrien Baron
  */
-public class PropDefinition
+public class PropOptions
 {
     @JsProperty public Object type;
     @JsProperty(name = "default") public Object defaultValue;
