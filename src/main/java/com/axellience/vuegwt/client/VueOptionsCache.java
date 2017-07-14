@@ -93,16 +93,7 @@ public class VueOptionsCache
     public static VueDirectiveOptions getDirectiveOptions(
         Class<? extends VueDirective> vueDirectiveClass)
     {
-        VueDirectiveOptions directiveOptions = directiveOptionsCache.get(vueDirectiveClass);
-
-        if (directiveOptions != null)
-        {
-            return directiveOptions;
-        }
-
-        throw new RuntimeException("Couldn't find the given Directive "
-            + vueDirectiveClass.getCanonicalName()
-            + ". Make sure your annotations are being processed, and that you added the -generateJsInteropExports flag to GWT.");
+        return getDirectiveOptions(vueDirectiveClass.getCanonicalName());
     }
 
     /**

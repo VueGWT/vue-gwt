@@ -1,5 +1,6 @@
-package com.axellience.vuegwt.client.jsnative.vnode;
+package com.axellience.vuegwt.client.vnode.builder;
 
+import com.axellience.vuegwt.client.vnode.VNode;
 import jsinterop.annotations.JsFunction;
 
 /**

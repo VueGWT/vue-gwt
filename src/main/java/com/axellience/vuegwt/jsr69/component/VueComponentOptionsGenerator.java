@@ -1,11 +1,14 @@
 package com.axellience.vuegwt.jsr69.component;
 
-import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.VueOptionsCache;
+import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.data.DataDefinition;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
+import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
+import com.axellience.vuegwt.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -116,9 +119,13 @@ public class VueComponentOptionsGenerator
         }
 
         // Add template initialization
-        constructorBuilder.addStatement("this.setTemplateResource($T.INSTANCE.$L())",
-            ClassName.get(packageName, typeName + TemplateProviderGenerator.TEMPLATE_BUNDLE_SUFFIX),
-            TemplateProviderGenerator.TEMPLATE_BUNDLE_METHOD_NAME);
+        if (annotation.hasTemplate())
+        {
+            constructorBuilder.addStatement("this.setTemplateResource($T.INSTANCE.$L())",
+                ClassName.get(packageName,
+                    typeName + TemplateProviderGenerator.TEMPLATE_BUNDLE_SUFFIX),
+                TemplateProviderGenerator.TEMPLATE_BUNDLE_METHOD_NAME);
+        }
 
         // Data and props
         constructorBuilder.addStatement("$T<$T> dataFields = new $T<>()",
@@ -159,6 +166,7 @@ public class VueComponentOptionsGenerator
                 Computed computed = executableElement.getAnnotation(Computed.class);
                 Watch watch = executableElement.getAnnotation(Watch.class);
                 PropValidator propValidator = executableElement.getAnnotation(PropValidator.class);
+                Override override = executableElement.getAnnotation(Override.class);
 
                 if (computed != null)
                 {
@@ -178,6 +186,10 @@ public class VueComponentOptionsGenerator
                     constructorBuilder.addStatement("this.addPropValidator($S, $S)",
                         javaName,
                         propertyName);
+                }
+                else if ("render".equals(javaName) && override != null)
+                {
+                    addRenderFunction(componentClassBuilder);
                 }
                 else if (LIFECYCLE_HOOKS_MAP.containsKey(javaName))
                 {
@@ -274,6 +286,29 @@ public class VueComponentOptionsGenerator
             GenerationUtil.getComputedPropertyName(computed, method.getSimpleName().toString()),
             ComputedKind.class,
             kind);
+    }
+
+    private void addRenderFunction(Builder componentClassBuilder)
+    {
+        MethodSpec.Builder renderFunctionBuilder = MethodSpec
+            .methodBuilder("render")
+            .returns(Object.class)
+            .addModifiers(Modifier.PUBLIC)
+            .addParameter(CreateElementFunction.class, "createElementFunction")
+            .addStatement("Object componentRenderMethod = $T.get($T.get($T.get(this, $S), $S), $S)",
+                JsTools.class,
+                JsTools.class,
+                JsTools.class,
+                "$options",
+                "vuegwt$javaComponentInstance",
+                "render")
+            .addStatement("return $T.call($L, this, new $T($L))",
+                JsTools.class,
+                "componentRenderMethod",
+                VNodeBuilder.class,
+                "createElementFunction");
+
+        componentClassBuilder.addMethod(renderFunctionBuilder.build());
     }
 
     private String getNativeNameForJavaType(TypeMirror typeMirror)

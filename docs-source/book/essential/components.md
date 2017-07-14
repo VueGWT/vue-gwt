@@ -368,8 +368,8 @@ In Vue.js, it is possible for a component to specify requirements for the props 
 If a requirement is not met, Vue will emit warnings.
 This is especially useful when you are authoring a component that is intended to be used by others.
 
-By default Vue GWT instructs Vue.js to check the type based on the type of your Java property.
-If you don't want this behavior you can pass `checkType` to false to your `@Prop` annotation.
+Vue GWT can Vue.js to check the type based on the type of your Java property.
+If you want this behavior you can pass `checkType` to true to your `@Prop` annotation.
 
 When prop validation fails, Vue will produce a console warning (if using the development build).
 

@@ -1,8 +1,8 @@
 package com.axellience.vuegwtexamples.client;
 
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
@@ -20,6 +20,7 @@ import com.axellience.vuegwtexamples.client.examples.recursive.RecursiveComponen
 import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
 import com.axellience.vuegwtexamples.client.examples.shareddatamodel.SharedDataModelComponent;
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
+import com.axellience.vuegwtexamples.client.examples.simplerender.RenderAppComponent;
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todotext.TodoTextComponent;
@@ -77,6 +78,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("treeComponent", TreeComponent.class);
         this.addExample("recursiveComponent", RecursiveComponent.class);
         this.addExample("focusDirectiveComponent", FocusDirectiveComponent.class);
+        this.addExample("renderAppComponent", RenderAppComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)

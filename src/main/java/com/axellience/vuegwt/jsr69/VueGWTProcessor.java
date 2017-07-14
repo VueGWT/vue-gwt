@@ -49,7 +49,11 @@ public class VueGWTProcessor extends AbstractProcessor
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
             vueComponentOptionsGenerator.generate(element);
-            templateGenerator.generate(element);
+            Component componentAnnotation = element.getAnnotation(Component.class);
+            if (componentAnnotation.hasTemplate())
+            {
+                templateGenerator.generate(element);
+            }
         }
     }
 

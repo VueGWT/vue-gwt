@@ -49,6 +49,9 @@ public class JsTools
     @JsMethod(namespace = "axellience")
     public static native void setArrayItem(Object array, int index, Object value);
 
+    @JsMethod(namespace = "axellience")
+    public static native Object call(Object method, Object thisArg, Object... args);
+
     public static <T> T get(Object o, int index)
     {
         return getArrayItem(o, index);

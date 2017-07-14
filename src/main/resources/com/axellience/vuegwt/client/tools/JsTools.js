@@ -51,5 +51,9 @@ window.axellience = {
 
 	setArrayItem: function (array, index, value) {
 		array[index] = value;
+	},
+
+	call: function (func, thisArg, args) {
+		return func.call(thisArg, args);
 	}
 };

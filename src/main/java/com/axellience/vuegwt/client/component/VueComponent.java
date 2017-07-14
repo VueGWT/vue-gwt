@@ -1,14 +1,17 @@
 package com.axellience.vuegwt.client.component;
 
-import com.axellience.vuegwt.client.component.options.watch.ChangeTrigger;
+import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.functions.OnEvent;
 import com.axellience.vuegwt.client.component.options.functions.OnNextTick;
+import com.axellience.vuegwt.client.component.options.watch.ChangeTrigger;
 import com.axellience.vuegwt.client.component.options.watch.OnValueChange;
 import com.axellience.vuegwt.client.component.options.watch.WatcherRegistration;
-import com.axellience.vuegwt.client.tools.VueGwtToolsInjector;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.client.component.options.VueComponentOptions;
+import com.axellience.vuegwt.client.tools.VueGwtToolsInjector;
+import com.axellience.vuegwt.client.vnode.ScopedSlot;
+import com.axellience.vuegwt.client.vnode.VNode;
+import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
@@ -35,13 +38,13 @@ public abstract class VueComponent
     @JsProperty public VueComponent $root;
     @JsProperty public JsArray<VueComponent> $children;
     @JsProperty public Object $refs;
-    @JsProperty public JsObject $slots;
-    @JsProperty public JsObject $scopedSlots;
+    @JsProperty public JsObject<VNode> $slots;
+    @JsProperty public JsObject<ScopedSlot> $scopedSlots;
     @JsProperty public boolean $isServer;
     @JsProperty public Object $ssrContext;
     @JsProperty public Object $props;
     @JsProperty public Object $vnode;
-    @JsProperty public JsObject $attrs;
+    @JsProperty public JsObject<String> $attrs;
     @JsProperty public Object $listeners;
 
     @JsProperty public String _uid;
@@ -118,6 +121,12 @@ public abstract class VueComponent
     protected void destroyed()
     {
 
+    }
+
+    @JsMethod
+    protected VNode render(VNodeBuilder builder)
+    {
+        return null;
     }
 
     // Data
