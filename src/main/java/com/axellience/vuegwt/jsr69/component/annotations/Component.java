@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.jsr69.component.annotations;
 
-import com.axellience.vuegwt.client.VueComponent;
-import com.axellience.vuegwt.client.VueDirective;
+import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.directive.VueDirective;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

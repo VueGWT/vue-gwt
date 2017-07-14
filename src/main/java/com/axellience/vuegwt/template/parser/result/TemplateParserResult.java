@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.template.parser.result;
 
-import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
+import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.axellience.vuegwt.client.gwtextension.TemplateResource.EXPRESSION_PREFIX;
-import static com.axellience.vuegwt.client.gwtextension.TemplateResource.EXPRESSION_SUFFIX;
+import static com.axellience.vuegwt.client.template.TemplateResource.EXPRESSION_PREFIX;
+import static com.axellience.vuegwt.client.template.TemplateResource.EXPRESSION_SUFFIX;
 
 /**
  * @author Adrien Baron

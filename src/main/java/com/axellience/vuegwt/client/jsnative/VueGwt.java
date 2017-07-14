@@ -1,11 +1,11 @@
 package com.axellience.vuegwt.client.jsnative;
 
-import com.axellience.vuegwt.client.VueComponent;
-import com.axellience.vuegwt.client.VueDirective;
-import com.axellience.vuegwt.client.jsnative.types.JsObject;
-import com.axellience.vuegwt.client.options.VueComponentOptions;
-import com.axellience.vuegwt.client.options.VueDirectiveOptions;
-import com.axellience.vuegwt.client.options.VueOptionsCache;
+import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.directive.VueDirective;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
+import com.axellience.vuegwt.client.component.options.VueComponentOptions;
+import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
+import com.axellience.vuegwt.client.VueOptionsCache;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 

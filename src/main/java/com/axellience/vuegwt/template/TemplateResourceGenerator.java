@@ -16,9 +16,9 @@
 
 package com.axellience.vuegwt.template;
 
-import com.axellience.vuegwt.client.gwtextension.TemplateExpressionBase;
-import com.axellience.vuegwt.client.gwtextension.TemplateExpressionKind;
-import com.axellience.vuegwt.client.gwtextension.TemplateResource;
+import com.axellience.vuegwt.client.template.TemplateExpressionBase;
+import com.axellience.vuegwt.client.template.TemplateExpressionKind;
+import com.axellience.vuegwt.client.template.TemplateResource;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;

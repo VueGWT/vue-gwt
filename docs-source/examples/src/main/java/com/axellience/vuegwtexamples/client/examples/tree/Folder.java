@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.tree;
 
-import com.axellience.vuegwt.client.jsnative.types.JsArray;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 
 /**
  * @author Adrien Baron

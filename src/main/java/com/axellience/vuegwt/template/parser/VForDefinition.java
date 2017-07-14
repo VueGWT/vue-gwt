@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.template.parser;
 
-import com.axellience.vuegwt.client.jsnative.types.JsArray;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 

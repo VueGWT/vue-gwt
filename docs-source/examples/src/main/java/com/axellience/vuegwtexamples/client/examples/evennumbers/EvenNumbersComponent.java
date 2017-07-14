@@ -1,7 +1,7 @@
 package com.axellience.vuegwtexamples.client.examples.evennumbers;
 
-import com.axellience.vuegwt.client.VueComponent;
-import com.axellience.vuegwt.client.jsnative.types.JsArray;
+import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import jsinterop.annotations.JsType;

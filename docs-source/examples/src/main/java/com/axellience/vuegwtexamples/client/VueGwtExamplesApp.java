@@ -1,8 +1,8 @@
 package com.axellience.vuegwtexamples.client;
 
-import com.axellience.vuegwt.client.VueComponent;
-import com.axellience.vuegwt.client.jsnative.JsTools;
-import com.axellience.vuegwt.client.jsnative.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;

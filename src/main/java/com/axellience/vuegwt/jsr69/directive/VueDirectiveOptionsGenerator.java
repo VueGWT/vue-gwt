@@ -1,7 +1,8 @@
 package com.axellience.vuegwt.jsr69.directive;
 
-import com.axellience.vuegwt.client.options.VueDirectiveOptions;
-import com.axellience.vuegwt.client.options.VueOptionsCache;
+import com.axellience.vuegwt.client.directive.VueDirective;
+import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
+import com.axellience.vuegwt.client.VueOptionsCache;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -36,7 +37,7 @@ public class VueDirectiveOptionsGenerator
 
     /**
      * Generate and save the Java file for the typeElement passed to the constructor
-     * @param directiveTypeElement The {@link com.axellience.vuegwt.client.VueDirective} class to
+     * @param directiveTypeElement The {@link VueDirective} class to
      * generate {@link VueDirectiveOptions} from
      */
     public void generate(TypeElement directiveTypeElement)

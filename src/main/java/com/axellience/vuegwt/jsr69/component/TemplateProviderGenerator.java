@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.jsr69.component;
 
-import com.axellience.vuegwt.client.gwtextension.TemplateResource;
+import com.axellience.vuegwt.client.template.TemplateResource;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;

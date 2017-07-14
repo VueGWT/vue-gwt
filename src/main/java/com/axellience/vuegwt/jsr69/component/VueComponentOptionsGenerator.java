@@ -1,10 +1,11 @@
 package com.axellience.vuegwt.jsr69.component;
 
-import com.axellience.vuegwt.client.jsnative.types.JsArray;
-import com.axellience.vuegwt.client.options.VueComponentOptions;
-import com.axellience.vuegwt.client.options.VueOptionsCache;
-import com.axellience.vuegwt.client.options.component.ComputedKind;
-import com.axellience.vuegwt.client.options.component.DataDefinition;
+import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
+import com.axellience.vuegwt.client.component.options.VueComponentOptions;
+import com.axellience.vuegwt.client.VueOptionsCache;
+import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
+import com.axellience.vuegwt.client.component.options.data.DataDefinition;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -72,7 +73,7 @@ public class VueComponentOptionsGenerator
 
     /**
      * Generate and save the Java file for the typeElement passed to the constructor.
-     * @param componentTypeElement The {@link com.axellience.vuegwt.client.VueComponent} class to
+     * @param componentTypeElement The {@link VueComponent} class to
      * generate {@link VueComponentOptions} from
      */
     public void generate(TypeElement componentTypeElement)
