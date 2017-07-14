@@ -1,14 +1,13 @@
 package com.axellience.vuegwt.client.options.component;
 
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
 /**
  * Definition of a Computed property
  * @author Adrien Baron
  */
-@JsType
 public class ComputedDefinition
 {
-    public Object get;
-    public Object set;
+    @JsProperty public Object get;
+    @JsProperty public Object set;
 }

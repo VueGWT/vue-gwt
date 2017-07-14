@@ -13,11 +13,11 @@ import jsinterop.annotations.JsType;
 @Component
 public class VForOnObjectWithKeyComponent extends VueComponent
 {
-    public JsObject myObject;
+    public JsObject<Object> myObject;
 
     @Override
     public void created() {
-        this.myObject = new JsObject();
+        this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);
         this.myObject.set("myTodo", new Todo("I'm a Todo"));

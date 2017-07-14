@@ -1,10 +1,14 @@
 package com.axellience.vuegwtexamples.client.examples.vforonobject;
 
 import com.axellience.vuegwt.client.VueComponent;
+import com.axellience.vuegwt.client.jsnative.JsTools;
 import com.axellience.vuegwt.client.jsnative.types.JsObject;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
 import jsinterop.annotations.JsType;
+import sun.plugin.javascript.navig.Window;
+
+import static com.axellience.vuegwt.client.jsnative.JsTools.getWindow;
 
 /**
  * @author Adrien Baron
@@ -13,13 +17,16 @@ import jsinterop.annotations.JsType;
 @Component
 public class VForOnObjectComponent extends VueComponent
 {
-    public JsObject myObject;
+    public JsObject<Object> myObject;
 
     @Override
     public void created() {
-        this.myObject = new JsObject();
+        this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);
         this.myObject.set("myTodo", new Todo("I'm a Todo"));
+
+        JsObject<JsObject<Object>> myJsObj = new JsObject<>();
+        myJsObj.set("bob", myObject);
     }
 }

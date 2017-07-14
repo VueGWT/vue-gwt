@@ -556,12 +556,15 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="jsobject"><code>JsObject</code></h1>
-<p>Represent a JavaScript Native Object in the Java world.</p>
-<p>You can see a <code>JsObject</code> as an instance of <code>Map&lt;String, Object&gt;</code>.</p>
+                                <h1 id="jsobjectt"><code>JsObject&lt;T&gt;</code></h1>
+<p>Represent a JavaScript Native Object in the Java world.
+It can be typed or not.
+When typed, you can only set values of the given type on it.</p>
+<p>If you want your method to accept or return a <code>JsObject&lt;Object&gt;</code> you should set the type to <code>JsObject</code> without <code>&lt;Object&gt;</code>.
+Otherwise it won&apos;t be possible to pass for example <code>JsObject&lt;Todo&gt;</code> to your function.</p>
 <h2 id="how-to-create-an-instance">How to Create an Instance</h2>
 <p>You create <code>JsObject</code> exactly like any Java Object:</p>
-<pre><code class="lang-java">JsObject myObject = <span class="hljs-keyword">new</span> JsObject();
+<pre><code class="lang-java">JsObject&lt;Object&gt; myObject = <span class="hljs-keyword">new</span> JsObject&lt;&gt;();
 </code></pre>
 <p>When your program run this will be executed:</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> myObject = {};
@@ -573,7 +576,7 @@
 <pre><code class="lang-java">Object myValue = myObject.get(<span class="hljs-string">&quot;myProperty&quot;</span>);
 </code></pre>
 <h2 id="getting-the-list-of-properties-keys">Getting the list of Properties (keys)</h2>
-<pre><code class="lang-java">JsArray&lt;String&gt; myPropertyNames = myObject.getOwnPropertyNames();
+<pre><code class="lang-java">JsArray&lt;String&gt; myPropertyNames = JsObject.getOwnPropertyNames(myObject);
 </code></pre>
 
                                 
@@ -618,7 +621,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"JsObject","level":"1.6.1","depth":2,"next":{"title":"JsArray","level":"1.6.2","depth":2,"path":"js-interop/js-array.md","ref":"js-interop/js-array.md","articles":[]},"previous":{"title":"JsInterop","level":"1.6","depth":1,"path":"js-interop/index.md","ref":"js-interop/index.md","articles":[{"title":"JsObject","level":"1.6.1","depth":2,"path":"js-interop/js-object.md","ref":"js-interop/js-object.md","articles":[]},{"title":"JsArray","level":"1.6.2","depth":2,"path":"js-interop/js-array.md","ref":"js-interop/js-array.md","articles":[]},{"title":"JsTools","level":"1.6.3","depth":2,"path":"js-interop/js-tools.md","ref":"js-interop/js-tools.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"js-interop/js-object.md","mtime":"2017-07-07T17:12:45.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-13T13:12:58.810Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"JsObject","level":"1.6.1","depth":2,"next":{"title":"JsArray","level":"1.6.2","depth":2,"path":"js-interop/js-array.md","ref":"js-interop/js-array.md","articles":[]},"previous":{"title":"JsInterop","level":"1.6","depth":1,"path":"js-interop/index.md","ref":"js-interop/index.md","articles":[{"title":"JsObject","level":"1.6.1","depth":2,"path":"js-interop/js-object.md","ref":"js-interop/js-object.md","articles":[]},{"title":"JsArray","level":"1.6.2","depth":2,"path":"js-interop/js-array.md","ref":"js-interop/js-array.md","articles":[]},{"title":"JsTools","level":"1.6.3","depth":2,"path":"js-interop/js-tools.md","ref":"js-interop/js-tools.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"js-interop/js-object.md","mtime":"2017-07-14T09:33:44.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-14T10:18:10.785Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

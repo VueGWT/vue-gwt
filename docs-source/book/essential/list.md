@@ -124,11 +124,11 @@ This tells Vue GWT that you are iterating on an `Object` and not a `JsArray`.
 @Component
 public class VForOnObjectComponent extends VueComponent
 {
-    public JsObject myObject;
+    public JsObject<Object> myObject;
 
     @Override
     public void created() {
-        this.myObject = new JsObject();
+        this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);
         this.myObject.set("myTodo", new Todo("I'm a Todo"));

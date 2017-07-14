@@ -6,20 +6,21 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * Source: https://github.com/ltearno/angular2-gwt/
+ * Original Source: https://github.com/ltearno/angular2-gwt/
+ * Modified by Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class JsObject
+public class JsObject<T>
 {
     @JsOverlay
-    public final <T> T get(String propertyName)
+    public final <K> K get(String propertyName)
     {
-        @SuppressWarnings("unchecked") T result = (T) JsTools.getObjectProperty(this, propertyName);
+        @SuppressWarnings("unchecked") K result = (K) JsTools.getObjectProperty(this, propertyName);
         return result;
     }
 
     @JsOverlay
-    public final JsObject set(String propertyName, Object value)
+    public final JsObject set(String propertyName, T value)
     {
         JsTools.setObjectProperty(this, propertyName, value);
         return this;

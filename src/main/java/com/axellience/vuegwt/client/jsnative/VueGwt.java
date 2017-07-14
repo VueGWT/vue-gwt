@@ -44,10 +44,10 @@ public class VueGwt
      * Return an object with all the {@link VueComponentOptions} defined in the app.
      * @return An object with all the {@link VueComponentOptions} defined in the app
      */
-    public static JsObject getComponentsOptions()
+    public static JsObject<VueComponentOptions> getComponentsOptions()
     {
         Map<String, VueComponentOptions> map = VueOptionsCache.getComponentOptionsCache();
-        JsObject result = new JsObject();
+        JsObject<VueComponentOptions> result = new JsObject<>();
         for (Entry<String, VueComponentOptions> entry : map.entrySet())
             result.set(entry.getKey(), entry.getValue());
 
@@ -58,10 +58,10 @@ public class VueGwt
      * Return an object with all the {@link VueDirectiveOptions} defined in the app.
      * @return An object with all the {@link VueDirectiveOptions} defined in the app
      */
-    public static JsObject getDirectivesOptions()
+    public static JsObject<VueDirectiveOptions> getDirectivesOptions()
     {
         Map<String, VueDirectiveOptions> map = VueOptionsCache.getDirectiveOptionsCache();
-        JsObject result = new JsObject();
+        JsObject<VueDirectiveOptions> result = new JsObject<>();
         for (Entry<String, VueDirectiveOptions> entry : map.entrySet())
             result.set(entry.getKey(), entry.getValue());
 
