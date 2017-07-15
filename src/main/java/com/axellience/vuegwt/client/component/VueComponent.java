@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.component;
 
+import com.axellience.vuegwt.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.functions.OnEvent;
 import com.axellience.vuegwt.client.component.options.functions.OnNextTick;
@@ -11,10 +12,11 @@ import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.VueGwtToolsInjector;
 import com.axellience.vuegwt.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.client.vnode.VNode;
-import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * The Java representation of a Vue Component.
@@ -23,7 +25,8 @@ import jsinterop.annotations.JsProperty;
  * {@link com.axellience.vuegwt.jsr69.component.annotations.Component} annotation.
  * @author Adrien Baron
  */
-public abstract class VueComponent
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+public abstract class VueComponent implements HasCreated
 {
     static
     {
@@ -48,86 +51,6 @@ public abstract class VueComponent
     @JsProperty public Object $listeners;
 
     @JsProperty public String _uid;
-
-    /**
-     * Used to customize {@link VueComponentOptions} for this {@link VueComponent}.
-     * <p>
-     * This is called once when creating the {@link VueComponentOptions} of our Component.
-     * This {@link VueComponentOptions} will be passed to Vue when registering your Component.
-     * This can be used to set custom properties for plugins like Vue Router.
-     * @param componentOptions The options that we can customize in the method
-     */
-    public void customizeOptions(VueComponentOptions componentOptions)
-    {
-
-    }
-
-    /**
-     * Lifecycle hooks
-     * By default they are not copied, they are here to facilitate development
-     */
-    @JsMethod
-    protected void beforeCreate()
-    {
-
-    }
-
-    @JsMethod
-    protected abstract void created();
-
-    @JsMethod
-    protected void beforeMount()
-    {
-
-    }
-
-    @JsMethod
-    protected void mounted()
-    {
-
-    }
-
-    @JsMethod
-    protected void beforeUpdate()
-    {
-
-    }
-
-    @JsMethod
-    protected void updated()
-    {
-
-    }
-
-    @JsMethod
-    protected void activated()
-    {
-
-    }
-
-    @JsMethod
-    protected void deactivated()
-    {
-
-    }
-
-    @JsMethod
-    protected void beforeDestroy()
-    {
-
-    }
-
-    @JsMethod
-    protected void destroyed()
-    {
-
-    }
-
-    @JsMethod
-    protected VNode render(VNodeBuilder builder)
-    {
-        return null;
-    }
 
     // Data
     @JsMethod

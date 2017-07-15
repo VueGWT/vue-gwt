@@ -47,6 +47,9 @@ public class VueGwtExamplesApp implements EntryPoint
     {
         Vue.component(RecursiveComponent.class);
 
+        VueComponent myComponent = (VueComponent) JsTools.getWindow().get("myComponent");
+        JsTools.log(myComponent.$data.get("hello"));
+
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
         this.addExample("linkComponent", LinkComponent.class);
         this.addExample("canHideComponent", CanHideComponent.class);

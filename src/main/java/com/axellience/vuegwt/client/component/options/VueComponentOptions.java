@@ -1,5 +1,7 @@
 package com.axellience.vuegwt.client.component.options;
 
+import com.axellience.vuegwt.client.VueOptionsCache;
+import com.axellience.vuegwt.client.component.HasCustomizeOptions;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
@@ -8,14 +10,13 @@ import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.client.VueOptionsCache;
+import com.axellience.vuegwt.client.jsnative.jstypes.JSON;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.template.TemplateExpressionBase;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 import com.axellience.vuegwt.client.template.TemplateResource;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.tools.VueGwtTools;
-import com.axellience.vuegwt.client.jsnative.jstypes.JSON;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.google.gwt.resources.client.CssResource;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
@@ -78,7 +79,11 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     protected void setJavaComponentInstance(T javaComponentInstance)
     {
         this.vuegwt$javaComponentInstance = javaComponentInstance;
-        this.vuegwt$javaComponentInstance.customizeOptions(this);
+
+        if (this.vuegwt$javaComponentInstance instanceof HasCustomizeOptions)
+        {
+            ((HasCustomizeOptions) this.vuegwt$javaComponentInstance).customizeOptions(this);
+        }
     }
 
     /**

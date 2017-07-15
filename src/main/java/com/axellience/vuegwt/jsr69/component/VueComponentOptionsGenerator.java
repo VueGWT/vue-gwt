@@ -1,14 +1,25 @@
 package com.axellience.vuegwt.jsr69.component;
 
 import com.axellience.vuegwt.client.VueOptionsCache;
+import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.hooks.HasActivated;
+import com.axellience.vuegwt.client.component.hooks.HasBeforeCreate;
+import com.axellience.vuegwt.client.component.hooks.HasBeforeDestroy;
+import com.axellience.vuegwt.client.component.hooks.HasBeforeMount;
+import com.axellience.vuegwt.client.component.hooks.HasBeforeUpdate;
+import com.axellience.vuegwt.client.component.hooks.HasCreated;
+import com.axellience.vuegwt.client.component.hooks.HasDeactivated;
+import com.axellience.vuegwt.client.component.hooks.HasDestroyed;
+import com.axellience.vuegwt.client.component.hooks.HasMounted;
+import com.axellience.vuegwt.client.component.hooks.HasUpdated;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.data.DataDefinition;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.client.vnode.builder.CreateElementFunction;
+import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -48,30 +59,32 @@ public class VueComponentOptionsGenerator
 {
     private static String COMPONENT_OPTIONS_SUFFIX = "_Options";
 
-    private static Map<String, Boolean> LIFECYCLE_HOOKS_MAP = new HashMap<>();
+    private static Map<String, Class> HOOKS_MAP = new HashMap<>();
 
     static
     {
         // Init the map of lifecycle hooks for fast type type check
-        LIFECYCLE_HOOKS_MAP.put("beforeCreate", true);
-        LIFECYCLE_HOOKS_MAP.put("created", true);
-        LIFECYCLE_HOOKS_MAP.put("beforeMount", true);
-        LIFECYCLE_HOOKS_MAP.put("mounted", true);
-        LIFECYCLE_HOOKS_MAP.put("beforeUpdate", true);
-        LIFECYCLE_HOOKS_MAP.put("updated", true);
-        LIFECYCLE_HOOKS_MAP.put("activated", true);
-        LIFECYCLE_HOOKS_MAP.put("deactivated", true);
-        LIFECYCLE_HOOKS_MAP.put("beforeDestroy", true);
-        LIFECYCLE_HOOKS_MAP.put("destroyed", true);
+        HOOKS_MAP.put("beforeCreate", HasBeforeCreate.class);
+        HOOKS_MAP.put("created", HasCreated.class);
+        HOOKS_MAP.put("beforeMount", HasBeforeMount.class);
+        HOOKS_MAP.put("mounted", HasMounted.class);
+        HOOKS_MAP.put("beforeUpdate", HasBeforeUpdate.class);
+        HOOKS_MAP.put("updated", HasUpdated.class);
+        HOOKS_MAP.put("activated", HasActivated.class);
+        HOOKS_MAP.put("deactivated", HasDeactivated.class);
+        HOOKS_MAP.put("beforeDestroy", HasBeforeDestroy.class);
+        HOOKS_MAP.put("destroyed", HasDestroyed.class);
     }
 
+    private final ProcessingEnvironment processingEnv;
     private final Elements elementsUtils;
     private final Filer filer;
 
     public VueComponentOptionsGenerator(ProcessingEnvironment processingEnv)
     {
-        elementsUtils = processingEnv.getElementUtils();
-        filer = processingEnv.getFiler();
+        this.processingEnv = processingEnv;
+        this.elementsUtils = processingEnv.getElementUtils();
+        this.filer = processingEnv.getFiler();
     }
 
     /**
@@ -166,7 +179,6 @@ public class VueComponentOptionsGenerator
                 Computed computed = executableElement.getAnnotation(Computed.class);
                 Watch watch = executableElement.getAnnotation(Watch.class);
                 PropValidator propValidator = executableElement.getAnnotation(PropValidator.class);
-                Override override = executableElement.getAnnotation(Override.class);
 
                 if (computed != null)
                 {
@@ -187,13 +199,20 @@ public class VueComponentOptionsGenerator
                         javaName,
                         propertyName);
                 }
-                else if ("render".equals(javaName) && override != null)
+                else if ("render".equals(javaName) && GenerationUtil.hasInterface(processingEnv,
+                    componentTypeElement.asType(),
+                    HasRender.class))
                 {
                     addRenderFunction(componentClassBuilder);
                 }
-                else if (LIFECYCLE_HOOKS_MAP.containsKey(javaName))
+                else if (HOOKS_MAP.containsKey(javaName))
                 {
-                    constructorBuilder.addStatement("this.addLifecycleHook($S)", javaName);
+                    if (GenerationUtil.hasInterface(processingEnv,
+                        componentTypeElement.asType(),
+                        HOOKS_MAP.get(javaName)))
+                    {
+                        constructorBuilder.addStatement("this.addLifecycleHook($S)", javaName);
+                    }
                 }
                 else
                 {

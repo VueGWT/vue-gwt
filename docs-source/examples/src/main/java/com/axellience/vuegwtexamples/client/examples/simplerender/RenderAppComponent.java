@@ -10,5 +10,5 @@ import com.axellience.vuegwt.jsr69.component.annotations.Component;
 public class RenderAppComponent extends VueComponent
 {
     @Override
-    protected void created() {}
+    public void created() {}
 }

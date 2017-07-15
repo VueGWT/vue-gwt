@@ -1,5 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.simplerender;
 
+import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.vnode.VNode;
@@ -8,25 +9,26 @@ import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Prop;
 import com.google.gwt.regexp.shared.RegExp;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
-@JsType
 @Component(hasTemplate = false)
-public class AnchoredHeadingComponent extends VueComponent
+public class AnchoredHeadingComponent extends VueComponent implements HasRender
 {
-    private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
+    @JsProperty private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
 
+    @JsProperty
     @Prop(required = true)
-    public Integer level;
+    private Integer level;
 
     @Override
-    protected void created() {}
+    public void created() {}
 
     @Override
-    protected VNode render(VNodeBuilder builder)
+    public VNode render(VNodeBuilder builder)
     {
         String text =
             getChildrenTextContent(this.$slots.get("default")).trim().replaceAll(" ", "-");
@@ -39,6 +41,7 @@ public class AnchoredHeadingComponent extends VueComponent
                 this.$slots.get("default")));
     }
 
+    @JsMethod
     private String getChildrenTextContent(JsArray<VNode> children)
     {
         return children.map(child ->

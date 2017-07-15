@@ -15,8 +15,10 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
 import java.beans.Introspector;
@@ -28,6 +30,15 @@ import java.io.Writer;
  */
 public class GenerationUtil
 {
+    public static boolean hasInterface(ProcessingEnvironment processingEnv, TypeMirror type, Class myInterface)
+    {
+        TypeMirror interfaceType = processingEnv.getElementUtils()
+            .getTypeElement(myInterface.getCanonicalName())
+            .asType();
+
+        return processingEnv.getTypeUtils().isAssignable(type, interfaceType);
+    }
+
     public static String getComputedPropertyName(Computed computed, String methodName)
     {
         if (!"".equals(computed.propertyName()))
