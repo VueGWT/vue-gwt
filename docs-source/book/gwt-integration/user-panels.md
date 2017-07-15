@@ -27,9 +27,9 @@ public class RootGwtApp implements EntryPoint {
 }
 ```
 
-## Accessing our VueComponent Instance
+## Accessing our Vue Instance
 
-It's even possible to interact with our instantiated `VueComponent`.
+It's even possible to interact with our instantiated `Vue`.
 
 Let's say our `DemoComponent` has a method `increaseCounter()`.
 We can do:
@@ -42,7 +42,7 @@ vueGwtPanel.vue().increaseCounter();
 ```
 
 ## Cleaning Up
-If you don't need your `VueGwtPanel` anymore, you can destroy it's VueComponent instance by calling:
+If you don't need your `VueGwtPanel` anymore, you can destroy it's Vue instance by calling:
 
 ```java
 vueGwtPanel.vue().$destroy();

@@ -19,7 +19,7 @@ We first create a Class like for our previous examples.
 ```java
 @JsType
 @Component
-public class TodoComponent extends VueComponent {
+public class TodoComponent extends Vue {
     @Override
     public void created() {}
 }
@@ -44,7 +44,7 @@ We first register `TodoComponent` to be used in our `ParentComponent` by passing
 ```java
 @JsType
 @Component(components = {TodoComponent.class})
-public class ParentComponent extends VueComponent {
+public class ParentComponent extends Vue {
     @Override
     public void created() {}
 }
@@ -78,7 +78,7 @@ Let’s modify our `TodoComponent` to make it accept a property.
 ```java
 @JsType
 @Component
-public class TodoComponent extends VueComponent {
+public class TodoComponent extends Vue {
     @Prop
     public Todo todo;
     
@@ -106,7 +106,7 @@ Let's call it `TodoListComponent`:
 ```java
 @JsType
 @Component(components = {TodoComponent.class})
-public class TodoListComponent extends VueComponent {
+public class TodoListComponent extends Vue {
     public JsArray<Todo> todos;
     
     @Override

@@ -19,7 +19,7 @@ For example:
 ```java
 @JsType
 @Component
-public class ButtonPlusOneComponent extends VueComponent {
+public class ButtonPlusOneComponent extends Vue {
     public int counter;
 
     @Override
@@ -56,7 +56,7 @@ For example:
 ```java
 @JsType
 @Component
-public class GreetComponent extends VueComponent {
+public class GreetComponent extends Vue {
     @Override
     public void created() {}
 

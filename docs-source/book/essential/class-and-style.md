@@ -82,7 +82,7 @@ This is a common and powerful pattern:
 ```java
 @JsType
 @Component
-public class StylishComponent extends VueComponent
+public class StylishComponent extends Vue
 {
     public boolean isActive;
     public Error error;
@@ -209,7 +209,7 @@ It is often a good idea to bind to a style object directly so that the template 
 ```java
 @JsType
 @Component
-public class StylishComponent extends VueComponent
+public class StylishComponent extends Vue
 {
     public JsObject<String> styleObject;
 

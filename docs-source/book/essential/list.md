@@ -23,7 +23,7 @@ The `v-for` directive requires a special syntax in the form of `Type item in ite
 ```java
 @JsType
 @Component
-public class SimpleTodoListComponent extends VueComponent {
+public class SimpleTodoListComponent extends Vue {
     public JsArray<Todo> todos;
     
     @Override
@@ -59,7 +59,7 @@ Inside `v-for` blocks we have full access to parent scope properties.
 ```java
 @JsType
 @Component
-public class VForWithIndexComponent extends VueComponent
+public class VForWithIndexComponent extends Vue
 {
     public JsArray<Todo> todos;
     public String parentMessage;
@@ -122,7 +122,7 @@ This tells Vue GWT that you are iterating on an `Object` and not a `JsArray`.
 ```java
 @JsType
 @Component
-public class VForOnObjectComponent extends VueComponent
+public class VForOnObjectComponent extends Vue
 {
     public JsObject<Object> myObject;
 
@@ -342,7 +342,7 @@ For example:
 ```java
 @JsType
 @Component
-public class EvenNumbersComponent extends VueComponent {
+public class EvenNumbersComponent extends Vue {
     public JsArray<Integer> numbers;
 
     @Override
@@ -375,7 +375,7 @@ In situations where computed properties are not feasible (e.g. inside nested `v-
 ```java
 @JsType
 @Component
-public class EvenNumbersComponent extends VueComponent {
+public class EvenNumbersComponent extends Vue {
     @Override
     public void created() {}
 

@@ -14,7 +14,7 @@ Although not strictly associated with the [MVVM pattern](https://en.wikipedia.or
 As a convention, we often use the variable `vm` (short for ViewModel) to refer to our Vue instances.
 
 Vue.js requires options to configure your Vue instance.
-Vue GWT generate those for you based on your `VueComponent` class and various annotations.
+Vue GWT generate those for you based on your `@Component` class and various annotations.
 
 In Vue.js it's possible to extend the Vue default constructor to generate several Components with the same options.
 In Vue GWT we use the Factory design pattern:
@@ -34,16 +34,16 @@ Vue GWT configure those instance for you, but in the browser they really are jus
 
 Let's talk a little about how Vue.js deals with observation.
 
-### VueComponent to Vue.js Data Model
+### @Component to Vue.js Data Model
 
 In Vue.js you pass all the data you want to observe as the `data` option of your Vue constructor.
-This `data` object is built for you by Vue GWT based on the public properties of your `VueComponent`.
+This `data` object is built for you by Vue GWT based on the public properties of your Java Class.
 
-For example this VueComponent:
+For example this Vue Component:
 ```java
 @JsType
 @Component
-public class DemoComponent extends VueComponent {
+public class DemoComponent extends Vue {
     public Todo todo;
     
     @Override
@@ -89,7 +89,7 @@ Then `this.todo.text` is automatically observed.
 In Vue.js only these proxied (observed) properties are **reactive**.
 If you attach a new property to the JS instance after it has been created, it will not trigger any view updates.
 
-When you add your Objects to your `VueComponent` all their properties **must** already be set in the JS world.
+When you add your Objects to your Component all their properties **must** already be set in the JS world.
 
 Because of GWT optimization this is **ONLY** the case when you have **explicitly** set the property value on your instance.
 
@@ -130,15 +130,15 @@ public class Todo {
 In addition to data properties, Vue instances expose a number of useful instance properties and methods.
 These properties and methods are prefixed with `$` to differentiate them from proxied data properties.
 
-In Vue GWT these methods and properties are defined in `VueComponent`, usually with the same name.
-Because your Components inherits from `VueComponent` you can simply access them in your Components.
+In Vue GWT these methods and properties are defined in `Vue`, usually with the same name.
+Because your Components inherits from `Vue` you can simply access them in your Components.
 
 For example:
 
 ```java
 @JsType
 @Component
-public class DemoComponent extends VueComponent {
+public class DemoComponent extends Vue {
     public Todo todo;
     
     @Override
@@ -167,7 +167,7 @@ For example, the [`created`](https://vuejs.org/v2/api/#created) hook is called a
 ```java
 @JsType
 @Component
-public class DemoComponent extends VueComponent {
+public class DemoComponent extends Vue {
     public Todo todo;
     
     @Override

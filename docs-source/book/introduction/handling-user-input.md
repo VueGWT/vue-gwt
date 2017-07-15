@@ -15,7 +15,7 @@ To let users interact with your app, we can use the `v-on` directive to attach e
 ```java
 @JsType
 @Component
-public class ExclamationComponent extends VueComponent {
+public class ExclamationComponent extends Vue {
     public String message;
     
     @Override
@@ -55,7 +55,7 @@ Vue also provides the [v-model directive](../forms.md) that makes two-way bindin
 ```java
 @JsType
 @Component
-public class MessageComponent extends VueComponent {
+public class MessageComponent extends Vue {
     public String message;
     
     @Override

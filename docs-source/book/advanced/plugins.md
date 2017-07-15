@@ -22,11 +22,11 @@ In the future we will probably have something to convert TypeScript definitions 
 
 ### Configuring Components
 
-Some plugins, like Vue Router will require you to pass options when declaring your VueComponent.
+Some plugins, like Vue Router will require you to pass options when declaring your Component.
 
 For this you can simply override the `customizeOptions(VueComponentOptions componentOptions)` in your Component.
 
-This method will be called once when translating your Java VueComponent to `VueComponentOptions` to pass to Vue.js.
+This method will be called once when translating your Java Component to `VueComponentOptions` to pass to Vue.js.
 You can simply set options on the given `componentOptions` parameter and they will be passed along to Vue.js.
 
 If you need, you can even add your own methods, data or any property from [ComponentOptions](https://github.com/vuejs/vue/blob/dev/types/options.d.ts).

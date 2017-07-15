@@ -33,7 +33,7 @@ That's why for any complex logic, you should use a **computed property**.
 ```java
 @JsType
 @Component
-public class ReverseComponent extends VueComponent
+public class ReverseComponent extends Vue
 {
     public String message;
 
@@ -85,7 +85,7 @@ You may have noticed we can achieve the same result by invoking a method in the 
 ```java
 @JsType
 @Component
-public class ReverseComponent extends VueComponent
+public class ReverseComponent extends Vue
 {
     public String message;
 
@@ -137,7 +137,7 @@ However, it is often a better idea to use a computed property rather than an imp
 ```java
 @JsType
 @Component
-public class JohnSnowComponent extends VueComponent
+public class JohnSnowComponent extends Vue
 {
     public String firstName;
     public String lastName;
@@ -167,7 +167,7 @@ The above code is imperative and repetitive. Compare it with a computed property
 ```java
 @JsType
 @Component
-public class JohnSnowComponent extends VueComponent
+public class JohnSnowComponent extends Vue
 {
     public String firstName;
     public String lastName;
@@ -194,7 +194,7 @@ Computed properties are by default getter-only, but you can also provide a sette
 ```java
 @JsType
 @Component
-public class JohnSnowComponent extends VueComponent
+public class JohnSnowComponent extends Vue
 {
     public String firstName;
     public String lastName;
@@ -243,7 +243,7 @@ Here is an example:
 ```java
 @JsType
 @Component
-public class JohnSnowComponent extends VueComponent
+public class JohnSnowComponent extends Vue
 {
     public String message;
 

@@ -20,7 +20,7 @@ We already saw how to define a Component in Vue GWT.
 ```java
 @Component
 @JsType
-public class MyComponent extends VueComponent
+public class MyComponent extends Vue
 {
     @Override
     public void created() {}
@@ -58,7 +58,7 @@ Here's the full example:
 ```java
 @JsType
 @Component
-public class ParentComponent extends VueComponent {
+public class ParentComponent extends Vue {
     @Override
     public void created() {}
 }
@@ -86,7 +86,7 @@ You can make a component available only in the scope of another instance/compone
 ```java
 @JsType
 @Component(components = {MyComponent.class})
-public class ParentComponent extends VueComponent {
+public class ParentComponent extends Vue {
     @Override
     public void created() {}
 }
@@ -138,7 +138,7 @@ When parsing your the Component class we build a `dataObject` Object for you. Fo
 ```java
 @JsType
 @Component
-public class StarkComponent extends VueComponent {
+public class StarkComponent extends Vue {
     public String winter;
     public boolean is;
     public String coming;
@@ -180,7 +180,7 @@ Here is a working example:
 ```java
 @JsType
 @Component(useFactory = false)
-public class SharedDataModelComponent extends VueComponent
+public class SharedDataModelComponent extends Vue
 {
     public int counter;
 
@@ -232,7 +232,7 @@ A child component needs to explicitly declare the props it expects to receive us
 ```java
 @JsType
 @Component
-public class ChildComponent extends VueComponent {
+public class ChildComponent extends Vue {
     @Prop
     public String message;
     
@@ -254,7 +254,7 @@ HTML attributes are case-insensitive, so when using non-string templates, camelC
 ```java
 @JsType
 @Component
-public class ChildComponent extends VueComponent {
+public class ChildComponent extends Vue {
     @Prop
     public String myMessage;
     
@@ -326,7 +326,7 @@ The proper answer to these use cases are:
 ```java
 @JsType
 @Component
-public class MyComponent extends VueComponent {
+public class MyComponent extends Vue {
     @Prop
     public String initialCounter;
     
@@ -344,7 +344,7 @@ public class MyComponent extends VueComponent {
 ```java
 @JsType
 @Component
-public class MyComponent extends VueComponent {
+public class MyComponent extends Vue {
     @Prop
     public String size;
     
@@ -447,7 +447,7 @@ Here's an example:
 ```java
 @JsType
 @Component
-public class ButtonCounterComponent extends VueComponent
+public class ButtonCounterComponent extends Vue
 {
     public int counter;
 
@@ -475,7 +475,7 @@ public class ButtonCounterComponent extends VueComponent
 ```java
 @JsType
 @Component(components = {ButtonCounterComponent.class})
-public class CounterWithEventComponent extends VueComponent
+public class CounterWithEventComponent extends Vue
 {
     public int total;
 
@@ -636,7 +636,7 @@ If you need to bind child-scope directives on a component root node, you should 
 ```java
 @JsType
 @Component
-public class ChildComponent extends VueComponent
+public class ChildComponent extends Vue
 {
     public boolean someChildProperty;
 
@@ -768,7 +768,7 @@ You can use the same mount point and dynamically switch between multiple compone
 ```java
 @JsType
 @Component(components = { TargaryenComponent.class, StarkComponent.class, LannisterComponent.class })
-public class HousesComponent extends VueComponent
+public class HousesComponent extends Vue
 {
     public String currentHouse;
 
@@ -842,7 +842,7 @@ To achieve this you have to assign a reference ID to the child component using `
 ```java
 @JsType
 @Component(components = { UserProfileComponent.class})
-public class ParentComponent extends VueComponent
+public class ParentComponent extends Vue
 {
     @Override
     public void created() {

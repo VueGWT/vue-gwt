@@ -17,7 +17,7 @@ Let's check this with a small example:
 ```java
 @JsType
 @Component
-public class CanHideComponent extends VueComponent {
+public class CanHideComponent extends Vue {
     public boolean visible;
 
     @Override
@@ -72,7 +72,7 @@ This object will be represented as a native JavaScript Array in the browser.
 ```java
 @JsType
 @Component
-public class SimpleTodoListComponent extends VueComponent {
+public class SimpleTodoListComponent extends Vue {
     public JsArray<Todo> todos;
     
     @Override

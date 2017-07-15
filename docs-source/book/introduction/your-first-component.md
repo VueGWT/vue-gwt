@@ -11,7 +11,7 @@ This Component will simply display an html link.
 ### Declaring the Component
 
 #### Java Class
-To create our Component, we must create a Class annotated by `@Component` that extends `VueComponent`.
+To create our Component, we must create a Class annotated by `@Component` that extends `Vue`.
 
 All the `JsInterop` attributes and methods of our Component Class will be accessible in our template.
 
@@ -26,7 +26,7 @@ In this documentation we chose to use the `@JsType` annotation and to set all ou
 ```java
 @JsType
 @Component
-public class SimpleLinkComponent extends VueComponent {
+public class SimpleLinkComponent extends Vue {
     public String linkName;
     
     @Override
@@ -129,7 +129,7 @@ This one will allow us to set the link `href` attribute in our Java Class.
 ```java
 @JsType
 @Component
-public class LinkComponent extends VueComponent {
+public class LinkComponent extends Vue {
     public String linkTarget;
     public String linkName;
     

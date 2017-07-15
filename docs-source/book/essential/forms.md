@@ -28,7 +28,7 @@ You can use a computed properties along with the regular `v-model`:
 ```java
 @JsType
 @Component
-public class TodoTextComputedComponent extends VueComponent {
+public class TodoTextComputedComponent extends Vue {
     public Todo todo;
 
     @Override
@@ -78,7 +78,7 @@ In those case you can use the following syntax:
 ```java
 @JsType
 @Component
-public class TodoTextComponent extends VueComponent {
+public class TodoTextComponent extends Vue {
     public Todo todo;
     
     @Override
