@@ -2,7 +2,7 @@ package com.axellience.vuegwt.jsr69.component;
 
 import com.axellience.vuegwt.client.VueOptionsCache;
 import com.axellience.vuegwt.client.component.HasRender;
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.component.hooks.HasActivated;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeCreate;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeDestroy;
@@ -89,7 +89,7 @@ public class VueComponentOptionsGenerator
 
     /**
      * Generate and save the Java file for the typeElement passed to the constructor.
-     * @param componentTypeElement The {@link VueComponent} class to
+     * @param componentTypeElement The {@link Vue} class to
      * generate {@link VueComponentOptions} from
      */
     public void generate(TypeElement componentTypeElement)

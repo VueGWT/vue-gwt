@@ -2,7 +2,7 @@ package com.axellience.vuegwt.client.component.options;
 
 import com.axellience.vuegwt.client.VueOptionsCache;
 import com.axellience.vuegwt.client.component.HasCustomizeOptions;
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
 import com.axellience.vuegwt.client.component.options.data.DataDefinition;
@@ -41,7 +41,7 @@ import java.util.Set;
  * @author Adrien Baron
  */
 @JsType
-public abstract class VueComponentOptions<T extends VueComponent> extends JsObject
+public abstract class VueComponentOptions<T extends Vue> extends JsObject
 {
     @JsProperty protected T vuegwt$javaComponentInstance;
 
@@ -67,7 +67,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
 
     private final Map<String, CssResource> componentStyles = new HashMap<>();
 
-    private final Set<Class<? extends VueComponent>> localComponents = new HashSet<>();
+    private final Set<Class<? extends Vue>> localComponents = new HashSet<>();
     private final Set<Class<? extends VueDirective>> localDirectives = new HashSet<>();
     private boolean areDependenciesInjected = false;
 
@@ -316,9 +316,9 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     /**
      * Register a local component in the components property of our ComponentOptions
      * The registration will actually take place the first time our ComponentOptions is accessed
-     * @param componentClass The class of the {@link VueComponent} to register locally
+     * @param componentClass The class of the {@link Vue} to register locally
      */
-    protected void addLocalComponent(Class<? extends VueComponent> componentClass)
+    protected void addLocalComponent(Class<? extends Vue> componentClass)
     {
         this.localComponents.add(componentClass);
     }
@@ -343,7 +343,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
             return;
         this.areDependenciesInjected = true;
 
-        for (Class<? extends VueComponent> childComponentClass : localComponents)
+        for (Class<? extends Vue> childComponentClass : localComponents)
         {
             VueComponentOptions childComponentOptions =
                 VueOptionsCache.getComponentOptions(childComponentClass);

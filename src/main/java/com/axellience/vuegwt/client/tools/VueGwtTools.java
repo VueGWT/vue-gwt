@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.tools;
 
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
@@ -18,11 +18,11 @@ public class VueGwtTools
     private static RegExp directiveEnd     = RegExp.compile("Directive$");
 
     @JsMethod(namespace = "vueGwtTools")
-    public static native <T extends VueComponent> T createVueInstance(
+    public static native <T extends Vue> T createVueInstance(
         VueComponentOptions vueComponentOptions);
 
     @JsMethod(namespace = "vueGwtTools")
-    public static native <T extends VueComponent> T createInstanceForVueClass(
+    public static native <T extends Vue> T createInstanceForVueClass(
         JsObject extendedVueClass);
 
     @JsMethod(namespace = "vueGwtTools")
@@ -32,10 +32,10 @@ public class VueGwtTools
      * Return the default name to register a component based on it's class name.
      * The name of the tag is the name of the component converted to kebab-case.
      * If the component class ends with "Component", this part is ignored.
-     * @param vueComponentClass The class of the {@link VueComponent}
+     * @param vueComponentClass The class of the {@link Vue}
      * @return The name of the component
      */
-    public static String componentToTagName(Class<? extends VueComponent> vueComponentClass)
+    public static String componentToTagName(Class<? extends Vue> vueComponentClass)
     {
         String name = vueComponentClass.getSimpleName();
         // Drop "Component" at the end of the class name

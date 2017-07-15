@@ -1,7 +1,7 @@
 package com.axellience.vuegwtexamples.client;
 
 import com.axellience.vuegwt.client.Vue;
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
@@ -47,7 +47,7 @@ public class VueGwtExamplesApp implements EntryPoint
     {
         Vue.component(RecursiveComponent.class);
 
-        VueComponent myComponent = (VueComponent) JsTools.getWindow().get("myComponent");
+        Vue myComponent = (Vue) JsTools.getWindow().get("myComponent");
         JsTools.log(myComponent.$data.get("hello"));
 
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
@@ -84,12 +84,12 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("renderAppComponent", RenderAppComponent.class);
     }
 
-    private void addExample(String exampleId, Class<? extends VueComponent> exampleClass)
+    private void addExample(String exampleId, Class<? extends Vue> exampleClass)
     {
         // If we find the containing div for this example, we instantiate it
         if (Document.get().getElementById(exampleId) != null)
         {
-            VueComponent exampleInstance = Vue.attach("#" + exampleId, exampleClass);
+            Vue exampleInstance = Vue.attach("#" + exampleId, exampleClass);
             JsTools.getWindow().set(exampleId, exampleInstance);
         }
     }

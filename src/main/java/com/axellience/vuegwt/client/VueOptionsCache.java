@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.client;
 
-import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
@@ -22,39 +21,39 @@ public class VueOptionsCache
 
     /**
      * Register a component in the cache, called by {@link VueComponentOptions} static block.
-     * @param vueComponentClass The class of the {@link VueComponent} to store the {@link
+     * @param vueComponentClass The class of the {@link Vue} to store the {@link
      * VueComponentOptions}
      * for
      * @param componentOptions The options we want to register
-     * @param <T> The {@link VueComponent} we want to register the options for
+     * @param <T> The {@link Vue} we want to register the options for
      */
-    public static <T extends VueComponent> void registerComponentOptions(Class<T> vueComponentClass,
+    public static <T extends Vue> void registerComponentOptions(Class<T> vueComponentClass,
         VueComponentOptions<T> componentOptions)
     {
         componentOptionsCache.put(vueComponentClass.getCanonicalName(), componentOptions);
     }
 
     /**
-     * Return the {@link VueComponentOptions} for a given {@link VueComponent}.
-     * @param vueComponentClass The class of the {@link VueComponent} we want the
+     * Return the {@link VueComponentOptions} for a given {@link Vue}.
+     * @param vueComponentClass The class of the {@link Vue} we want the
      * {@link VueComponentOptions} from
-     * @param <T> The {@link VueComponent} we want to register the options for
-     * @return The {@link VueComponentOptions} for the given {@link VueComponent}
+     * @param <T> The {@link Vue} we want to register the options for
+     * @return The {@link VueComponentOptions} for the given {@link Vue}
      */
-    public static <T extends VueComponent> VueComponentOptions<T> getComponentOptions(
+    public static <T extends Vue> VueComponentOptions<T> getComponentOptions(
         Class<T> vueComponentClass)
     {
         return getComponentOptions(vueComponentClass.getCanonicalName());
     }
 
     /**
-     * Return the {@link VueComponentOptions} for a given {@link VueComponent}.
-     * @param vueComponentClassCanonicalName The canonical name of the {@link VueComponent} class
+     * Return the {@link VueComponentOptions} for a given {@link Vue}.
+     * @param vueComponentClassCanonicalName The canonical name of the {@link Vue} class
      * we want the {@link VueComponentOptions} of
-     * @param <T> The {@link VueComponent} we want to register the options for
-     * @return The {@link VueComponentOptions} for the given {@link VueComponent}
+     * @param <T> The {@link Vue} we want to register the options for
+     * @return The {@link VueComponentOptions} for the given {@link Vue}
      */
-    public static <T extends VueComponent> VueComponentOptions<T> getComponentOptions(
+    public static <T extends Vue> VueComponentOptions<T> getComponentOptions(
         String vueComponentClassCanonicalName)
     {
         VueComponentOptions<T> componentOptions =

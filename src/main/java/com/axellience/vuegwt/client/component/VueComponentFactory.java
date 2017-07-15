@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.component;
 
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.VueGwtTools;
 
@@ -16,7 +17,7 @@ import com.axellience.vuegwt.client.tools.VueGwtTools;
  * instance = myComponentFactory.build()
  * @author Adrien Baron
  */
-public class VueComponentFactory<T extends VueComponent>
+public class VueComponentFactory<T extends Vue>
 {
     private JsObject extendedVueClass;
 

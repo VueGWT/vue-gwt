@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.kitten;
 
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import jsinterop.annotations.JsType;
 
@@ -9,7 +9,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component
-public class KittenComponent extends VueComponent
+public class KittenComponent extends Vue
 {
     public KittenClientBundle myKittenBundle;
 

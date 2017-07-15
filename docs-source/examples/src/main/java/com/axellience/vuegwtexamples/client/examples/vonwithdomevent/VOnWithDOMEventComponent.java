@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.vonwithdomevent;
 
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.user.client.Window;
@@ -11,7 +11,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component
-public class VOnWithDOMEventComponent extends VueComponent
+public class VOnWithDOMEventComponent extends Vue
 {
     @Override
     public void created() {}

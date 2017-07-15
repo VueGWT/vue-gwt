@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.evennumbers;
 
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -8,7 +8,7 @@ import jsinterop.annotations.JsType;
 
 @JsType
 @Component
-public class EvenNumbersComponent extends VueComponent
+public class EvenNumbersComponent extends Vue
 {
     public JsArray<Integer> numbers;
 

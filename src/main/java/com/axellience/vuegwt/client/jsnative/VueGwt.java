@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.jsnative;
 
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
@@ -19,10 +19,10 @@ import java.util.Map.Entry;
 public class VueGwt
 {
     /**
-     * Return the Component Options for a given Java {@link VueComponent}.
+     * Return the Component Options for a given Java {@link Vue}.
      * This object can be passed directly to new Vue() or to Vue.component().
-     * @param componentClassCanonicalName The canonical name (full name) of the {@link VueComponent} we want the Options of.
-     * @return The {@link VueComponentOptions} for the requested {@link VueComponent}
+     * @param componentClassCanonicalName The canonical name (full name) of the {@link Vue} we want the Options of.
+     * @return The {@link VueComponentOptions} for the requested {@link Vue}
      */
     public static VueComponentOptions getComponentOptions(String componentClassCanonicalName)
     {

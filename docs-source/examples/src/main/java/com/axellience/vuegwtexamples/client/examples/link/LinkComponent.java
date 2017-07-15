@@ -1,12 +1,13 @@
 package com.axellience.vuegwtexamples.client.examples.link;
 
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import jsinterop.annotations.JsType;
 
 @JsType
 @Component
-public class LinkComponent extends VueComponent {
+public class LinkComponent extends Vue
+{
     public String linkTarget;
     public String linkName;
 

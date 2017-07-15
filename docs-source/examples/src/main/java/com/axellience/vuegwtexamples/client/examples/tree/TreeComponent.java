@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.tree;
 
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import jsinterop.annotations.JsType;
 
@@ -9,7 +9,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component(components = TreeFolderComponent.class)
-public class TreeComponent extends VueComponent
+public class TreeComponent extends Vue
 {
     public Folder myFolder;
 
