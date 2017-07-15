@@ -31,14 +31,14 @@ public class AnchoredHeadingComponent extends Vue implements HasRender
     public VNode render(VNodeBuilder builder)
     {
         String text =
-            getChildrenTextContent(this.$slots.get("default")).trim().replaceAll(" ", "-");
+            getChildrenTextContent(this.$slots().get("default")).trim().replaceAll(" ", "-");
 
         String headingId = camelCasePattern.replace(text, "$1-$2").toLowerCase();
 
         return builder.el("h" + this.level,
             builder.el("a",
                 VNodeData.get().attr("name", headingId).attr("href", "#" + headingId),
-                this.$slots.get("default")));
+                this.$slots().get("default")));
     }
 
     @JsMethod

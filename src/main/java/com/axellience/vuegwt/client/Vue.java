@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.client;
 
-import com.axellience.vuegwt.client.component.VueComponentFactory;
 import com.axellience.vuegwt.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.functions.OnEvent;
@@ -10,15 +9,16 @@ import com.axellience.vuegwt.client.component.options.watch.OnValueChange;
 import com.axellience.vuegwt.client.component.options.watch.WatcherRegistration;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
+import com.axellience.vuegwt.client.jsnative.jsfunctions.JsSimpleFunction;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.VueGwtTools;
 import com.axellience.vuegwt.client.tools.VueGwtToolsInjector;
 import com.axellience.vuegwt.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.client.vnode.VNode;
+import com.axellience.vuegwt.client.vue.JsVueClass;
 import com.axellience.vuegwt.client.vue.VueConfig;
 import com.google.gwt.dom.client.Element;
-import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -35,7 +35,7 @@ import static com.axellience.vuegwt.client.VueOptionsCache.getDirectiveOptions;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public abstract class Vue implements HasCreated
+public abstract class Vue extends JsObject implements HasCreated
 {
     static
     {
@@ -43,29 +43,16 @@ public abstract class Vue implements HasCreated
         VueGwtToolsInjector.inject();
     }
 
-    public static VueConfig config;
+    /* ---------------------------------------------
 
-    @JsProperty public JsObject $data;
-    @JsProperty public Element $el;
-    @JsProperty public VueComponentOptions $options;
-    @JsProperty public Vue $parent;
-    @JsProperty public Vue $root;
-    @JsProperty public JsArray<Vue> $children;
-    @JsProperty public Object $refs;
-    @JsProperty public JsObject<VNode> $slots;
-    @JsProperty public JsObject<ScopedSlot> $scopedSlots;
-    @JsProperty public boolean $isServer;
-    @JsProperty public Object $ssrContext;
-    @JsProperty public Object $props;
-    @JsProperty public Object $vnode;
-    @JsProperty public JsObject<String> $attrs;
-    @JsProperty public Object $listeners;
+              Static Properties and Methods
 
-    @JsProperty public String _uid;
+      ---------------------------------------------*/
+
+    @JsProperty private static VueConfig config;
 
     /**
-     * Create a {@link Vue} instance and attach it to a DOM element.
-     * Equivalent to new Vue({el: element, ...}) in Vue.js.
+     * Create a {@link Vue} instance and mount it on a DOM element.
      * @param element CSS selector for the element to attach in
      * @param vueComponentClass The class of the Component to create
      * @param <T> {@link Vue} we want to attach
@@ -74,16 +61,14 @@ public abstract class Vue implements HasCreated
     @JsOverlay
     public static <T extends Vue> T attach(String element, Class<T> vueComponentClass)
     {
-        VueComponentOptions<T> componentDefinition =
-            getComponentOptions(vueComponentClass);
-        componentDefinition.setEl(element);
-
-        return VueGwtTools.createVueInstance(componentDefinition);
+        JsVueClass<T> vueClass = getJsVueClass(vueComponentClass);
+        T vueInstance = vueClass.instantiate();
+        vueInstance.$mount(element);
+        return vueInstance;
     }
 
     /**
-     * Create a {@link Vue} instance and attach it to a DOM element.
-     * Equivalent to new Vue({el: element, ...}) in Vue.js.
+     * Create a {@link Vue} instance and mount it on a DOM element.
      * @param element DOM Element we want to attach our component in
      * @param vueComponentClass The class of the Component to create
      * @param <T> {@link Vue} we want to attach
@@ -92,25 +77,10 @@ public abstract class Vue implements HasCreated
     @JsOverlay
     public static <T extends Vue> T attach(Element element, Class<T> vueComponentClass)
     {
-        VueComponentOptions<T> componentDefinition =
-            getComponentOptions(vueComponentClass);
-        componentDefinition.setEl(element);
-
-        return VueGwtTools.createVueInstance(componentDefinition);
-    }
-
-    /**
-     * Extend the base Vue Class with your {@link VueComponentOptions}.
-     * Equivalent to Vue.extend({}) in Vue.js.
-     * @param vueComponentClass The class of the Component to use
-     * @param <T> {@link Vue} we want to attach
-     * @return A factory that can be used to create instance of your VueComponent
-     */
-    @JsOverlay
-    public static <T extends Vue> VueComponentFactory<T> extend(Class<T> vueComponentClass)
-    {
-        JsObject extendedVueClass = extend(getComponentOptions(vueComponentClass));
-        return new VueComponentFactory<>(extendedVueClass);
+        JsVueClass<T> vueClass = getJsVueClass(vueComponentClass);
+        T vueInstance = vueClass.instantiate();
+        vueInstance.$mount(element);
+        return vueInstance;
     }
 
     /**
@@ -139,18 +109,6 @@ public abstract class Vue implements HasCreated
     }
 
     /**
-     * Return the factory for a given registered component ID.
-     * @param id Id of the {@link Vue} we want the factory of
-     * @return A {@link VueComponentFactory} that you can use to build instance of your {@link Vue}
-     */
-    @JsOverlay
-    public static VueComponentFactory component(String id)
-    {
-        JsObject extendedVueClass = getRegisteredComponent(id);
-        return new VueComponentFactory(extendedVueClass);
-    }
-
-    /**
      * Register a directive globally.
      * It will be usable in any component of your app.
      * The name will be automatically computed based on the directive class name.
@@ -174,85 +132,197 @@ public abstract class Vue implements HasCreated
         Vue.directive(name, getDirectiveOptions(vueDirectiveClass));
     }
 
-    private static native void component(String id, VueComponentOptions componentOptions);
+    /**
+     * Return a {@link JsVueClass} that allows you to create instances of your Vue.
+     * @param vueComponentClass The class of the Component to use
+     * @param <T> {@link Vue} we want to attach
+     * @return A factory that can be used to create instance of your VueComponent
+     */
+    @JsOverlay
+    public static <T extends Vue> JsVueClass<T> getJsVueClass(Class<T> vueComponentClass)
+    {
+        return extend(getComponentOptions(vueComponentClass));
+    }
 
-    private static native void directive(String name, VueDirectiveOptions directiveOptions);
+    @JsOverlay
+    public static VueConfig getConfig()
+    {
+        return config;
+    }
 
-    private static native JsObject extend(VueComponentOptions componentOptions);
+    @JsOverlay
+    public static void setConfig(VueConfig config)
+    {
+        Vue.config = config;
+    }
 
-    @JsMethod(name = "component")
-    private static native JsObject getRegisteredComponent(String id);
+    // @formatter:off
+    public static native <T extends Vue> JsVueClass<T> extend(VueComponentOptions<T> componentOptions);
 
+    public static native void nextTick(JsSimpleFunction callback, JsArray context);
+
+    public static native <T> T set(Object object, String key, T value);
+    public static native boolean set(Object object, String key, boolean value);
+    public static native byte set(Object object, String key, byte value);
+    public static native char set(Object object, String key, char value);
+    public static native float set(Object object, String key, float value);
+    public static native int set(Object object, String key, int value);
+    public static native short set(Object object, String key, short value);
+    public static native double set(Object object, String key, double value);
+    public static native void delete(Object object, String key);
+
+    public static native void directive(String id, VueDirectiveOptions directiveOptions);
+    public static native VueDirectiveOptions directive(String id);
+
+    public static native <T extends Vue> void component(String id, VueComponentOptions<T> componentOptions);
+    public static native <T extends Vue> JsVueClass<T> component(String id);
+    // @formatter:on
+
+
+    /* ---------------------------------------------
+
+              Instance Properties and Methods
+
+      ---------------------------------------------*/
+
+    @JsProperty private JsObject $data;
+    @JsProperty private Element $el;
+    @JsProperty private VueComponentOptions $options;
+    @JsProperty private Vue $parent;
+    @JsProperty private Vue $root;
+    @JsProperty private JsArray<Vue> $children;
+    @JsProperty private Object $refs;
+    @JsProperty private JsObject<VNode> $slots;
+    @JsProperty private JsObject<ScopedSlot> $scopedSlots;
+    @JsProperty private boolean $isServer;
+    @JsProperty private Object $ssrContext;
+    @JsProperty private Object $props;
+    @JsProperty private Object $vnode;
+    @JsProperty private JsObject<String> $attrs;
+    @JsProperty private Object $listeners;
+
+    @JsProperty public String _uid;
+
+    // @formatter:off
     // Data
-    @JsMethod
     public native WatcherRegistration $watch(String toWatch, OnValueChange onValueChange);
-
-    @JsMethod
     public native WatcherRegistration $watch(ChangeTrigger changeTrigger,
         OnValueChange onValueChange);
 
-    @JsMethod
-    public native Object $set(Object object, String key, Object value);
-
-    @JsMethod
-    public native Object $set(Object object, String key, boolean value);
-
-    @JsMethod
-    public native Object $set(Object object, String key, byte value);
-
-    @JsMethod
-    public native Object $set(Object object, String key, char value);
-
-    @JsMethod
-    public native Object $set(Object object, String key, float value);
-
-    @JsMethod
-    public native Object $set(Object object, String key, int value);
-
-    @JsMethod
-    public native Object $set(Object object, String key, short value);
-
-    @JsMethod
-    public native Object $set(Object object, String key, double value);
-
-    @JsMethod
+    public native <T> T $set(Object object, String key, T value);
+    public native boolean $set(Object object, String key, boolean value);
+    public native byte $set(Object object, String key, byte value);
+    public native char $set(Object object, String key, char value);
+    public native float $set(Object object, String key, float value);
+    public native int $set(Object object, String key, int value);
+    public native short $set(Object object, String key, short value);
+    public native double $set(Object object, String key, double value);
     public native Object $delete(Object object, String key);
 
     // Events
-    @JsMethod
     public native void $on(String name, OnEvent callback);
-
-    @JsMethod
     public native void $once(String name, OnEvent callback);
-
-    @JsMethod
     public native void $off(String name, OnEvent callback);
-
-    @JsMethod
     public native void $emit(String name, Object... param);
 
     // Lifecycle
-    @JsMethod
     public native Vue $mount();
-
-    @JsMethod
     public native Vue $mount(Element element);
-
-    @JsMethod
     public native Vue $mount(String element);
-
-    @JsMethod
     public native Vue $mount(Element element, boolean hydrating);
-
-    @JsMethod
     public native Vue $mount(String element, boolean hydrating);
-
-    @JsMethod
     public native void $forceUpdate();
-
-    @JsMethod
     public native void $nextTick(OnNextTick onNextTick);
-
-    @JsMethod
     public native void $destroy();
+    // @formatter:on
+
+    @JsOverlay
+    public final JsObject $data()
+    {
+        return $data;
+    }
+
+    @JsOverlay
+    public final Element $el()
+    {
+        return $el;
+    }
+
+    @JsOverlay
+    public final VueComponentOptions $options()
+    {
+        return $options;
+    }
+
+    @JsOverlay
+    public final Vue $parent()
+    {
+        return $parent;
+    }
+
+    @JsOverlay
+    public final Vue $root()
+    {
+        return $root;
+    }
+
+    @JsOverlay
+    public final JsArray<Vue> $children()
+    {
+        return $children;
+    }
+
+    @JsOverlay
+    public final Object $refs()
+    {
+        return $refs;
+    }
+
+    @JsOverlay
+    public final JsObject<VNode> $slots()
+    {
+        return $slots;
+    }
+
+    @JsOverlay
+    public final JsObject<ScopedSlot> $scopedSlots()
+    {
+        return $scopedSlots;
+    }
+
+    @JsOverlay
+    public final boolean $isServer()
+    {
+        return $isServer;
+    }
+
+    @JsOverlay
+    public final Object $ssrContext()
+    {
+        return $ssrContext;
+    }
+
+    @JsOverlay
+    public final Object $props()
+    {
+        return $props;
+    }
+
+    @JsOverlay
+    public final Object $vnode()
+    {
+        return $vnode;
+    }
+
+    @JsOverlay
+    public final JsObject<String> $attrs()
+    {
+        return $attrs;
+    }
+
+    @JsOverlay
+    public final Object $listeners()
+    {
+        return $listeners;
+    }
 }

@@ -3,11 +3,11 @@
  * @author Adrien Baron
  */
 window.vueGwtTools = {
-	createVueInstance: function (vueComponentDefinition) {
-		return new Vue(vueComponentDefinition);
-	},
 	createInstanceForVueClass: function (extendedVueClass) {
 		return new extendedVueClass();
+	},
+	extendVueClass: function (vueClassToExtend, vueComponentOptions) {
+		return new vueClassToExtend(vueComponentOptions);
 	},
 	getFunctionBody: function(myFunction) {
 		// Get content between first { and last }

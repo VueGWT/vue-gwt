@@ -1,9 +1,9 @@
 package com.axellience.vuegwt.client.tools;
 
 import com.axellience.vuegwt.client.Vue;
-import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
+import com.axellience.vuegwt.client.directive.VueDirective;
+import com.axellience.vuegwt.client.vue.JsVueClass;
 import com.google.gwt.regexp.shared.RegExp;
 import jsinterop.annotations.JsMethod;
 
@@ -14,16 +14,15 @@ import jsinterop.annotations.JsMethod;
 public class VueGwtTools
 {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
-    private static RegExp componentEnd     = RegExp.compile("Component$");
-    private static RegExp directiveEnd     = RegExp.compile("Directive$");
+    private static RegExp componentEnd = RegExp.compile("Component$");
+    private static RegExp directiveEnd = RegExp.compile("Directive$");
 
     @JsMethod(namespace = "vueGwtTools")
-    public static native <T extends Vue> T createVueInstance(
-        VueComponentOptions vueComponentOptions);
+    public static native <T extends Vue> T createInstanceForVueClass(JsVueClass<T> vueClass);
 
     @JsMethod(namespace = "vueGwtTools")
-    public static native <T extends Vue> T createInstanceForVueClass(
-        JsObject extendedVueClass);
+    public static native <T extends Vue, K extends T> JsVueClass<K> extendVueClass(
+        JsVueClass<T> vueClassToExtend, VueComponentOptions<K> vueComponentOptions);
 
     @JsMethod(namespace = "vueGwtTools")
     public static native String getFunctionBody(Object jsFunction);

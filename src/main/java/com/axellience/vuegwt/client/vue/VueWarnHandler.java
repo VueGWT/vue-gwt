@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.client.vue;
 
 import com.axellience.vuegwt.client.Vue;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import jsinterop.annotations.JsFunction;
 
 /**
@@ -9,7 +8,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface VueErrorHandler
+public interface VueWarnHandler
 {
-    void action(JsObject err, Vue vue, String info);
+    void action(String message, Vue vue, String trace);
 }

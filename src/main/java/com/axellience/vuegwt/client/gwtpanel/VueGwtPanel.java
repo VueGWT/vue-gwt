@@ -1,8 +1,6 @@
 package com.axellience.vuegwt.client.gwtpanel;
 
 import com.axellience.vuegwt.client.Vue;
-import com.axellience.vuegwt.client.component.VueComponentFactory;
-import com.axellience.vuegwt.client.Vue;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -11,15 +9,12 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class VueGwtPanel<T extends Vue> extends SimplePanel
 {
-    private final Class<T> rootComponentClass;
-    private       T        vueComponentInstance;
+    private T vueComponentInstance;
 
     public VueGwtPanel(Class<T> rootComponentClass)
     {
         super();
-        this.rootComponentClass = rootComponentClass;
-        VueComponentFactory<T> factory = Vue.extend(this.rootComponentClass);
-        vueComponentInstance = factory.build();
+        vueComponentInstance = Vue.getJsVueClass(rootComponentClass).instantiate();
     }
 
     @Override
