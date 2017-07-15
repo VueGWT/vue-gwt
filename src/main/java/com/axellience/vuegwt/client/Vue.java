@@ -16,16 +16,16 @@ import com.axellience.vuegwt.client.tools.VueGwtTools;
 import com.axellience.vuegwt.client.tools.VueGwtToolsInjector;
 import com.axellience.vuegwt.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.client.vnode.VNode;
-import com.axellience.vuegwt.client.vue.JsVueClass;
 import com.axellience.vuegwt.client.vue.VueConfig;
+import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-import static com.axellience.vuegwt.client.VueOptionsCache.getComponentOptions;
-import static com.axellience.vuegwt.client.VueOptionsCache.getDirectiveOptions;
+import static com.axellience.vuegwt.client.VueGwtCache.getDirectiveOptions;
+import static com.axellience.vuegwt.client.VueGwtCache.getVueConstructor;
 
 /**
  * The Java representation of a Vue Component.
@@ -61,7 +61,7 @@ public abstract class Vue extends JsObject implements HasCreated
     @JsOverlay
     public static <T extends Vue> T attach(String element, Class<T> vueComponentClass)
     {
-        JsVueClass<T> vueClass = getJsVueClass(vueComponentClass);
+        VueConstructor<T> vueClass = getJsVueClass(vueComponentClass);
         T vueInstance = vueClass.instantiate();
         vueInstance.$mount(element);
         return vueInstance;
@@ -77,7 +77,7 @@ public abstract class Vue extends JsObject implements HasCreated
     @JsOverlay
     public static <T extends Vue> T attach(Element element, Class<T> vueComponentClass)
     {
-        JsVueClass<T> vueClass = getJsVueClass(vueComponentClass);
+        VueConstructor<T> vueClass = getJsVueClass(vueComponentClass);
         T vueInstance = vueClass.instantiate();
         vueInstance.$mount(element);
         return vueInstance;
@@ -105,7 +105,7 @@ public abstract class Vue extends JsObject implements HasCreated
     @JsOverlay
     public static <T extends Vue> void component(String id, Class<T> vueComponentClass)
     {
-        Vue.component(id, getComponentOptions(vueComponentClass));
+        Vue.component(id, getVueConstructor(vueComponentClass));
     }
 
     /**
@@ -133,15 +133,15 @@ public abstract class Vue extends JsObject implements HasCreated
     }
 
     /**
-     * Return a {@link JsVueClass} that allows you to create instances of your Vue.
+     * Return a {@link VueConstructor} that allows you to create instances of your Vue.
      * @param vueComponentClass The class of the Component to use
      * @param <T> {@link Vue} we want to attach
      * @return A factory that can be used to create instance of your VueComponent
      */
     @JsOverlay
-    public static <T extends Vue> JsVueClass<T> getJsVueClass(Class<T> vueComponentClass)
+    public static <T extends Vue> VueConstructor<T> getJsVueClass(Class<T> vueComponentClass)
     {
-        return extend(getComponentOptions(vueComponentClass));
+        return getVueConstructor(vueComponentClass);
     }
 
     @JsOverlay
@@ -157,7 +157,7 @@ public abstract class Vue extends JsObject implements HasCreated
     }
 
     // @formatter:off
-    public static native <T extends Vue> JsVueClass<T> extend(VueComponentOptions<T> componentOptions);
+    public static native <T extends Vue> VueConstructor<T> extend(VueComponentOptions<T> componentOptions);
 
     public static native void nextTick(JsSimpleFunction callback, JsArray context);
 
@@ -175,7 +175,8 @@ public abstract class Vue extends JsObject implements HasCreated
     public static native VueDirectiveOptions directive(String id);
 
     public static native <T extends Vue> void component(String id, VueComponentOptions<T> componentOptions);
-    public static native <T extends Vue> JsVueClass<T> component(String id);
+    public static native <T extends Vue> void component(String id, VueConstructor<T> vueConstructor);
+    public static native <T extends Vue> VueConstructor<T> component(String id);
     // @formatter:on
 
 

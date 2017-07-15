@@ -2,7 +2,7 @@ package com.axellience.vuegwtexamples.client;
 
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.vue.JsVueClass;
+import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
@@ -22,6 +22,7 @@ import com.axellience.vuegwtexamples.client.examples.shareddatamodel.SharedDataM
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
 import com.axellience.vuegwtexamples.client.examples.simplerender.RenderAppComponent;
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
+import com.axellience.vuegwtexamples.client.examples.todolist.TodoComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todotext.TodoTextComponent;
 import com.axellience.vuegwtexamples.client.examples.todotextcomputed.TodoTextComputedComponent;
@@ -47,9 +48,23 @@ public class VueGwtExamplesApp implements EntryPoint
     {
         Vue.component(RecursiveComponent.class);
 
-        JsVueClass vueClass = (JsVueClass) JsTools.getWindow().get("MyComponent");
+        VueConstructor vueClass = (VueConstructor) JsTools.getWindow().get("MyComponent");
         Vue myComponent = vueClass.instantiate();
         myComponent.$mount("#container");
+
+        /*
+        VueConstructor<MyJsComponent> myJsComponentVC =
+            (VueConstructor<MyJsComponent>) JsTools.getWindow().get("MyJsComponent");
+        VueConstructor<ExtendJsComponent> extendJsComponentVC =
+            myJsComponentVC.extend(ExtendJsComponent.class);
+        extendJsComponentVC.instantiate().$mount("#extendJsComponent");
+        */
+
+        VueConstructor<TodoListComponent> todoListVC = Vue.getJsVueClass(TodoListComponent.class);
+        JsTools.set(JsTools.get(JsTools.get(todoListVC, "options"), "components"),
+            "todo",
+            Vue.getJsVueClass(TodoComponent.class));
+        todoListVC.instantiate().$mount("#todoListComponent");
 
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
         this.addExample("linkComponent", LinkComponent.class);
@@ -58,7 +73,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("exclamationComponent", ExclamationComponent.class);
         this.addExample("messageComponent", MessageComponent.class);
         this.addExample("parentComponent", ParentComponent.class);
-        this.addExample("todoListComponent", TodoListComponent.class);
+        //this.addExample("todoListComponent", TodoListComponent.class);
         this.addExample("melisandreComponent", MelisandreComponent.class);
         this.addExample("kittenComponent", KittenComponent.class);
         this.addExample("reverseComponent", ReverseComponent.class);

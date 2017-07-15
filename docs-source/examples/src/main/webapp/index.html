@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
 <head>
-	<!-- This page is used to test examples -->
-	<title>Vue JS Examples</title>
+    <!-- This page is used to test examples -->
+    <title>Vue JS Examples</title>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
 
@@ -48,6 +48,9 @@
 
         <h5>Instantiated JS Vue Class</h5>
         <div id="container"></div>
+
+        <h5>Extend JS Component</h5>
+        <div id="extendJsComponent"></div>
     </div>
     <div class="col s12 m6 l4">
         <h5>Kitten Component</h5>
@@ -112,11 +115,25 @@
 
 <script>
 	window.MyComponent = Vue.extend({
-        template: "<div>{{hello}}</div>",
+		template: "<div>{{hello}}</div>",
 		data: function () {
-            return {
+			return {
 				hello: "We come in peace from the JS World"
 			};
+		}
+	});
+
+	window.MyJsComponent = Vue.extend({
+		template: "<div>{{hello}}</div>",
+		data: function () {
+			return {
+				message: "This is a message from the Parent"
+			};
+		},
+		methods: {
+			multiplyBy2: function (value) {
+				return value * 2;
+			}
 		}
 	});
 </script>

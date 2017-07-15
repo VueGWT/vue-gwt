@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.jsr69.component;
 
-import com.axellience.vuegwt.client.VueOptionsCache;
+import com.axellience.vuegwt.client.VueGwtCache;
 import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.component.hooks.HasActivated;
@@ -113,7 +113,7 @@ public class VueComponentOptionsGenerator
         // Static init block
         componentClassBuilder.addStaticBlock(CodeBlock.of(
             "$T.registerComponentOptions($T.class, new $L());",
-            VueOptionsCache.class,
+            VueGwtCache.class,
             TypeName.get(componentTypeElement.asType()),
             generatedTypeName));
 

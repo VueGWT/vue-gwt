@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.vnode.builder;
 
-import com.axellience.vuegwt.client.VueOptionsCache;
+import com.axellience.vuegwt.client.VueGwtCache;
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vnode.VNodeData;
@@ -34,14 +34,14 @@ public class VNodeBuilder
 
     public VNode el(Class<Vue> componentClass, Object... children)
     {
-        return this.function.create(VueOptionsCache.getComponentOptions(componentClass),
+        return this.function.create(VueGwtCache.getVueConstructor(componentClass),
             children,
             null);
     }
 
     public VNode el(Class<Vue> componentClass, VNodeData data, Object... children)
     {
-        return this.function.create(VueOptionsCache.getComponentOptions(componentClass),
+        return this.function.create(VueGwtCache.getVueConstructor(componentClass),
             data,
             children);
     }

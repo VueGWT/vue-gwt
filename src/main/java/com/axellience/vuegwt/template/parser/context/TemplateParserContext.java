@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.template.parser.context;
 
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -43,6 +44,17 @@ public class TemplateParserContext
         this.rootContext = new ContextLayer("");
 
         this.rootContext.addVariable(String.class, "_uid");
+        processVueComponentClass(vueComponentClass);
+        this.contextLayers.add(this.rootContext);
+    }
+
+    private void processVueComponentClass(JClassType vueComponentClass)
+    {
+        if (vueComponentClass == null || vueComponentClass
+            .getQualifiedSourceName()
+            .equals(Vue.class.getCanonicalName()))
+            return;
+
         for (JField jField : vueComponentClass.getFields())
         {
             this.rootContext.addVariable(jField);
@@ -57,7 +69,7 @@ public class TemplateParserContext
             this.rootContext.addVariable(jMethod.getReturnType().getQualifiedSourceName(), name);
         }
 
-        this.contextLayers.add(this.rootContext);
+        processVueComponentClass(vueComponentClass.getSuperclass());
     }
 
     public void addContextLayer()

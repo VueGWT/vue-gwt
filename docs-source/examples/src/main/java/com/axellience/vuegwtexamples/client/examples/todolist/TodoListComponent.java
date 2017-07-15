@@ -7,7 +7,7 @@ import com.axellience.vuegwtexamples.client.examples.common.Todo;
 import jsinterop.annotations.JsType;
 
 @JsType
-@Component(components = { TodoComponent.class })
+@Component
 public class TodoListComponent extends Vue
 {
     public JsArray<Todo> todos;

@@ -1,8 +1,8 @@
 package com.axellience.vuegwt.jsr69.directive;
 
+import com.axellience.vuegwt.client.VueGwtCache;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.client.VueOptionsCache;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -58,7 +58,7 @@ public class VueDirectiveOptionsGenerator
         // Static init block
         componentClassBuilder.addStaticBlock(CodeBlock.of(
             "$T.registerDirectiveOptions($T.class, new $L());",
-            VueOptionsCache.class,
+            VueGwtCache.class,
             TypeName.get(directiveTypeElement.asType()),
             generatedTypeName));
 

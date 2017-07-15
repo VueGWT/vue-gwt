@@ -7,7 +7,7 @@ window.vueGwtTools = {
 		return new extendedVueClass();
 	},
 	extendVueClass: function (vueClassToExtend, vueComponentOptions) {
-		return new vueClassToExtend(vueComponentOptions);
+		return vueClassToExtend.extend(vueComponentOptions);
 	},
 	getFunctionBody: function(myFunction) {
 		// Get content between first { and last }

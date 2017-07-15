@@ -8,7 +8,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType
-@Component(useFactory = false)
+@Component
 public class SharedDataModelComponent extends Vue
 {
     public int counter;

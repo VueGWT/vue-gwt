@@ -1,8 +1,7 @@
 package com.axellience.vuegwt.client.component.options;
 
-import com.axellience.vuegwt.client.VueOptionsCache;
-import com.axellience.vuegwt.client.component.HasCustomizeOptions;
 import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.HasCustomizeOptions;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
 import com.axellience.vuegwt.client.component.options.data.DataDefinition;
@@ -16,7 +15,6 @@ import com.axellience.vuegwt.client.template.TemplateExpressionBase;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 import com.axellience.vuegwt.client.template.TemplateResource;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.tools.VueGwtTools;
 import com.google.gwt.resources.client.CssResource;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
@@ -318,7 +316,7 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
      * The registration will actually take place the first time our ComponentOptions is accessed
      * @param componentClass The class of the {@link Vue} to register locally
      */
-    protected void addLocalComponent(Class<? extends Vue> componentClass)
+    protected <T extends Vue> void addLocalComponent(Class<T> componentClass)
     {
         this.localComponents.add(componentClass);
     }
@@ -328,36 +326,19 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
      * The registration will actually take place the first time our ComponentOptions is accessed
      * @param directiveClass The class of the {@link VueDirective} to register locally
      */
-    protected void addLocalDirective(Class<? extends VueDirective> directiveClass)
+    protected <T extends VueDirective> void addLocalDirective(Class<T> directiveClass)
     {
         this.localDirectives.add(directiveClass);
     }
 
-    /**
-     * Get the definitions of local components and directives
-     * This will be called each time a Component definition is retrieved
-     */
-    public void ensureDependenciesInjected()
+    public Set<Class<? extends Vue>> getLocalComponents()
     {
-        if (areDependenciesInjected)
-            return;
-        this.areDependenciesInjected = true;
+        return localComponents;
+    }
 
-        for (Class<? extends Vue> childComponentClass : localComponents)
-        {
-            VueComponentOptions childComponentOptions =
-                VueOptionsCache.getComponentOptions(childComponentClass);
-            this.components.set(VueGwtTools.componentToTagName(childComponentClass),
-                childComponentOptions);
-        }
-
-        for (Class<? extends VueDirective> childDirectiveClass : localDirectives)
-        {
-            VueDirectiveOptions childDirectiveDefinition =
-                VueOptionsCache.getDirectiveOptions(childDirectiveClass);
-            this.directives.set(VueGwtTools.directiveToTagName(childDirectiveClass),
-                childDirectiveDefinition);
-        }
+    public Set<Class<? extends VueDirective>> getLocalDirectives()
+    {
+        return localDirectives;
     }
 
     /**
