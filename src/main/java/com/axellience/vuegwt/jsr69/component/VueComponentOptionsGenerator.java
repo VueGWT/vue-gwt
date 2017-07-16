@@ -1,8 +1,8 @@
 package com.axellience.vuegwt.jsr69.component;
 
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.VueGwtCache;
 import com.axellience.vuegwt.client.component.HasRender;
-import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.component.hooks.HasActivated;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeCreate;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeDestroy;
@@ -124,6 +124,13 @@ public class VueComponentOptionsGenerator
         // Add the Java Component Instance initialization
         constructorBuilder.addStatement("this.setJavaComponentInstance(new $T())",
             TypeName.get(componentTypeElement.asType()));
+
+        // Set parent
+        if (!TypeName.get(componentTypeElement.getSuperclass()).equals(TypeName.get(Vue.class)))
+        {
+            constructorBuilder.addStatement("this.setParentComponentClass($T.class)",
+                componentTypeElement.getSuperclass());
+        }
 
         // Set the name of the component
         if (!"".equals(annotation.name()))

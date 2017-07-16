@@ -16,7 +16,6 @@ import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 import com.axellience.vuegwt.client.template.TemplateResource;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.google.gwt.resources.client.CssResource;
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -42,6 +41,7 @@ import java.util.Set;
 public abstract class VueComponentOptions<T extends Vue> extends JsObject
 {
     @JsProperty protected T vuegwt$javaComponentInstance;
+    private Class<? super T> vuegwt$parentComponentClass;
 
     @JsProperty protected String name;
 
@@ -67,7 +67,6 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
 
     private final Set<Class<? extends Vue>> localComponents = new HashSet<>();
     private final Set<Class<? extends VueDirective>> localDirectives = new HashSet<>();
-    private boolean areDependenciesInjected = false;
 
     /**
      * Set the Java Component Instance on this Options
@@ -82,17 +81,6 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
         {
             ((HasCustomizeOptions) this.vuegwt$javaComponentInstance).customizeOptions(this);
         }
-    }
-
-    /**
-     * Return the Java Component Instance for this Options
-     * This instance is used to retrieve the methods from our Options
-     * @return An instance of the VueComponent class for this Component
-     */
-    @JsIgnore
-    public T getJavaComponentInstance()
-    {
-        return this.vuegwt$javaComponentInstance;
     }
 
     /**
@@ -188,7 +176,7 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
         else
         {
             copyStyles(dataObject);
-            this.data = dataObject;
+            this.data = (DataFactory) () -> dataObject;
         }
     }
 
@@ -339,6 +327,16 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     public Set<Class<? extends VueDirective>> getLocalDirectives()
     {
         return localDirectives;
+    }
+
+    public Class<? super T> getParentComponentClass()
+    {
+        return vuegwt$parentComponentClass;
+    }
+
+    protected void setParentComponentClass(Class<? super T> parentComponentClass)
+    {
+        this.vuegwt$parentComponentClass = parentComponentClass;
     }
 
     /**

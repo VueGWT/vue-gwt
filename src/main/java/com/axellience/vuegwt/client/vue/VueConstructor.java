@@ -21,8 +21,6 @@ import java.util.Set;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
 public class VueConstructor<T extends Vue> extends JsFunction
 {
-    private Set<Class<? extends Vue>> vuegwt$localComponents;
-    private Set<Class<? extends VueDirective>> vuegwt$localDirectives;
     private boolean areDependenciesInjected;
 
     @JsOverlay
@@ -38,76 +36,61 @@ public class VueConstructor<T extends Vue> extends JsFunction
     }
 
     @JsOverlay
-    public final void ensureDependenciesInjected()
+    public final void ensureDependenciesInjected(Set<Class<? extends Vue>> localComponents,
+        Set<Class<? extends VueDirective>> localDirectives)
     {
         if (areDependenciesInjected)
             return;
 
         areDependenciesInjected = true;
-        ensureLocalComponentsInjected();
-        ensureLocalDirectivesInjected();
+        injectLocalComponents(localComponents);
+        injectLocalDirectives(localDirectives);
     }
 
     @JsOverlay
-    private void ensureLocalComponentsInjected()
+    private void injectLocalComponents(Set<Class<? extends Vue>> localComponents)
     {
-        if (this.vuegwt$localComponents != null)
-        {
-            JsObject options = JsTools.get(this, "options");
-            JsObject<VueConstructor> components =
-                (JsObject<VueConstructor>) options.get("components");
-            if (components == null)
-            {
-                components = new JsObject<>();
-                options.set("components", components);
-            }
+        if (localComponents == null)
+            return;
 
-            for (Class<? extends Vue> childComponentClass : vuegwt$localComponents)
-            {
-                VueConstructor childComponentOptions =
-                    VueGwtCache.getVueConstructor(childComponentClass);
-                components.set(VueGwtTools.componentToTagName(childComponentClass),
-                    childComponentOptions);
-            }
-            this.vuegwt$localComponents = null;
+        JsObject options = JsTools.get(this, "options");
+        JsObject<VueConstructor> components = (JsObject<VueConstructor>) options.get("components");
+        if (components == null)
+        {
+            components = new JsObject<>();
+            options.set("components", components);
+        }
+
+        for (Class<? extends Vue> childComponentClass : localComponents)
+        {
+            VueConstructor childComponentOptions =
+                VueGwtCache.getVueConstructor(childComponentClass);
+            components.set(VueGwtTools.componentToTagName(childComponentClass),
+                childComponentOptions);
         }
     }
 
     @JsOverlay
-    private void ensureLocalDirectivesInjected()
+    private void injectLocalDirectives(Set<Class<? extends VueDirective>> localDirectives)
     {
-        if (this.vuegwt$localDirectives != null)
+        if (localDirectives == null)
+            return;
+
+        JsObject options = JsTools.get(this, "options");
+        JsObject<VueDirectiveOptions> directives =
+            (JsObject<VueDirectiveOptions>) options.get("directives");
+        if (directives == null)
         {
-            JsObject options = JsTools.get(this, "options");
-            JsObject<VueDirectiveOptions> directives =
-                (JsObject<VueDirectiveOptions>) options.get("directives");
-            if (directives == null)
-            {
-                directives = new JsObject<>();
-                options.set("directives", directives);
-            }
-
-            for (Class<? extends VueDirective> childDirectiveClass : vuegwt$localDirectives)
-            {
-                VueDirectiveOptions childDirectiveDefinition =
-                    VueGwtCache.getDirectiveOptions(childDirectiveClass);
-                directives.set(VueGwtTools.directiveToTagName(childDirectiveClass),
-                    childDirectiveDefinition);
-            }
-
-            this.vuegwt$localDirectives = null;
+            directives = new JsObject<>();
+            options.set("directives", directives);
         }
-    }
 
-    @JsOverlay
-    public final void setLocalComponents(Set<Class<? extends Vue>> localComponents)
-    {
-        this.vuegwt$localComponents = localComponents;
-    }
-
-    @JsOverlay
-    public final void setLocalDirectives(Set<Class<? extends VueDirective>> localDirectives)
-    {
-        this.vuegwt$localDirectives = localDirectives;
+        for (Class<? extends VueDirective> childDirectiveClass : localDirectives)
+        {
+            VueDirectiveOptions childDirectiveDefinition =
+                VueGwtCache.getDirectiveOptions(childDirectiveClass);
+            directives.set(VueGwtTools.directiveToTagName(childDirectiveClass),
+                childDirectiveDefinition);
+        }
     }
 }

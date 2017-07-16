@@ -16,6 +16,7 @@
 
 package com.axellience.vuegwt.template;
 
+import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.template.TemplateExpressionBase;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 import com.axellience.vuegwt.client.template.TemplateResource;
@@ -50,10 +51,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Source: GWT Project http://www.gwtproject.org/
+ * Original Source: GWT Project http://www.gwtproject.org/
  * <p>
  * Modified by Adrien Baron
- * Modification: Generate methods for the view based on the parsed template
  */
 public final class TemplateResourceGenerator extends AbstractResourceGenerator
     implements SupportsGeneratorResultCaching
@@ -69,6 +69,51 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
     public String createAssignment(TreeLogger logger, ResourceContext context, JMethod method)
     throws UnableToCompleteException
     {
+        URL resource = getResource(logger, context, method);
+        SourceWriter sw = new StringSourceWriter();
+
+        // No resource for the template
+        if (resource == null)
+        {
+            return generateEmptyTemplateResource(method, sw);
+        }
+
+        // Convenience when examining the generated code.
+        if (!AbstractResourceGenerator.STRIP_COMMENTS)
+            sw.println("// " + resource.toExternalForm());
+
+        TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
+        String typeName = getTypeName(method);
+
+        // Start class
+        sw.println("new " + typeName + TemplateProviderGenerator.TEMPLATE_RESOURCE_SUFFIX + "() {");
+        sw.indent();
+
+        // Get template content from HTML file
+        String templateContent = Util.readURLAsString(resource);
+
+        // Process it and replace with the result
+        TemplateParserResult templateParserResult =
+            new TemplateParser().parseHtmlTemplate(templateContent, typeOracle.findType(typeName));
+        templateContent = templateParserResult.getTemplateWithReplacements();
+
+        // Computed properties
+        JClassType componentClass = typeOracle.findType(typeName);
+        Set<String> doneComputed = new HashSet<>();
+        processComputedProperties(sw, componentClass, doneComputed);
+
+        processComponentStyles(sw, templateParserResult);
+        processTemplateString(method, sw, templateContent);
+        processTemplateExpressions(sw, templateParserResult);
+
+        sw.outdent();
+        sw.println("}");
+
+        return sw.toString();
+    }
+
+    private URL getResource(TreeLogger logger, ResourceContext context, JMethod method)
+    {
         URL[] resources;
         try
         {
@@ -79,68 +124,130 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             resources = null;
         }
 
-        URL resource = resources == null ? null : resources[0];
+        return resources == null ? null : resources[0];
+    }
 
-        SourceWriter sw = new StringSourceWriter();
+    private String generateEmptyTemplateResource(JMethod method, SourceWriter sw)
+    {
+        sw.println("new " + TemplateResource.class.getName() + "() {");
+        sw.indent();
+        sw.println("public String getText() {return \"\";}");
+        sw.println("public String getName() {return \"" + method.getName() + "\";}");
+        sw.outdent();
+        sw.println("}");
+        return sw.toString();
+    }
 
-        // No resource for the template
-        if (resource == null)
-        {
-            sw.println("new " + TemplateResource.class.getName() + "() {");
-            sw.indent();
-            sw.println("public String getText() {return \"\";}");
-            sw.println("public String getName() {return \"" + method.getName() + "\";}");
-            sw.outdent();
-            sw.println("}");
-            return sw.toString();
-        }
-
-        if (!AbstractResourceGenerator.STRIP_COMMENTS)
-        {
-            // Convenience when examining the generated code.
-            sw.println("// " + resource.toExternalForm());
-        }
-
-        TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
+    private String getTypeName(JMethod method)
+    {
         Source resourceAnnotation = method.getAnnotation(Source.class);
         String resourcePath = resourceAnnotation.value()[0];
-        String typeName = resourcePath.substring(0, resourcePath.length() - 5).replaceAll("/", ".");
+        return resourcePath.substring(0, resourcePath.length() - 5).replaceAll("/", ".");
+    }
 
-        // Start class
-        sw.println("new " + typeName + TemplateProviderGenerator.TEMPLATE_RESOURCE_SUFFIX + "() {");
-        sw.indent();
-
-        // Get template content from HTML file
-        String templateContent = Util.readURLAsString(resource);
-
-        TemplateParser templateParser = new TemplateParser();
-        TemplateParserResult templateParserResult =
-            templateParser.parseHtmlTemplate(templateContent, typeOracle.findType(typeName));
-        templateContent = templateParserResult.getTemplateWithReplacements();
-
-        // Add computed properties
-        JClassType jClassType = typeOracle.findType(typeName);
-        Set<String> doneComputed = new HashSet<>();
-        for (JMethod jMethod : jClassType.getMethods())
+    private void processTemplateExpressions(SourceWriter sw, TemplateParserResult templateParserResult)
+    {
+        for (TemplateExpression expression : templateParserResult.getExpressions())
         {
-            Computed computed = jMethod.getAnnotation(Computed.class);
-            if (computed == null)
-                continue;
-
-            String propertyName =
-                GenerationUtil.getComputedPropertyName(computed, jMethod.getName());
-            if (doneComputed.contains(propertyName))
-                continue;
-
-            doneComputed.add(propertyName);
-            sw.println("@jsinterop.annotations.JsProperty");
-            sw.println(jMethod.getReturnType().getQualifiedSourceName()
-                + " "
-                + propertyName
-                + ";");
+            generateTemplateExpressionMethod(sw, expression);
         }
 
-        // Add Component Styles
+        generateGetTemplateExpressions(sw, templateParserResult);
+    }
+
+    private void generateTemplateExpressionMethod(SourceWriter sw, TemplateExpression expression)
+    {
+        String expressionReturnType = expression.getReturnType();
+        if ("VOID".equals(expressionReturnType))
+            expressionReturnType = "void";
+
+        sw.println("@jsinterop.annotations.JsMethod");
+        String[] parameters = expression
+            .getParameters()
+            .stream()
+            .map(param -> param.getType() + " " + param.getName())
+            .toArray(String[]::new);
+
+        sw.println("public "
+            + expressionReturnType
+            + " "
+            + expression.getId()
+            + "("
+            + String.join(", ", parameters)
+            + ") {");
+        sw.indent();
+
+        if (isString(expressionReturnType))
+        {
+            sw.println("return (" + expression.getBody() + ") + \"\";");
+        }
+        else if ("void".equals(expressionReturnType))
+        {
+            sw.println(expression.getBody() + ";");
+        }
+        else
+        {
+            sw.println("return (" + expressionReturnType + ") (" + expression.getBody() + ");");
+        }
+
+        sw.outdent();
+        sw.println("}");
+    }
+
+    private boolean isString(String expressionReturnType)
+    {
+        return "java.lang.String".equals(expressionReturnType) || "String".equals(
+            expressionReturnType);
+    }
+
+    private void generateGetTemplateExpressions(SourceWriter sw,
+        TemplateParserResult templateParserResult)
+    {
+        sw.println("public java.util.List getTemplateExpressions() {");
+        sw.indent();
+        sw.println("java.util.List result = new java.util.LinkedList();");
+        for (TemplateExpression expression : templateParserResult.getExpressions())
+        {
+            sw.println("result.add(new "
+                + TemplateExpressionBase.class.getCanonicalName()
+                + "("
+                + TemplateExpressionKind.class.getCanonicalName()
+                + "."
+                + expression.getKind().toString()
+                + ", \""
+                + expression.getId()
+                + "\""
+                + "));");
+        }
+        sw.println("return result;");
+        sw.outdent();
+        sw.println("}");
+    }
+
+    private void processTemplateString(JMethod method, SourceWriter sw, String templateContent)
+    {
+        sw.println("public String getText() {");
+        sw.indent();
+        if (templateContent.length() > MAX_STRING_CHUNK)
+        {
+            writeLongString(sw, templateContent);
+        }
+        else
+        {
+            sw.println("return \"" + Generator.escape(templateContent) + "\";");
+        }
+        sw.outdent();
+        sw.println("}");
+
+        sw.println("public String getName() {");
+        sw.indent();
+        sw.println("return \"" + method.getName() + "\";");
+        sw.outdent();
+        sw.println("}");
+    }
+
+    private void processComponentStyles(SourceWriter sw, TemplateParserResult templateParserResult)
+    {
         for (Entry<String, String> entry : templateParserResult.getStyleImports().entrySet())
         {
             String styleInterfaceName = entry.getValue();
@@ -171,91 +278,32 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("return result;");
         sw.outdent();
         sw.println("}");
+    }
 
-        // Add component Template String
-        sw.println("public String getText() {");
-        sw.indent();
-        if (templateContent.length() > MAX_STRING_CHUNK)
+    private void processComputedProperties(SourceWriter sw, JClassType vueComponentClass,
+        Set<String> doneComputed)
+    {
+        if (vueComponentClass == null || vueComponentClass
+            .getQualifiedSourceName()
+            .equals(Vue.class.getCanonicalName()))
+            return;
+
+        for (JMethod jMethod : vueComponentClass.getMethods())
         {
-            writeLongString(sw, templateContent);
+            Computed computed = jMethod.getAnnotation(Computed.class);
+            if (computed == null)
+                continue;
+
+            String propertyName =
+                GenerationUtil.getComputedPropertyName(computed, jMethod.getName());
+            if (doneComputed.contains(propertyName))
+                continue;
+
+            doneComputed.add(propertyName);
+            sw.println("@jsinterop.annotations.JsProperty");
+            sw.println(jMethod.getReturnType().getQualifiedSourceName() + " " + propertyName + ";");
         }
-        else
-        {
-            sw.println("return \"" + Generator.escape(templateContent) + "\";");
-        }
-        sw.outdent();
-        sw.println("}");
-
-        sw.println("public String getName() {");
-        sw.indent();
-        sw.println("return \"" + method.getName() + "\";");
-        sw.outdent();
-        sw.println("}");
-
-        for (TemplateExpression expression : templateParserResult.getExpressions())
-        {
-            String expressionReturnType = expression.getReturnType();
-            if ("VOID".equals(expressionReturnType))
-                expressionReturnType = "void";
-
-            sw.println("@jsinterop.annotations.JsMethod");
-            String[] parameters = expression
-                .getParameters()
-                .stream()
-                .map(param -> param.getType() + " " + param.getName())
-                .toArray(String[]::new);
-
-            sw.println("public "
-                + expressionReturnType
-                + " "
-                + expression.getId()
-                + "("
-                + String.join(", ", parameters)
-                + ") {");
-            sw.indent();
-
-            if ("java.lang.String".equals(expressionReturnType) || "String".equals(
-                expressionReturnType))
-            {
-                sw.println("return (" + expression.getBody() + ") + \"\";");
-            }
-            else if ("void".equals(expressionReturnType))
-            {
-                sw.println(expression.getBody() + ";");
-            }
-            else
-            {
-                sw.println("return (" + expressionReturnType + ") (" + expression.getBody() + ");");
-            }
-
-            sw.outdent();
-            sw.println("}");
-        }
-
-        sw.println("public java.util.List getTemplateExpressions() {");
-        sw.indent();
-        sw.println("java.util.List result = new java.util.LinkedList();");
-        for (TemplateExpression expression : templateParserResult.getExpressions())
-        {
-            sw.println("result.add(new "
-                + TemplateExpressionBase.class.getCanonicalName()
-                + "("
-                + TemplateExpressionKind.class.getCanonicalName()
-                + "."
-                + expression.getKind().toString()
-                + ", \""
-                + expression.getId()
-                + "\""
-                + "));");
-        }
-        sw.println("return result;");
-        sw.outdent();
-        sw.println("}");
-
-        sw.outdent();
-        sw.println("}");
-
-        return sw.toString();
+        processComputedProperties(sw, vueComponentClass.getSuperclass(), doneComputed);
     }
 
     /**

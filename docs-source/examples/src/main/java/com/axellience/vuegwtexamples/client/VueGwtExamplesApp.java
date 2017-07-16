@@ -9,6 +9,7 @@ import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
 import com.axellience.vuegwtexamples.client.examples.counterwithevent.CounterWithEventComponent;
 import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
+import com.axellience.vuegwtexamples.client.examples.extendjavacomponent.ChildComponent;
 import com.axellience.vuegwtexamples.client.examples.focus.FocusDirectiveComponent;
 import com.axellience.vuegwtexamples.client.examples.greet.GreetComponent;
 import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
@@ -22,7 +23,6 @@ import com.axellience.vuegwtexamples.client.examples.shareddatamodel.SharedDataM
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
 import com.axellience.vuegwtexamples.client.examples.simplerender.RenderAppComponent;
 import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoListComponent;
-import com.axellience.vuegwtexamples.client.examples.todolist.TodoComponent;
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todotext.TodoTextComponent;
 import com.axellience.vuegwtexamples.client.examples.todotextcomputed.TodoTextComputedComponent;
@@ -60,12 +60,6 @@ public class VueGwtExamplesApp implements EntryPoint
         extendJsComponentVC.instantiate().$mount("#extendJsComponent");
         */
 
-        VueConstructor<TodoListComponent> todoListVC = Vue.getJsVueClass(TodoListComponent.class);
-        JsTools.set(JsTools.get(JsTools.get(todoListVC, "options"), "components"),
-            "todo",
-            Vue.getJsVueClass(TodoComponent.class));
-        todoListVC.instantiate().$mount("#todoListComponent");
-
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
         this.addExample("linkComponent", LinkComponent.class);
         this.addExample("canHideComponent", CanHideComponent.class);
@@ -73,7 +67,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("exclamationComponent", ExclamationComponent.class);
         this.addExample("messageComponent", MessageComponent.class);
         this.addExample("parentComponent", ParentComponent.class);
-        //this.addExample("todoListComponent", TodoListComponent.class);
+        this.addExample("todoListComponent", TodoListComponent.class);
         this.addExample("melisandreComponent", MelisandreComponent.class);
         this.addExample("kittenComponent", KittenComponent.class);
         this.addExample("reverseComponent", ReverseComponent.class);
@@ -98,6 +92,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("recursiveComponent", RecursiveComponent.class);
         this.addExample("focusDirectiveComponent", FocusDirectiveComponent.class);
         this.addExample("renderAppComponent", RenderAppComponent.class);
+        this.addExample("extendJavaComponent", ChildComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends Vue> exampleClass)

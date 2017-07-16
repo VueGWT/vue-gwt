@@ -17,7 +17,9 @@ import java.util.Map;
  */
 public class VueGwtCache
 {
-    private static Map<String, VueConstructor> vueConstructorCache = new HashMap<>();
+    private static Map<String, VueConstructor<? extends Vue>> vueConstructorCache = new HashMap<>();
+    private static Map<String, VueComponentOptions<? extends Vue>> componentOptionsCache =
+        new HashMap<>();
     private static Map<String, VueDirectiveOptions> directiveOptionsCache = new HashMap<>();
 
     /**
@@ -31,11 +33,7 @@ public class VueGwtCache
     public static <T extends Vue> void registerComponentOptions(Class<T> vueComponentClass,
         VueComponentOptions<T> componentOptions)
     {
-        VueConstructor<T> vueConstructor = Vue.extend(componentOptions);
-        vueConstructor.setLocalComponents(componentOptions.getLocalComponents());
-        vueConstructor.setLocalDirectives(componentOptions.getLocalDirectives());
-
-        vueConstructorCache.put(vueComponentClass.getCanonicalName(), vueConstructor);
+        componentOptionsCache.put(vueComponentClass.getCanonicalName(), componentOptions);
     }
 
     public static <T extends Vue> VueConstructor<T> getVueConstructor(Class<T> vueComponentClass)
@@ -46,17 +44,35 @@ public class VueGwtCache
     public static <T extends Vue> VueConstructor<T> getVueConstructor(
         String vueComponentClassCanonicalName)
     {
-        VueConstructor<T> vueConstructor = vueConstructorCache.get(vueComponentClassCanonicalName);
+        return (VueConstructor<T>) vueConstructorCache.computeIfAbsent(
+            vueComponentClassCanonicalName,
+            VueGwtCache::createVueConstructor);
+    }
 
-        if (vueConstructor != null)
+    private static <T extends Vue> VueConstructor<T> createVueConstructor(
+        String vueComponentClassCanonicalName)
+    {
+        VueComponentOptions<T> componentOptions =
+            (VueComponentOptions<T>) componentOptionsCache.get(vueComponentClassCanonicalName);
+
+        if (componentOptions == null)
         {
-            vueConstructor.ensureDependenciesInjected();
-            return vueConstructor;
+            throw new RuntimeException("Couldn't find the given Component "
+                + vueComponentClassCanonicalName
+                + ". Make sure your annotations are being processed, and that you added the -generateJsInteropExports flag to GWT.");
         }
 
-        throw new RuntimeException("Couldn't find the given Component "
-            + vueComponentClassCanonicalName
-            + ". Make sure your annotations are being processed, and that you added the -generateJsInteropExports flag to GWT.");
+        VueConstructor<T> vueConstructor;
+        Class<? super T> parent = componentOptions.getParentComponentClass();
+        if (parent == null)
+            vueConstructor = Vue.extend(componentOptions);
+        else
+            vueConstructor = getVueConstructor((Class<T>) parent).extend(componentOptions);
+
+        vueConstructor.ensureDependenciesInjected(componentOptions.getLocalComponents(),
+            componentOptions.getLocalDirectives());
+
+        return vueConstructor;
     }
 
     /**
