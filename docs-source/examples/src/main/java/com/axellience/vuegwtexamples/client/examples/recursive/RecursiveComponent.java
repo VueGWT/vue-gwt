@@ -9,7 +9,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType
-@Component
+@Component(name = "recursive")
 public class RecursiveComponent extends Vue
 {
     @Prop

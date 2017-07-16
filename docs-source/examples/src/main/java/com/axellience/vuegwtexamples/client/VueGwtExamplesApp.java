@@ -2,7 +2,6 @@ package com.axellience.vuegwtexamples.client;
 
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
@@ -46,20 +45,6 @@ public class VueGwtExamplesApp implements EntryPoint
      */
     public void onModuleLoad()
     {
-        Vue.component(RecursiveComponent.class);
-
-        VueConstructor vueClass = (VueConstructor) JsTools.getWindow().get("MyComponent");
-        Vue myComponent = vueClass.instantiate();
-        myComponent.$mount("#container");
-
-        /*
-        VueConstructor<MyJsComponent> myJsComponentVC =
-            (VueConstructor<MyJsComponent>) JsTools.getWindow().get("MyJsComponent");
-        VueConstructor<ExtendJsComponent> extendJsComponentVC =
-            myJsComponentVC.extend(ExtendJsComponent.class);
-        extendJsComponentVC.instantiate().$mount("#extendJsComponent");
-        */
-
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
         this.addExample("linkComponent", LinkComponent.class);
         this.addExample("canHideComponent", CanHideComponent.class);
