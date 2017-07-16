@@ -7,7 +7,7 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component
-public class ExtendJsComponent extends MyJsComponent
+public class ParentJavaComponent extends ChildJsComponent
 {
     @JsProperty
     int value;

@@ -10,7 +10,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class MyJsComponent extends Vue
+public class ChildJsComponent extends Vue
 {
     @JsProperty
     protected String message;
