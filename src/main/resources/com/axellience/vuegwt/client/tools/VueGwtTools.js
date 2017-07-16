@@ -9,11 +9,11 @@ window.vueGwtTools = {
 	extendVueClass: function (vueClassToExtend, vueComponentOptions) {
 		return vueClassToExtend.extend(vueComponentOptions);
 	},
-	getFunctionBody: function(myFunction) {
+	getFunctionBody: function (myFunction) {
 		// Get content between first { and last }
 		var m = myFunction.toString().match(/\{([\s\S]*)\}/m)[1];
 		// Strip comments
-		return m.replace(/^\s*\/\/.*$/mg,'').trim();
+		return m.replace(/^\s*\/\/.*$/mg, '').trim();
 	}
 };
 
