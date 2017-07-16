@@ -2,7 +2,9 @@ package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
 import com.axellience.vuegwt.jsr69.component.VueComponentOptionsGenerator;
+import com.axellience.vuegwt.jsr69.component.VueJsComponentRegistrationGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
+import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
 import com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator;
 import com.axellience.vuegwt.jsr69.directive.annotations.Directive;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
@@ -20,6 +22,7 @@ import java.util.Set;
 
 @SupportedAnnotationTypes({
     "com.axellience.vuegwt.jsr69.component.annotations.Component",
+    "com.axellience.vuegwt.jsr69.component.annotations.JsComponent",
     "com.axellience.vuegwt.jsr69.directive.annotations.Directive",
     "com.axellience.vuegwt.jsr69.style.annotations.Style"
 })
@@ -32,9 +35,34 @@ public class VueGWTProcessor extends AbstractProcessor
         this.processStyleAnnotations(roundEnv);
         this.processDirectiveAnnotations(roundEnv);
         this.processComponentAnnotations(roundEnv);
+        this.processJsComponentAnnotations(roundEnv);
 
         // claim the annotation
         return true;
+    }
+
+    private void processStyleAnnotations(RoundEnvironment roundEnv)
+    {
+        Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(Style.class);
+
+        StyleProviderGenerator styleProviderGenerator = new StyleProviderGenerator(processingEnv);
+        for (TypeElement element : ElementFilter.typesIn(annotatedElements))
+        {
+            styleProviderGenerator.generate(element);
+        }
+    }
+
+    private void processDirectiveAnnotations(RoundEnvironment roundEnv)
+    {
+        Set<? extends Element> annotatedElements =
+            roundEnv.getElementsAnnotatedWith(Directive.class);
+
+        VueDirectiveOptionsGenerator vueDirectiveOptionsGenerator =
+            new VueDirectiveOptionsGenerator(processingEnv);
+        for (TypeElement element : ElementFilter.typesIn(annotatedElements))
+        {
+            vueDirectiveOptionsGenerator.generate(element);
+        }
     }
 
     private void processComponentAnnotations(RoundEnvironment roundEnv)
@@ -57,27 +85,17 @@ public class VueGWTProcessor extends AbstractProcessor
         }
     }
 
-    private void processDirectiveAnnotations(RoundEnvironment roundEnv)
+    private void processJsComponentAnnotations(RoundEnvironment roundEnv)
     {
         Set<? extends Element> annotatedElements =
-            roundEnv.getElementsAnnotatedWith(Directive.class);
+            roundEnv.getElementsAnnotatedWith(JsComponent.class);
 
-        VueDirectiveOptionsGenerator vueDirectiveOptionsGenerator =
-            new VueDirectiveOptionsGenerator(processingEnv);
+        VueJsComponentRegistrationGenerator vueJsComponentRegistrationGenerator =
+            new VueJsComponentRegistrationGenerator(processingEnv);
+
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
-            vueDirectiveOptionsGenerator.generate(element);
-        }
-    }
-
-    private void processStyleAnnotations(RoundEnvironment roundEnv)
-    {
-        Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(Style.class);
-
-        StyleProviderGenerator styleProviderGenerator = new StyleProviderGenerator(processingEnv);
-        for (TypeElement element : ElementFilter.typesIn(annotatedElements))
-        {
-            styleProviderGenerator.generate(element);
+            vueJsComponentRegistrationGenerator.generate(element);
         }
     }
 }

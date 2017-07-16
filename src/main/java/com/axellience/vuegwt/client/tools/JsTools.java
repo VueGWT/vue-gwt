@@ -44,6 +44,9 @@ public class JsTools
     public static native void unsetObjectProperty(Object object, String property);
 
     @JsMethod(namespace = "axellience")
+    public static native <T> T getDeepValue(Object object, String path);
+
+    @JsMethod(namespace = "axellience")
     public static native <T> T getArrayItem(Object array, int index);
 
     @JsMethod(namespace = "axellience")

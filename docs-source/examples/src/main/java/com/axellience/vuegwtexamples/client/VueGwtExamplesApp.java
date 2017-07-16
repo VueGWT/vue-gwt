@@ -2,6 +2,7 @@ package com.axellience.vuegwtexamples.client;
 
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
@@ -9,8 +10,11 @@ import com.axellience.vuegwtexamples.client.examples.counterwithevent.CounterWit
 import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
 import com.axellience.vuegwtexamples.client.examples.extendjavacomponent.ChildComponent;
+import com.axellience.vuegwtexamples.client.examples.extendsjscomponent.ChildJavaComponent;
+import com.axellience.vuegwtexamples.client.examples.extendsjscomponent.ParentJsComponent;
 import com.axellience.vuegwtexamples.client.examples.focus.FocusDirectiveComponent;
 import com.axellience.vuegwtexamples.client.examples.greet.GreetComponent;
+import com.axellience.vuegwtexamples.client.examples.instanciatejscomponent.FullJsWithMethodsComponent;
 import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
 import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
@@ -45,6 +49,13 @@ public class VueGwtExamplesApp implements EntryPoint
      */
     public void onModuleLoad()
     {
+        VueConstructor vueClass = (VueConstructor) JsTools.getWindow().get("FullJsComponent");
+        Vue myComponent = vueClass.instantiate();
+        myComponent.$mount("#fullJsComponent");
+
+        JsTools.log(FullJsWithMethodsComponent.class);
+        JsTools.log(ParentJsComponent.class);
+
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
         this.addExample("linkComponent", LinkComponent.class);
         this.addExample("canHideComponent", CanHideComponent.class);
@@ -78,6 +89,8 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("focusDirectiveComponent", FocusDirectiveComponent.class);
         this.addExample("renderAppComponent", RenderAppComponent.class);
         this.addExample("extendJavaComponent", ChildComponent.class);
+        this.addExample("extendJsComponent", ChildJavaComponent.class);
+        this.addExample("fullJsWithMethodsComponent", FullJsWithMethodsComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends Vue> exampleClass)

@@ -36,6 +36,12 @@ public class VueGwtCache
         componentOptionsCache.put(vueComponentClass.getCanonicalName(), componentOptions);
     }
 
+    public static <T extends Vue> void registerJsComponent(Class<T> vueComponentClass,
+        VueConstructor<T> vueConstructor)
+    {
+        vueConstructorCache.put(vueComponentClass.getCanonicalName(), vueConstructor);
+    }
+
     public static <T extends Vue> VueConstructor<T> getVueConstructor(Class<T> vueComponentClass)
     {
         return getVueConstructor(vueComponentClass.getCanonicalName());
