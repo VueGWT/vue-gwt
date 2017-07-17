@@ -588,7 +588,7 @@ The problem is made worse when you want to include the reversed message in your 
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
 </span>{
     <span class="hljs-keyword">public</span> String message;
 
@@ -627,7 +627,7 @@ And the best part is that we&apos;ve created this dependency relationship declar
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
 </span>{
     <span class="hljs-keyword">public</span> String message;
 
@@ -667,7 +667,7 @@ However, it is often a better idea to use a computed property rather than an imp
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
 </span>{
     <span class="hljs-keyword">public</span> String firstName;
     <span class="hljs-keyword">public</span> String lastName;
@@ -694,7 +694,7 @@ However, it is often a better idea to use a computed property rather than an imp
 <p>The above code is imperative and repetitive. Compare it with a computed property version:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
 </span>{
     <span class="hljs-keyword">public</span> String firstName;
     <span class="hljs-keyword">public</span> String lastName;
@@ -716,7 +716,7 @@ However, it is often a better idea to use a computed property rather than an imp
 <p>Computed properties are by default getter-only, but you can also provide a setter when you need it:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
 </span>{
     <span class="hljs-keyword">public</span> String firstName;
     <span class="hljs-keyword">public</span> String lastName;
@@ -757,7 +757,7 @@ The mandatory <code>propertyName</code> attribute of the annotation indicate the
 <p>Here is an example:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
 </span>{
     <span class="hljs-keyword">public</span> String message;
 
@@ -830,7 +830,7 @@ This allow you to watch non <code>JsInterop</code> properties:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"1.4.3","depth":2,"next":{"title":"Class and Style Bindings","level":"1.4.4","depth":2,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"1.4.2","depth":2,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/computed-and-watchers.md","mtime":"2017-07-12T14:53:26.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-14T21:09:29.014Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"1.4.3","depth":2,"next":{"title":"Class and Style Bindings","level":"1.4.4","depth":2,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"1.4.2","depth":2,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/computed-and-watchers.md","mtime":"2017-07-17T07:58:39.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T08:00:12.890Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

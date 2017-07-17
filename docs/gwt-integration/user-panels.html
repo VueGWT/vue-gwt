@@ -575,8 +575,8 @@ For this you need to use <code>VueGwtPanel</code>.</p>
     }
 }
 </code></pre>
-<h2 id="accessing-our-vuecomponent-instance">Accessing our VueComponent Instance</h2>
-<p>It&apos;s even possible to interact with our instantiated <code>VueComponent</code>.</p>
+<h2 id="accessing-our-vue-instance">Accessing our Vue Instance</h2>
+<p>It&apos;s even possible to interact with our instantiated <code>Vue</code>.</p>
 <p>Let&apos;s say our <code>DemoComponent</code> has a method <code>increaseCounter()</code>.
 We can do:</p>
 <pre><code class="lang-java">VueGwtPanel&lt;DemoComponent&gt; vueGwtPanel = <span class="hljs-keyword">new</span> VueGwtPanel&lt;&gt;(DemoComponent.class);
@@ -585,7 +585,7 @@ RootPanel.get(<span class="hljs-string">&quot;childComponentAttachPoint&quot;</s
 vueGwtPanel.vue().increaseCounter();
 </code></pre>
 <h2 id="cleaning-up">Cleaning Up</h2>
-<p>If you don&apos;t need your <code>VueGwtPanel</code> anymore, you can destroy it&apos;s VueComponent instance by calling:</p>
+<p>If you don&apos;t need your <code>VueGwtPanel</code> anymore, you can destroy it&apos;s Vue instance by calling:</p>
 <pre><code class="lang-java">vueGwtPanel.vue().$destroy();
 </code></pre>
 
@@ -631,7 +631,7 @@ vueGwtPanel.vue().increaseCounter();
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"User Panels","level":"1.5.3","depth":2,"next":{"title":"JsInterop","level":"1.6","depth":1,"path":"js-interop/index.md","ref":"js-interop/index.md","articles":[{"title":"JsObject","level":"1.6.1","depth":2,"path":"js-interop/js-object.md","ref":"js-interop/js-object.md","articles":[]},{"title":"JsArray","level":"1.6.2","depth":2,"path":"js-interop/js-array.md","ref":"js-interop/js-array.md","articles":[]},{"title":"JsTools","level":"1.6.3","depth":2,"path":"js-interop/js-tools.md","ref":"js-interop/js-tools.md","articles":[]}]},"previous":{"title":"Client Bundles (Images)","level":"1.5.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/user-panels.md","mtime":"2017-07-07T08:45:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-14T21:09:29.014Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"User Panels","level":"1.5.3","depth":2,"next":{"title":"JsInterop","level":"1.6","depth":1,"path":"js-interop/index.md","ref":"js-interop/index.md","articles":[{"title":"JsObject","level":"1.6.1","depth":2,"path":"js-interop/js-object.md","ref":"js-interop/js-object.md","articles":[]},{"title":"JsArray","level":"1.6.2","depth":2,"path":"js-interop/js-array.md","ref":"js-interop/js-array.md","articles":[]},{"title":"JsTools","level":"1.6.3","depth":2,"path":"js-interop/js-tools.md","ref":"js-interop/js-tools.md","articles":[]}]},"previous":{"title":"Client Bundles (Images)","level":"1.5.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/user-panels.md","mtime":"2017-07-17T07:58:39.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T08:00:12.890Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

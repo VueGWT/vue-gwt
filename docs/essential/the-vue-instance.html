@@ -565,7 +565,7 @@
 <p>Although not strictly associated with the <a href="https://en.wikipedia.org/wiki/Model_View_ViewModel" target="_blank">MVVM pattern</a>, Vue&apos;s design was partly inspired by it.
 As a convention, we often use the variable <code>vm</code> (short for ViewModel) to refer to our Vue instances.</p>
 <p>Vue.js requires options to configure your Vue instance.
-Vue GWT generate those for you based on your <code>VueComponent</code> class and various annotations.</p>
+Vue GWT generate those for you based on your <code>@Component</code> class and various annotations.</p>
 <p>In Vue.js it&apos;s possible to extend the Vue default constructor to generate several Components with the same options.
 In Vue GWT we use the Factory design pattern:</p>
 <pre><code class="lang-java">VueComponentFactory&lt;DemoComponent&gt; demoFactory = Vue.extend(DemoComponent.class);
@@ -578,13 +578,13 @@ For now, you just need to know that all Vue components are essentially extended 
 Vue GWT configure those instance for you, but in the browser they really are just regular Vue instance.</p>
 <h2 id="observation">Observation</h2>
 <p>Let&apos;s talk a little about how Vue.js deals with observation.</p>
-<h3 id="vuecomponent-to-vuejs-data-model">VueComponent to Vue.js Data Model</h3>
+<h3 id="component-to-vuejs-data-model">@Component to Vue.js Data Model</h3>
 <p>In Vue.js you pass all the data you want to observe as the <code>data</code> option of your Vue constructor.
-This <code>data</code> object is built for you by Vue GWT based on the public properties of your <code>VueComponent</code>.</p>
-<p>For example this VueComponent:</p>
+This <code>data</code> object is built for you by Vue GWT based on the public properties of your Java Class.</p>
+<p>For example this Vue Component:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
     <span class="hljs-keyword">public</span> Todo todo;
 
     <span class="hljs-meta">@Override</span>
@@ -618,7 +618,7 @@ It will then recursively observe all the properties of the Object you set on thi
 <h3 id="&#x26A0;&#xFE0F;-important-note-on-vue-gwt-observation">&#x26A0;&#xFE0F; Important Note on Vue GWT Observation</h3>
 <p>In Vue.js only these proxied (observed) properties are <strong>reactive</strong>.
 If you attach a new property to the JS instance after it has been created, it will not trigger any view updates.</p>
-<p>When you add your Objects to your <code>VueComponent</code> all their properties <strong>must</strong> already be set in the JS world.</p>
+<p>When you add your Objects to your Component all their properties <strong>must</strong> already be set in the JS world.</p>
 <p>Because of GWT optimization this is <strong>ONLY</strong> the case when you have <strong>explicitly</strong> set the property value on your instance.</p>
 <p>In these cases the <code>text</code> property <strong>WON&apos;T</strong> be observed once your app is compiled and optimized:</p>
 <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span> </span>{
@@ -650,12 +650,12 @@ If you attach a new property to the JS instance after it has been created, it wi
 <h2 id="component-properties-and-methods">Component Properties and Methods</h2>
 <p>In addition to data properties, Vue instances expose a number of useful instance properties and methods.
 These properties and methods are prefixed with <code>$</code> to differentiate them from proxied data properties.</p>
-<p>In Vue GWT these methods and properties are defined in <code>VueComponent</code>, usually with the same name.
-Because your Components inherits from <code>VueComponent</code> you can simply access them in your Components.</p>
+<p>In Vue GWT these methods and properties are defined in <code>Vue</code>, usually with the same name.
+Because your Components inherits from <code>Vue</code> you can simply access them in your Components.</p>
 <p>For example:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
     <span class="hljs-keyword">public</span> Todo todo;
 
     <span class="hljs-meta">@Override</span>
@@ -679,7 +679,7 @@ Along the way, it will also invoke some <strong>lifecycle hooks</strong>, which 
 For example, the <a href="https://vuejs.org/v2/api/#created" target="_blank"><code>created</code></a> hook is called after the instance is created:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
 <span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
     <span class="hljs-keyword">public</span> Todo todo;
 
     <span class="hljs-meta">@Override</span>
@@ -738,7 +738,7 @@ Your custom logic for a component would be split among these lifecycle hooks.</p
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"The Vue Instance","level":"1.4.1","depth":2,"next":{"title":"Template Syntax","level":"1.4.2","depth":2,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"previous":{"title":"Essential Topics","level":"1.4","depth":1,"path":"essential/index.md","ref":"essential/index.md","articles":[{"title":"The Vue Instance","level":"1.4.1","depth":2,"path":"essential/the-vue-instance.md","ref":"essential/the-vue-instance.md","articles":[]},{"title":"Template Syntax","level":"1.4.2","depth":2,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},{"title":"Computed Properties and Watchers","level":"1.4.3","depth":2,"path":"essential/computed-and-watchers.md","ref":"essential/computed-and-watchers.md","articles":[]},{"title":"Class and Style Bindings","level":"1.4.4","depth":2,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},{"title":"Conditional Rendering","level":"1.4.5","depth":2,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},{"title":"List Rendering","level":"1.4.6","depth":2,"path":"essential/list.md","ref":"essential/list.md","articles":[]},{"title":"Event Handling","level":"1.4.7","depth":2,"path":"essential/events.md","ref":"essential/events.md","articles":[]},{"title":"Form Input Bindings","level":"1.4.8","depth":2,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},{"title":"Components","level":"1.4.9","depth":2,"path":"essential/components.md","ref":"essential/components.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/the-vue-instance.md","mtime":"2017-07-11T14:34:52.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-14T21:09:29.014Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"The Vue Instance","level":"1.4.1","depth":2,"next":{"title":"Template Syntax","level":"1.4.2","depth":2,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"previous":{"title":"Essential Topics","level":"1.4","depth":1,"path":"essential/index.md","ref":"essential/index.md","articles":[{"title":"The Vue Instance","level":"1.4.1","depth":2,"path":"essential/the-vue-instance.md","ref":"essential/the-vue-instance.md","articles":[]},{"title":"Template Syntax","level":"1.4.2","depth":2,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},{"title":"Computed Properties and Watchers","level":"1.4.3","depth":2,"path":"essential/computed-and-watchers.md","ref":"essential/computed-and-watchers.md","articles":[]},{"title":"Class and Style Bindings","level":"1.4.4","depth":2,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},{"title":"Conditional Rendering","level":"1.4.5","depth":2,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},{"title":"List Rendering","level":"1.4.6","depth":2,"path":"essential/list.md","ref":"essential/list.md","articles":[]},{"title":"Event Handling","level":"1.4.7","depth":2,"path":"essential/events.md","ref":"essential/events.md","articles":[]},{"title":"Form Input Bindings","level":"1.4.8","depth":2,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},{"title":"Components","level":"1.4.9","depth":2,"path":"essential/components.md","ref":"essential/components.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/the-vue-instance.md","mtime":"2017-07-17T07:58:39.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T08:00:12.890Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
