@@ -13,9 +13,15 @@ import jsinterop.annotations.JsType;
 public class JsObject<T>
 {
     @JsOverlay
-    public final <K> K get(String propertyName)
+    public static JsObject of(String key, Object value)
     {
-        @SuppressWarnings("unchecked") K result = (K) JsTools.getObjectProperty(this, propertyName);
+        return new JsObject().set(key, value);
+    }
+
+    @JsOverlay
+    public final T get(String propertyName)
+    {
+        @SuppressWarnings("unchecked") T result = (T) JsTools.getObjectProperty(this, propertyName);
         return result;
     }
 
