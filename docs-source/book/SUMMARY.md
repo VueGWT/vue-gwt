@@ -34,8 +34,8 @@
     * [JsTools](js-interop/README.md#js-tools)
 
 ## Advanced Topics
+* [Render Function](advanced/render-function.md)
 * [Custom Directives](advanced/custom-directives.md)
 * [Plugins](advanced/plugins.md)
 * [Routing](advanced/routing.md)
-* [Render Function](advanced/render-function.md)
 * [And more!](advanced/and-more.md)
