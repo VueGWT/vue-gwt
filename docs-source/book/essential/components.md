@@ -865,8 +865,60 @@ This is not yet supported by Vue GWT.
 
 ### Recursive Components
 
-Vue.js supports [recursive components](https://vuejs.org/v2/guide/components.html#Recursive-Components).
-This is not yet supported by Vue GWT.
+Components can recursively invoke themselves in their own template.
+However, they can only do so with the `name` option:
+
+```java
+@Component(name = "unique-name-of-my-component")
+```
+
+When you register a component globally using `Vue.component`, the global ID is automatically set as the component's `name` option.
+
+```java
+Vue.component("unique-name-of-my-component", MyComponentConstructor.get());
+```
+
+If you're not careful, recursive components can also lead to infinite loops:
+
+```java
+@Component(name = "stack-overflow")
+```
+
+```html
+<div><stack-overflow></stack-overflow></div>
+```
+
+A component like the above will result in a "max stack size exceeded" error, so make sure recursive invocation is conditional (i.e. uses a `v-if` that will eventually be `false`).
+
+Bellow is an example recursive component:
+
+```java
+@JsType
+@Component(name = "recursive")
+public class RecursiveComponent extends Vue {
+    @Prop
+    public Integer counter;
+
+    @Override
+    public void created() {
+        if (this.counter == null)
+            this.counter = 0;
+    }
+}
+```
+
+```html
+<span>
+    {{ counter }}
+    <recursive v-if="counter < 5" :counter="counter + 1"></recursive>
+</span>
+```
+
+{% raw %}
+<div class="example-container" data-name="recursiveComponent">
+    <span id="recursiveComponent"></span>
+</div>
+{% endraw %}
 
 ### Circular References Between Components
 
