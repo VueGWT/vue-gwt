@@ -36,9 +36,9 @@ If you need, you can even add your own methods, data or any property from [Compo
 Sometimes you need to access a `VueComponentOptions` for a given Component from somewhere else.
 For example in Vue Router you can set the Component for a given Route, and Vue Router except it to be a `VueComponentOptions`.
 
-For this you can simply use the `VueOptionsCache`:
+For this you can create a new instance of it like a regular Java Object:
 ```java
-VueComponentOptions<MyComponent> myComponentOptions = VueOptionsCache.getComponentOptions(MyComponent.class);
+MyComponentOptions myComponentOptions = new MyComponentOptions();
 ```
 
 ### Escape Hatch

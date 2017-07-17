@@ -170,18 +170,16 @@ For example:
 
 Components can also be registered globally.
 They will then be usable in any Component in your app.
-You won't need to pass the Class of your Component to the `components` attribute in the `@Component` annotation.
+You won't need to pass the `VueConstructor` of your Component to the `components` attribute in the `@Component` annotation.
 
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
         // Register TodoComponent globally
-        Vue.registerComponent(TodoComponent.class);
+        Vue.component("todo", TodoComponentConstructor.get());
     }
 }
 ```
-
-This is the equivalent of calling `Vue.component(...)` in Vue.js.
 
 To understand more in depth how the Observation works, and avoid pitfalls it's recommended to read information on **[the Vue Instance](../essential/the-vue-instance.md)**.
 

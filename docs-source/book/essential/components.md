@@ -33,10 +33,10 @@ public class MyComponent extends Vue
 </div>
 ```
 
-To register a global component, you can use `Vue.component(tagName, MyComponentClass.class)`. For example:
+To register a global component, you can use `Vue.component(tagName, MyComponentConstructor.get())`. For example:
 
 ```java
-Vue.component('my-component', MyComponent.class)
+Vue.component('my-component', MyComponentConstructor.get())
 ```
 
 <p class="info-panel">
@@ -66,8 +66,8 @@ public class ParentComponent extends Vue {
 
 ```java
 // Somewhere in your App
-Vue.component('my-component', MyComponent.class);
-Vue.attach("#rootComponent", RootComponent.class);
+Vue.component('my-component', MyComponentConstructor.get());
+Vue.attach("#rootComponent", RootComponentConstructor.get());
 ```
 
 Which will render:

@@ -13,15 +13,6 @@ This Component will simply display an html link.
 #### Java Class
 To create our Component, we must create a Class annotated by `@Component` that extends `Vue`.
 
-All the `JsInterop` attributes and methods of our Component Class will be accessible in our template.
-
-Meaning either:
-
- * Adding the `@JsType` annotation to our Class and setting attributes/methods to `public`
- * Adding the `@JsProperty`/`@JsMethod` annotation to each attribute/method and setting them to `protected`
-
-In this documentation we chose to use the `@JsType` annotation and to set all our properties/methods to `public` for brevity.
-
 ***SimpleLinkComponent.java***
 ```java
 @JsType
@@ -39,6 +30,17 @@ public class SimpleLinkComponent extends Vue {
 The method `created` that is overridden in our Component is mandatory.
 It will be called each time an instance of your Component is created.
 You can see it as your Component "constructor".
+
+#### Why public methods/properties?
+
+Only `JsInterop` attributes and methods of our Class will be accessible in our template.
+
+Meaning either:
+
+ * Adding the `@JsType` annotation to our Class and setting attributes/methods to `public`
+ * Adding the `@JsProperty`/`@JsMethod` annotation to each attribute/method and setting them to `protected`
+
+In this documentation we chose to use the `@JsType` annotation and to set all our properties/methods to `public` for brevity.
 
 #### HTML Template
 
@@ -76,7 +78,7 @@ This works with all the examples of this documentation.
 
 ### Instantiating the Component
 
-How do we create the instance of our `SimpleLinkComponent`?
+How do we instantiate our `SimpleLinkComponent`?
 First, in our GWT index page we add a div to attach the instance:
 
 ***GwtIndex.html***
@@ -87,22 +89,32 @@ First, in our GWT index page we add a div to attach the instance:
 
 Then when GWT starts, we need to bootstrap an instance of our `SimpleLinkComponent` and attach it in our `simpleLinkComponentContainer` div.
 
-To do this we simply call the Vue.attach() static method and pass the selector of our container and our `SimpleLinkComponent` class to it.
+To do this we simply call the Vue.attach() static method and pass the selector of our container and a `VueConstructor` for our Component.
 
 ***RootGwtApp.java***
 
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
-        Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponent.class);
+        Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponentConstructor.get());
     }
 }
 ```
 
-Behind the scene, the instance of our Java Component will be converted to the format that Vue.js is expecting:
+In typical application we only do this for the first root Component.
+We can then use [Component composition](composing-with-components.md). 
+
+#### Where does `SimpleLinkComponentConstructor` comes from?
+
+It comes from the annotation processor.
+It automatically processes classes annotated with `@Component` and generate the corresponding `VueConstructor` for you.
+
+The generated `VueConstructor` class have a static method `get()` to get an instance of it.
+This instance is the Java representation of a Vue constructor in JavaScript.
+
+Behind the scene, our Java Component Class is converted to the options that Vue.js is expecting:
 ```javascript
 {
-    el: "#simpleLinkComponentContainer",
     template: '<a href="https://github.com/Axellience/vue-gwt">{{ linkName }}</a>',
     data: {
         linkName: null
@@ -115,7 +127,8 @@ Behind the scene, the instance of our Java Component will be converted to the fo
 }
 ```
 
-And passed down to the `new Vue()` JavaScript method.
+Those options are passed to the [`Vue.extend()`](https://vuejs.org/v2/api/#Vue-extend) JavaScript method.
+The result is a `VueConstructor` we can use to generate new instances of Component.
 
 ## Binding Element Attributes
 

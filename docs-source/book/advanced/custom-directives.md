@@ -38,7 +38,7 @@ We can then register our Directive globally:
 ```java
 public class VueGwtExamplesApp implements EntryPoint {
     public void onModuleLoad() {
-        Vue.directive(FocusDirective.class);
+        Vue.directive(new FocusDirectiveOptions());
     }
 }
 ```

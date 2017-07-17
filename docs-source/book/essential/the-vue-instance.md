@@ -7,7 +7,7 @@
 Every Vue vm is bootstrapped by creating a **root Vue instance** with the `Vue.attach()` method:
 
 ```java
-DemoComponent vm = Vue.attach("#container", DemoComponent.class);
+DemoComponent vm = Vue.attach("#container", DemoComponentConstructor.get());
 ```
 
 Although not strictly associated with the [MVVM pattern](https://en.wikipedia.org/wiki/Model_View_ViewModel), Vue's design was partly inspired by it.
@@ -15,15 +15,19 @@ As a convention, we often use the variable `vm` (short for ViewModel) to refer t
 
 Vue.js requires options to configure your Vue instance.
 Vue GWT generate those for you based on your `@Component` class and various annotations.
+It then uses those options and `Vue.extend` to create a `VueConstructor` for your Component.
 
-In Vue.js it's possible to extend the Vue default constructor to generate several Components with the same options.
-In Vue GWT we use the Factory design pattern:
+Using our `VueConstructor` we can generate several instance of our Component:
 
 ```java
-VueComponentFactory<DemoComponent> demoFactory = Vue.extend(DemoComponent.class);
+DemoComponentConstructor demoConstructor = DemoComponentConstructor.get();
 
-DemoComponent demoComponent = demoFactory.build();
-demoComponent.$mount("#myContainer");
+DemoComponent vm1 = demoConstructor.instantiate();
+DemoComponent vm2 = demoConstructor.instantiate();
+DemoComponent vm3 = demoConstructor.instantiate();
+vm1.$mount("#myContainer1");
+vm2.$mount("#myContainer2");
+vm3.$mount("#myContainer3");
 ```
 
 Although it is possible to create extended instances imperatively, most of the time it is recommended to compose them declaratively in templates as custom elements.

@@ -19,7 +19,7 @@ For example, let's instantiate a `DemoComponent` using this mechanism:
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
         // Create a VueGwtPanel, it's a regular GWT Widget and can be attached to any GWT Widget
-        VueGwtPanel<DemoComponent> vueGwtPanel = new VueGwtPanel<>(DemoComponent.class);
+        VueGwtPanel<DemoComponent> vueGwtPanel = new VueGwtPanel<>(DemoComponentConstructor.get());
         
         // Attach it to inside our DOM element
         RootPanel.get("childComponentAttachPoint").add(vueGwtPanel);
@@ -35,7 +35,7 @@ Let's say our `DemoComponent` has a method `increaseCounter()`.
 We can do:
 
 ```java
-VueGwtPanel<DemoComponent> vueGwtPanel = new VueGwtPanel<>(DemoComponent.class);
+VueGwtPanel<DemoComponent> vueGwtPanel = new VueGwtPanel<>(DemoComponentConstructor.get());
 RootPanel.get("childComponentAttachPoint").add(vueGwtPanel);
 
 vueGwtPanel.vue().increaseCounter();
