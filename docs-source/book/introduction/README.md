@@ -42,7 +42,7 @@ The method `created` that is overridden in our Component is mandatory.
 It will be called each time an instance of your Component is created.
 You can see it as your Component "constructor".
 
-##### Why public methods/properties?
+##### Why Public Methods/Properties?
 
 Only `JsInterop` attributes and methods of our Class will be accessible in our template.
 
@@ -115,7 +115,7 @@ public class RootGwtApp implements EntryPoint {
 In typical application we only do this for the first root Component.
 We can then use [Component composition](README.md#composing-with-components).
 
-##### Where does `SimpleLinkComponentConstructor` comes from?
+##### Where Does `SimpleLinkComponentConstructor` Comes From?
 
 It comes from the annotation processor.
 It automatically processes classes annotated with `@Component` and generate the corresponding `VueConstructor` for you.

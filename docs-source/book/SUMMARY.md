@@ -37,4 +37,5 @@
 * [Custom Directives](advanced/custom-directives.md)
 * [Plugins](advanced/plugins.md)
 * [Routing](advanced/routing.md)
+* [Render Function](advanced/render-function.md)
 * [And more!](advanced/and-more.md)

@@ -16,8 +16,6 @@ If you would like to help we are [open to contributions](https://github.com/Axel
 
 Here is the list of unsupported features:
 
-* [Render Functions](https://vuejs.org/v2/guide/render-function.html)
-    * Require JsInterop classes for VNodes.
 * [Mixins](https://vuejs.org/v2/guide/mixins.html)
     * Would be pretty hard to achieve because of Java single inheritance and type checking in templates.
 * [State Management](https://vuejs.org/v2/guide/state-management.html)
