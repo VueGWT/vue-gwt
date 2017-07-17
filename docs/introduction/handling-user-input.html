@@ -567,6 +567,41 @@
     script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
     document.head.appendChild(script);
 </script>
+<script>
+    window.FullJsComponent = Vue.extend({
+        template: "<div>We Come In Peace From the JS World.</div>"
+    });
+    window.FullJsWithMethodsComponent = Vue.extend({
+        template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
+        data: function () {
+            return {
+                value: 10
+            }
+        },
+        methods: {
+            multiplyBy2: function (value) {
+                return value * 2;
+            }
+        }
+    });
+    window.ParentJsComponent = Vue.extend({
+        data: function () {
+            return {
+                parentMessage: "This is a message from the Parent"
+            };
+        },
+        methods: {
+            parentMultiplyBy2: function (value) {
+                return value * 2;
+            }
+        },
+        computed: {
+            parentComputed: function () {
+                return "Computed Message | " + this.parentMessage;
+            }
+        }
+    });
+</script>
 
 <h2 id="events">Events</h2>
 <p>To let users interact with your app, we can use the <code>v-on</code> directive to attach event listeners that invoke methods on our Vue instances:</p>
@@ -672,7 +707,7 @@ Changing the value of our Java property will change the value of input:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Handling User Input","level":"1.3.3","depth":2,"next":{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]},"previous":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/handling-user-input.md","mtime":"2017-07-17T07:58:39.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T08:00:12.890Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Handling User Input","level":"1.3.3","depth":2,"next":{"title":"Composing with Components","level":"1.3.4","depth":2,"path":"introduction/composing-with-components.md","ref":"introduction/composing-with-components.md","articles":[]},"previous":{"title":"Conditional and Loops","level":"1.3.2","depth":2,"path":"introduction/conditional-and-loops.md","ref":"introduction/conditional-and-loops.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/handling-user-input.md","mtime":"2017-07-17T08:03:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T10:16:18.762Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

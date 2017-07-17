@@ -567,6 +567,41 @@
     script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
     document.head.appendChild(script);
 </script>
+<script>
+    window.FullJsComponent = Vue.extend({
+        template: "<div>We Come In Peace From the JS World.</div>"
+    });
+    window.FullJsWithMethodsComponent = Vue.extend({
+        template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
+        data: function () {
+            return {
+                value: 10
+            }
+        },
+        methods: {
+            multiplyBy2: function (value) {
+                return value * 2;
+            }
+        }
+    });
+    window.ParentJsComponent = Vue.extend({
+        data: function () {
+            return {
+                parentMessage: "This is a message from the Parent"
+            };
+        },
+        methods: {
+            parentMultiplyBy2: function (value) {
+                return value * 2;
+            }
+        },
+        computed: {
+            parentComputed: function () {
+                return "Computed Message | " + this.parentMessage;
+            }
+        }
+    });
+</script>
 
 <p><em>This page comes from the <a href="https://vuejs.org/v2/guide/list.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
 <h2 id="v-for"><code>v-for</code></h2>
@@ -896,7 +931,7 @@ In this case, you can create a computed property that returns the filtered or so
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"1.4.6","depth":2,"next":{"title":"Event Handling","level":"1.4.7","depth":2,"path":"essential/events.md","ref":"essential/events.md","articles":[]},"previous":{"title":"Conditional Rendering","level":"1.4.5","depth":2,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/list.md","mtime":"2017-07-17T07:58:39.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T08:00:12.890Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"1.4.6","depth":2,"next":{"title":"Event Handling","level":"1.4.7","depth":2,"path":"essential/events.md","ref":"essential/events.md","articles":[]},"previous":{"title":"Conditional Rendering","level":"1.4.5","depth":2,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/list.md","mtime":"2017-07-17T08:03:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T10:16:18.762Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

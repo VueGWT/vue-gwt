@@ -567,6 +567,41 @@
     script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
     document.head.appendChild(script);
 </script>
+<script>
+    window.FullJsComponent = Vue.extend({
+        template: "<div>We Come In Peace From the JS World.</div>"
+    });
+    window.FullJsWithMethodsComponent = Vue.extend({
+        template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
+        data: function () {
+            return {
+                value: 10
+            }
+        },
+        methods: {
+            multiplyBy2: function (value) {
+                return value * 2;
+            }
+        }
+    });
+    window.ParentJsComponent = Vue.extend({
+        data: function () {
+            return {
+                parentMessage: "This is a message from the Parent"
+            };
+        },
+        methods: {
+            parentMultiplyBy2: function (value) {
+                return value * 2;
+            }
+        },
+        computed: {
+            parentComputed: function () {
+                return "Computed Message | " + this.parentMessage;
+            }
+        }
+    });
+</script>
 
 <p><em>This page comes from the <a href="https://vuejs.org/v2/guide/components.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
 <h2 id="what-are-components">What are Components?</h2>
@@ -589,8 +624,8 @@ In some cases, they may also appear as a native HTML element extended with the s
   A custom component!
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<p>To register a global component, you can use <code>Vue.component(tagName, MyComponentClass.class)</code>. For example:</p>
-<pre><code class="lang-java">Vue.component(<span class="hljs-string">&apos;my-component&apos;</span>, MyComponent.class)
+<p>To register a global component, you can use <code>Vue.component(tagName, MyComponentConstructor.get())</code>. For example:</p>
+<pre><code class="lang-java">Vue.component(<span class="hljs-string">&apos;my-component&apos;</span>, MyComponentConstructor.get())
 </code></pre>
 <p class="info-panel">
     Note that Vue does not enforce the <a href="http://www.w3.org/TR/custom-elements/#concepts" target="_blank">W3C Rules</a> for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.
@@ -612,8 +647,8 @@ Here&apos;s the full example:</p>
 }
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-comment">// Somewhere in your App</span>
-Vue.component(<span class="hljs-string">&apos;my-component&apos;</span>, MyComponent.class);
-Vue.attach(<span class="hljs-string">&quot;#rootComponent&quot;</span>, RootComponent.class);
+Vue.component(<span class="hljs-string">&apos;my-component&apos;</span>, MyComponentConstructor.get());
+Vue.attach(<span class="hljs-string">&quot;#rootComponent&quot;</span>, RootComponentConstructor.get());
 </code></pre>
 <p>Which will render:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
@@ -1281,7 +1316,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Components","level":"1.4.9","depth":2,"next":{"title":"Integration with GWT","level":"1.5","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.5.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.5.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.5.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Form Input Bindings","level":"1.4.8","depth":2,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-07-17T07:58:39.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T08:00:12.890Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Components","level":"1.4.9","depth":2,"next":{"title":"Integration with GWT","level":"1.5","depth":1,"path":"gwt-integration/index.md","ref":"gwt-integration/index.md","articles":[{"title":"Styles","level":"1.5.1","depth":2,"path":"gwt-integration/styles.md","ref":"gwt-integration/styles.md","articles":[]},{"title":"Client Bundles (Images)","level":"1.5.2","depth":2,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},{"title":"User Panels","level":"1.5.3","depth":2,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]}]},"previous":{"title":"Form Input Bindings","level":"1.4.8","depth":2,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-07-17T09:34:38.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T10:16:18.762Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

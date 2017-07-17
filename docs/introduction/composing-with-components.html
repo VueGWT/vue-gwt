@@ -567,6 +567,41 @@
     script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
     document.head.appendChild(script);
 </script>
+<script>
+    window.FullJsComponent = Vue.extend({
+        template: "<div>We Come In Peace From the JS World.</div>"
+    });
+    window.FullJsWithMethodsComponent = Vue.extend({
+        template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
+        data: function () {
+            return {
+                value: 10
+            }
+        },
+        methods: {
+            multiplyBy2: function (value) {
+                return value * 2;
+            }
+        }
+    });
+    window.ParentJsComponent = Vue.extend({
+        data: function () {
+            return {
+                parentMessage: "This is a message from the Parent"
+            };
+        },
+        methods: {
+            parentMultiplyBy2: function (value) {
+                return value * 2;
+            }
+        },
+        computed: {
+            parentComputed: function () {
+                return "Computed Message | " + this.parentMessage;
+            }
+        }
+    });
+</script>
 
 <p>The component system is another important concept in Vue, because it&#x2019;s an abstraction that allows us to build large-scale applications composed of small, self-contained, and often reusable components.
 If we think about it, almost any type of application interface can be abstracted into a tree of components.</p>
@@ -691,15 +726,14 @@ If the name ends with &quot;Component&quot; this part is dropped.</p>
 <h2 id="registering-components-globally">Registering Components Globally</h2>
 <p>Components can also be registered globally.
 They will then be usable in any Component in your app.
-You won&apos;t need to pass the Class of your Component to the <code>components</code> attribute in the <code>@Component</code> annotation.</p>
+You won&apos;t need to pass the <code>VueConstructor</code> of your Component to the <code>components</code> attribute in the <code>@Component</code> annotation.</p>
 <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootGwtApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-comment">// Register TodoComponent globally</span>
-        Vue.registerComponent(TodoComponent.class);
+        Vue.component(<span class="hljs-string">&quot;todo&quot;</span>, TodoComponentConstructor.get());
     }
 }
 </code></pre>
-<p>This is the equivalent of calling <code>Vue.component(...)</code> in Vue.js.</p>
 <p>To understand more in depth how the Observation works, and avoid pitfalls it&apos;s recommended to read information on <strong><a href="../essential/the-vue-instance.html">the Vue Instance</a></strong>.</p>
 <p>Your shiny new Vue GWT Components will play nicely with GWT.
 <strong><a href="../gwt-integration/">Checkout integration with GWT</a></strong>.</p>
@@ -746,7 +780,7 @@ You won&apos;t need to pass the Class of your Component to the <code>components<
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Composing with Components","level":"1.3.4","depth":2,"next":{"title":"Essential Topics","level":"1.4","depth":1,"path":"essential/index.md","ref":"essential/index.md","articles":[{"title":"The Vue Instance","level":"1.4.1","depth":2,"path":"essential/the-vue-instance.md","ref":"essential/the-vue-instance.md","articles":[]},{"title":"Template Syntax","level":"1.4.2","depth":2,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},{"title":"Computed Properties and Watchers","level":"1.4.3","depth":2,"path":"essential/computed-and-watchers.md","ref":"essential/computed-and-watchers.md","articles":[]},{"title":"Class and Style Bindings","level":"1.4.4","depth":2,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},{"title":"Conditional Rendering","level":"1.4.5","depth":2,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},{"title":"List Rendering","level":"1.4.6","depth":2,"path":"essential/list.md","ref":"essential/list.md","articles":[]},{"title":"Event Handling","level":"1.4.7","depth":2,"path":"essential/events.md","ref":"essential/events.md","articles":[]},{"title":"Form Input Bindings","level":"1.4.8","depth":2,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},{"title":"Components","level":"1.4.9","depth":2,"path":"essential/components.md","ref":"essential/components.md","articles":[]}]},"previous":{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/composing-with-components.md","mtime":"2017-07-17T07:58:39.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T08:00:12.890Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Composing with Components","level":"1.3.4","depth":2,"next":{"title":"Essential Topics","level":"1.4","depth":1,"path":"essential/index.md","ref":"essential/index.md","articles":[{"title":"The Vue Instance","level":"1.4.1","depth":2,"path":"essential/the-vue-instance.md","ref":"essential/the-vue-instance.md","articles":[]},{"title":"Template Syntax","level":"1.4.2","depth":2,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},{"title":"Computed Properties and Watchers","level":"1.4.3","depth":2,"path":"essential/computed-and-watchers.md","ref":"essential/computed-and-watchers.md","articles":[]},{"title":"Class and Style Bindings","level":"1.4.4","depth":2,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},{"title":"Conditional Rendering","level":"1.4.5","depth":2,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},{"title":"List Rendering","level":"1.4.6","depth":2,"path":"essential/list.md","ref":"essential/list.md","articles":[]},{"title":"Event Handling","level":"1.4.7","depth":2,"path":"essential/events.md","ref":"essential/events.md","articles":[]},{"title":"Form Input Bindings","level":"1.4.8","depth":2,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},{"title":"Components","level":"1.4.9","depth":2,"path":"essential/components.md","ref":"essential/components.md","articles":[]}]},"previous":{"title":"Handling User Input","level":"1.3.3","depth":2,"path":"introduction/handling-user-input.md","ref":"introduction/handling-user-input.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include"],"pluginsConfig":{"include":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/composing-with-components.md","mtime":"2017-07-17T09:43:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-17T10:16:18.762Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
