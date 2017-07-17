@@ -23,7 +23,7 @@ It let you write Vue.js components in Java.
 
 ## What does it look like?
 
-You can start reading **[our documentation](introduction/your-first-component.md)** it contains live examples. 
+You can start reading **[our documentation](introduction/README.md)** it contains live examples. 
 You can also checkout the **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)**.
 
 Curious about the implementation? See the sources in our public **[Github repository](https://github.com/Axellience/vue-gwt)**.

@@ -4,14 +4,14 @@
 
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/components.html) and has been adapted for Vue GWT.*
 
-## What are Components?
+## What are Components? {#what-are-components}
 
 Components are one of the most powerful features of Vue.
 They help you extend basic HTML elements to encapsulate reusable code.
 At a high level, components are custom elements that Vue's compiler attaches behavior to.
 In some cases, they may also appear as a native HTML element extended with the special `is` attribute.
 
-## Using Components
+## Using Components {#using-components}
 
 ### Registration
 
@@ -218,7 +218,7 @@ Let's see how they work next.
   <img style="width:300px" src="https://vuejs.org/images/props-events.png" alt="props down, events up">
 </p>
 
-## Props
+## Props {#props}
 
 ### Passing Data with Props
 
@@ -583,7 +583,7 @@ For this you can use a [GWT EventBus](http://www.gwtproject.org/javadoc/latest/c
 
 In more complex cases, you should consider employing a dedicated [state-management pattern](https://vuejs.org/v2/guide/state-management.html).
 
-## Content Distribution with Slots
+## Content Distribution with Slots {#content-distribution}
 
 When using components, it is often desired to compose them like this:
 
@@ -761,7 +761,7 @@ Vue.js support [scoped slots](https://vuejs.org/v2/guide/components.html#Scoped-
 It allows to pass properties to your slot.
 This is not yet supported by Vue GWT.
 
-## Dynamic Components
+## Dynamic Components {#dynamic-components}
 
 You can use the same mount point and dynamically switch between multiple components using the reserved `<component>` element and dynamically bind to its `is` attribute:
 

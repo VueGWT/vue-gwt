@@ -150,4 +150,4 @@ Open the Action window :
 
 Enter `Registry...` and enable `compiler.automake.allow.when.app.running`
 
-You are good to go! **[Let's start using Vue GWT](./introduction/index.md)**
+You are good to go! **[Let's start using Vue GWT](introduction/README.md)**
