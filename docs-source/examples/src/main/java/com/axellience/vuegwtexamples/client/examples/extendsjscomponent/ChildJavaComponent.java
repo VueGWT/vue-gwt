@@ -2,6 +2,7 @@ package com.axellience.vuegwtexamples.client.examples.extendsjscomponent;
 
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
+import com.axellience.vuegwtexamples.client.examples.extendsjscomponent.parent.ParentJsComponent;
 import jsinterop.annotations.JsType;
 
 /**

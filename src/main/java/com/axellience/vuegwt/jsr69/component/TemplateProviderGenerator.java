@@ -13,14 +13,14 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
 /**
- * Generate the TemplateProvider for each Component
+ * Generate the TemplateProvider and {@link TemplateResource} for the user Java Components.
  * @author Adrien Baron
  */
 public class TemplateProviderGenerator
 {
-    public static String TEMPLATE_BUNDLE_SUFFIX = "_TemplateBundle";
-    public static String TEMPLATE_BUNDLE_METHOD_NAME = "template";
-    public static String TEMPLATE_RESOURCE_SUFFIX = "_TemplateResource";
+    static String TEMPLATE_BUNDLE_SUFFIX = "TemplateBundle";
+    static String TEMPLATE_BUNDLE_METHOD_NAME = "template";
+    public static String TEMPLATE_RESOURCE_SUFFIX = "TemplateResource";
 
     private final Filer filer;
     private final Elements elementsUtils;

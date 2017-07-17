@@ -7,7 +7,6 @@ import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
 import com.axellience.vuegwt.client.component.options.data.DataDefinition;
 import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
-import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JSON;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
@@ -21,11 +20,9 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Java representation of VueComponentOptions
@@ -41,7 +38,6 @@ import java.util.Set;
 public abstract class VueComponentOptions<T extends Vue> extends JsObject
 {
     @JsProperty protected T vuegwt$javaComponentInstance;
-    private Class<? super T> vuegwt$parentComponentClass;
 
     @JsProperty protected String name;
 
@@ -64,9 +60,6 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     }
 
     private final Map<String, CssResource> componentStyles = new HashMap<>();
-
-    private final Set<Class<? extends Vue>> localComponents = new HashSet<>();
-    private final Set<Class<? extends VueDirective>> localDirectives = new HashSet<>();
 
     /**
      * Set the Java Component Instance on this Options
@@ -297,46 +290,6 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
         PropOptions propDefinition = (PropOptions) props.get(propertyName);
         propDefinition.validator =
             JsTools.getObjectProperty(vuegwt$javaComponentInstance, methodName);
-    }
-
-    /**
-     * Register a local component in the components property of our ComponentOptions
-     * The registration will actually take place the first time our ComponentOptions is accessed
-     * @param componentClass The class of the {@link Vue} to register locally
-     */
-    protected <T extends Vue> void addLocalComponent(Class<T> componentClass)
-    {
-        this.localComponents.add(componentClass);
-    }
-
-    /**
-     * Register a local directive in the components property of our ComponentOptions
-     * The registration will actually take place the first time our ComponentOptions is accessed
-     * @param directiveClass The class of the {@link VueDirective} to register locally
-     */
-    protected <T extends VueDirective> void addLocalDirective(Class<T> directiveClass)
-    {
-        this.localDirectives.add(directiveClass);
-    }
-
-    public Set<Class<? extends Vue>> getLocalComponents()
-    {
-        return localComponents;
-    }
-
-    public Set<Class<? extends VueDirective>> getLocalDirectives()
-    {
-        return localDirectives;
-    }
-
-    public Class<? super T> getParentComponentClass()
-    {
-        return vuegwt$parentComponentClass;
-    }
-
-    protected void setParentComponentClass(Class<? super T> parentComponentClass)
-    {
-        this.vuegwt$parentComponentClass = parentComponentClass;
     }
 
     /**

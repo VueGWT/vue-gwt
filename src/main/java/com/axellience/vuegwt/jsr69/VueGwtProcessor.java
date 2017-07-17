@@ -1,8 +1,9 @@
 package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
+import com.axellience.vuegwt.jsr69.component.VueComponentConstructorGenerator;
 import com.axellience.vuegwt.jsr69.component.VueComponentOptionsGenerator;
-import com.axellience.vuegwt.jsr69.component.VueJsComponentRegistrationGenerator;
+import com.axellience.vuegwt.jsr69.component.VueJsComponentConstructorGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
 import com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator;
@@ -27,7 +28,7 @@ import java.util.Set;
     "com.axellience.vuegwt.jsr69.style.annotations.Style"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class VueGWTProcessor extends AbstractProcessor
+public class VueGwtProcessor extends AbstractProcessor
 {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
@@ -73,10 +74,13 @@ public class VueGWTProcessor extends AbstractProcessor
         TemplateProviderGenerator templateGenerator = new TemplateProviderGenerator(processingEnv);
         VueComponentOptionsGenerator vueComponentOptionsGenerator =
             new VueComponentOptionsGenerator(processingEnv);
+        VueComponentConstructorGenerator vueConstructorGenerator =
+            new VueComponentConstructorGenerator(processingEnv);
 
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
             vueComponentOptionsGenerator.generate(element);
+            vueConstructorGenerator.generate(element);
             Component componentAnnotation = element.getAnnotation(Component.class);
             if (componentAnnotation.hasTemplate())
             {
@@ -90,8 +94,8 @@ public class VueGWTProcessor extends AbstractProcessor
         Set<? extends Element> annotatedElements =
             roundEnv.getElementsAnnotatedWith(JsComponent.class);
 
-        VueJsComponentRegistrationGenerator vueJsComponentRegistrationGenerator =
-            new VueJsComponentRegistrationGenerator(processingEnv);
+        VueJsComponentConstructorGenerator vueJsComponentRegistrationGenerator =
+            new VueJsComponentConstructorGenerator(processingEnv);
 
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {

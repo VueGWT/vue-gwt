@@ -31,31 +31,29 @@ public class VueGwtTools
      * Return the default name to register a component based on it's class name.
      * The name of the tag is the name of the component converted to kebab-case.
      * If the component class ends with "Component", this part is ignored.
-     * @param vueComponentClass The class of the {@link Vue}
+     * @param componentClassName The class name of the {@link Vue}
      * @return The name of the component
      */
-    public static String componentToTagName(Class<? extends Vue> vueComponentClass)
+    public static String componentToTagName(String componentClassName)
     {
-        String name = vueComponentClass.getSimpleName();
         // Drop "Component" at the end of the class name
-        name = componentEnd.replace(name, "");
+        componentClassName = componentEnd.replace(componentClassName, "");
         // Convert from CamelCase to kebab-case
-        return camelCasePattern.replace(name, "$1-$2").toLowerCase();
+        return camelCasePattern.replace(componentClassName, "$1-$2").toLowerCase();
     }
 
     /**
      * Return the default name to register a directive based on it's class name
      * The name of the tag is the name of the component converted to kebab-case
      * If the component class ends with "Directive", this part is ignored
-     * @param vueDirective The class of the {@link VueDirective}
+     * @param directiveClassName The class name of the {@link VueDirective}
      * @return The name of the directive
      */
-    public static String directiveToTagName(Class<? extends VueDirective> vueDirective)
+    public static String directiveToTagName(String directiveClassName)
     {
-        String name = vueDirective.getSimpleName();
         // Drop "Component" at the end of the class name
-        name = directiveEnd.replace(name, "");
+        directiveClassName = directiveEnd.replace(directiveClassName, "");
         // Convert from CamelCase to kebab-case
-        return camelCasePattern.replace(name, "$1-$2").toLowerCase();
+        return camelCasePattern.replace(directiveClassName, "$1-$2").toLowerCase();
     }
 }

@@ -7,31 +7,26 @@ import com.axellience.vuegwt.client.component.options.functions.OnNextTick;
 import com.axellience.vuegwt.client.component.options.watch.ChangeTrigger;
 import com.axellience.vuegwt.client.component.options.watch.OnValueChange;
 import com.axellience.vuegwt.client.component.options.watch.WatcherRegistration;
-import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsSimpleFunction;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.client.tools.VueGwtTools;
 import com.axellience.vuegwt.client.tools.VueGwtToolsInjector;
 import com.axellience.vuegwt.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vue.VueConfig;
 import com.axellience.vuegwt.client.vue.VueConstructor;
+import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-import static com.axellience.vuegwt.client.VueGwtCache.getDirectiveOptions;
-import static com.axellience.vuegwt.client.VueGwtCache.getVueConstructor;
-
 /**
  * The Java representation of a Vue Component.
  * Whenever you want to add a component to your application you should extends this class and add
- * the
- * {@link com.axellience.vuegwt.jsr69.component.annotations.Component} annotation.
+ * the {@link Component} annotation.
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
@@ -54,15 +49,14 @@ public abstract class Vue extends JsObject implements HasCreated
     /**
      * Create a {@link Vue} instance and mount it on a DOM element.
      * @param element CSS selector for the element to attach in
-     * @param vueComponentClass The class of the Component to create
+     * @param vueConstructor The constructor of the Component to create
      * @param <T> {@link Vue} we want to attach
      * @return The created and attached instance of our Component
      */
     @JsOverlay
-    public static <T extends Vue> T attach(String element, Class<T> vueComponentClass)
+    public static <T extends Vue> T attach(String element, VueConstructor<T> vueConstructor)
     {
-        VueConstructor<T> vueClass = getJsVueClass(vueComponentClass);
-        T vueInstance = vueClass.instantiate();
+        T vueInstance = vueConstructor.instantiate();
         vueInstance.$mount(element);
         return vueInstance;
     }
@@ -70,78 +64,16 @@ public abstract class Vue extends JsObject implements HasCreated
     /**
      * Create a {@link Vue} instance and mount it on a DOM element.
      * @param element DOM Element we want to attach our component in
-     * @param vueComponentClass The class of the Component to create
+     * @param vueConstructor The constructor of the Component to create
      * @param <T> {@link Vue} we want to attach
      * @return The created and attached instance of our Component
      */
     @JsOverlay
-    public static <T extends Vue> T attach(Element element, Class<T> vueComponentClass)
+    public static <T extends Vue> T attach(Element element, VueConstructor<T> vueConstructor)
     {
-        VueConstructor<T> vueClass = getJsVueClass(vueComponentClass);
-        T vueInstance = vueClass.instantiate();
+        T vueInstance = vueConstructor.instantiate();
         vueInstance.$mount(element);
         return vueInstance;
-    }
-
-    /**
-     * Register a component globally.
-     * It will be usable in any component of your app.
-     * The name will be automatically computed based on the component class name.
-     * @param vueComponentClass The class of the Component to register
-     */
-    @JsOverlay
-    public static void component(Class<? extends Vue> vueComponentClass)
-    {
-        Vue.component(VueGwtTools.componentToTagName(vueComponentClass), vueComponentClass);
-    }
-
-    /**
-     * Register a component globally.
-     * It will be usable in any component of your app.
-     * @param id Register under the given id
-     * @param vueComponentClass The class of the Component to
-     * @param <T> {@link Vue} we want to attach
-     */
-    @JsOverlay
-    public static <T extends Vue> void component(String id, Class<T> vueComponentClass)
-    {
-        Vue.component(id, getVueConstructor(vueComponentClass));
-    }
-
-    /**
-     * Register a directive globally.
-     * It will be usable in any component of your app.
-     * The name will be automatically computed based on the directive class name.
-     * @param vueDirectiveClass The class of the {@link VueDirective} to register
-     */
-    @JsOverlay
-    public static void directive(Class<? extends VueDirective> vueDirectiveClass)
-    {
-        Vue.directive(VueGwtTools.directiveToTagName(vueDirectiveClass), vueDirectiveClass);
-    }
-
-    /**
-     * Register a directive globally.
-     * It will be usable in any component of your app.
-     * @param name Register under the given name
-     * @param vueDirectiveClass The class of the {@link VueDirective} to register
-     */
-    @JsOverlay
-    public static void directive(String name, Class<? extends VueDirective> vueDirectiveClass)
-    {
-        Vue.directive(name, getDirectiveOptions(vueDirectiveClass));
-    }
-
-    /**
-     * Return a {@link VueConstructor} that allows you to create instances of your Vue.
-     * @param vueComponentClass The class of the Component to use
-     * @param <T> {@link Vue} we want to attach
-     * @return A factory that can be used to create instance of your VueComponent
-     */
-    @JsOverlay
-    public static <T extends Vue> VueConstructor<T> getJsVueClass(Class<T> vueComponentClass)
-    {
-        return getVueConstructor(vueComponentClass);
     }
 
     @JsOverlay

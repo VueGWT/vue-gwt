@@ -1,4 +1,4 @@
-package com.axellience.vuegwtexamples.client.examples.extendsjscomponent;
+package com.axellience.vuegwtexamples.client.examples.extendsjscomponent.parent;
 
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;

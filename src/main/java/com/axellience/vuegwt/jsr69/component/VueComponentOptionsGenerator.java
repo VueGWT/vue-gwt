@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.jsr69.component;
 
 import com.axellience.vuegwt.client.Vue;
-import com.axellience.vuegwt.client.VueGwtCache;
 import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.component.hooks.HasActivated;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeCreate;
@@ -27,7 +26,6 @@ import com.axellience.vuegwt.jsr69.component.annotations.Prop;
 import com.axellience.vuegwt.jsr69.component.annotations.PropValidator;
 import com.axellience.vuegwt.jsr69.component.annotations.Watch;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -40,8 +38,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
@@ -49,15 +45,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 /**
- * Generate VueComponentOptions from the user VueComponent classes
+ * Generate VueComponentOptions from the user Java Components
  * @author Adrien Baron
  */
 public class VueComponentOptionsGenerator
 {
-    private static String COMPONENT_OPTIONS_SUFFIX = "_Options";
+    static String COMPONENT_OPTIONS_SUFFIX = "Options";
 
     private static Map<String, Class> HOOKS_MAP = new HashMap<>();
 
@@ -88,9 +83,9 @@ public class VueComponentOptionsGenerator
     }
 
     /**
-     * Generate and save the Java file for the typeElement passed to the constructor.
-     * @param componentTypeElement The {@link Vue} class to
-     * generate {@link VueComponentOptions} from
+     * Generate an {@link VueComponentOptions} for our Vue Component.
+     * @param componentTypeElement The {@link Vue} class to generate {@link VueComponentOptions}
+     * from
      */
     public void generate(TypeElement componentTypeElement)
     {
@@ -101,21 +96,8 @@ public class VueComponentOptionsGenerator
 
         Component annotation = componentTypeElement.getAnnotation(Component.class);
 
-        Builder componentClassBuilder = TypeSpec
-            .classBuilder(generatedTypeName)
-            .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-            .superclass(ParameterizedTypeName.get(ClassName.get(VueComponentOptions.class),
-                ClassName.get(componentTypeElement)))
-            .addAnnotation(JsType.class)
-            .addJavadoc("Vue Component Options for Component {@link $S}",
-                componentTypeElement.getQualifiedName().toString());
-
-        // Static init block
-        componentClassBuilder.addStaticBlock(CodeBlock.of(
-            "$T.registerComponentOptions($T.class, new $L());",
-            VueGwtCache.class,
-            TypeName.get(componentTypeElement.asType()),
-            generatedTypeName));
+        Builder optionsClassBuilder =
+            createOptionsClassBuilder(componentTypeElement, generatedTypeName);
 
         // Initialize constructor
         MethodSpec.Builder constructorBuilder =
@@ -125,18 +107,9 @@ public class VueComponentOptionsGenerator
         constructorBuilder.addStatement("this.setJavaComponentInstance(new $T())",
             TypeName.get(componentTypeElement.asType()));
 
-        // Set parent
-        if (!TypeName.get(componentTypeElement.getSuperclass()).equals(TypeName.get(Vue.class)))
-        {
-            constructorBuilder.addStatement("this.setParentComponentClass($T.class)",
-                componentTypeElement.getSuperclass());
-        }
-
         // Set the name of the component
         if (!"".equals(annotation.name()))
-        {
             constructorBuilder.addStatement("this.name = $S", annotation.name());
-        }
 
         // Add template initialization
         if (annotation.hasTemplate())
@@ -148,6 +121,50 @@ public class VueComponentOptionsGenerator
         }
 
         // Data and props
+        processDataProperties(componentTypeElement, annotation, constructorBuilder);
+
+        // Methods
+        processMethods(componentTypeElement, optionsClassBuilder, constructorBuilder);
+
+        // Finish building the constructor
+        optionsClassBuilder.addMethod(constructorBuilder.build());
+
+        // Build the ComponentOptions class
+        GenerationUtil.toJavaFile(filer,
+            optionsClassBuilder,
+            packageName,
+            generatedTypeName,
+            componentTypeElement);
+    }
+
+    /**
+     * Create a builder for our Option class.
+     * @param componentTypeElement The Component class we are processing
+     * @param generatedTypeName The name our Options class should have
+     * @return A class builder for our Options class
+     */
+    private Builder createOptionsClassBuilder(TypeElement componentTypeElement,
+        String generatedTypeName)
+    {
+        return TypeSpec
+            .classBuilder(generatedTypeName)
+            .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+            .superclass(ParameterizedTypeName.get(ClassName.get(VueComponentOptions.class),
+                ClassName.get(componentTypeElement)))
+            .addAnnotation(JsType.class)
+            .addJavadoc("Vue Component Options for Component {@link $S}",
+                componentTypeElement.getQualifiedName().toString());
+    }
+
+    /**
+     * Process properties from the Component Class.
+     * @param componentTypeElement Component to process
+     * @param annotation The Component annotation
+     * @param constructorBuilder The builder for the Constructor method of our Option class
+     */
+    private void processDataProperties(TypeElement componentTypeElement, Component annotation,
+        MethodSpec.Builder constructorBuilder)
+    {
         constructorBuilder.addStatement("$T<$T> dataFields = new $T<>()",
             List.class,
             DataDefinition.class,
@@ -176,8 +193,17 @@ public class VueComponentOptionsGenerator
                 }
             });
         constructorBuilder.addStatement("this.initData(dataFields, $L)", annotation.useFactory());
+    }
 
-        // Methods
+    /**
+     * Process methods from the Component Class.
+     * @param componentTypeElement Component to process
+     * @param optionsClassBuilder The builder for our Option class
+     * @param constructorBuilder The builder for the Constructor method of our Option class
+     */
+    private void processMethods(TypeElement componentTypeElement, Builder optionsClassBuilder,
+        MethodSpec.Builder constructorBuilder)
+    {
         ElementFilter
             .methodsIn(componentTypeElement.getEnclosedElements())
             .forEach(executableElement ->
@@ -189,7 +215,7 @@ public class VueComponentOptionsGenerator
 
                 if (computed != null)
                 {
-                    addComputed(javaName, computed, executableElement, constructorBuilder);
+                    addComputed(executableElement, computed, constructorBuilder);
                 }
                 else if (watch != null)
                 {
@@ -210,7 +236,7 @@ public class VueComponentOptionsGenerator
                     componentTypeElement.asType(),
                     HasRender.class))
                 {
-                    addRenderFunction(componentClassBuilder);
+                    addRenderFunction(optionsClassBuilder);
                 }
                 else if (HOOKS_MAP.containsKey(javaName))
                 {
@@ -226,94 +252,34 @@ public class VueComponentOptionsGenerator
                     constructorBuilder.addStatement("this.addMethod($S)", javaName);
                 }
             });
-
-        registerLocalComponents(annotation, constructorBuilder);
-
-        registerLocalDirectives(annotation, constructorBuilder);
-
-        // Finish building the constructor
-        componentClassBuilder.addMethod(constructorBuilder.build());
-
-        // Build the ComponentOptions class
-        GenerationUtil.toJavaFile(filer,
-            componentClassBuilder,
-            packageName,
-            generatedTypeName,
-            componentTypeElement);
     }
 
     /**
-     * Register components passed to the annotation
-     * @param annotation
-     * @param constructorBuilder
+     * Add a computed property to our Options.
+     * @param method The Java method (either the getter or setter of our Computed property)
+     * @param computed Computed annotation
+     * @param constructorBuilder The builder for the Constructor of our Options class
      */
-    private void registerLocalComponents(Component annotation,
+    private void addComputed(ExecutableElement method, Computed computed,
         MethodSpec.Builder constructorBuilder)
     {
-        // Components
-        try
-        {
-            Class<?>[] componentsClass = annotation.components();
-            Stream
-                .of(componentsClass)
-                .forEach(clazz -> constructorBuilder.addStatement("this.addLocalComponent($L.class)",
-                    clazz.getCanonicalName()));
-        }
-        catch (MirroredTypesException mte)
-        {
-            List<DeclaredType> classTypeMirrors = (List<DeclaredType>) mte.getTypeMirrors();
-            classTypeMirrors.forEach(classTypeMirror ->
-            {
-                TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
-                constructorBuilder.addStatement("this.addLocalComponent($L.class)",
-                    classTypeElement.getQualifiedName().toString());
-            });
-        }
-    }
+        String javaMethodName = method.getSimpleName().toString();
 
-    /**
-     * Register directives passed to the annotation
-     * @param annotation
-     * @param constructorBuilder
-     */
-    private void registerLocalDirectives(Component annotation,
-        MethodSpec.Builder constructorBuilder)
-    {
-        // Directives
-        try
-        {
-            Class<?>[] directivesClass = annotation.directives();
-            Stream
-                .of(directivesClass)
-                .forEach(clazz -> constructorBuilder.addStatement("this.addLocalDirective($L.class)",
-                    clazz.getCanonicalName()));
-        }
-        catch (MirroredTypesException mte)
-        {
-            List<DeclaredType> classTypeMirrors = (List<DeclaredType>) mte.getTypeMirrors();
-            classTypeMirrors.forEach(classTypeMirror ->
-            {
-                TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
-                constructorBuilder.addStatement("this.addLocalDirective($L.class)",
-                    classTypeElement.getQualifiedName().toString());
-            });
-        }
-    }
-
-    private void addComputed(String javaName, Computed computed, ExecutableElement method,
-        MethodSpec.Builder constructorBuilder)
-    {
         ComputedKind kind = ComputedKind.GETTER;
         if ("void".equals(method.getReturnType().toString()))
             kind = ComputedKind.SETTER;
 
         constructorBuilder.addStatement("this.addComputed($S, $S, $T.$L)",
-            javaName,
+            javaMethodName,
             GenerationUtil.getComputedPropertyName(computed, method.getSimpleName().toString()),
             ComputedKind.class,
             kind);
     }
 
+    /**
+     * Add a render function to our Options.
+     * @param componentClassBuilder The builder for our Options class
+     */
     private void addRenderFunction(Builder componentClassBuilder)
     {
         MethodSpec.Builder renderFunctionBuilder = MethodSpec
@@ -337,6 +303,12 @@ public class VueComponentOptionsGenerator
         componentClassBuilder.addMethod(renderFunctionBuilder.build());
     }
 
+    /**
+     * Transform a Java type name into a JavaScript type name.
+     * Takes care of primitive types.
+     * @param typeMirror A type to convert
+     * @return A String representing the JavaScript type name
+     */
     private String getNativeNameForJavaType(TypeMirror typeMirror)
     {
         TypeName typeName = TypeName.get(typeMirror);

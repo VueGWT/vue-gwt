@@ -1,10 +1,8 @@
 package com.axellience.vuegwt.jsr69.directive;
 
-import com.axellience.vuegwt.client.VueGwtCache;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -18,12 +16,12 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
 /**
- * Generate VueDirectiveOptions from the user VueDirective classes
+ * Generate {@link VueDirectiveOptions} from the user {@link VueDirective} classes
  * @author Adrien Baron
  */
 public class VueDirectiveOptionsGenerator
 {
-    private static String DIRECTIVE_OPTIONS_SUFFIX = "_Options";
+    public static String DIRECTIVE_OPTIONS_SUFFIX = "Options";
     private static String JDI = "vuegwt$javaDirectiveInstance";
 
     private final Elements elementsUtils;
@@ -54,13 +52,6 @@ public class VueDirectiveOptionsGenerator
             .addAnnotation(JsType.class)
             .addJavadoc("Vue Directive Options for directive {@link $S}",
                 directiveTypeElement.getQualifiedName().toString());
-
-        // Static init block
-        componentClassBuilder.addStaticBlock(CodeBlock.of(
-            "$T.registerDirectiveOptions($T.class, new $L());",
-            VueGwtCache.class,
-            TypeName.get(directiveTypeElement.asType()),
-            generatedTypeName));
 
         // Initialize constructor
         MethodSpec.Builder constructorBuilder =
