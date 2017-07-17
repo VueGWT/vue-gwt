@@ -125,7 +125,7 @@ public abstract class Vue extends JsObject implements HasCreated
     @JsProperty private Vue $root;
     @JsProperty private JsArray<Vue> $children;
     @JsProperty private Object $refs;
-    @JsProperty private JsObject<VNode> $slots;
+    @JsProperty private JsObject<JsArray<VNode>> $slots;
     @JsProperty private JsObject<ScopedSlot> $scopedSlots;
     @JsProperty private boolean $isServer;
     @JsProperty private Object $ssrContext;
@@ -212,7 +212,7 @@ public abstract class Vue extends JsObject implements HasCreated
     }
 
     @JsOverlay
-    public final JsObject<VNode> $slots()
+    public final JsObject<JsArray<VNode>> $slots()
     {
         return $slots;
     }
