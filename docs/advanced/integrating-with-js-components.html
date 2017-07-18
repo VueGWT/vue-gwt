@@ -694,7 +694,7 @@ myFullJsComponent.$mount(<span class="hljs-string">&quot;#fullJsComponent&quot;<
 
 <p>Easy, right?</p>
 <h3 id="declaring-our-js-component-interface">Declaring our JS Component Interface</h3>
-<p>Our first JS component was rather easy, let&apos;s say we know have this one:</p>
+<p>Our first JS component was rather easy, let&apos;s say we now have this one:</p>
 <pre><code class="lang-js"><span class="hljs-built_in">window</span>.FullJsWithMethodsComponent = Vue.extend({
     template: <span class="hljs-string">&quot;&lt;div&gt;My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}&lt;/div&gt;&quot;</span>,
     data: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
@@ -728,9 +728,9 @@ For this we need some kind of Java definition.</p>
 <li>We use the <code>@JsComponent</code> annotation instead of <code>@Component</code></li>
 <li>We have to use the <code>@JsType</code> annotation with <code>isNative = true</code></li>
 <li>Our JS methods are declared as <code>native</code> in our Java class.
-We don&apos;t need to provide their implementations, they will come for the JS Component.</li>
-<li>You only need to declare in the Class what you want to interact with.
-If you don&apos;t need to call the methods or access attributes from Java, you don&apos;t have to declare them.</li>
+We don&apos;t need to provide their implementations, they will come from the JS Component.</li>
+<li>You only need to declare what you want to interact with in the Class.
+If you don&apos;t need to call some methods or access some attributes from Java, you don&apos;t have to declare them.</li>
 </ul>
 <p>Because of the <code>@JsComponent</code> annotation, Vue GWT generates a <code>VueConstructor</code> class for us, just like with our Java components.</p>
 <p>So we can do:</p>
@@ -758,7 +758,7 @@ This is because by default, GWT will use the Java package and the Class Name to 
 }
 </code></pre>
 <p>By passing <code>namespace = JsPackage.GLOBAL</code> we tell GWT that the JS Constructor is on Window directly.
-If your JS Constructor is in an object <code>MyPlugin</code> on Window, then pass <code>namespace = &quot;MyPlugin&quot;</code>.
+If your JS Constructor is in an object <code>ComponentsBundle</code> on Window, then pass <code>namespace = &quot;ComponentsBundle&quot;</code>.
 You can also pass <code>name = &quot;MyJSName&quot;</code> to indicate the name of your JS Constructor, if it differs from your Java Class name.</p>
 <h3 id="using-our-js-component-in-a-java-one">Using Our JS Component in a Java One</h3>
 <p>You can use your JS Component just like the Java ones.
@@ -823,7 +823,7 @@ vm.$mount(<span class="hljs-string">&quot;#javaComponent&quot;</span>);
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"4.1","depth":1,"next":{"title":"Render Function","level":"4.2","depth":1,"path":"advanced/render-function.md","ref":"advanced/render-function.md","articles":[]},"previous":{"title":"JsTools","level":"3.4.3","depth":2,"anchor":"#js-tools","path":"js-interop/README.md","ref":"js-interop/README.md#js-tools","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-07-18T09:29:20.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-18T09:31:27.058Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"4.1","depth":1,"next":{"title":"Render Function","level":"4.2","depth":1,"path":"advanced/render-function.md","ref":"advanced/render-function.md","articles":[]},"previous":{"title":"JsTools","level":"3.4.3","depth":2,"anchor":"#js-tools","path":"js-interop/README.md","ref":"js-interop/README.md#js-tools","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-07-18T09:38:15.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-18T09:39:38.579Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
