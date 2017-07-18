@@ -4,7 +4,7 @@
 
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/render-function.html) and has been adapted for Vue GWT.*
 
-## Basics
+## Basics {#basics}
 
 Vue recommends using templates to build your HTML in the vast majority of cases.
 There are situations however, where you really need the full programmatic power of Java.
@@ -98,7 +98,7 @@ The code is shorter, but also requires greater familiarity with Vue instance pro
 In this case, you have to know that when you pass children without a `slot` attribute into a component, like the `Hello world!` inside of `anchored-heading`, those children are stored on the component instance at `$slots.default`.
 If you haven't already, **it's recommended to read through the [instance properties API](https://vuejs.org/v2/api/#vm-slots) before diving into render functions.**
 
-## `createElement` Arguments
+## The `VNodeBuilder` Instance {#v-node-builder-instance}
 
 The second thing you'll have to become familiar with is how to use template features in the `VNodeBuilder` builder.
 This Vue GWT object wraps the Vue.js `createElement` function to provide a cleaner Java interface.
@@ -292,7 +292,7 @@ public VNode render(VNodeBuilder builder) {
 }
 ```
 
-## Replacing Template Features with Plain JavaScript
+## Replacing Template Features with Plain Java {#replacing-template-feature-in-java}
 
 ### `v-if` and `v-for`
 

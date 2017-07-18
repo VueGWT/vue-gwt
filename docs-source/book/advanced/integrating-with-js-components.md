@@ -2,7 +2,7 @@
 
 !INCLUDE "../dependencies.md"
 
-## Using JS Components in Java
+## Using JS Components in Java {#using-js-components-in-java}
 
 Vue GWT allows us to make our nice Java Components.
 But the Vue.js ecosystem is vast, it would be a shame if we couldn't take advantage of existing JS Components.
@@ -142,7 +142,11 @@ You can then simply use it in your Java Component template:
 </div>
 ```
 
-## Using our Java Components in JS
+### Extending a JS Component
+
+We can also [extend JS Components](extending-components.md#extending-js-component) (this is required for some Vue plugins for example).
+
+## Using our Java Components in JS {#using-java-components-in-js}
 
 It's possible to expose your Java Components to be used in JS applications.
 
