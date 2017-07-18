@@ -114,7 +114,7 @@ This is because by default, GWT will use the Java package and the Class Name to 
 
 So if your Java Class is: `com.mypackage.MyComponent`, it will look for:
 ```js
-window.com = {
+Window.com = {
 	mypackage: {
 		MyComponent: MyComponentConstructor
 	}
