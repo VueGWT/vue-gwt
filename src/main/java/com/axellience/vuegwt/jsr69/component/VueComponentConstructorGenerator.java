@@ -1,12 +1,14 @@
 package com.axellience.vuegwt.jsr69.component;
 
 import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.VueGwtTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -33,6 +35,16 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
     public VueComponentConstructorGenerator(ProcessingEnvironment processingEnv)
     {
         super(processingEnv);
+    }
+
+    @Override
+    protected void createStaticRegistration(TypeElement componentTypeElement,
+        TypeName generatedTypeName, Builder vueConstructorClassBuilder)
+    {
+        vueConstructorClassBuilder.addStaticBlock(CodeBlock.of("$T.register($S, $T.get());",
+            VueGWT.class,
+            componentTypeElement.getQualifiedName().toString(),
+            generatedTypeName));
     }
 
     @Override

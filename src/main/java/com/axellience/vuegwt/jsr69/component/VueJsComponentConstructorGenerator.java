@@ -19,11 +19,18 @@ import javax.lang.model.element.TypeElement;
  * JsComponent}.
  * @author Adrien Baron
  */
-public class VueJsComponentConstructorGenerator extends VueComponentConstructorGenerator
+public class VueJsComponentConstructorGenerator extends AbstractVueComponentConstructorGenerator
 {
     public VueJsComponentConstructorGenerator(ProcessingEnvironment processingEnv)
     {
         super(processingEnv);
+    }
+
+    @Override
+    protected void createStaticRegistration(TypeElement componentTypeElement,
+        TypeName generatedTypeName, Builder vueConstructorClassBuilder)
+    {
+        // Do nothing
     }
 
     @Override
