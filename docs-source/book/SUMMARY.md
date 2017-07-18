@@ -34,6 +34,7 @@
     * [JsTools](js-interop/README.md#js-tools)
 
 ## Advanced Topics
+* [Integrating With JS Components](advanced/integrating-with-js-components.md)
 * [Render Function](advanced/render-function.md)
 * [Custom Directives](advanced/custom-directives.md)
 * [Plugins](advanced/plugins.md)

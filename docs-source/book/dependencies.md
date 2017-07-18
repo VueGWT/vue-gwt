@@ -11,7 +11,7 @@
 </script>
 <script>
 	window.FullJsComponent = Vue.extend({
-		template: "<div>We Come In Peace From the JS World.</div>"
+		template: "<div>I Come In Peace From the JS World.</div>"
 	});
 	window.FullJsWithMethodsComponent = Vue.extend({
 		template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",

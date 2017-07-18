@@ -1,0 +1,162 @@
+# Integrating With JS Components
+
+!INCLUDE "../dependencies.md"
+
+## Using JS Components in Java
+
+Vue GWT allows us to make our nice Java Components.
+But the Vue.js ecosystem is vast, it would be a shame if we couldn't take advantage of existing JS Components.
+Well let's see how we can do that!
+
+### Instantiating a JS Component in Java
+
+Let's say we have the following JS Component declared in JavaScript:
+
+```js
+window.FullJsComponent = Vue.extend({
+    template: "<div>I Come In Peace From the JS World.</div>"
+});
+```
+
+Let's try see how to instantiate it in Java:
+
+```java
+// First, we get the VueConstructor from Window
+VueConstructor vueConstructor = (VueConstructor) JsTools.getWindow().get("FullJsComponent");
+// We can then manipulate it exactly like
+// our VueConstructor generated from our Java Components
+Vue myFullJsComponent = vueConstructor.instantiate();
+myFullJsComponent.$mount("#fullJsComponent");
+```
+
+And here it is live:
+
+{% raw %}
+<div class="example-container" data-name="fullJsComponent">
+    <span id="fullJsComponent"></span>
+</div>
+{% endraw %}
+
+Easy, right?
+
+### Declaring our JS Component Interface
+
+Our first JS component was rather easy, let's say we know have this one:
+
+```js
+window.FullJsWithMethodsComponent = Vue.extend({
+    template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
+    data: function () {
+        return {
+            value: 10
+        }
+    },
+    methods: {
+        multiplyBy2: function (value) {
+            return value * 2;
+        }
+    }
+});
+```
+
+We would like to manipulate our instances from Java.
+For this we need some kind of Java definition.
+
+Let's do it for our `FullJsWithMethodsComponent`:
+
+```java
+@JsComponent
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class FullJsWithMethodsComponent extends Vue {
+    public int value;
+
+    @Override
+    public native void created();
+
+    public native int multiplyBy2(int value);
+}
+```
+
+Looks pretty similar to our Java Components, but there a few key differences:
+
+* We use the `@JsComponent` annotation instead of `@Component`
+* We have to use the `@JsType` annotation with `isNative = true`
+* Our JS methods are declared as `native` in our Java class.
+We don't need to provide their implementations, they will come for the JS Component.
+* You only need to declare in the Class what you want to interact with.
+If you don't need to call the methods or access attributes from Java, you don't have to declare them.
+
+Because of the `@JsComponent` annotation, Vue GWT generates a `VueConstructor` class for us, just like with our Java components.
+
+So we can do:
+
+```java
+FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentConstructor.get().instantiate();
+myComponent.$mount("#fullJsWithMethodComponent");
+JsTools.log(myComponent.value); // 10
+JsTools.log(myComponent.multiplyBy2(25)); // 50
+myComponent.value = 15; // Change the value in the instance of our Component
+```
+
+Bellow is the component instantiated, without any change to it's original value.
+You can interact with it in the console, it's just a regular Vue instance.
+
+{% raw %}
+<div class="example-container" data-name="fullJsWithMethodsComponent">
+    <span id="fullJsWithMethodsComponent"></span>
+</div>
+{% endraw %}
+
+#### About `@JsType`
+
+You may have noticed we also pass `namespace = JsPackage.GLOBAL` to our `@JsType` annotation.
+This is because by default, GWT will use the Java package and the Class Name to determine where the JS Constructor is in the JavaScript Context.
+
+So if your Java Class is: `com.mypackage.MyComponent`, it will look for:
+```js
+window.com = {
+	mypackage: {
+		MyComponent: MyComponentConstructor
+	}
+}
+```
+
+By passing `namespace = JsPackage.GLOBAL` we tell GWT that the JS Constructor is on Window directly.
+If your JS Constructor is in an object `MyPlugin` on Window, then pass `namespace = "MyPlugin"`.
+You can also pass `name = "MyJSName"` to indicate the name of your JS Constructor, if it differs from your Java Class name.
+
+### Using Our JS Component in a Java One
+
+You can use your JS Component just like the Java ones.
+Which means you can also pass them to the `@Component` annotation [as local components](../essential/components.md#using-components):
+
+```java
+@Component(components = FullJsWithMethodsComponent.class)
+```
+
+You can then simply use it in your Java Component template:
+
+```html
+<div>
+    <full-js-with-methods></full-js-with-methods>
+</div>
+```
+
+## Using our Java Components in JS
+
+It's possible to expose your Java Components to be used in JS applications.
+
+For this in your GWT app you can just set the `VueConstructor` for your Component on Window.
+
+```java
+JsTools.getWindow().set("MyJavaComponent", MyJavaComponentConstructor.get());
+```
+
+You can then instantiate your Java Component from JavaScript:
+ 
+```js
+const vm = new MyJavaComponent();
+vm.$mount("#javaComponent");
+```
+
+`MyJavaComponent` is just a regular Vue Constructor, you can use it anywhere, you can extend it etc...
