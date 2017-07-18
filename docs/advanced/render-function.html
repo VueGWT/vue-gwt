@@ -63,10 +63,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="custom-directives.html" />
+    <link rel="next" href="render-function.html" />
     
     
-    <link rel="prev" href="integrating-with-js-components.html" />
+    <link rel="prev" href="extending-components.html" />
     
 
     </head>
@@ -509,9 +509,86 @@
             
 
             
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.1.1" data-path="integrating-with-js-components.html">
+            
+                <a href="integrating-with-js-components.html#using-js-components-in-java">
+            
+                    
+                    Using JS Components in Java
+            
+                </a>
+            
+
+            
         </li>
     
-        <li class="chapter active" data-level="4.2" data-path="render-function.html">
+        <li class="chapter " data-level="4.1.2" data-path="integrating-with-js-components.html">
+            
+                <a href="integrating-with-js-components.html#using-java-components-in-js">
+            
+                    
+                    Using our Java Components in JS
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" data-path="extending-components.html">
+            
+                <a href="extending-components.html">
+            
+                    
+                    Extending Components
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.2.1" data-path="extending-components.html">
+            
+                <a href="extending-components.html#extending-java-component">
+            
+                    
+                    Extending Java Components
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2.2" data-path="extending-components.html">
+            
+                <a href="extending-components.html#extending-js-component">
+            
+                    
+                    Extending JS Components
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="4.3" data-path="render-function.html">
             
                 <a href="render-function.html">
             
@@ -522,9 +599,54 @@
             
 
             
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.3.1" data-path="render-function.html">
+            
+                <a href="render-function.html#basics">
+            
+                    
+                    Basics
+            
+                </a>
+            
+
+            
         </li>
     
-        <li class="chapter " data-level="4.3" data-path="custom-directives.html">
+        <li class="chapter " data-level="4.3.2" data-path="render-function.html">
+            
+                <a href="render-function.html#v-node-builder-instance">
+            
+                    
+                    The VNodeBuilder Instance
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.3.3" data-path="render-function.html">
+            
+                <a href="render-function.html#replacing-template-feature-in-java">
+            
+                    
+                    Replacing Template Features with Plain Java
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4" data-path="custom-directives.html">
             
                 <a href="custom-directives.html">
             
@@ -537,7 +659,7 @@
             
         </li>
     
-        <li class="chapter " data-level="4.4" data-path="plugins.html">
+        <li class="chapter " data-level="4.5" data-path="plugins.html">
             
                 <a href="plugins.html">
             
@@ -550,7 +672,7 @@
             
         </li>
     
-        <li class="chapter " data-level="4.5" data-path="routing.html">
+        <li class="chapter " data-level="4.6" data-path="routing.html">
             
                 <a href="routing.html">
             
@@ -563,7 +685,7 @@
             
         </li>
     
-        <li class="chapter " data-level="4.6" data-path="and-more.html">
+        <li class="chapter " data-level="4.7" data-path="and-more.html">
             
                 <a href="and-more.html">
             
@@ -669,7 +791,7 @@
 </script>
 
 <p><em>This page comes from the <a href="https://vuejs.org/v2/guide/render-function.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
-<h2 id="basics">Basics</h2>
+<h2 id="basics">Basics </h2>
 <p>Vue recommends using templates to build your HTML in the vast majority of cases.
 There are situations however, where you really need the full programmatic power of Java.
 That&apos;s where you can use the <strong>render function</strong>, a closer-to-the-compiler alternative to templates.</p>
@@ -745,7 +867,7 @@ This tells Vue GWT that this component doesn&apos;t have a template.</li>
 The code is shorter, but also requires greater familiarity with Vue instance properties.
 In this case, you have to know that when you pass children without a <code>slot</code> attribute into a component, like the <code>Hello world!</code> inside of <code>anchored-heading</code>, those children are stored on the component instance at <code>$slots.default</code>.
 If you haven&apos;t already, <strong>it&apos;s recommended to read through the <a href="https://vuejs.org/v2/api/#vm-slots" target="_blank">instance properties API</a> before diving into render functions.</strong></p>
-<h2 id="createelement-arguments"><code>createElement</code> Arguments</h2>
+<h2 id="v-node-builder-instance">The <code>VNodeBuilder</code> Instance </h2>
 <p>The second thing you&apos;ll have to become familiar with is how to use template features in the <code>VNodeBuilder</code> builder.
 This Vue GWT object wraps the Vue.js <code>createElement</code> function to provide a cleaner Java interface.
 Here is the <code>VNodeBuilder</code> class:</p>
@@ -917,7 +1039,7 @@ This object also allows you to bind normal HTML attributes as well as DOM proper
     <span class="hljs-keyword">return</span> builder.el(<span class="hljs-string">&quot;div&quot;</span>, myParagraph, myParagraph);
 }
 </code></pre>
-<h2 id="replacing-template-features-with-plain-javascript">Replacing Template Features with Plain JavaScript</h2>
+<h2 id="replacing-template-feature-in-java">Replacing Template Features with Plain Java </h2>
 <h3 id="v-if-and-v-for"><code>v-if</code> and <code>v-for</code></h3>
 <p>Wherever something can be easily accomplished in plain JavaScript, Vue render functions do not provide a proprietary alternative.
 For example, in a template using <code>v-if</code> and <code>v-for</code>:</p>
@@ -1082,12 +1204,12 @@ For example, in a template using <code>v-if</code> and <code>v-for</code>:</p>
 
             
                 
-                <a href="integrating-with-js-components.html" class="navigation navigation-prev " aria-label="Previous page: Integrating With JS Components">
+                <a href="extending-components.html#extending-js-component" class="navigation navigation-prev " aria-label="Previous page: Extending JS Components">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="custom-directives.html" class="navigation navigation-next " aria-label="Next page: Custom Directives">
+                <a href="render-function.html#basics" class="navigation navigation-next " aria-label="Next page: Basics">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1098,7 +1220,7 @@ For example, in a template using <code>v-if</code> and <code>v-for</code>:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Render Function","level":"4.2","depth":1,"next":{"title":"Custom Directives","level":"4.3","depth":1,"path":"advanced/custom-directives.md","ref":"advanced/custom-directives.md","articles":[]},"previous":{"title":"Integrating With JS Components","level":"4.1","depth":1,"path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/render-function.md","mtime":"2017-07-18T09:32:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-18T09:39:38.579Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Render Function","level":"4.3","depth":1,"next":{"title":"Basics","level":"4.3.1","depth":2,"anchor":"#basics","path":"advanced/render-function.md","ref":"advanced/render-function.md#basics","articles":[]},"previous":{"title":"Extending JS Components","level":"4.2.2","depth":2,"anchor":"#extending-js-component","path":"advanced/extending-components.md","ref":"advanced/extending-components.md#extending-js-component","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/render-function.md","mtime":"2017-07-18T12:44:26.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-18T13:01:05.857Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
