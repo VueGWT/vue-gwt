@@ -31,6 +31,8 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Filer;
@@ -38,6 +40,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
@@ -74,6 +77,7 @@ public class VueComponentOptionsGenerator
     private final ProcessingEnvironment processingEnv;
     private final Elements elementsUtils;
     private final Filer filer;
+    private boolean hasComponentJsTypeAnnotation;
 
     public VueComponentOptionsGenerator(ProcessingEnvironment processingEnv)
     {
@@ -93,6 +97,7 @@ public class VueComponentOptionsGenerator
             elementsUtils.getPackageOf(componentTypeElement).getQualifiedName().toString();
         String typeName = componentTypeElement.getSimpleName().toString();
         String generatedTypeName = typeName + COMPONENT_OPTIONS_SUFFIX;
+        hasComponentJsTypeAnnotation = componentTypeElement.getAnnotation(JsType.class) != null;
 
         Component annotation = componentTypeElement.getAnnotation(Component.class);
 
@@ -173,6 +178,9 @@ public class VueComponentOptionsGenerator
             .fieldsIn(componentTypeElement.getEnclosedElements())
             .forEach(variableElement ->
             {
+                if (!isVisibleInJS(variableElement))
+                    return;
+
                 String javaName = variableElement.getSimpleName().toString();
                 Prop prop = variableElement.getAnnotation(Prop.class);
 
@@ -209,6 +217,12 @@ public class VueComponentOptionsGenerator
             .forEach(executableElement ->
             {
                 String javaName = executableElement.getSimpleName().toString();
+
+                if (!isVisibleInJS(executableElement) && !isHookMethod(processingEnv,
+                    componentTypeElement,
+                    executableElement))
+                    return;
+
                 Computed computed = executableElement.getAnnotation(Computed.class);
                 Watch watch = executableElement.getAnnotation(Watch.class);
                 PropValidator propValidator = executableElement.getAnnotation(PropValidator.class);
@@ -238,14 +252,9 @@ public class VueComponentOptionsGenerator
                 {
                     addRenderFunction(optionsClassBuilder);
                 }
-                else if (HOOKS_MAP.containsKey(javaName))
+                else if (isHookMethod(processingEnv, componentTypeElement, executableElement))
                 {
-                    if (GenerationUtil.hasInterface(processingEnv,
-                        componentTypeElement.asType(),
-                        HOOKS_MAP.get(javaName)))
-                    {
-                        constructorBuilder.addStatement("this.addLifecycleHook($S)", javaName);
-                    }
+                    constructorBuilder.addStatement("this.addLifecycleHook($S)", javaName);
                 }
                 else
                 {
@@ -301,6 +310,30 @@ public class VueComponentOptionsGenerator
                 "createElementFunction");
 
         componentClassBuilder.addMethod(renderFunctionBuilder.build());
+    }
+
+    private boolean isHookMethod(ProcessingEnvironment processingEnv,
+        TypeElement componentTypeElement, ExecutableElement executableElement)
+    {
+        String methodJavaName = executableElement.getSimpleName().toString();
+
+        return HOOKS_MAP.containsKey(methodJavaName) && GenerationUtil.hasInterface(processingEnv,
+            componentTypeElement.asType(),
+            HOOKS_MAP.get(methodJavaName));
+    }
+
+    private boolean isVisibleInJS(ExecutableElement executableElement)
+    {
+        return (hasComponentJsTypeAnnotation && executableElement
+            .getModifiers()
+            .contains(Modifier.PUBLIC)) || executableElement.getAnnotation(JsMethod.class) != null;
+    }
+
+    private boolean isVisibleInJS(VariableElement variableElement)
+    {
+        return (hasComponentJsTypeAnnotation && variableElement
+            .getModifiers()
+            .contains(Modifier.PUBLIC)) || variableElement.getAnnotation(JsProperty.class) != null;
     }
 
     /**
