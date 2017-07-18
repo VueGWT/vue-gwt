@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Custom Directives · GitBook</title>
+        <title>Integrating With JS Components · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -63,10 +63,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="plugins.html" />
+    <link rel="next" href="render-function.html" />
     
     
-    <link rel="prev" href="render-function.html" />
+    <link rel="prev" href="../js-interop/" />
     
 
     </head>
@@ -498,7 +498,7 @@
         
         
     
-        <li class="chapter " data-level="4.1" data-path="integrating-with-js-components.html">
+        <li class="chapter active" data-level="4.1" data-path="integrating-with-js-components.html">
             
                 <a href="integrating-with-js-components.html">
             
@@ -524,7 +524,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="4.3" data-path="custom-directives.html">
+        <li class="chapter " data-level="4.3" data-path="custom-directives.html">
             
                 <a href="custom-directives.html">
             
@@ -606,7 +606,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Custom Directives</a>
+        <a href=".." >Integrating With JS Components</a>
     </h1>
 </div>
 
@@ -621,7 +621,7 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="custom-directives">Custom Directives</h1>
+                                <h1 id="integrating-with-js-components">Integrating With JS Components</h1>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script>
     var basePath = "/";
@@ -668,97 +668,118 @@
     });
 </script>
 
-<p><em>This page comes from the <a href="https://vuejs.org/v2/guide/custom-directive.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
-<h2 id="intro">Intro</h2>
-<p>In addition to the default set of directives shipped in core (<code>v-model</code> and <code>v-show</code>), Vue also allows you to register your own custom directives.
-Note that in Vue 2.0, the primary form of code reuse and abstraction is components - however there may be cases where you just need some low-level DOM access on plain elements, and this is where custom directives would still be useful.
-An example would be focusing on an input element, like this one:</p>
-<div class="example-container" data-name="focusDirectiveComponent">
-    <span id="focusDirectiveComponent"></span>
+<h2 id="using-js-components-in-java">Using JS Components in Java</h2>
+<p>Vue GWT allows us to make our nice Java Components.
+But the Vue.js ecosystem is vast, it would be a shame if we couldn&apos;t take advantage of existing JS Components.
+Well let&apos;s see how we can do that!</p>
+<h3 id="instantiating-a-js-component-in-java">Instantiating a JS Component in Java</h3>
+<p>Let&apos;s say we have the following JS Component declared in JavaScript:</p>
+<pre><code class="lang-js"><span class="hljs-built_in">window</span>.FullJsComponent = Vue.extend({
+    template: <span class="hljs-string">&quot;&lt;div&gt;I Come In Peace From the JS World.&lt;/div&gt;&quot;</span>
+});
+</code></pre>
+<p>Let&apos;s try see how to instantiate it in Java:</p>
+<pre><code class="lang-java"><span class="hljs-comment">// First, we get the VueConstructor from Window</span>
+VueConstructor vueConstructor = (VueConstructor) JsTools.getWindow().get(<span class="hljs-string">&quot;FullJsComponent&quot;</span>);
+<span class="hljs-comment">// We can then manipulate it exactly like</span>
+<span class="hljs-comment">// our VueConstructor generated from our Java Components</span>
+Vue myFullJsComponent = vueConstructor.instantiate();
+myFullJsComponent.$mount(<span class="hljs-string">&quot;#fullJsComponent&quot;</span>);
+</code></pre>
+<p>And here it is live:</p>
+<div class="example-container" data-name="fullJsComponent">
+    <span id="fullJsComponent"></span>
 </div>
 
 
-<p>When the page loads, that element gains focus (note: autofocus doesn&apos;t work on mobile Safari).
-In fact, if you haven&apos;t clicked on anything else since visiting this page, the input above should be focused now.
-Now let&apos;s build the directive that accomplishes this.</p>
-<p>Fist we declare a Java class, like for our Components.
-Except that we extend <code>VueDirective</code> and add the <code>@Directive</code> annotation.</p>
-<pre><code class="lang-java"><span class="hljs-meta">@Directive</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FocusDirective</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueDirective</span> </span>{
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">inserted</span><span class="hljs-params">(Element el, VueDirectiveBinding binding)</span> </span>{
-        el.focus();
+<p>Easy, right?</p>
+<h3 id="declaring-our-js-component-interface">Declaring our JS Component Interface</h3>
+<p>Our first JS component was rather easy, let&apos;s say we know have this one:</p>
+<pre><code class="lang-js"><span class="hljs-built_in">window</span>.FullJsWithMethodsComponent = Vue.extend({
+    template: <span class="hljs-string">&quot;&lt;div&gt;My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}&lt;/div&gt;&quot;</span>,
+    data: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> {
+            value: <span class="hljs-number">10</span>
+        }
+    },
+    methods: {
+        multiplyBy2: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">value</span>) </span>{
+            <span class="hljs-keyword">return</span> value * <span class="hljs-number">2</span>;
+        }
     }
-}
+});
 </code></pre>
-<p>We can then register our Directive globally:</p>
-<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VueGwtExamplesApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
-        Vue.directive(<span class="hljs-keyword">new</span> FocusDirectiveOptions());
-    }
-}
-</code></pre>
-<p>The name of our directive is determined by the Class name (same as Component).
-So in this case the directive will be named <code>v-focus</code>.
-For <code>FocusAndHighlightDirective</code> the name would have been <code>v-focus-and-highlight</code>.</p>
-<p>If you want to register a directive locally instead, the <code>@Component</code> also accept a <code>directives</code> option:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(directives = FocusDirective.class)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FocusDirectiveComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
-</span></code></pre>
-<p>Then in a template, you can use the new <code>v-focus</code> attribute on any element, like this:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">v-focus</span>&gt;</span>
-</code></pre>
-<h2 id="hook-functions">Hook Functions</h2>
-<p>A directive definition object can override several hook functions (all optional):</p>
-<ul>
-<li><p><code>bind</code>: called only once, when the directive is first bound to the element.
-This is where you can do one-time setup work.</p>
-</li>
-<li><p><code>inserted</code>: called when the bound element has been inserted into its parent node (this only guarantees parent node presence, not necessarily in-document).</p>
-</li>
-<li><p><code>update</code>: called after the containing component has updated, <strong>but possibly before its children have updated</strong>.
-The directive&apos;s value may or may not have changed, but you can skip unnecessary updates by comparing the binding&apos;s current and old values (see below on hook arguments).</p>
-</li>
-<li><p><code>componentUpdated</code>: called after the containing component <strong>and its children</strong> have updated.</p>
-</li>
-<li><p><code>unbind</code>: called only once, when the directive is unbound from the element.</p>
-</li>
-</ul>
-<p>We&apos;ll explore the arguments passed into these hooks (i.e. <code>el</code> and <code>binding</code>) in the next section.</p>
-<h2 id="directive-hook-arguments">Directive Hook Arguments</h2>
-<p>Directive hooks are passed these arguments:</p>
-<ul>
-<li><strong>el</strong>: The element the directive is bound to. This can be used to directly manipulate the DOM.</li>
-<li><strong>binding</strong>: An object containing the following properties.<ul>
-<li><strong>name</strong>: The name of the directive, without the <code>v-</code> prefix.</li>
-<li><strong>value</strong>: The value passed to the directive. For example in <code>v-my-directive=&quot;1 + 1&quot;</code>, the value would be <code>2</code>.</li>
-<li><strong>oldValue</strong>: The previous value, only available in <code>update</code> and <code>componentUpdated</code>. It is available whether or not the value has changed.</li>
-<li><strong>expression</strong>: The expression of the binding as a string. For example in <code>v-my-directive=&quot;1 + 1&quot;</code>, the expression would be <code>&quot;1 + 1&quot;</code>.</li>
-<li><strong>arg</strong>: The argument passed to the directive, if any. For example in <code>v-my-directive:foo</code>, the arg would be <code>&quot;foo&quot;</code>.</li>
-<li><strong>modifiers</strong>: An object containing modifiers, if any. For example in <code>v-my-directive.foo.bar</code>, the modifiers object would be <code>{ foo: true, bar: true }</code>.</li>
-</ul>
-</li>
-<li><strong>vnode</strong>: The virtual node produced by Vue&#x2019;s compiler. See the <a href="https://vuejs.org/v2/api/#VNode-Interface" target="_blank">VNode API</a> for full details.</li>
-<li><strong>oldVnode</strong>: The previous virtual node, only available in the <code>update</code> and <code>componentUpdated</code> hooks.</li>
-</ul>
-<p class="warning-panel">
-Apart from <code>el</code>, you should treat these arguments as read-only and never modify them.
-If you need to share information across hooks, it is recommended to do so through element&apos;s <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset" target="_blank">dataset</a>.
-</p>
+<p>We would like to manipulate our instances from Java.
+For this we need some kind of Java definition.</p>
+<p>Let&apos;s do it for our <code>FullJsWithMethodsComponent</code>:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>
+<span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FullJsWithMethodsComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
 
-<p>You can see an <a href="https://vuejs.org/v2/guide/custom-directive.html#Directive-Hook-Arguments" target="_blank">example of these arguments values</a> in the official Vue.js doc.</p>
-<h2 id="object-literals">Object Literals</h2>
-<p>If your directive needs multiple values, you can also pass in a JSON object literal.</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-demo</span>=<span class="hljs-string">&apos;{ color: &quot;\&quot;white\&quot;&quot;, text: &quot;\&quot;hello!\&quot;&quot; }&gt;&lt;/div&gt;
-</span></span></code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@Override</span>
-<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">inserted</span><span class="hljs-params">(Element el, VueDirectiveBinding binding)</span>
-</span>{
-    JsObject value = (JsObject) binding.value;
-    value.get(<span class="hljs-string">&quot;color&quot;</span>) <span class="hljs-comment">// white</span>
-    value.get(<span class="hljs-string">&quot;text&quot;</span>) <span class="hljs-comment">// hello!</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> <span class="hljs-keyword">int</span> <span class="hljs-title">multiplyBy2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>;
 }
 </code></pre>
+<p>Looks pretty similar to our Java Components, but there a few key differences:</p>
+<ul>
+<li>We use the <code>@JsComponent</code> annotation instead of <code>@Component</code></li>
+<li>We have to use the <code>@JsType</code> annotation with <code>isNative = true</code></li>
+<li>Our JS methods are declared as <code>native</code> in our Java class.
+We don&apos;t need to provide their implementations, they will come for the JS Component.</li>
+<li>You only need to declare in the Class what you want to interact with.
+If you don&apos;t need to call the methods or access attributes from Java, you don&apos;t have to declare them.</li>
+</ul>
+<p>Because of the <code>@JsComponent</code> annotation, Vue GWT generates a <code>VueConstructor</code> class for us, just like with our Java components.</p>
+<p>So we can do:</p>
+<pre><code class="lang-java">FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentConstructor.get().instantiate();
+myComponent.$mount(<span class="hljs-string">&quot;#fullJsWithMethodComponent&quot;</span>);
+JsTools.log(myComponent.value); <span class="hljs-comment">// 10</span>
+JsTools.log(myComponent.multiplyBy2(<span class="hljs-number">25</span>)); <span class="hljs-comment">// 50</span>
+myComponent.value = <span class="hljs-number">15</span>; <span class="hljs-comment">// Change the value in the instance of our Component</span>
+</code></pre>
+<p>Bellow is the component instantiated, without any change to it&apos;s original value.
+You can interact with it in the console, it&apos;s just a regular Vue instance.</p>
+<div class="example-container" data-name="fullJsWithMethodsComponent">
+    <span id="fullJsWithMethodsComponent"></span>
+</div>
+
+
+<h4 id="about-jstype">About <code>@JsType</code></h4>
+<p>You may have noticed we also pass <code>namespace = JsPackage.GLOBAL</code> to our <code>@JsType</code> annotation.
+This is because by default, GWT will use the Java package and the Class Name to determine where the JS Constructor is in the JavaScript Context.</p>
+<p>So if your Java Class is: <code>com.mypackage.MyComponent</code>, it will look for:</p>
+<pre><code class="lang-js"><span class="hljs-built_in">window</span>.com = {
+    mypackage: {
+        MyComponent: MyComponentConstructor
+    }
+}
+</code></pre>
+<p>By passing <code>namespace = JsPackage.GLOBAL</code> we tell GWT that the JS Constructor is on Window directly.
+If your JS Constructor is in an object <code>MyPlugin</code> on Window, then pass <code>namespace = &quot;MyPlugin&quot;</code>.
+You can also pass <code>name = &quot;MyJSName&quot;</code> to indicate the name of your JS Constructor, if it differs from your Java Class name.</p>
+<h3 id="using-our-js-component-in-a-java-one">Using Our JS Component in a Java One</h3>
+<p>You can use your JS Component just like the Java ones.
+Which means you can also pass them to the <code>@Component</code> annotation <a href="../essential/components.html#using-components">as local components</a>:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = FullJsWithMethodsComponent.class)
+</code></pre>
+<p>You can then simply use it in your Java Component template:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">full-js-with-methods</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">full-js-with-methods</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<h2 id="using-our-java-components-in-js">Using our Java Components in JS</h2>
+<p>It&apos;s possible to expose your Java Components to be used in JS applications.</p>
+<p>For this in your GWT app you can just set the <code>VueConstructor</code> for your Component on Window.</p>
+<pre><code class="lang-java">JsTools.getWindow().set(<span class="hljs-string">&quot;MyJavaComponent&quot;</span>, MyJavaComponentConstructor.get());
+</code></pre>
+<p>You can then instantiate your Java Component from JavaScript:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> vm = <span class="hljs-keyword">new</span> MyJavaComponent();
+vm.$mount(<span class="hljs-string">&quot;#javaComponent&quot;</span>);
+</code></pre>
+<p><code>MyJavaComponent</code> is just a regular Vue Constructor, you can use it anywhere, you can extend it etc...</p>
 
                                 
                                 </section>
@@ -786,12 +807,12 @@ If you need to share information across hooks, it is recommended to do so throug
 
             
                 
-                <a href="render-function.html" class="navigation navigation-prev " aria-label="Previous page: Render Function">
+                <a href="../js-interop/#js-tools" class="navigation navigation-prev " aria-label="Previous page: JsTools">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="plugins.html" class="navigation navigation-next " aria-label="Next page: Plugins">
+                <a href="render-function.html" class="navigation navigation-next " aria-label="Next page: Render Function">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -802,7 +823,7 @@ If you need to share information across hooks, it is recommended to do so throug
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Custom Directives","level":"4.3","depth":1,"next":{"title":"Plugins","level":"4.4","depth":1,"path":"advanced/plugins.md","ref":"advanced/plugins.md","articles":[]},"previous":{"title":"Render Function","level":"4.2","depth":1,"path":"advanced/render-function.md","ref":"advanced/render-function.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/custom-directives.md","mtime":"2017-07-17T10:39:07.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-18T09:31:27.058Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"4.1","depth":1,"next":{"title":"Render Function","level":"4.2","depth":1,"path":"advanced/render-function.md","ref":"advanced/render-function.md","articles":[]},"previous":{"title":"JsTools","level":"3.4.3","depth":2,"anchor":"#js-tools","path":"js-interop/README.md","ref":"js-interop/README.md#js-tools","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-07-18T09:29:20.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-18T09:31:27.058Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

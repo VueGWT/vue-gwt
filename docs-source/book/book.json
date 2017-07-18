@@ -1,5 +1,5 @@
 {
   "plugins": [
-    "include"
+    "include", "toggle-chapters"
   ]
 }

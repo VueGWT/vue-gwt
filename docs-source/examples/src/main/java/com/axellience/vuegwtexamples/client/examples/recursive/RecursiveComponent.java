@@ -10,8 +10,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component(name = "recursive")
-public class RecursiveComponent extends Vue
-{
+public class RecursiveComponent extends Vue {
     @Prop
     public Integer counter;
 

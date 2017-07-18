@@ -11,10 +11,8 @@ import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComp
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponentConstructor;
 import com.axellience.vuegwtexamples.client.examples.extendjavacomponent.ChildComponentConstructor;
 import com.axellience.vuegwtexamples.client.examples.extendsjscomponent.ChildJavaComponentConstructor;
-import com.axellience.vuegwtexamples.client.examples.extendsjscomponent.parent.ParentJsComponent;
 import com.axellience.vuegwtexamples.client.examples.focus.FocusDirectiveComponentConstructor;
 import com.axellience.vuegwtexamples.client.examples.greet.GreetComponentConstructor;
-import com.axellience.vuegwtexamples.client.examples.instanciatejscomponent.FullJsWithMethodsComponent;
 import com.axellience.vuegwtexamples.client.examples.instanciatejscomponent.FullJsWithMethodsComponentConstructor;
 import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponentConstructor;
 import com.axellience.vuegwtexamples.client.examples.link.LinkComponentConstructor;
@@ -53,9 +51,6 @@ public class VueGwtExamplesApp implements EntryPoint
         VueConstructor vueClass = (VueConstructor) JsTools.getWindow().get("FullJsComponent");
         Vue myComponent = vueClass.instantiate();
         myComponent.$mount("#fullJsComponent");
-
-        JsTools.log(FullJsWithMethodsComponent.class);
-        JsTools.log(ParentJsComponent.class);
 
         this.addExample("simpleLinkComponent", SimpleLinkComponentConstructor.get());
         this.addExample("linkComponent", LinkComponentConstructor.get());
