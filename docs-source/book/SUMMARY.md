@@ -35,7 +35,15 @@
 
 ## Advanced Topics
 * [Integrating With JS Components](advanced/integrating-with-js-components.md)
+    * [Using JS Components in Java](advanced/integrating-with-js-components.md#using-js-components-in-java)
+    * [Using our Java Components in JS](advanced/integrating-with-js-components.md#using-java-components-in-js)
+* [Extending Components](advanced/extending-components.md)
+    * [Extending Java Components](advanced/extending-components.md#extending-java-component)
+    * [Extending JS Components](advanced/extending-components.md#extending-js-component)
 * [Render Function](advanced/render-function.md)
+    * [Basics](advanced/render-function.md#basics)
+    * [The `VNodeBuilder` Instance](advanced/render-function.md#v-node-builder-instance)
+    * [Replacing Template Features with Plain Java](advanced/render-function.md#replacing-template-feature-in-java)
 * [Custom Directives](advanced/custom-directives.md)
 * [Plugins](advanced/plugins.md)
 * [Routing](advanced/routing.md)
