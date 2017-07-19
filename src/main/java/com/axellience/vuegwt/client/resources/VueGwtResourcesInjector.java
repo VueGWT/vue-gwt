@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.client.tools;
+package com.axellience.vuegwt.client.resources;
 
 import com.axellience.vuegwt.client.jsnative.html.HTMLDocument;
 import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
@@ -8,7 +8,7 @@ import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
  * Java representation to JS representation in the page
  * Original Source: https://github.com/ltearno/angular2-gwt/
  */
-public class VueGwtToolsInjector
+public class VueGwtResourcesInjector
 {
     private static boolean injected = false;
 
