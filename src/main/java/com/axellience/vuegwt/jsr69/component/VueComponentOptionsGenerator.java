@@ -294,6 +294,7 @@ public class VueComponentOptionsGenerator
             .methodBuilder("render")
             .returns(Object.class)
             .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(JsMethod.class)
             .addParameter(CreateElementFunction.class, "createElementFunction")
             .addStatement("Object componentRenderMethod = $T.get($T.get($T.get(this, $S), $S), $S)",
                 JsTools.class,
