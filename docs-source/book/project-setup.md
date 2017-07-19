@@ -123,6 +123,14 @@ For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-
 </plugins>
 ```
 
+## ✅ Configure Your GWT Module
+
+You must add Vue GWT dependency in your module `.gwt.xml` file:
+
+```xml
+<inherits name='com.axellience.vuegwt.VueGwt'/>
+```
+
 ## ✅ Add Vue.js Library to Your Index.html
 
 In your GWT app index.html add the following tag in the &lt;head&gt; section:
