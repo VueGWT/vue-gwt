@@ -11,7 +11,7 @@ import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsSimpleFunction;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.client.tools.VueGwtToolsInjector;
+import com.axellience.vuegwt.client.resources.VueGwtResourcesInjector;
 import com.axellience.vuegwt.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vue.VueConfig;
@@ -34,8 +34,8 @@ public abstract class Vue extends JsObject implements HasCreated
 {
     static
     {
-        // Inject the JS tools in the page
-        VueGwtToolsInjector.inject();
+        // Inject the JS resources in the page
+        VueGwtResourcesInjector.inject();
     }
 
     /* ---------------------------------------------

@@ -114,7 +114,7 @@ public class VueComponentOptionsGenerator
 
         // Set the name of the component
         if (!"".equals(annotation.name()))
-            constructorBuilder.addStatement("this.name = $S", annotation.name());
+            constructorBuilder.addStatement("this.setName($S)", annotation.name());
 
         // Add template initialization
         if (annotation.hasTemplate())
@@ -156,7 +156,6 @@ public class VueComponentOptionsGenerator
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .superclass(ParameterizedTypeName.get(ClassName.get(VueComponentOptions.class),
                 ClassName.get(componentTypeElement)))
-            .addAnnotation(JsType.class)
             .addJavadoc("Vue Component Options for Component {@link $S}",
                 componentTypeElement.getQualifiedName().toString());
     }
@@ -186,7 +185,7 @@ public class VueComponentOptionsGenerator
 
                 if (prop != null)
                 {
-                    constructorBuilder.addStatement("this.addProp($S, $S, $L, $S)",
+                    constructorBuilder.addStatement("this.addJavaProp($S, $S, $L, $S)",
                         javaName,
                         !"".equals(prop.propertyName()) ? prop.propertyName() : javaName,
                         prop.required(),
@@ -234,7 +233,7 @@ public class VueComponentOptionsGenerator
                 else if (watch != null)
                 {
                     String jsName = watch.propertyName();
-                    constructorBuilder.addStatement("this.addWatch($S, $S, $L)",
+                    constructorBuilder.addStatement("this.addJavaWatch($S, $S, $L)",
                         javaName,
                         jsName,
                         watch.isDeep());
@@ -242,7 +241,7 @@ public class VueComponentOptionsGenerator
                 else if (propValidator != null)
                 {
                     String propertyName = propValidator.propertyName();
-                    constructorBuilder.addStatement("this.addPropValidator($S, $S)",
+                    constructorBuilder.addStatement("this.addJavaPropValidator($S, $S)",
                         javaName,
                         propertyName);
                 }
@@ -254,11 +253,11 @@ public class VueComponentOptionsGenerator
                 }
                 else if (isHookMethod(processingEnv, componentTypeElement, executableElement))
                 {
-                    constructorBuilder.addStatement("this.addLifecycleHook($S)", javaName);
+                    constructorBuilder.addStatement("this.addJavaLifecycleHook($S)", javaName);
                 }
                 else
                 {
-                    constructorBuilder.addStatement("this.addMethod($S)", javaName);
+                    constructorBuilder.addStatement("this.addJavaMethod($S)", javaName);
                 }
             });
     }
@@ -278,7 +277,7 @@ public class VueComponentOptionsGenerator
         if ("void".equals(method.getReturnType().toString()))
             kind = ComputedKind.SETTER;
 
-        constructorBuilder.addStatement("this.addComputed($S, $S, $T.$L)",
+        constructorBuilder.addStatement("this.addJavaComputed($S, $S, $T.$L)",
             javaMethodName,
             GenerationUtil.getComputedPropertyName(computed, method.getSimpleName().toString()),
             ComputedKind.class,
