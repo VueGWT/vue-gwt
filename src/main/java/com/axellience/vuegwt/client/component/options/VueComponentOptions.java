@@ -117,7 +117,7 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
             if (expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
             {
                 ComputedOptions computedDefinition = new ComputedOptions();
-                addComputed(expressionId, computedDefinition);
+                addComputedOptions(expressionId, computedDefinition);
                 computedDefinition.get = JsTools.get(templateResource, expressionId);
             }
             else
@@ -221,14 +221,11 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     @JsOverlay
     protected final void addJavaComputed(String javaName, String jsName, ComputedKind kind)
     {
-        if (computed == null)
-            computed = new JsObject<>();
-
-        ComputedOptions computedDefinition = computed.get(jsName);
+        ComputedOptions computedDefinition = getComputedOptions(jsName);
         if (computedDefinition == null)
         {
             computedDefinition = new ComputedOptions();
-            addComputed(jsName, computedDefinition);
+            addComputedOptions(jsName, computedDefinition);
         }
 
         Object method = JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
@@ -376,13 +373,22 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     }
 
     @JsOverlay
-    public final VueComponentOptions addComputed(String name, ComputedOptions computed)
+    public final VueComponentOptions addComputedOptions(String name, ComputedOptions computed)
     {
         if (this.computed == null)
             this.computed = new JsObject<>();
 
         this.computed.set(name, computed);
         return this;
+    }
+
+    @JsOverlay
+    public final ComputedOptions getComputedOptions(String name)
+    {
+        if (this.computed == null)
+            this.computed = new JsObject<>();
+
+        return this.computed.get(name);
     }
 
     @JsOverlay

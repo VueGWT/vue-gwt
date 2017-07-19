@@ -1,15 +1,18 @@
 package com.axellience.vuegwt.client.component.options.props;
 
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Definition of a property.
  * @author Adrien Baron
  */
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class PropOptions
 {
-    @JsProperty public Object type;
+    public Object type;
     @JsProperty(name = "default") public Object defaultValue;
-    @JsProperty public boolean required = false;
-    @JsProperty public Object validator;
+    public boolean required;
+    public Object validator;
 }
