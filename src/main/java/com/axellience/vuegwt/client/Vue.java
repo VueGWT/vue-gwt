@@ -17,6 +17,7 @@ import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vue.VueConfig;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -34,8 +35,11 @@ public abstract class Vue extends JsObject implements HasCreated
 {
     static
     {
-        // Inject the JS resources in the page
-        VueGwtResourcesInjector.inject();
+        if (GWT.isClient())
+        {
+            // Inject the JS resources in the page
+            VueGwtResourcesInjector.inject();
+        }
     }
 
     /* ---------------------------------------------
