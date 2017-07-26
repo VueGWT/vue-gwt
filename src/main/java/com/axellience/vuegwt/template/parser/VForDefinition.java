@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.template.parser;
 
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 
@@ -37,10 +36,10 @@ public class VForDefinition
             return;
 
         boolean iterateOnArray = !inExpression.startsWith("(Object)");
+        inExpressionType = "Object";
+
         if (iterateOnArray)
         {
-            inExpressionType = JsArray.class.getCanonicalName();
-
             if (vForVariableAndIndex(loopVariablesDefinition, context))
                 return;
             if (vForVariable(loopVariablesDefinition, context))
@@ -48,8 +47,6 @@ public class VForDefinition
         }
         else
         {
-            inExpressionType = "Object";
-
             if (vForVariableAndKeyAndIndex(loopVariablesDefinition, context))
                 return;
             if (vForVariableAndKey(loopVariablesDefinition, context))

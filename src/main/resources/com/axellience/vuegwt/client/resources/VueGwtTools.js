@@ -14,6 +14,37 @@ window.vueGwtTools = {
 		var m = myFunction.toString().match(/\{([\s\S]*)\}/m)[1];
 		// Strip comments
 		return m.replace(/^\s*\/\/.*$/mg, '').trim();
+	},
+	javaArrayToJsArray: function (javaArray) {
+		// No conversion is needed, but Java compiler won't agree otherwise
+		return javaArray;
+	},
+	wrapMethodWithBefore: function (object, methodName, beforeMethodCall) {
+		var proto = object.__proto__;
+		var originalFunc = proto[methodName];
+		proto[methodName] = function () {
+			beforeMethodCall(object, methodName, arguments);
+			return originalFunc.apply(this, arguments);
+		};
+	},
+	wrapMethodWithAfter: function (object, methodName, afterMethodCall) {
+		var proto = object.__proto__;
+		var originalFunc = proto[methodName];
+		proto[methodName] = function () {
+			var result = originalFunc.apply(this, arguments);
+			afterMethodCall(object, methodName, result, arguments);
+			return result;
+		};
+	},
+	wrapMethod: function (object, methodName, beforeMethodCall, afterMethodCall) {
+		var proto = object.__proto__;
+		var originalFunc = proto[methodName];
+		proto[methodName] = function () {
+			beforeMethodCall(object, methodName, arguments);
+			var result = originalFunc.apply(this, arguments);
+			afterMethodCall(object, methodName, result, arguments);
+			return result;
+		};
 	}
 };
 

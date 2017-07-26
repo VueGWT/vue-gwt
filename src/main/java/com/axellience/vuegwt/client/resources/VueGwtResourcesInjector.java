@@ -24,8 +24,12 @@ public class VueGwtResourcesInjector
         jsToolsScriptElement.innerHTML = VueGwtResources.JS_RESOURCES.jsToolsScript().getText();
         document.body.appendChild(jsToolsScriptElement);
 
-        HTMLElement vueGwtScriptElement = document.createElement("script");
-        vueGwtScriptElement.innerHTML = VueGwtResources.JS_RESOURCES.vueToolsScript().getText();
-        document.body.appendChild(vueGwtScriptElement);
+        HTMLElement vueGWTToolsScriptElement = document.createElement("script");
+        vueGWTToolsScriptElement.innerHTML = VueGwtResources.JS_RESOURCES.vueToolsScript().getText();
+        document.body.appendChild(vueGWTToolsScriptElement);
+
+        HTMLElement vueGWTObserverScriptElement = document.createElement("script");
+        vueGWTObserverScriptElement.innerHTML = VueGwtResources.JS_RESOURCES.vueGWTObserverScript().getText();
+        document.body.appendChild(vueGWTObserverScriptElement);
     }
 }

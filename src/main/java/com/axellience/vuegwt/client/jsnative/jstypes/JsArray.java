@@ -10,13 +10,16 @@ import com.axellience.vuegwt.client.jsnative.jstypes.arrayfunctions.JsReduce;
 import com.axellience.vuegwt.client.jsnative.jstypes.arrayfunctions.JsReduceWithIndex;
 import com.axellience.vuegwt.client.jsnative.jstypes.arrayfunctions.JsReduceWithIndexAndArray;
 import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.tools.VueGwtTools;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Original Source: https://github.com/ltearno/angular2-gwt/
@@ -34,6 +37,18 @@ public class JsArray<T>
         for (T item : array)
             result.push(item);
         return result;
+    }
+
+    @JsOverlay
+    public static <T> JsArray<T> from(Collection<T> collection)
+    {
+        return VueGwtTools.javaArrayToJsArray(collection.toArray());
+    }
+
+    @JsOverlay
+    public static <K, V> JsArray<V> from(Map<K, V> map)
+    {
+        return VueGwtTools.javaArrayToJsArray(map.values().toArray());
     }
 
     @JsOverlay

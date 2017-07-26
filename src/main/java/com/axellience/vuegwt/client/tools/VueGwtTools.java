@@ -3,9 +3,13 @@ package com.axellience.vuegwt.client.tools;
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.VueDirective;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.google.gwt.regexp.shared.RegExp;
 import jsinterop.annotations.JsMethod;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * This object provides utils methods for VueGWT internal processing
@@ -26,6 +30,33 @@ public class VueGwtTools
 
     @JsMethod(namespace = "vueGwtTools")
     public static native String getFunctionBody(Object jsFunction);
+
+    @JsMethod(namespace = "vueGwtTools", name = "wrapMethodWithBefore")
+    public static native <T> String wrapMethod(T object, String methodName,
+        BeforeMethodCall<T> afterMethodCall);
+
+    @JsMethod(namespace = "vueGwtTools", name = "wrapMethodWithAfter")
+    public static native <T> String wrapMethod(T object, String methodName,
+        AfterMethodCall<T> afterMethodCall);
+
+    @JsMethod(namespace = "vueGwtTools")
+    public static native <T> String wrapMethod(T object, String methodName,
+        BeforeMethodCall<T> beforeMethodCall, AfterMethodCall<T> afterMethodCall);
+
+    @JsMethod(namespace = "vueGwtTools")
+    public static native <T> JsArray<T> javaArrayToJsArray(Object[] javaArray);
+
+    @JsMethod(namespace = "vueGwtTools")
+    public static boolean isJavaCollection(Object object)
+    {
+        return object instanceof Collection;
+    }
+
+    @JsMethod(namespace = "vueGwtTools")
+    public static boolean isJavaMap(Object object)
+    {
+        return object instanceof Map;
+    }
 
     /**
      * Return the default name to register a component based on it's class name.
