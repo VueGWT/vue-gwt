@@ -59,7 +59,7 @@ public class VueGWTObserverManager
      * @param object The object to potentially observe
      * @return true if we are observing and Vue shouldn't observe, false otherwise
      */
-    @JsMethod(namespace = "VueGWTObserverManager")
+    @JsMethod(namespace = "VueGWT.observerManager")
     private static boolean observeJavaObject(Object object)
     {
         if (isJavaObserved(object))

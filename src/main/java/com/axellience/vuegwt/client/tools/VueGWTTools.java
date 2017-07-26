@@ -7,57 +7,38 @@ import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.google.gwt.regexp.shared.RegExp;
 import jsinterop.annotations.JsMethod;
-
-import java.util.Collection;
-import java.util.Map;
+import jsinterop.annotations.JsType;
 
 /**
  * This object provides utils methods for VueGWT internal processing
  * @author Adrien Baron
  */
-public class VueGwtTools
+@JsType(namespace = "VueGWT", name = "tools")
+public class VueGWTTools
 {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
     private static RegExp componentEnd = RegExp.compile("Component$");
     private static RegExp directiveEnd = RegExp.compile("Directive$");
 
-    @JsMethod(namespace = "vueGwtTools")
     public static native <T extends Vue> T createInstanceForVueClass(VueConstructor<T> vueClass);
 
-    @JsMethod(namespace = "vueGwtTools")
     public static native <T extends Vue, K extends T> VueConstructor<K> extendVueClass(
         VueConstructor<T> vueClassToExtend, VueComponentOptions<K> vueComponentOptions);
 
-    @JsMethod(namespace = "vueGwtTools")
     public static native String getFunctionBody(Object jsFunction);
 
-    @JsMethod(namespace = "vueGwtTools", name = "wrapMethodWithBefore")
+    @JsMethod(name = "wrapMethodWithBefore")
     public static native <T> String wrapMethod(T object, String methodName,
         BeforeMethodCall<T> afterMethodCall);
 
-    @JsMethod(namespace = "vueGwtTools", name = "wrapMethodWithAfter")
+    @JsMethod(name = "wrapMethodWithAfter")
     public static native <T> String wrapMethod(T object, String methodName,
         AfterMethodCall<T> afterMethodCall);
 
-    @JsMethod(namespace = "vueGwtTools")
     public static native <T> String wrapMethod(T object, String methodName,
         BeforeMethodCall<T> beforeMethodCall, AfterMethodCall<T> afterMethodCall);
 
-    @JsMethod(namespace = "vueGwtTools")
     public static native <T> JsArray<T> javaArrayToJsArray(Object[] javaArray);
-
-    @JsMethod(namespace = "vueGwtTools")
-    public static boolean isJavaCollection(Object object)
-    {
-        return object instanceof Collection;
-    }
-
-    @JsMethod(namespace = "vueGwtTools")
-    public static boolean isJavaMap(Object object)
-    {
-        return object instanceof Map;
-    }
-
     /**
      * Return the default name to register a component based on it's class name.
      * The name of the tag is the name of the component converted to kebab-case.

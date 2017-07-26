@@ -8,7 +8,7 @@ import com.axellience.vuegwt.client.tools.AfterMethodCall;
 
 import java.util.Map;
 
-import static com.axellience.vuegwt.client.tools.VueGwtTools.wrapMethod;
+import static com.axellience.vuegwt.client.tools.VueGWTTools.wrapMethod;
 
 /**
  * This observer is able to observe Java Collections.

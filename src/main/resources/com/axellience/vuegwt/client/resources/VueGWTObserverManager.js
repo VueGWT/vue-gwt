@@ -1,13 +1,18 @@
+if (!window.VueGWT)
+	window.VueGWT = {};
+if (!window.VueGWT.observerManager)
+	window.VueGWT.observerManager = {};
+
 /**
  * This object provides methods to integrate Java in Vue.js world
  * @author Adrien Baron
  */
-window.VueGWTObserverManager.customizeVueObserver = function (ob) {
+window.VueGWT.observerManager.customizeVueObserver = function (ob) {
 	var obProto = ob.__proto__;
 	var vueWalk = obProto.walk;
 	obProto.walk = function () {
 		var obj = arguments[0];
-		if (VueGWTObserverManager.observeJavaObject(obj))
+		if (VueGWT.observerManager.observeJavaObject(obj))
 			return;
 
 		return vueWalk.apply(this, arguments);
@@ -20,6 +25,6 @@ window.VueGWTObserverManager.customizeVueObserver = function (ob) {
  */
 new Vue({
 	created: function () {
-		VueGWTObserverManager.customizeVueObserver(this.$data.__ob__);
+		VueGWT.observerManager.customizeVueObserver(this.$data.__ob__);
 	}
 });

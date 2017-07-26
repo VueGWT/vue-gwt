@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static com.axellience.vuegwt.client.tools.VueGwtTools.wrapMethod;
+import static com.axellience.vuegwt.client.tools.VueGWTTools.wrapMethod;
 
 /**
  * This observer is able to observe Java Collections.

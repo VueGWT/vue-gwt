@@ -4,7 +4,7 @@ import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.client.tools.VueGwtTools;
+import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.squareup.javapoet.ClassName;
@@ -136,7 +136,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
                 .of(componentsClass)
                 .forEach(clazz -> injectDependenciesBuilder.addStatement(
                     "components.set($S, $T.get())",
-                    VueGwtTools.componentToTagName(clazz.getName()),
+                    VueGWTTools.componentToTagName(clazz.getName()),
                     ClassName.bestGuess(clazz.getCanonicalName() + CONSTRUCTOR_SUFFIX)));
         }
         catch (MirroredTypesException mte)
@@ -150,7 +150,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
                 injectDependenciesBuilder.addStatement("components.set($S, $T.get())",
-                    VueGwtTools.componentToTagName(classTypeElement.getSimpleName().toString()),
+                    VueGWTTools.componentToTagName(classTypeElement.getSimpleName().toString()),
                     ClassName.bestGuess(classTypeElement.getQualifiedName() + CONSTRUCTOR_SUFFIX));
             });
         }
@@ -183,7 +183,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
                 .of(componentsClass)
                 .forEach(clazz -> injectDependenciesBuilder.addStatement(
                     "directives.set($S, new $T())",
-                    VueGwtTools.directiveToTagName(clazz.getName()),
+                    VueGWTTools.directiveToTagName(clazz.getName()),
                     ClassName.bestGuess(clazz.getCanonicalName() + DIRECTIVE_OPTIONS_SUFFIX)));
         }
         catch (MirroredTypesException mte)
@@ -197,7 +197,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
                 injectDependenciesBuilder.addStatement("directives.set($S, new $T())",
-                    VueGwtTools.directiveToTagName(classTypeElement.getSimpleName().toString()),
+                    VueGWTTools.directiveToTagName(classTypeElement.getSimpleName().toString()),
                     ClassName.bestGuess(classTypeElement.getQualifiedName()
                         + DIRECTIVE_OPTIONS_SUFFIX));
             });

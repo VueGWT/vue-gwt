@@ -2,7 +2,7 @@ package com.axellience.vuegwt.client.directive.options;
 
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.tools.VueGwtTools;
+import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import jsinterop.annotations.JsType;
 
@@ -51,7 +51,7 @@ public abstract class VueDirectiveOptions extends JsObject
             return;
 
         // Filter empty function inherited from VueDirective
-        String body = VueGwtTools.getFunctionBody(hookFunction);
+        String body = VueGWTTools.getFunctionBody(hookFunction);
         if ("".equals(body))
             return;
 

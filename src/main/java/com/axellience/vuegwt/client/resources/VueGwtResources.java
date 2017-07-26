@@ -15,7 +15,7 @@ public interface VueGwtResources extends ClientBundle
     @Source("JsTools.js")
     TextResource jsToolsScript();
 
-    @Source("VueGwtTools.js")
+    @Source("VueGWTTools.js")
     TextResource vueToolsScript();
 
     @Source("VueGWTObserverManager.js")

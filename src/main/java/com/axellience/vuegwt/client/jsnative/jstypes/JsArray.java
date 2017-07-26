@@ -10,7 +10,7 @@ import com.axellience.vuegwt.client.jsnative.jstypes.arrayfunctions.JsReduce;
 import com.axellience.vuegwt.client.jsnative.jstypes.arrayfunctions.JsReduceWithIndex;
 import com.axellience.vuegwt.client.jsnative.jstypes.arrayfunctions.JsReduceWithIndexAndArray;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.tools.VueGwtTools;
+import com.axellience.vuegwt.client.tools.VueGWTTools;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -42,13 +42,13 @@ public class JsArray<T>
     @JsOverlay
     public static <T> JsArray<T> from(Collection<T> collection)
     {
-        return VueGwtTools.javaArrayToJsArray(collection.toArray());
+        return VueGWTTools.javaArrayToJsArray(collection.toArray());
     }
 
     @JsOverlay
     public static <K, V> JsArray<V> from(Map<K, V> map)
     {
-        return VueGwtTools.javaArrayToJsArray(map.values().toArray());
+        return VueGWTTools.javaArrayToJsArray(map.values().toArray());
     }
 
     @JsOverlay

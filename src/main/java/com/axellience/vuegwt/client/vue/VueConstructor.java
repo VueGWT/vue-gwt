@@ -6,7 +6,7 @@ import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsFunction;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.tools.VueGwtTools;
+import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
 import jsinterop.annotations.JsOverlay;
@@ -25,13 +25,13 @@ public class VueConstructor<T extends Vue> extends JsFunction
     @JsOverlay
     public final T instantiate()
     {
-        return VueGwtTools.createInstanceForVueClass(this);
+        return VueGWTTools.createInstanceForVueClass(this);
     }
 
     @JsOverlay
     public final <K extends T> VueConstructor<K> extend(VueComponentOptions<K> vueComponentOptions)
     {
-        return VueGwtTools.extendVueClass(this, vueComponentOptions);
+        return VueGWTTools.extendVueClass(this, vueComponentOptions);
     }
 
     @JsOverlay
