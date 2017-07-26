@@ -3,27 +3,29 @@ if (!window.VueGWT)
 if (!window.VueGWT.tools)
 	window.VueGWT.tools = {};
 
+var tools = window.VueGWT.tools;
+
 /**
  * This object provides methods to integrate Java in Vue.js world
  * @author Adrien Baron
  */
-window.VueGWT.tools.createInstanceForVueClass = function (extendedVueClass) {
+tools.createInstanceForVueClass = function (extendedVueClass) {
 	return new extendedVueClass();
 };
-window.VueGWT.tools.extendVueClass = function (vueClassToExtend, vueComponentOptions) {
+tools.extendVueClass = function (vueClassToExtend, vueComponentOptions) {
 	return vueClassToExtend.extend(vueComponentOptions);
 };
-window.VueGWT.tools.getFunctionBody = function (myFunction) {
+tools.getFunctionBody = function (myFunction) {
 	// Get content between first { and last }
 	var m = myFunction.toString().match(/\{([\s\S]*)\}/m)[1];
 	// Strip comments
 	return m.replace(/^\s*\/\/.*$/mg, '').trim();
 };
-window.VueGWT.tools.javaArrayToJsArray = function (javaArray) {
+tools.javaArrayToJsArray = function (javaArray) {
 	// No conversion is needed, but Java compiler won't agree otherwise
 	return javaArray;
 };
-window.VueGWT.tools.wrapMethodWithBefore = function (object, methodName, beforeMethodCall) {
+tools.wrapMethodWithBefore = function (object, methodName, beforeMethodCall) {
 	var proto = object.__proto__;
 	var originalFunc = proto[methodName];
 	proto[methodName] = function () {
@@ -31,7 +33,7 @@ window.VueGWT.tools.wrapMethodWithBefore = function (object, methodName, beforeM
 		return originalFunc.apply(this, arguments);
 	};
 };
-window.VueGWT.tools.wrapMethodWithAfter = function (object, methodName, afterMethodCall) {
+tools.wrapMethodWithAfter = function (object, methodName, afterMethodCall) {
 	var proto = object.__proto__;
 	var originalFunc = proto[methodName];
 	proto[methodName] = function () {
@@ -40,7 +42,7 @@ window.VueGWT.tools.wrapMethodWithAfter = function (object, methodName, afterMet
 		return result;
 	};
 };
-window.VueGWT.tools.wrapMethod = function (object, methodName, beforeMethodCall, afterMethodCall) {
+tools.wrapMethod = function (object, methodName, beforeMethodCall, afterMethodCall) {
 	var proto = object.__proto__;
 	var originalFunc = proto[methodName];
 	proto[methodName] = function () {

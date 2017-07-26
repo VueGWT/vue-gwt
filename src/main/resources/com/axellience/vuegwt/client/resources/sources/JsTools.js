@@ -3,10 +3,11 @@ if (!window.VueGWT)
 if (!window.VueGWT.jsTools)
 	window.VueGWT.jsTools = {};
 
+var jsTools = window.VueGWT.jsTools;
 /**
  * Source: https://github.com/ltearno/angular2-gwt/
  */
-window.VueGWT.jsTools.defineProperty = function (object, name, definition) {
+jsTools.defineProperty = function (object, name, definition) {
 	var def = {};
 	if ('get' in definition) {
 		def.get = function () {
@@ -22,36 +23,36 @@ window.VueGWT.jsTools.defineProperty = function (object, name, definition) {
 
 	Object.defineProperty(object, name, def);
 };
-window.VueGWT.jsTools.getWindow = function () {
+jsTools.getWindow = function () {
 	return window;
 };
-window.VueGWT.jsTools.objectHasProperty = function (object, property) {
+jsTools.objectHasProperty = function (object, property) {
 	return property in object;
 };
-window.VueGWT.jsTools.getObjectProperty = function (object, property) {
+jsTools.getObjectProperty = function (object, property) {
 	return object[property];
 };
-window.VueGWT.jsTools.setObjectProperty = function (object, property, value) {
+jsTools.setObjectProperty = function (object, property, value) {
 	object[property] = value;
 };
-window.VueGWT.jsTools.unsetObjectProperty = function (object, property) {
+jsTools.unsetObjectProperty = function (object, property) {
 	delete object[property];
 };
-window.VueGWT.jsTools.setObjectFunction = function (object, property, func) {
+jsTools.setObjectFunction = function (object, property, func) {
 	object[property] = function () {
 		return func.exec.apply(this, arguments);
 	};
 };
-window.VueGWT.jsTools.getArrayItem = function (array, index) {
+jsTools.getArrayItem = function (array, index) {
 	return array[index] || null;
 };
-window.VueGWT.jsTools.setArrayItem = function (array, index, value) {
+jsTools.setArrayItem = function (array, index, value) {
 	array[index] = value;
 };
-window.VueGWT.jsTools.call = function (func, thisArg, args) {
+jsTools.call = function (func, thisArg, args) {
 	return func.call(thisArg, args);
 };
-window.VueGWT.jsTools.getDeepValue = function (obj, path) {
+jsTools.getDeepValue = function (obj, path) {
 	for (var i = 0, pathObj = path.split('.'), len = pathObj.length; i < len; i++) {
 		obj = obj[pathObj[i]];
 	}

@@ -143,6 +143,35 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>com.samaxes.maven</groupId>
+				<artifactId>minify-maven-plugin</artifactId>
+				<version>1.7.6</version>
+				<executions>
+					<execution>
+						<id>default-minify</id>
+						<configuration>
+							<charset>UTF-8</charset>
+							<webappSourceDir>src/main/resources/com/axellience/vuegwt/client/resources</webappSourceDir>
+							<jsSourceDir>sources</jsSourceDir>
+							<jsSourceFiles>
+								<jsSourceFile>JsTools.js</jsSourceFile>
+								<jsSourceFile>VueGWTObserverManager.js</jsSourceFile>
+								<jsSourceFile>VueGWTTools.js</jsSourceFile>
+							</jsSourceFiles>
+
+							<webappTargetDir>src/main/resources/com/axellience/vuegwt/client/resources</webappTargetDir>
+							<jsTargetDir>.</jsTargetDir>
+							<jsFinalFile>script.js</jsFinalFile>
+							<jsEngine>CLOSURE</jsEngine>
+						</configuration>
+						<goals>
+							<goal>minify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- Maven test plugin -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>

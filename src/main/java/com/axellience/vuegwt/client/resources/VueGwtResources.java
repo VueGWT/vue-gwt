@@ -12,12 +12,6 @@ public interface VueGwtResources extends ClientBundle
 {
     VueGwtResources JS_RESOURCES = GWT.create(VueGwtResources.class);
 
-    @Source("JsTools.js")
-    TextResource jsToolsScript();
-
-    @Source("VueGWTTools.js")
-    TextResource vueToolsScript();
-
-    @Source("VueGWTObserverManager.js")
-    TextResource vueGWTObserverScript();
+    @Source("script.min.js")
+    TextResource script();
 }

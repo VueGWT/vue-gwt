@@ -20,16 +20,8 @@ public class VueGwtResourcesInjector
 
         HTMLDocument document = HTMLDocument.get();
 
-        HTMLElement jsToolsScriptElement = document.createElement("script");
-        jsToolsScriptElement.innerHTML = VueGwtResources.JS_RESOURCES.jsToolsScript().getText();
-        document.body.appendChild(jsToolsScriptElement);
-
-        HTMLElement vueGWTToolsScriptElement = document.createElement("script");
-        vueGWTToolsScriptElement.innerHTML = VueGwtResources.JS_RESOURCES.vueToolsScript().getText();
-        document.body.appendChild(vueGWTToolsScriptElement);
-
-        HTMLElement vueGWTObserverScriptElement = document.createElement("script");
-        vueGWTObserverScriptElement.innerHTML = VueGwtResources.JS_RESOURCES.vueGWTObserverScript().getText();
-        document.body.appendChild(vueGWTObserverScriptElement);
+        HTMLElement scriptElement = document.createElement("script");
+        scriptElement.innerHTML = VueGwtResources.JS_RESOURCES.script().getText();
+        document.body.appendChild(scriptElement);
     }
 }
