@@ -44,7 +44,6 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
     {
         vueConstructorClassBuilder.addStaticBlock(CodeBlock
             .builder()
-            .addStatement("$T.inject()", VueGWT.class)
             .addStatement("$T.register($S, $T.get())",
                 VueGWT.class,
                 componentTypeElement.getQualifiedName().toString(),

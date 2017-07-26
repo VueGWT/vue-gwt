@@ -33,8 +33,8 @@ public class VueGWT
     }
 
     /**
-     * Inject the scripts used to manipulate JS object from the Java or convert from
-     * Java representation to JS representation in the page
+     * Inject scripts necessary for Vue GWT to work
+     * Requires Vue to be defined in Window.
      */
     public static void inject()
     {
@@ -46,7 +46,7 @@ public class VueGWT
 
         HTMLElement scriptElement = document.createElement("script");
         VueGwtResources resources = GWT.create(VueGwtResources.class);
-        scriptElement.innerHTML = resources.script().getText();
+        scriptElement.innerHTML = resources.vueGWTScript().getText();
         document.body.appendChild(scriptElement);
     }
 }

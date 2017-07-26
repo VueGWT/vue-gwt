@@ -3,17 +3,17 @@ if (!window.VueGWT)
 if (!window.VueGWT.observerManager)
 	window.VueGWT.observerManager = {};
 
-var observerManager = window.VueGWT.observerManager;
+const observerManager = window.VueGWT.observerManager;
 
 /**
  * This object provides methods to integrate Java in Vue.js world
  * @author Adrien Baron
  */
 observerManager.customizeVueObserver = function (ob) {
-	var obProto = ob.__proto__;
-	var vueWalk = obProto.walk;
+	const obProto = ob.__proto__;
+	const vueWalk = obProto.walk;
 	obProto.walk = function () {
-		var obj = arguments[0];
+		const obj = arguments[0];
 		if (observerManager.observeJavaObject(obj))
 			return;
 

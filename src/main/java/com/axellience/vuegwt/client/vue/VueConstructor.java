@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.vue;
 
+import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
@@ -22,6 +23,10 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
 public class VueConstructor<T extends VueComponent> extends JsFunction
 {
+    static {
+        VueGWT.inject();
+    }
+
     @JsOverlay
     public final T instantiate()
     {

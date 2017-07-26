@@ -1,7 +1,6 @@
 package com.axellience.vuegwtexamples.client;
 
 import com.axellience.vuegwt.client.Vue;
-import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;
@@ -50,8 +49,6 @@ public class VueGwtExamplesApp implements EntryPoint
      */
     public void onModuleLoad()
     {
-        VueGWT.inject();
-        
         VueConstructor vueClass = (VueConstructor) JsTools.getWindow().get("FullJsComponent");
         VueComponent myComponent = vueClass.instantiate();
         myComponent.$mount("#fullJsComponent");

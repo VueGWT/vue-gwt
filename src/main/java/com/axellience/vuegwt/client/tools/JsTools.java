@@ -1,11 +1,16 @@
 package com.axellience.vuegwt.client.tools;
 
+import com.axellience.vuegwt.client.jsnative.html.HTMLDocument;
+import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
+import com.axellience.vuegwt.client.resources.VueGwtResources;
+import com.google.gwt.core.client.GWT;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
 /**
+ * Scripts used to communicate between the JS world and Java
  * Source: https://github.com/ltearno/angular2-gwt/
  */
 @JsType(namespace = "VueGWT", name = "jsTools")
@@ -72,5 +77,29 @@ public class JsTools
     public static void set(Object o, String propertyName, Object value)
     {
         setObjectProperty(o, propertyName, value);
+    }
+
+    // Injection
+    private static boolean isInjected;
+
+    static {
+        inject();
+    }
+
+    /**
+     * Inject scripts used to communicate between the JS world and Java
+     */
+    private static void inject()
+    {
+        if (!GWT.isClient() || isInjected)
+            return;
+        isInjected = true;
+
+        HTMLDocument document = HTMLDocument.get();
+
+        HTMLElement scriptElement = document.createElement("script");
+        VueGwtResources resources = GWT.create(VueGwtResources.class);
+        scriptElement.innerHTML = resources.jsToolsScript().getText();
+        document.body.appendChild(scriptElement);
     }
 }

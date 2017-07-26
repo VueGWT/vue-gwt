@@ -9,6 +9,9 @@ import com.google.gwt.resources.client.TextResource;
  */
 public interface VueGwtResources extends ClientBundle
 {
-    @Source("script.min.js")
-    TextResource script();
+    @Source("vue-gwt.min.js")
+    TextResource vueGWTScript();
+
+    @Source("js-tools.min.js")
+    TextResource jsToolsScript();
 }
