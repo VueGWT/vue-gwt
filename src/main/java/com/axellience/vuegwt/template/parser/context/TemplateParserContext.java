@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.template.parser.context;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -52,7 +52,7 @@ public class TemplateParserContext
     {
         if (vueComponentClass == null || vueComponentClass
             .getQualifiedSourceName()
-            .equals(Vue.class.getCanonicalName()))
+            .equals(VueComponent.class.getCanonicalName()))
             return;
 
         for (JField jField : vueComponentClass.getFields())

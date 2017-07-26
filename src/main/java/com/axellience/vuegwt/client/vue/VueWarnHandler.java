@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.vue;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import jsinterop.annotations.JsFunction;
 
 /**
@@ -10,5 +10,5 @@ import jsinterop.annotations.JsFunction;
 @FunctionalInterface
 public interface VueWarnHandler
 {
-    void action(String message, Vue vue, String trace);
+    void action(String message, VueComponent vue, String trace);
 }

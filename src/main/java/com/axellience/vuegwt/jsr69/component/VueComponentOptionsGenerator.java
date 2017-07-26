@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.jsr69.component;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.component.hooks.HasActivated;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeCreate;
@@ -88,7 +88,7 @@ public class VueComponentOptionsGenerator
 
     /**
      * Generate an {@link VueComponentOptions} for our Vue Component.
-     * @param componentTypeElement The {@link Vue} class to generate {@link VueComponentOptions}
+     * @param componentTypeElement The {@link VueComponent} class to generate {@link VueComponentOptions}
      * from
      */
     public void generate(TypeElement componentTypeElement)

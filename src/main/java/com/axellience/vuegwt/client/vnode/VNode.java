@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.vnode;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsOverlay;
@@ -20,10 +20,10 @@ public final class VNode
     @JsProperty protected String text;
     @JsProperty protected Element elm;
     @JsProperty protected String ns;
-    @JsProperty protected Vue context;
+    @JsProperty protected VueComponent context;
     @JsProperty protected Object key;
     @JsProperty protected VNodeComponentOptions componentOptions;
-    @JsProperty protected Vue componentInstance;
+    @JsProperty protected VueComponent componentInstance;
     @JsProperty protected VNode parent;
     @JsProperty protected boolean raw;
     @JsProperty protected boolean isStatic;
@@ -119,13 +119,13 @@ public final class VNode
     }
 
     @JsOverlay
-    public final Vue getContext()
+    public final VueComponent getContext()
     {
         return context;
     }
 
     @JsOverlay
-    public final VNode setContext(Vue context)
+    public final VNode setContext(VueComponent context)
     {
         this.context = context;
         return this;
@@ -158,13 +158,13 @@ public final class VNode
     }
 
     @JsOverlay
-    public final Vue getComponentInstance()
+    public final VueComponent getComponentInstance()
     {
         return componentInstance;
     }
 
     @JsOverlay
-    public final VNode setComponentInstance(Vue componentInstance)
+    public final VNode setComponentInstance(VueComponent componentInstance)
     {
         this.componentInstance = componentInstance;
         return this;

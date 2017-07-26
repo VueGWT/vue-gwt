@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.vue;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsFunction;
@@ -14,13 +14,13 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * A Java representation of a Vue Constructor.
- * Vue Constructor are JavaScript Function obtained when calling Vue.extend().
+ * A Java representation of a VueComponent Constructor.
+ * VueComponent Constructor are JavaScript Function obtained when calling VueComponent.extend().
  * All the {@link Component} and {@link JsComponent} get a generated VueConstructor.
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public class VueConstructor<T extends Vue> extends JsFunction
+public class VueConstructor<T extends VueComponent> extends JsFunction
 {
     @JsOverlay
     public final T instantiate()

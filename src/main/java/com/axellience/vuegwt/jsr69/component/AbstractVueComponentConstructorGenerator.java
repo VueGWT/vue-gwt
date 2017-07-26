@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.jsr69.component;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
@@ -48,7 +48,7 @@ public abstract class AbstractVueComponentConstructorGenerator
 
     /**
      * Generate our {@link VueConstructor} class.
-     * @param componentTypeElement The {@link Vue} class to
+     * @param componentTypeElement The {@link VueComponent} class to
      * generate {@link VueComponentOptions} from
      */
     public void generate(TypeElement componentTypeElement)

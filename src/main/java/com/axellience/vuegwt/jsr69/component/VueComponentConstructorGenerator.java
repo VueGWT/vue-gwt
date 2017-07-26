@@ -2,6 +2,7 @@ package com.axellience.vuegwt.jsr69.component;
 
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.VueGWT;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.VueGWTTools;
@@ -41,10 +42,14 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
     protected void createStaticRegistration(TypeElement componentTypeElement,
         TypeName generatedTypeName, Builder vueConstructorClassBuilder)
     {
-        vueConstructorClassBuilder.addStaticBlock(CodeBlock.of("$T.register($S, $T.get());",
-            VueGWT.class,
-            componentTypeElement.getQualifiedName().toString(),
-            generatedTypeName));
+        vueConstructorClassBuilder.addStaticBlock(CodeBlock
+            .builder()
+            .addStatement("$T.inject()", VueGWT.class)
+            .addStatement("$T.register($S, $T.get())",
+                VueGWT.class,
+                componentTypeElement.getQualifiedName().toString(),
+                generatedTypeName)
+            .build());
     }
 
     @Override
@@ -64,7 +69,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
 
         // Set parent
         TypeName superClass = TypeName.get(componentTypeElement.getSuperclass());
-        if (!TypeName.get(Vue.class).equals(superClass))
+        if (!TypeName.get(VueComponent.class).equals(superClass))
         {
             TypeName superConstructor =
                 ClassName.bestGuess(superClass.toString() + CONSTRUCTOR_SUFFIX);
@@ -146,8 +151,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             if (!classTypeMirrors.isEmpty())
                 addGetComponentsStatement(injectDependenciesBuilder);
 
-            classTypeMirrors.forEach(classTypeMirror ->
-            {
+            classTypeMirrors.forEach(classTypeMirror -> {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
                 injectDependenciesBuilder.addStatement("components.set($S, $T.get())",
                     VueGWTTools.componentToTagName(classTypeElement.getSimpleName().toString()),
@@ -193,8 +197,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             if (!classTypeMirrors.isEmpty())
                 addGetDirectivesStatement(injectDependenciesBuilder);
 
-            classTypeMirrors.forEach(classTypeMirror ->
-            {
+            classTypeMirrors.forEach(classTypeMirror -> {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
                 injectDependenciesBuilder.addStatement("directives.set($S, new $T())",
                     VueGWTTools.directiveToTagName(classTypeElement.getSimpleName().toString()),

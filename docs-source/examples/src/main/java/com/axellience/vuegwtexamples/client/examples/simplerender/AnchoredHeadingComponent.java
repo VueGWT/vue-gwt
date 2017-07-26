@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.simplerender;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.vnode.VNode;
@@ -16,7 +16,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component(hasTemplate = false)
-public class AnchoredHeadingComponent extends Vue implements HasRender
+public class AnchoredHeadingComponent extends VueComponent implements HasRender
 {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
 

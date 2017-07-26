@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.todotext;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -12,7 +12,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component
-public class TodoTextComponent extends Vue
+public class TodoTextComponent extends VueComponent
 {
     public Todo todo;
 

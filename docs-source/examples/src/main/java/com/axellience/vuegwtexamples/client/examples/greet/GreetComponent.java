@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.greet;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.google.gwt.user.client.Window;
 import jsinterop.annotations.JsType;
@@ -10,7 +10,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component
-public class GreetComponent extends Vue
+public class GreetComponent extends VueComponent
 {
     @Override
     public void created() {}

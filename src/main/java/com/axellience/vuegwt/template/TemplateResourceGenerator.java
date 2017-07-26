@@ -16,7 +16,7 @@
 
 package com.axellience.vuegwt.template;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.template.TemplateExpressionBase;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 import com.axellience.vuegwt.client.template.TemplateResource;
@@ -285,7 +285,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
     {
         if (vueComponentClass == null || vueComponentClass
             .getQualifiedSourceName()
-            .equals(Vue.class.getCanonicalName()))
+            .equals(VueComponent.class.getCanonicalName()))
             return;
 
         for (JMethod jMethod : vueComponentClass.getMethods())

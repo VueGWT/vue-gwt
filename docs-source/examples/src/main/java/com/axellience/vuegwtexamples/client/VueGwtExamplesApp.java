@@ -1,6 +1,8 @@
 package com.axellience.vuegwtexamples.client;
 
 import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.VueGWT;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponentConstructor;
@@ -48,8 +50,10 @@ public class VueGwtExamplesApp implements EntryPoint
      */
     public void onModuleLoad()
     {
+        VueGWT.inject();
+        
         VueConstructor vueClass = (VueConstructor) JsTools.getWindow().get("FullJsComponent");
-        Vue myComponent = vueClass.instantiate();
+        VueComponent myComponent = vueClass.instantiate();
         myComponent.$mount("#fullJsComponent");
 
         this.addExample("simpleLinkComponent", SimpleLinkComponentConstructor.get());
@@ -90,12 +94,12 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("fullJsWithMethodsComponent", FullJsWithMethodsComponentConstructor.get());
     }
 
-    private void addExample(String exampleId, VueConstructor<? extends Vue> exampleVuConstructor)
+    private void addExample(String exampleId, VueConstructor<? extends VueComponent> exampleVuConstructor)
     {
         // If we find the containing div for this example, we instantiate it
         if (Document.get().getElementById(exampleId) != null)
         {
-            Vue exampleInstance = Vue.attach("#" + exampleId, exampleVuConstructor);
+            VueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVuConstructor);
             JsTools.getWindow().set(exampleId, exampleInstance);
         }
     }

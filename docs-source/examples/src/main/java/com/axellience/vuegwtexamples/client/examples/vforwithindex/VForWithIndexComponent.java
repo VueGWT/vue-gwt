@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.vforwithindex;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -11,7 +11,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component
-public class VForWithIndexComponent extends Vue
+public class VForWithIndexComponent extends VueComponent
 {
     public JsArray<Todo> todos;
     public String parentMessage;

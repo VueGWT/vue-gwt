@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.instanciatejscomponent;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -10,7 +10,7 @@ import jsinterop.annotations.JsType;
  */
 @JsComponent
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class FullJsWithMethodsComponent extends Vue
+public class FullJsWithMethodsComponent extends VueComponent
 {
     public int value;
 

@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.component.options;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.HasCustomizeOptions;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
@@ -36,7 +36,7 @@ import java.util.Map.Entry;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public abstract class VueComponentOptions<T extends Vue> extends JsObject
+public abstract class VueComponentOptions<T extends VueComponent> extends JsObject
 {
     @JsProperty protected T vuegwt$javaComponentInstance;
 
@@ -54,7 +54,7 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     @JsProperty private JsObject<VueDirectiveOptions> directives;
     @JsProperty private JsObject<VueComponentOptions> components;
 
-    @JsProperty private Vue parent;
+    @JsProperty private VueComponent parent;
     @JsProperty private String name;
 
     private Map<String, CssResource> componentStyles;
@@ -489,13 +489,13 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     }
 
     @JsOverlay
-    public final Vue getParent()
+    public final VueComponent getParent()
     {
         return parent;
     }
 
     @JsOverlay
-    public final VueComponentOptions setParent(Vue parent)
+    public final VueComponentOptions setParent(VueComponent parent)
     {
         this.parent = parent;
         return this;

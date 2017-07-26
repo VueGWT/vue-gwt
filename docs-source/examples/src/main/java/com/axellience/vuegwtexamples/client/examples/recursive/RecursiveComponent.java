@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.recursive;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Prop;
 import jsinterop.annotations.JsType;
@@ -10,7 +10,8 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component(name = "recursive")
-public class RecursiveComponent extends Vue {
+public class RecursiveComponent extends VueComponent
+{
     @Prop
     public Integer counter;
 

@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.vforonobjectwithkeyandindex;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -11,7 +11,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 @Component
-public class VForOnObjectWithKeyAndIndexComponent extends Vue
+public class VForOnObjectWithKeyAndIndexComponent extends VueComponent
 {
     public JsObject<Object> myObject;
 
