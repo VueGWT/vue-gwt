@@ -26,13 +26,11 @@ You can just **[see Vue.js documentation about Form Input Bindings](https://vuej
 You can use a computed properties along with the regular `v-model`:
 
 ```java
-@JsType
 @Component
-public class TodoTextComputedComponent extends Vue {
-    public Todo todo;
+public class TodoTextComputedComponent extends VueComponent {
+    @JsProperty Todo todo;
 
-    @Override
-    public void created() {
+    public TodoTextComputedComponent() {
         this.todo = new Todo("Hello World!");
     }
 
@@ -76,13 +74,11 @@ In those case you can use the following syntax:
 ```
 
 ```java
-@JsType
 @Component
-public class TodoTextComponent extends Vue {
-    public Todo todo;
+public class TodoTextComponent extends VueComponent {
+    @JsProperty Todo todo;
     
-    @Override
-    public void created() {
+    public TodoTextComponent() {
         this.todo = new Todo("Hello World!");
     }
 

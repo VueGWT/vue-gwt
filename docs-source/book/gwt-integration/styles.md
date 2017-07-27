@@ -50,12 +50,9 @@ Let's use our style in a small Component.
 For the Java part, nothing is needed, so we can just create an empty Component class.
 
 ```java
-@JsType
 @Component
-public class MelisandreComponent extends Vue
+public class MelisandreComponent extends VueComponent
 {
-    @Override
-    public void created() {}
 }
 ```
 
@@ -91,14 +88,12 @@ You can apply a Style conditionally.
 First we add a boolean in our `MelisandreComponent`:
 
 ```java
-@JsType
 @Component
-public class MelisandreComponent extends Vue
+public class MelisandreComponent extends VueComponent
 {
-    public boolean isRed;
+    @JsProperty boolean isRed;
 
-    @Override
-    public void created() {
+    public MelisandreComponent() {
         this.isRed = true;
     }
 }

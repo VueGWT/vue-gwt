@@ -21,17 +21,15 @@ The `v-for` directive requires a special syntax in the form of `Type item in ite
 ```
 
 ```java
-@JsType
 @Component
-public class SimpleTodoListComponent extends Vue {
-    public JsArray<Todo> todos;
+public class SimpleTodoListComponent extends VueComponent {
+    @JsProperty List<Todo> todos;
     
-    @Override
-    public void created() {
-        this.todos = new JsArray<>();
-        this.todos.push(new Todo("Learn Java"));
-        this.todos.push(new Todo("Learn Vue GWT"));
-        this.todos.push(new Todo("Build something awesome"));
+    public SimpleTodoListComponent() {
+        this.todos = new LinkedList<>();
+        this.todos.add(new Todo("Learn Java"));
+        this.todos.add(new Todo("Learn Vue GWT"));
+        this.todos.add(new Todo("Build something awesome"));
     }
 }
 ```
@@ -57,21 +55,19 @@ Inside `v-for` blocks we have full access to parent scope properties.
 ```
 
 ```java
-@JsType
 @Component
-public class VForWithIndexComponent extends Vue
+public class VForWithIndexComponent extends VueComponent
 {
-    public JsArray<Todo> todos;
-    public String parentMessage;
+    @JsProperty List<Todo> todos;
+    @JsProperty String parentMessage;
 
-    @Override
-    public void created() {
+    public VForWithIndexComponent() {
         this.parentMessage = "Message from parent";
 
-        this.todos = new JsArray<>();
-        this.todos.push(new Todo("Learn Java"));
-        this.todos.push(new Todo("Learn Vue GWT"));
-        this.todos.push(new Todo("Build something awesome"));
+        this.todos = new LinkedList<>();
+        this.todos.add(new Todo("Learn Java"));
+        this.todos.add(new Todo("Learn Vue GWT"));
+        this.todos.add(new Todo("Build something awesome"));
     }
 }
 ```
@@ -109,7 +105,7 @@ Similar to template `v-if`, you can also use a `<template>` tag with `v-for` to 
 You can also use `v-for` to iterate through the properties of an `Object`.
 
 For this you have to cast to `Object` in your `v-for`.
-This tells Vue GWT that you are iterating on an `Object` and not a `JsArray`.
+This tells Vue GWT that you are iterating on an `Object` and not an regular Collection.
 
 ```html
 <ul>
@@ -120,14 +116,12 @@ This tells Vue GWT that you are iterating on an `Object` and not a `JsArray`.
 ```
 
 ```java
-@JsType
 @Component
-public class VForOnObjectComponent extends Vue
+public class VForOnObjectComponent extends VueComponent
 {
-    public JsObject<Object> myObject;
+    @JsProperty JsObject<Object> myObject;
 
-    @Override
-    public void created() {
+    public VForOnObjectComponent() {
         this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);
@@ -340,19 +334,20 @@ For example:
 ```
 
 ```java
-@JsType
 @Component
-public class EvenNumbersComponent extends Vue {
-    public JsArray<Integer> numbers;
+public class EvenNumbersComponent extends VueComponent
+{
+    @JsProperty List<Integer> numbers;
 
-    @Override
-    public void created() {
-        this.numbers = JsArray.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    public EvenNumbersComponent()
+    {
+        this.numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }
 
     @Computed
-    public JsArray<Integer> getEvenNumbers() {
-        return this.numbers.filter(number -> number % 2 == 0);
+    public List<Integer> getEvenNumbers()
+    {
+        return this.numbers.stream().filter(number -> number % 2 == 0).collect(Collectors.toList());
     }
 }
 ```
@@ -373,15 +368,11 @@ In situations where computed properties are not feasible (e.g. inside nested `v-
 ```
 
 ```java
-@JsType
 @Component
-public class EvenNumbersComponent extends Vue {
-    @Override
-    public void created() {}
-
+public class EvenNumbersComponent extends VueComponent {
     // No @Computed annotation
-    public JsArray<Integer> getEven(JsArray<Integer> numbers) {
-        return numbers.filter(number -> number % 2 == 0);
+    public List<Integer> getEven(List<Integer> numbers) {
+        return this.numbers.stream().filter(number -> number % 2 == 0).collect(Collectors.toList());
     }
 }
 ```

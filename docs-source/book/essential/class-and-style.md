@@ -80,15 +80,13 @@ This is a common and powerful pattern:
 <div v-bind:class="classObject"></div>
 ```
 ```java
-@JsType
 @Component
-public class StylishComponent extends Vue
+public class StylishComponent extends VueComponent
 {
-    public boolean isActive;
-    public Error error;
+    @JsProperty boolean isActive;
+    @JsProperty Error error;
 
-    @Override
-    public void created() {
+    public StylishComponent() {
         this.isActive = true;
         this.error = null;
     }
@@ -207,14 +205,12 @@ It is often a good idea to bind to a style object directly so that the template 
 <div v-bind:style="styleObject"></div>
 ```
 ```java
-@JsType
 @Component
-public class StylishComponent extends Vue
+public class StylishComponent extends VueComponent
 {
-    public JsObject<String> styleObject;
+    @JsProperty JsObject<String> styleObject;
 
-    @Override
-    public void created() {
+    public StylishComponent() {
         this.styleObject = new JsObject<>();
         this.styleObject.set("color", "red");
         this.styleObject.set("fontSize", "20px");

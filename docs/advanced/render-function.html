@@ -831,25 +831,21 @@ That&apos;s where you can use the <strong>render function</strong>, a closer-to-
   <span class="hljs-tag">&lt;/<span class="hljs-name">h6</span>&gt;</span>
 </span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-meta">@Prop</span>(required = <span class="hljs-keyword">true</span>) <span class="hljs-keyword">public</span> Integer level;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span>
+    <span class="hljs-meta">@Prop</span>(required = <span class="hljs-keyword">true</span>)
+    Integer level;
 }
 </code></pre>
 <p>That template doesn&apos;t feel great.
 It&apos;s not only verbose, but we&apos;re duplicating <code>&lt;slot&gt;&lt;/slot&gt;</code> for every heading level and will have to do the same when we add the anchor element.</p>
 <p>While templates work great for most components, it&apos;s clear that this isn&apos;t one of them. So let&apos;s try rewriting it with a <code>render</code> function:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>(hasTemplate = <span class="hljs-keyword">false</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasRender</span> </span>{
-    <span class="hljs-meta">@Prop</span>(required = <span class="hljs-keyword">true</span>) <span class="hljs-keyword">public</span> Integer level;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(hasTemplate = <span class="hljs-keyword">false</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasRender</span> </span>{
+    <span class="hljs-meta">@JsProperty</span>
+    <span class="hljs-meta">@Prop</span>(required = <span class="hljs-keyword">true</span>)
+    <span class="hljs-keyword">public</span> Integer level;
 
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">render</span><span class="hljs-params">(VNodeBuilder builder)</span> </span>{
@@ -984,15 +980,13 @@ This object also allows you to bind normal HTML attributes as well as DOM proper
 </code></pre>
 <h3 id="complete-example">Complete Example</h3>
 <p>With this knowledge, we can now finish the component we started:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>(hasTemplate = <span class="hljs-keyword">false</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasRender</span> </span>{
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(hasTemplate = <span class="hljs-keyword">false</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasRender</span> </span>{
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> RegExp camelCasePattern = RegExp.compile(<span class="hljs-string">&quot;([a-z])([A-Z]+)&quot;</span>, <span class="hljs-string">&quot;g&quot;</span>);
 
-    <span class="hljs-meta">@Prop</span>(required = <span class="hljs-keyword">true</span>) <span class="hljs-keyword">public</span> Integer level;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
+    <span class="hljs-meta">@JsProperty</span>
+    <span class="hljs-meta">@Prop</span>(required = <span class="hljs-keyword">true</span>)
+    Integer level;
 
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">render</span><span class="hljs-params">(VNodeBuilder builder)</span> </span>{
@@ -1220,7 +1214,7 @@ For example, in a template using <code>v-if</code> and <code>v-for</code>:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Render Function","level":"4.3","depth":1,"next":{"title":"Basics","level":"4.3.1","depth":2,"anchor":"#basics","path":"advanced/render-function.md","ref":"advanced/render-function.md#basics","articles":[]},"previous":{"title":"Extending JS Components","level":"4.2.2","depth":2,"anchor":"#extending-js-component","path":"advanced/extending-components.md","ref":"advanced/extending-components.md#extending-js-component","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/render-function.md","mtime":"2017-07-18T13:37:40.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-19T13:23:54.618Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Render Function","level":"4.3","depth":1,"next":{"title":"Basics","level":"4.3.1","depth":2,"anchor":"#basics","path":"advanced/render-function.md","ref":"advanced/render-function.md#basics","articles":[]},"previous":{"title":"Extending JS Components","level":"4.2.2","depth":2,"anchor":"#extending-js-component","path":"advanced/extending-components.md","ref":"advanced/extending-components.md#extending-js-component","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/render-function.md","mtime":"2017-07-27T11:46:09.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-27T12:08:14.899Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

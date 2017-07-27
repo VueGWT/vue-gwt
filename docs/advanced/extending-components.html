@@ -801,13 +801,11 @@ Try to limit to a single level of inheritence, and use it only when necessary.
 <h2 id="extending-java-component">Extending an existing Java Component </h2>
 <h3 id="the-parent-component">The Parent Component</h3>
 <p>Let&apos;s say we have the following Component:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>(hasTemplate = <span class="hljs-keyword">false</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> String parentMessage;
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(hasTemplate = <span class="hljs-keyword">false</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> String parentMessage;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ParentComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.parentMessage = <span class="hljs-string">&quot;This is a message from the parent&quot;</span>;
     }
 
@@ -831,12 +829,10 @@ You may want to declare the Class as <code>abstract</code> but it&apos;s not pos
 <p>Let&apos;s extend our Parent Component.
 For this we just have to use classic Java inheritance.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-meta">@JsType</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildJavaComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ParentJsComponent</span> </span>{
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> childValue;
+    <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> childValue;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ChildJavaComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.childValue = <span class="hljs-number">10</span>;
     }
 
@@ -896,13 +892,10 @@ For this we just have to use classic Java inheritance.</p>
 <p>We declare this Java interface:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>
 <span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentJsComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentJsComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-keyword">public</span> String parentMessage;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> <span class="hljs-keyword">int</span> <span class="hljs-title">parentMultiplyBy2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span></span>;
 
     <span class="hljs-meta">@Computed</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> String <span class="hljs-title">getParentComputed</span><span class="hljs-params">()</span></span>;
@@ -910,12 +903,10 @@ For this we just have to use classic Java inheritance.</p>
 </code></pre>
 <p>We can then just inherit from it the same way we did for our Java Component:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-meta">@JsType</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildJavaComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ParentJsComponent</span> </span>{
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> childValue;
+    <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> childValue;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ChildJavaComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.childValue = <span class="hljs-number">10</span>;
     }
 
@@ -991,7 +982,7 @@ For this we just have to use classic Java inheritance.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Extending Components","level":"4.2","depth":1,"next":{"title":"Extending Java Components","level":"4.2.1","depth":2,"anchor":"#extending-java-component","path":"advanced/extending-components.md","ref":"advanced/extending-components.md#extending-java-component","articles":[]},"previous":{"title":"Using our Java Components in JS","level":"4.1.2","depth":2,"anchor":"#using-java-components-in-js","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-java-components-in-js","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/extending-components.md","mtime":"2017-07-18T13:02:56.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-19T13:23:54.618Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Extending Components","level":"4.2","depth":1,"next":{"title":"Extending Java Components","level":"4.2.1","depth":2,"anchor":"#extending-java-component","path":"advanced/extending-components.md","ref":"advanced/extending-components.md#extending-java-component","articles":[]},"previous":{"title":"Using our Java Components in JS","level":"4.1.2","depth":2,"anchor":"#using-java-components-in-js","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-java-components-in-js","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/extending-components.md","mtime":"2017-07-27T11:45:10.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-27T12:08:14.899Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

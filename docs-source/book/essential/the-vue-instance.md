@@ -45,13 +45,9 @@ This `data` object is built for you by Vue GWT based on the public properties of
 
 For example this Vue Component:
 ```java
-@JsType
 @Component
-public class DemoComponent extends Vue {
-    public Todo todo;
-    
-    @Override
-    public void created() {}
+public class DemoComponent extends VueComponent {
+    @JsProperty Todo todo;
 }
 ```
 
@@ -140,13 +136,11 @@ Because your Components inherits from `Vue` you can simply access them in your C
 For example:
 
 ```java
-@JsType
 @Component
-public class DemoComponent extends Vue {
-    public Todo todo;
+public class DemoComponent extends VueComponent {
+    @JsProperty Todo todo;
     
-    @Override
-    public void created() {
+    public DemoComponent() {
         this.todo = new Todo();
         
         if (this.$data.get("todo") == this.todo) {
@@ -169,13 +163,11 @@ Along the way, it will also invoke some **lifecycle hooks**, which give us the o
 For example, the [`created`](https://vuejs.org/v2/api/#created) hook is called after the instance is created:
 
 ```java
-@JsType
 @Component
-public class DemoComponent extends Vue {
-    public Todo todo;
+public class DemoComponent extends VueComponent {
+    @JsProperty Todo todo;
     
-    @Override
-    public void created() {
+    public DemoComponent() {
         // Hey there, I've been created!
     }
 }

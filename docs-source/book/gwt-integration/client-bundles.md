@@ -29,14 +29,12 @@ In this component we add a public field for our `KittenClientBundle`.
 This will expose the bundle to the Template.
 
 ```java
-@JsType
 @Component
-public class KittenComponent extends Vue
+public class KittenComponent extends VueComponent
 {
-    public KittenClientBundle myKittenBundle;
+    @JsProperty KittenClientBundle myKittenBundle;
 
-    @Override
-    public void created() {
+    public KittenComponent() {
         myKittenBundle = KittenClientBundle.INSTANCE;
     }
 }

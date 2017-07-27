@@ -19,13 +19,11 @@ Try to limit to a single level of inheritence, and use it only when necessary.
 Let's say we have the following Component:
 
 ```java
-@JsType
 @Component(hasTemplate = false)
-public class ParentComponent extends Vue {
-    public String parentMessage;
+public class ParentComponent extends VueComponent {
+    @JsProperty String parentMessage;
 
-    @Override
-    public void created() {
+    public ParentComponent() {
         this.parentMessage = "This is a message from the parent";
     }
 
@@ -54,12 +52,10 @@ For this we just have to use classic Java inheritance.
 
 ```java
 @Component
-@JsType
 public class ChildJavaComponent extends ParentJsComponent {
-    public int childValue;
+    @JsProperty int childValue;
 
-    @Override
-    public void created() {
+    public ChildJavaComponent() {
         this.childValue = 10;
     }
 
@@ -132,13 +128,10 @@ We declare this Java interface:
 ```java
 @JsComponent
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class ParentJsComponent extends Vue {
+public class ParentJsComponent extends VueComponent {
     public String parentMessage;
 
     public native int parentMultiplyBy2(int value);
-
-    @Override
-    public native void created();
 
     @Computed
     public native String getParentComputed();
@@ -149,12 +142,10 @@ We can then just inherit from it the same way we did for our Java Component:
 
 ```java
 @Component
-@JsType
 public class ChildJavaComponent extends ParentJsComponent {
-    public int childValue;
+    @JsProperty int childValue;
 
-    @Override
-    public void created() {
+    public ChildJavaComponent() {
         this.childValue = 10;
     }
 

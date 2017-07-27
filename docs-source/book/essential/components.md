@@ -19,11 +19,8 @@ We already saw how to define a Component in Vue GWT.
 
 ```java
 @Component
-@JsType
-public class MyComponent extends Vue
+public class MyComponent extends VueComponent
 {
-    @Override
-    public void created() {}
 }
 ```
 
@@ -56,11 +53,8 @@ Here's the full example:
 ```
 
 ```java
-@JsType
 @Component
-public class ParentComponent extends Vue {
-    @Override
-    public void created() {}
+public class ParentComponent extends VueComponent {
 }
 ```
 
@@ -84,11 +78,8 @@ You don't have to register every component globally.
 You can make a component available only in the scope of another instance/component by registering it with the `components` annotation option:
 
 ```java
-@JsType
 @Component(components = {MyComponent.class})
-public class ParentComponent extends Vue {
-    @Override
-    public void created() {}
+public class ParentComponent extends VueComponent {
 }
 ```
 
@@ -136,15 +127,11 @@ Vue GWT manage this for you and pass a function so that all your Components have
 When parsing your the Component class we build a `dataObject` Object for you. For example a Component like this:
 
 ```java
-@JsType
 @Component
-public class StarkComponent extends Vue {
-    public String winter;
-    public boolean is;
-    public String coming;
-    
-    @Override
-    public void created() {}
+public class StarkComponent extends VueComponent {
+    @JsProperty String winter;
+    @JsProperty boolean is;
+    @JsProperty String coming;
 }
 ```
 
@@ -178,14 +165,12 @@ The same `dataObject` instance will be passed to all your instance of your Compo
 Here is a working example:
 
 ```java
-@JsType
 @Component(useFactory = false)
-public class SharedDataModelComponent extends Vue
+public class SharedDataModelComponent extends VueComponent
 {
-    public int counter;
+    @JsProperty int counter;
 
-    @Override
-    public void created() {
+    public SharedDataModelComponent() {
         this.counter = 0;
     }
 }
@@ -230,14 +215,11 @@ A prop is a custom attribute for passing information from parent components.
 A child component needs to explicitly declare the props it expects to receive using the `@Prop` annotation:
 
 ```java
-@JsType
 @Component
-public class ChildComponent extends Vue {
+public class ChildComponent extends VueComponent {
     @Prop
+    @JsProperty
     public String message;
-    
-    @Override
-    public void created() {}
 }
 ```
 
@@ -252,14 +234,11 @@ Then we can pass a plain string to it like so:
 HTML attributes are case-insensitive, so when using non-string templates, camelCased prop names need to use their kebab-case (hyphen-delimited) equivalents:
 
 ```java
-@JsType
 @Component
-public class ChildComponent extends Vue {
+public class ChildComponent extends VueComponent {
     @Prop
-    public String myMessage;
-    
-    @Override
-    public void created() {}
+    @JsProperty
+    String myMessage;
 }
 ```
 
@@ -324,16 +303,15 @@ The proper answer to these use cases are:
 1. Define a local data property that uses the prop's initial value as its initial value:
 
 ```java
-@JsType
 @Component
-public class MyComponent extends Vue {
+public class MyComponent extends VueComponent {
     @Prop
+    @JsProperty
     public String initialCounter;
     
-    public String counter;
+    @JsProperty String counter;
     
-    @Override
-    public void created() {
+    public MyComponent() {
         this.counter = this.initialCounter;
     }
 }
@@ -342,14 +320,11 @@ public class MyComponent extends Vue {
 2. Define a computed property that is computed from the prop's value:
 
 ```java
-@JsType
 @Component
-public class MyComponent extends Vue {
+public class MyComponent extends VueComponent {
     @Prop
+    @JsProperty
     public String size;
-    
-    @Override
-    public void created() {}
     
     @Computed
     public String getNormalizedSize() {
@@ -445,14 +420,12 @@ Here's an example:
 ```
 
 ```java
-@JsType
 @Component
-public class ButtonCounterComponent extends Vue
+public class ButtonCounterComponent extends VueComponent
 {
-    public int counter;
+    @JsProperty int counter;
 
-    @Override
-    public void created() {
+    public ButtonCounterComponent() {
         this.counter = 0;
     }
 
@@ -473,14 +446,12 @@ public class ButtonCounterComponent extends Vue
 ```
 
 ```java
-@JsType
 @Component(components = {ButtonCounterComponent.class})
-public class CounterWithEventComponent extends Vue
+public class CounterWithEventComponent extends VueComponent
 {
-    public int total;
+    @JsProperty int total;
 
-    @Override
-    public void created() {
+    public CounterWithEventComponent() {
         this.total = 0;
     }
 
@@ -634,14 +605,12 @@ The parent's template is not aware of the state of a child component.
 If you need to bind child-scope directives on a component root node, you should do so in the child component's own template:
 
 ```java
-@JsType
 @Component
-public class ChildComponent extends Vue
+public class ChildComponent extends VueComponent
 {
-    public boolean someChildProperty;
+    @JsProperty boolean someChildProperty;
 
-    @Override
-    public void created() {
+    public ChildComponent() {
         this.total = true;
     }
 }
@@ -766,14 +735,12 @@ This is not yet supported by Vue GWT.
 You can use the same mount point and dynamically switch between multiple components using the reserved `<component>` element and dynamically bind to its `is` attribute:
 
 ```java
-@JsType
 @Component(components = { TargaryenComponent.class, StarkComponent.class, LannisterComponent.class })
-public class HousesComponent extends Vue
+public class HousesComponent extends VueComponent
 {
-    public String currentHouse;
+    @JsProperty String currentHouse;
 
-    @Override
-    public void created() {
+    public HousesComponent() {
         this.currentHouse = "targaryen";
     }
 }
@@ -840,12 +807,10 @@ To achieve this you have to assign a reference ID to the child component using `
 ```
 
 ```java
-@JsType
 @Component(components = { UserProfileComponent.class})
-public class ParentComponent extends Vue
+public class ParentComponent extends VueComponent
 {
-    @Override
-    public void created() {
+    public ParentComponent() {
         UserProfileComponent userProfileComponent = this.$refs.get("profile");
     }
 }
@@ -893,14 +858,13 @@ A component like the above will result in a "max stack size exceeded" error, so 
 Bellow is an example recursive component:
 
 ```java
-@JsType
 @Component(name = "recursive")
-public class RecursiveComponent extends Vue {
+public class RecursiveComponent extends VueComponent {
     @Prop
-    public Integer counter;
+    @JsProperty
+    Integer counter;
 
-    @Override
-    public void created() {
+    public RecursiveComponent() {
         if (this.counter == null)
             this.counter = 0;
     }

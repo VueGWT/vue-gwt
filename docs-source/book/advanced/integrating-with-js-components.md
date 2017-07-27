@@ -67,11 +67,8 @@ Let's do it for our `FullJsWithMethodsComponent`:
 ```java
 @JsComponent
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class FullJsWithMethodsComponent extends Vue {
+public class FullJsWithMethodsComponent extends VueComponent {
     public int value;
-
-    @Override
-    public native void created();
 
     public native int multiplyBy2(int value);
 }

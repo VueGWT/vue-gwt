@@ -22,7 +22,7 @@ Here is the list of unsupported features:
     * Would require JsInterop for Vuex.
 * [Unit Testing](https://vuejs.org/v2/guide/unit-testing.html)
     * JS Unit testing should work if you load compiled GWT app in a JS environment and expose the JS Components (not tested).
-    * Java Unit testing won't work for now, because it won't find implementation for JsObject and JsArray (maybe using [Nashorn](http://www.oracle.com/technetwork/articles/java/jf14-nashorn-2126515.html) in Java 8?).
+    * Java Unit testing should also work if you don't use JsArray/JsObject in your `VueComponent`.
 * [Server Side Rendering](https://vuejs.org/v2/guide/ssr.html)
     * Vue GWT components compiled and loaded in a Vue.js app should work server side (but not tested).
     * Full Vue GWT app would probably not work server side or would require lots of work.

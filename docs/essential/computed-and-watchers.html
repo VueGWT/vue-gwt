@@ -808,14 +808,12 @@ The problem is made worse when you want to include the reversed message in your 
   <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Computed reversed message: &quot;{{ reversedMessage }}&quot;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
 </span>{
-    <span class="hljs-keyword">public</span> String message;
+    <span class="hljs-meta">@JsProperty</span> String message;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ReverseComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello&quot;</span>;
     }
 
@@ -847,14 +845,12 @@ And the best part is that we&apos;ve created this dependency relationship declar
 <p>You may have noticed we can achieve the same result by invoking a method in the expression:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Reversed message: &quot;{{ getReversedMessage() }}&quot;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReverseComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
 </span>{
-    <span class="hljs-keyword">public</span> String message;
+    <span class="hljs-meta">@JsProperty</span> String message;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ReverseComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello&quot;</span>;
     }
 
@@ -887,16 +883,14 @@ When you have some data that needs to change based on some other data, it is tem
 However, it is often a better idea to use a computed property rather than an imperative <code>watch</code> callback. Consider this example:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;demo&quot;</span>&gt;</span>{{ fullName }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
 </span>{
-    <span class="hljs-keyword">public</span> String firstName;
-    <span class="hljs-keyword">public</span> String lastName;
-    <span class="hljs-keyword">public</span> String fullName;
+    <span class="hljs-meta">@JsProperty</span> String firstName;
+    <span class="hljs-meta">@JsProperty</span> String lastName;
+    <span class="hljs-meta">@JsProperty</span> String fullName;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">JohnSnowComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.firstName = <span class="hljs-string">&quot;John&quot;</span>;
         <span class="hljs-keyword">this</span>.lastName = <span class="hljs-string">&quot;Snow&quot;</span>;
         <span class="hljs-keyword">this</span>.fullName = <span class="hljs-string">&quot;John Snow&quot;</span>;
@@ -914,15 +908,13 @@ However, it is often a better idea to use a computed property rather than an imp
 }
 </code></pre>
 <p>The above code is imperative and repetitive. Compare it with a computed property version:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
 </span>{
-    <span class="hljs-keyword">public</span> String firstName;
-    <span class="hljs-keyword">public</span> String lastName;
+    <span class="hljs-meta">@JsProperty</span> String firstName;
+    <span class="hljs-meta">@JsProperty</span> String lastName;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">JohnSnowComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.firstName = <span class="hljs-string">&quot;John&quot;</span>;
         <span class="hljs-keyword">this</span>.lastName = <span class="hljs-string">&quot;Snow&quot;</span>;
     }
@@ -936,15 +928,13 @@ However, it is often a better idea to use a computed property rather than an imp
 <p>Much better, isn&apos;t it?</p>
 <h3 id="computed-setter">Computed Setter</h3>
 <p>Computed properties are by default getter-only, but you can also provide a setter when you need it:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
 </span>{
-    <span class="hljs-keyword">public</span> String firstName;
-    <span class="hljs-keyword">public</span> String lastName;
+    <span class="hljs-meta">@JsProperty</span> String firstName;
+    <span class="hljs-meta">@JsProperty</span> String lastName;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">JohnSnowComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.firstName = <span class="hljs-string">&quot;John&quot;</span>;
         <span class="hljs-keyword">this</span>.lastName = <span class="hljs-string">&quot;Snow&quot;</span>;
     }
@@ -977,14 +967,12 @@ This is most useful when you want to perform asynchronous or expensive operation
 <p>In Vue GWT we use the <code>@Watch</code> annotation on a method to indicate it as a watcher.
 The mandatory <code>propertyName</code> attribute of the annotation indicate the property to watch.</p>
 <p>Here is an example:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JohnSnowComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
 </span>{
-    <span class="hljs-keyword">public</span> String message;
+    <span class="hljs-meta">@JsProperty</span> String message;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">JohnSnowComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello World!&quot;</span>;
     }
 
@@ -1052,7 +1040,7 @@ This allow you to watch non <code>JsInterop</code> properties:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"2.3","depth":1,"next":{"title":"Class and Style Bindings","level":"2.4","depth":1,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"2.2","depth":1,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/computed-and-watchers.md","mtime":"2017-07-17T08:03:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-19T13:23:54.618Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"2.3","depth":1,"next":{"title":"Class and Style Bindings","level":"2.4","depth":1,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"2.2","depth":1,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/computed-and-watchers.md","mtime":"2017-07-27T11:52:01.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-27T12:08:14.899Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

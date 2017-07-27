@@ -17,13 +17,11 @@ For example:
 </div>
 ```
 ```java
-@JsType
 @Component
-public class ButtonPlusOneComponent extends Vue {
-    public int counter;
+public class ButtonPlusOneComponent extends VueComponent {
+    @JsProperty int counter;
 
-    @Override
-    public void created() {
+    public ButtonPlusOneComponent() {
         this.counter = 0;
     }
 }
@@ -54,12 +52,8 @@ For example:
 ```
 
 ```java
-@JsType
 @Component
-public class GreetComponent extends Vue {
-    @Override
-    public void created() {}
-
+public class GreetComponent extends VueComponent {
     public void greet() {
         Window.alert("Hello from GWT!");
     }

@@ -836,11 +836,8 @@ For this we need some kind of Java definition.</p>
 <p>Let&apos;s do it for our <code>FullJsWithMethodsComponent</code>:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>
 <span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FullJsWithMethodsComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FullJsWithMethodsComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span></span>;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> <span class="hljs-keyword">int</span> <span class="hljs-title">multiplyBy2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>;
 }
@@ -873,7 +870,7 @@ You can interact with it in the console, it&apos;s just a regular Vue instance.<
 <p>You may have noticed we also pass <code>namespace = JsPackage.GLOBAL</code> to our <code>@JsType</code> annotation.
 This is because by default, GWT will use the Java package and the Class Name to determine where the JS Constructor is in the JavaScript Context.</p>
 <p>So if your Java Class is: <code>com.mypackage.MyComponent</code>, it will look for:</p>
-<pre><code class="lang-js">Window.com = {
+<pre><code class="lang-js"><span class="hljs-built_in">window</span>.com = {
     mypackage: {
         MyComponent: MyComponentConstructor
     }
@@ -947,7 +944,7 @@ vm.$mount(<span class="hljs-string">&quot;#javaComponent&quot;</span>);
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"4.1","depth":1,"next":{"title":"Using JS Components in Java","level":"4.1.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},"previous":{"title":"JsTools","level":"3.4.3","depth":2,"anchor":"#js-tools","path":"js-interop/README.md","ref":"js-interop/README.md#js-tools","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-07-18T17:02:47.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-19T13:23:54.618Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"4.1","depth":1,"next":{"title":"Using JS Components in Java","level":"4.1.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},"previous":{"title":"JsTools","level":"3.4.3","depth":2,"anchor":"#js-tools","path":"js-interop/README.md","ref":"js-interop/README.md#js-tools","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-07-27T11:45:22.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-27T12:08:14.899Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
