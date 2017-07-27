@@ -178,9 +178,8 @@ public class VueComponentOptionsGenerator
 
                 if (prop != null)
                 {
-                    constructorBuilder.addStatement("this.addJavaProp($S, $S, $L, $S)",
+                    constructorBuilder.addStatement("this.addJavaProp($S, $L, $S)",
                         javaName,
-                        !"".equals(prop.propertyName()) ? prop.propertyName() : javaName,
                         prop.required(),
                         prop.checkType() ? getNativeNameForJavaType(variableElement.asType()) :
                             null);
@@ -190,7 +189,8 @@ public class VueComponentOptionsGenerator
                     constructorBuilder.addStatement("propertiesName.add($S)", javaName);
                 }
             });
-        constructorBuilder.addStatement("this.initData(propertiesName, $L)", annotation.useFactory());
+        constructorBuilder.addStatement("this.initData(propertiesName, $L)",
+            annotation.useFactory());
     }
 
     /**
@@ -206,11 +206,6 @@ public class VueComponentOptionsGenerator
             .methodsIn(componentTypeElement.getEnclosedElements())
             .forEach(executableElement -> {
                 String javaName = executableElement.getSimpleName().toString();
-
-                if (!isVisibleInJS(executableElement) && !isHookMethod(processingEnv,
-                    componentTypeElement,
-                    executableElement))
-                    return;
 
                 Computed computed = executableElement.getAnnotation(Computed.class);
                 Watch watch = executableElement.getAnnotation(Watch.class);
@@ -282,12 +277,14 @@ public class VueComponentOptionsGenerator
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(JsMethod.class)
             .addParameter(CreateElementFunction.class, "createElementFunction")
-            .addStatement("Object componentRenderMethod = $T.get($T.get($T.get(this, $S), $S), $S)",
+            .addStatement("Object componentRenderMethod = $T.get($T.get($T.get($T.get(this, $S), $S), $S), $S)",
+                JsTools.class,
                 JsTools.class,
                 JsTools.class,
                 JsTools.class,
                 "$options",
-                "vuegwt$javaComponentProto",
+                "vuegwt$vueComponentJsTypeConstructor",
+                "prototype",
                 "render")
             .addStatement("return $T.call($L, this, new $T($L))",
                 JsTools.class,

@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.client.component.options;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.VueComponentPrototype;
 import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
@@ -39,7 +38,6 @@ import java.util.Map.Entry;
 public abstract class VueComponentOptions<T extends VueComponent> extends JsObject
 {
     @JsProperty private VueComponentJsTypeConstructor<T> vuegwt$vueComponentJsTypeConstructor;
-    @JsProperty private VueComponentPrototype<T> vuegwt$javaComponentProto;
 
     @JsProperty private Object data;
     @JsProperty private JsObject props;
@@ -70,7 +68,6 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
         VueComponentJsTypeConstructor<T> vueComponentJsTypeConstructor)
     {
         this.vuegwt$vueComponentJsTypeConstructor = vueComponentJsTypeConstructor;
-        this.vuegwt$javaComponentProto = vueComponentJsTypeConstructor.getComponentPrototype();
 
         Object customizeOption = getJavaComponentMethod("customizeOptions");
         if (customizeOption != null)
@@ -243,25 +240,21 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     /**
      * Add a prop to our ComponentOptions
      * This will allow to receive data from the outside of our Component
-     * @param javaName The name of the property in our Java Component
-     * @param jsName The name of the property in the Template and the ComponentOptions
+     * @param name The name of the property
      * @param required Is the property required (mandatory)
      * @param typeJsName JS name of the type of this property, if not null we will ask Vue to type
      * check based on it
      */
     @JsOverlay
-    protected final void addJavaProp(String javaName, String jsName, boolean required,
-        String typeJsName)
+    protected final void addJavaProp(String name, boolean required, String typeJsName)
     {
         PropOptions propDefinition = new PropOptions();
         propDefinition.required = required;
-        if (vuegwt$javaComponentProto.hasOwnProperty(javaName))
-            propDefinition.defaultValue = getJavaComponentMethod(javaName);
 
         if (typeJsName != null)
             propDefinition.type = JsTools.getWindow().get(typeJsName);
 
-        addProp(jsName, propDefinition);
+        addProp(name, propDefinition);
     }
 
     /**
@@ -279,7 +272,8 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     @JsOverlay
     private Object getJavaComponentMethod(String javaName)
     {
-        return vuegwt$javaComponentProto.get(javaName);
+        JsObject vueComponentJsTypePrototype = vuegwt$vueComponentJsTypeConstructor.getPrototype();
+        return vueComponentJsTypePrototype.get(javaName);
     }
 
     @JsOverlay

@@ -17,9 +17,15 @@ public interface VueComponentJsTypeConstructor<T extends VueComponent>
     <K extends T> K instanciate(Object... arguments);
 
     @JsOverlay
+    default JsObject getPrototype()
+    {
+        return JsTools.get(this, "prototype");
+    }
+
+    @JsOverlay
     default VueComponentPrototype<T> getComponentPrototype()
     {
-        JsObject prototype = JsTools.get(this, "prototype");
+        JsObject prototype = getPrototype();
         return (VueComponentPrototype<T>) JsObject.getPrototypeOf(prototype);
     }
 
