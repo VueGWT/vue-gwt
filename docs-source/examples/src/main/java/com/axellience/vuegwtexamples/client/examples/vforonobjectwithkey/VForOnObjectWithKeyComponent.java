@@ -4,16 +4,15 @@ import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
-@JsType
 @Component
 public class VForOnObjectWithKeyComponent extends VueComponent
 {
-    public JsObject<Object> myObject;
+    @JsProperty JsObject<Object> myObject;
 
     public VForOnObjectWithKeyComponent() {
         this.myObject = new JsObject<>();

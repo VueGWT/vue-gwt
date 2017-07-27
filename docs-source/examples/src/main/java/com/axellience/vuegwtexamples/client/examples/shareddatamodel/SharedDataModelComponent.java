@@ -2,16 +2,15 @@ package com.axellience.vuegwtexamples.client.examples.shareddatamodel;
 
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
-@JsType
 @Component(useFactory = false)
 public class SharedDataModelComponent extends VueComponent
 {
-    public int counter;
+    @JsProperty int counter;
 
     public SharedDataModelComponent() {
         this.counter = 0;

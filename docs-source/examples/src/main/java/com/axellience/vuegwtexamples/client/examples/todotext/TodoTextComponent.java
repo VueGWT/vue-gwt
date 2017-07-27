@@ -5,16 +5,15 @@ import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
 import com.google.gwt.dom.client.NativeEvent;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
-@JsType
 @Component
 public class TodoTextComponent extends VueComponent
 {
-    public Todo todo;
+    @JsProperty Todo todo;
 
     public TodoTextComponent()
     {
