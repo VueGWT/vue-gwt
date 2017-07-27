@@ -14,8 +14,7 @@ public class CounterWithEventComponent extends VueComponent
     @JsProperty
     protected int total;
 
-    @Override
-    public void created()
+    public CounterWithEventComponent()
     {
         this.total = 0;
     }

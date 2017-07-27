@@ -12,8 +12,7 @@ public class EvenNumbersComponent extends VueComponent
 {
     public JsArray<Integer> numbers;
 
-    @Override
-    public void created()
+    public EvenNumbersComponent()
     {
         this.numbers = JsArray.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }

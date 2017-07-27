@@ -11,8 +11,7 @@ public class LinkComponent extends VueComponent
     public String linkTarget;
     public String linkName;
 
-    @Override
-    public void created() {
+    public LinkComponent() {
         this.linkTarget = "https://github.com/Axellience/vue-gwt";
         this.linkName = "Hello Vue GWT!";
     }

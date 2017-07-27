@@ -15,9 +15,4 @@ public class TreeFolderContentComponent extends VueComponent
 {
     @Prop
     public JsArray<Folder> content;
-
-    @Override
-    public void created()
-    {
-    }
 }

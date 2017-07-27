@@ -10,7 +10,7 @@ const observerManager = window.VueGWT.observerManager;
  * @author Adrien Baron
  */
 observerManager.customizeVueObserver = function (ob) {
-	const obProto = ob.__proto__;
+	const obProto = Object.getPrototypeOf(ob);
 	const vueWalk = obProto.walk;
 	obProto.walk = function () {
 		const obj = arguments[0];

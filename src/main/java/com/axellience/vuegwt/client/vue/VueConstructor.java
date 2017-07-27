@@ -2,6 +2,7 @@ package com.axellience.vuegwt.client.vue;
 
 import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsFunction;
@@ -23,7 +24,8 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
 public class VueConstructor<T extends VueComponent> extends JsFunction
 {
-    static {
+    static
+    {
         VueGWT.inject();
     }
 
@@ -37,6 +39,16 @@ public class VueConstructor<T extends VueComponent> extends JsFunction
     public final <K extends T> VueConstructor<K> extend(VueComponentOptions<K> vueComponentOptions)
     {
         return VueGWTTools.extendVueClass(this, vueComponentOptions);
+    }
+
+    @JsOverlay
+    public final <K extends T> VueConstructor<K> extendJavaComponent(
+        VueComponentOptions<K> componentOptions, VueComponentJsTypeConstructor<K> javaConstructor)
+    {
+        VueConstructor<K> extendedVueConstructor = extend(componentOptions);
+        VueGWTTools.mergeVueConstructorWithJavaComponent(extendedVueConstructor, javaConstructor);
+
+        return extendedVueConstructor;
     }
 
     @JsOverlay

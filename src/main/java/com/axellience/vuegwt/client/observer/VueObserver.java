@@ -13,11 +13,6 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class VueObserver
 {
-    private class Dep {
-        @JsMethod(name = "notify")
-        public native void notifySelf();
-    }
-
     @JsProperty
     private Dep dep;
 
@@ -28,5 +23,10 @@ public class VueObserver
     @JsOverlay
     public final void notifyDep() {
         this.dep.notifySelf();
+    }
+
+    private class Dep {
+        @JsMethod(name = "notify")
+        public native void notifySelf();
     }
 }

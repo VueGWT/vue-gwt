@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.client.tools;
 
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
@@ -20,7 +21,8 @@ public class VueGWTTools
     private static RegExp componentEnd = RegExp.compile("Component$");
     private static RegExp directiveEnd = RegExp.compile("Directive$");
 
-    public static native <T extends VueComponent> T createInstanceForVueClass(VueConstructor<T> vueClass);
+    public static native <T extends VueComponent> T createInstanceForVueClass(
+        VueConstructor<T> vueClass);
 
     public static native <T extends VueComponent, K extends T> VueConstructor<K> extendVueClass(
         VueConstructor<T> vueClassToExtend, VueComponentOptions<K> vueComponentOptions);
@@ -38,7 +40,12 @@ public class VueGWTTools
     public static native <T> String wrapMethod(T object, String methodName,
         BeforeMethodCall<T> beforeMethodCall, AfterMethodCall<T> afterMethodCall);
 
+    public static native <T extends VueComponent> void mergeVueConstructorWithJavaComponent(
+        VueConstructor<T> extendedVueConstructor,
+        VueComponentJsTypeConstructor<T> jsTypeConstructor);
+
     public static native <T> JsArray<T> javaArrayToJsArray(Object[] javaArray);
+
     /**
      * Return the default name to register a component based on it's class name.
      * The name of the tag is the name of the component converted to kebab-case.

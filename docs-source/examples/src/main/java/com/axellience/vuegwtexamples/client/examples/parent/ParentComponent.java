@@ -8,9 +8,4 @@ import jsinterop.annotations.JsType;
 @Component(components = { TodoComponent.class })
 public class ParentComponent extends VueComponent
 {
-    @Override
-    public void created()
-    {
-
-    }
 }

@@ -13,8 +13,7 @@ public class ChildComponent extends ParentComponent
 {
     public int childValue;
 
-    @Override
-    public void created()
+    public ChildComponent()
     {
         this.childValue = 10;
     }

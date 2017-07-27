@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.jsr69.component;
+package com.axellience.vuegwt.jsr69.component.constructor;
 
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;

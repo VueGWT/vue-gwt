@@ -1,10 +1,10 @@
 package com.axellience.vuegwt.client.component.options;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.HasCustomizeOptions;
+import com.axellience.vuegwt.client.component.VueComponentPrototype;
+import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
-import com.axellience.vuegwt.client.component.options.data.DataDefinition;
 import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
@@ -38,7 +38,8 @@ import java.util.Map.Entry;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public abstract class VueComponentOptions<T extends VueComponent> extends JsObject
 {
-    @JsProperty protected T vuegwt$javaComponentInstance;
+    @JsProperty private VueComponentJsTypeConstructor<T> vuegwt$vueComponentJsTypeConstructor;
+    @JsProperty private VueComponentPrototype<T> vuegwt$javaComponentProto;
 
     @JsProperty private Object data;
     @JsProperty private JsObject props;
@@ -62,17 +63,18 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     /**
      * Set the Java Component Instance on this Options
      * This instance will be used to retrieve the methods from our Options
-     * @param javaComponentInstance An instance of the VueComponent class for this Component
+     * @param vueComponentJsTypeConstructor An instance of the VueComponent class for this Component
      */
     @JsOverlay
-    protected final void setJavaComponentInstance(T javaComponentInstance)
+    protected final void setVueComponentJsTypeConstructor(
+        VueComponentJsTypeConstructor<T> vueComponentJsTypeConstructor)
     {
-        this.vuegwt$javaComponentInstance = javaComponentInstance;
+        this.vuegwt$vueComponentJsTypeConstructor = vueComponentJsTypeConstructor;
+        this.vuegwt$javaComponentProto = vueComponentJsTypeConstructor.getComponentPrototype();
 
-        if (this.vuegwt$javaComponentInstance instanceof HasCustomizeOptions)
-        {
-            ((HasCustomizeOptions) this.vuegwt$javaComponentInstance).customizeOptions(this);
-        }
+        Object customizeOption = getJavaComponentMethod("customizeOptions");
+        if (customizeOption != null)
+            JsTools.call(customizeOption, this, this);
     }
 
     /**
@@ -142,28 +144,21 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
 
     /**
      * Initialise the data structure, then set it to either a Factory or directly on the Component
-     * @param dataDefinitions List of all the name of the data properties
+     * @param propertiesName List of all the name of the data properties
      * @param useFactory Boolean representing whether or not to use a Factory
      */
     @JsOverlay
-    protected final void initData(List<DataDefinition> dataDefinitions, boolean useFactory)
+    protected final void initData(List<String> propertiesName, boolean useFactory)
     {
         JsObject dataObject = new JsObject();
-        for (DataDefinition dataDefinition : dataDefinitions)
+        for (String propertyName : propertiesName)
         {
-            Object dataDefaultValue =
-                JsTools.getObjectProperty(vuegwt$javaComponentInstance, dataDefinition.javaName);
-
-            if (dataDefaultValue == null)
-                dataDefaultValue = new JsObject();
-
-            dataObject.set(dataDefinition.jsName, dataDefaultValue);
+            dataObject.set(propertyName, null);
         }
 
         if (useFactory)
         {
-            this.setData((DataFactory) () ->
-            {
+            this.setData((DataFactory) () -> {
                 JsObject data = JSON.parse(JSON.stringify(dataObject));
                 copyStyles(data);
                 return data;
@@ -191,27 +186,6 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     }
 
     /**
-     * Add a method to this ComponentOptions
-     * @param javaName Name of the method in the Java Component
-     */
-    @JsOverlay
-    protected final void addJavaMethod(String javaName)
-    {
-        addJavaMethod(javaName, javaName);
-    }
-
-    /**
-     * Add a method to this ComponentOptions
-     * @param javaName Name of the method in the Java Component
-     * @param jsName Name of the method in the Template and the ComponentOptions
-     */
-    @JsOverlay
-    protected final void addJavaMethod(String javaName, String jsName)
-    {
-        addMethod(jsName, getJavaComponentMethod(javaName));
-    }
-
-    /**
      * Add a computed property to this ComponentOptions
      * If the computed has both a getter and a setter, this will be called twice, once for each.
      * @param javaName Name of the method in the Java Component
@@ -228,7 +202,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
             addComputedOptions(jsName, computedDefinition);
         }
 
-        Object method = JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
+        Object method = getJavaComponentMethod(javaName);
         if (kind == ComputedKind.GETTER)
             computedDefinition.get = method;
         else if (kind == ComputedKind.SETTER)
@@ -252,8 +226,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
 
         JsObject watchDefinition = new JsObject();
         watchDefinition.set("deep", true);
-        watchDefinition.set("handler",
-            JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName));
+        watchDefinition.set("handler", getJavaComponentMethod(javaName));
         addWatch(watchedPropertyName, watchDefinition);
     }
 
@@ -282,9 +255,8 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     {
         PropOptions propDefinition = new PropOptions();
         propDefinition.required = required;
-        if (JsTools.objectHasProperty(vuegwt$javaComponentInstance, javaName))
-            propDefinition.defaultValue =
-                JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
+        if (vuegwt$javaComponentProto.hasOwnProperty(javaName))
+            propDefinition.defaultValue = getJavaComponentMethod(javaName);
 
         if (typeJsName != null)
             propDefinition.type = JsTools.getWindow().get(typeJsName);
@@ -307,7 +279,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     @JsOverlay
     private Object getJavaComponentMethod(String javaName)
     {
-        return JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
+        return vuegwt$javaComponentProto.get(javaName);
     }
 
     @JsOverlay

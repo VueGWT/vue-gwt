@@ -11,9 +11,4 @@ import jsinterop.annotations.JsType;
 @Component
 public class TodoComponent extends VueComponent
 {
-    @Override
-    public void created()
-    {
-
-    }
 }

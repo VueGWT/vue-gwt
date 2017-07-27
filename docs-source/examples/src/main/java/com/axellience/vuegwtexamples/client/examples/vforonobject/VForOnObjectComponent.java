@@ -15,8 +15,7 @@ public class VForOnObjectComponent extends VueComponent
 {
     public JsObject<Object> myObject;
 
-    @Override
-    public void created() {
+    public VForOnObjectComponent() {
         this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);

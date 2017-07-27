@@ -13,8 +13,7 @@ public class MelisandreComponent extends VueComponent
 {
     public boolean isRed;
 
-    @Override
-    public void created() {
+    public MelisandreComponent() {
         this.isRed = true;
     }
 }

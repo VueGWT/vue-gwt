@@ -26,16 +26,22 @@ tools.javaArrayToJsArray = function (javaArray) {
 	return javaArray;
 };
 tools.wrapMethodWithBefore = function (object, methodName, beforeMethodCall) {
-	const proto = object.__proto__;
+	const proto = Object.getPrototypeOf(object);
 	const originalFunc = proto[methodName];
+	if (originalFunc === null)
+		console.error("Attempting to wrap a non existing method", object, methodName);
+
 	proto[methodName] = function () {
 		beforeMethodCall(object, methodName, arguments);
 		return originalFunc.apply(this, arguments);
 	};
 };
 tools.wrapMethodWithAfter = function (object, methodName, afterMethodCall) {
-	const proto = object.__proto__;
+	const proto = Object.getPrototypeOf(object);
 	const originalFunc = proto[methodName];
+	if (originalFunc === null)
+		console.error("Attempting to wrap a non existing method", object, methodName);
+
 	proto[methodName] = function () {
 		var result = originalFunc.apply(this, arguments);
 		afterMethodCall(object, methodName, result, arguments);
@@ -43,33 +49,47 @@ tools.wrapMethodWithAfter = function (object, methodName, afterMethodCall) {
 	};
 };
 tools.wrapMethod = function (object, methodName, beforeMethodCall, afterMethodCall) {
-	const proto = object.__proto__;
+	const proto = Object.getPrototypeOf(object);
 	const originalFunc = proto[methodName];
+	if (originalFunc === null)
+		console.error("Attempting to wrap a non existing method", object, methodName);
+
 	proto[methodName] = function () {
 		beforeMethodCall(object, methodName, arguments);
-		var result = originalFunc.apply(this, arguments);
+		const result = originalFunc.apply(this, arguments);
 		afterMethodCall(object, methodName, result, arguments);
 		return result;
 	};
 };
+tools.mergeVueConstructorWithJavaComponent = function (extendedVueConstructor, jsTypeConstructor) {
+	const vueProto = extendedVueConstructor.prototype;
+	let jsTypeProto = jsTypeConstructor.prototype;
+	// Copy from the @JsType VueComponent prototype
+	for (let protoProp in jsTypeProto) {
+		if (jsTypeProto.hasOwnProperty(protoProp) && !vueProto.hasOwnProperty(protoProp)) {
+			vueProto[protoProp] = jsTypeProto[protoProp];
+		}
+	}
+	// Also copy from our VueComponent prototype
+	jsTypeProto = Object.getPrototypeOf(jsTypeProto);
+	for (let protoProp in jsTypeProto) {
+		if (jsTypeProto.hasOwnProperty(protoProp) && !vueProto.hasOwnProperty(protoProp)) {
+			vueProto[protoProp] = jsTypeProto[protoProp];
+		}
+	}
+};
 
 /**
- * Vue GWT plugin that does the required transformations
- * on Vue Instances to make them compatible with Java
+ * Vue GWT plugin that call the Java Constructor once our Component is created
  */
 Vue.use(function (Vue) {
 	Vue.mixin({
 		created: function () {
-			if (!this.$options.vuegwt$javaComponentInstance)
+			if (!this.$options.vuegwt$vueComponentJsTypeConstructor || this.vuegwt$constructorApplied)
 				return;
 
-			// This is required for GWT type checking to work
-			const jciProto = this.$options.vuegwt$javaComponentInstance.__proto__;
-			for (let protoProp in jciProto) {
-				if (jciProto.hasOwnProperty(protoProp) && !this.hasOwnProperty(protoProp)) {
-					this[protoProp] = jciProto[protoProp];
-				}
-			}
+			this.vuegwt$constructorApplied = true;
+			this.$options.vuegwt$vueComponentJsTypeConstructor.apply(this);
 		}
 	})
 });

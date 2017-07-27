@@ -14,8 +14,7 @@ public class BindInlineStyleComponent extends VueComponent
     public String activeColor;
     public float fontSize;
 
-    @Override
-    public void created()
+    public BindInlineStyleComponent()
     {
         activeColor = "red";
         fontSize = 20;

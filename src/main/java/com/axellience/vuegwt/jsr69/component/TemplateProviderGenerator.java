@@ -18,8 +18,8 @@ import javax.lang.model.util.Elements;
  */
 public class TemplateProviderGenerator
 {
-    static String TEMPLATE_BUNDLE_SUFFIX = "TemplateBundle";
-    static String TEMPLATE_BUNDLE_METHOD_NAME = "template";
+    public static String TEMPLATE_BUNDLE_SUFFIX = "TemplateBundle";
+    public static String TEMPLATE_BUNDLE_METHOD_NAME = "template";
     public static String TEMPLATE_RESOURCE_SUFFIX = "TemplateResource";
 
     private final Filer filer;

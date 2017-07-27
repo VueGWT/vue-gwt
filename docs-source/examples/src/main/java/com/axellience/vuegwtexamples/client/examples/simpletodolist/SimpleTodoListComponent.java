@@ -12,8 +12,7 @@ public class SimpleTodoListComponent extends VueComponent
 {
     public JsArray<Todo> todos;
 
-    @Override
-    public void created() {
+    public SimpleTodoListComponent() {
         this.todos = new JsArray<>();
         this.todos.push(new Todo("Learn Java"));
         this.todos.push(new Todo("Learn Vue GWT"));

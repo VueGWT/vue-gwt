@@ -14,8 +14,7 @@ public class ChildJavaComponent extends ParentJsComponent
 {
     public int childValue;
 
-    @Override
-    public void created()
+    public ChildJavaComponent()
     {
         this.childValue = 10;
     }

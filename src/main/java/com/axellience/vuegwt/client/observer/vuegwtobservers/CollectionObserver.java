@@ -42,14 +42,13 @@ public class CollectionObserver extends VueGWTObserver
     private void observeList(List list)
     {
         VueObserver observer = VueGWTObserverManager.getVueObserver(list);
-        AfterMethodCall callObserver =
+        AfterMethodCall<List> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
 
         wrapMethod(list, "clear", callObserver);
         wrapMethod(list, "remove", callObserver);
         wrapMethod(list, "removeAll", callObserver);
         wrapMethod(list, "retainAll", callObserver);
-        wrapMethod(list, "sort", callObserver);
         wrapMethod(list, "add", ((object, methodName, result, arguments) -> {
             observer.notifyDep();
             observer.observeArray(arguments);
@@ -58,19 +57,16 @@ public class CollectionObserver extends VueGWTObserver
             observer.notifyDep();
             observer.observeArray(((Collection) arguments[0]).toArray());
         }));
-
-        AfterMethodCall setAndAddMethodObserver = ((object, methodName, result, arguments) -> {
+        wrapMethod(list, "add", ((object, methodName, result, arguments) -> {
             observer.notifyDep();
             observer.observeArray(new Object[] { arguments[1] });
-        });
-        wrapMethod(list, "set", setAndAddMethodObserver);
-        wrapMethod(list, "add", setAndAddMethodObserver);
+        }));
     }
 
     private void observeSet(Set set)
     {
         VueObserver observer = VueGWTObserverManager.getVueObserver(set);
-        AfterMethodCall callObserver =
+        AfterMethodCall<Set> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
 
         wrapMethod(set, "clear", callObserver);

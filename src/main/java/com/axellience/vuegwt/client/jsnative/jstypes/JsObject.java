@@ -81,5 +81,8 @@ public class JsObject<T>
         return this;
     }
 
+    public native boolean hasOwnProperty(String propertyName);
+    public static native JsObject getPrototypeOf(Object object);
+
     public static native JsArray<String> getOwnPropertyNames(Object object);
 }

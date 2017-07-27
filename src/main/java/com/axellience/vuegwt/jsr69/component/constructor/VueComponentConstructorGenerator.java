@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.jsr69.component;
+package com.axellience.vuegwt.jsr69.component.constructor;
 
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.VueGWT;
@@ -8,6 +8,7 @@ import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
+import com.axellience.vuegwt.jsr69.component.constructor.options.VueComponentOptionsGenerator;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -23,7 +24,7 @@ import javax.lang.model.type.MirroredTypesException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.axellience.vuegwt.jsr69.component.VueComponentOptionsGenerator.COMPONENT_OPTIONS_SUFFIX;
+import static com.axellience.vuegwt.jsr69.component.constructor.options.VueComponentOptionsGenerator.COMPONENT_OPTIONS_SUFFIX;
 import static com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator.DIRECTIVE_OPTIONS_SUFFIX;
 
 /**
@@ -33,9 +34,13 @@ import static com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator
  */
 public class VueComponentConstructorGenerator extends AbstractVueComponentConstructorGenerator
 {
+    private final VueComponentOptionsGenerator vueComponentOptionsGenerator;
+
     public VueComponentConstructorGenerator(ProcessingEnvironment processingEnv)
     {
         super(processingEnv);
+
+        vueComponentOptionsGenerator = new VueComponentOptionsGenerator(processingEnv);
     }
 
     @Override
@@ -52,6 +57,17 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
     }
 
     @Override
+    protected Builder createConstructorBuilderClass(TypeElement componentTypeElement,
+        String generatedClassName)
+    {
+        Builder builder =
+            super.createConstructorBuilderClass(componentTypeElement, generatedClassName);
+        builder.addType(vueComponentOptionsGenerator.generate(componentTypeElement));
+
+        return builder;
+    }
+
+    @Override
     protected void createCreateInstanceMethod(TypeElement componentTypeElement, String packageName,
         String className, TypeName generatedTypeName, Builder vueConstructorClassBuilder)
     {
@@ -61,8 +77,8 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             .addAnnotation(JsOverlay.class)
             .returns(generatedTypeName);
 
-        TypeName optionsTypeName = ClassName.get(packageName, className + COMPONENT_OPTIONS_SUFFIX);
-        createInstanceBuilder.addStatement("$T componentOptions = new $T()",
+        String optionsTypeName = className + COMPONENT_OPTIONS_SUFFIX;
+        createInstanceBuilder.addStatement("$L componentOptions = new $L()",
             optionsTypeName,
             optionsTypeName);
 
@@ -72,19 +88,25 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
         {
             TypeName superConstructor =
                 ClassName.bestGuess(superClass.toString() + CONSTRUCTOR_SUFFIX);
-            createInstanceBuilder.addStatement("$L = ($T) $T.get().extend($L)",
+            createInstanceBuilder.addStatement(
+                "$L = ($T) $T.get().extendJavaComponent($L, $T.getJavaComponentConstructor($T.class))",
                 INSTANCE_PROP,
                 generatedTypeName,
                 superConstructor,
-                "componentOptions");
+                "componentOptions",
+                VueGWT.class,
+                ClassName.get(componentTypeElement));
         }
         else
         {
-            createInstanceBuilder.addStatement("$L = ($T) $T.extend($L)",
+            createInstanceBuilder.addStatement(
+                "$L = ($T) $T.extendJavaComponent($L, $T.getJavaComponentConstructor($T.class))",
                 INSTANCE_PROP,
                 generatedTypeName,
                 Vue.class,
-                "componentOptions");
+                "componentOptions",
+                VueGWT.class,
+                ClassName.get(componentTypeElement));
         }
 
         // Inject dependencies

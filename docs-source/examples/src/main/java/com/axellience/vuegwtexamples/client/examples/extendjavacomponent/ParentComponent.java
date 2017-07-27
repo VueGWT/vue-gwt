@@ -14,8 +14,7 @@ public class ParentComponent extends VueComponent
 {
     public String parentMessage;
 
-    @Override
-    public void created()
+    public ParentComponent()
     {
         this.parentMessage = "This is a message from the parent";
     }

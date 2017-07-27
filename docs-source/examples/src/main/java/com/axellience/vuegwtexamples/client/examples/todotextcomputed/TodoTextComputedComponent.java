@@ -15,8 +15,7 @@ public class TodoTextComputedComponent extends VueComponent
 {
     public Todo todo;
 
-    @Override
-    public void created()
+    public TodoTextComputedComponent()
     {
         this.todo = new Todo("Hello World!");
     }

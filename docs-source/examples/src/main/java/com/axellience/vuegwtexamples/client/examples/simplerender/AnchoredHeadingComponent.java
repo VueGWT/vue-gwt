@@ -23,9 +23,6 @@ public class AnchoredHeadingComponent extends VueComponent implements HasRender
     @Prop(required = true) public Integer level;
 
     @Override
-    public void created() {}
-
-    @Override
     public VNode render(VNodeBuilder builder)
     {
         String text =

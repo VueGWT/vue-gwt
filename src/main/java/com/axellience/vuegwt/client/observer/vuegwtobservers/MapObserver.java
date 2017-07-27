@@ -58,17 +58,5 @@ public class MapObserver extends VueGWTObserver
             observer.notifyDep();
             observer.observeArray(new Object[] { arguments[1], arguments[2] });
         }));
-
-        AfterMethodCall<Map> setAndAddMethodObserver = ((object, methodName, result, arguments) -> {
-            observer.notifyDep();
-            observer.observeArray(new Object[] { arguments[1] });
-        });
-        wrapMethod(map, "set", setAndAddMethodObserver);
-        wrapMethod(map, "add", setAndAddMethodObserver);
-
-        wrapMethod(map, "replaceAll", ((myMap, methodName, result, arguments) -> {
-            observer.notifyDep();
-            observer.observeArray(JsArray.from(myMap));
-        }));
     }
 }

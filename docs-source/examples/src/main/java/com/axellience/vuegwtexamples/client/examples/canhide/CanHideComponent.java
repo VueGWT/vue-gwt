@@ -10,8 +10,7 @@ public class CanHideComponent extends VueComponent
 {
     public boolean visible;
 
-    @Override
-    public void created() {
+    public CanHideComponent() {
         this.visible = true;
     }
 }

@@ -1,10 +1,12 @@
 package com.axellience.vuegwt.client;
 
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.jsnative.html.HTMLDocument;
 import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.resources.VueGwtResources;
+import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.google.gwt.core.client.GWT;
 import jsinterop.annotations.JsPackage;
@@ -30,6 +32,18 @@ public class VueGWT
     public static VueConstructor<? extends VueComponent> get(String qualifiedName)
     {
         return componentConstructors.get(qualifiedName);
+    }
+
+    public static <T extends VueComponent> VueComponentJsTypeConstructor<T> getJavaComponentConstructor(
+        Class<T> vueComponentClass)
+    {
+        JsObject VueGWT = ((JsObject) JsTools.getWindow().get("VueGWT"));
+        JsObject<VueComponentJsTypeConstructor<T>> javaComponentConstructors =
+            (JsObject<VueComponentJsTypeConstructor<T>>) VueGWT.get("javaComponentConstructors");
+
+        return javaComponentConstructors.get(vueComponentClass
+            .getCanonicalName()
+            .replaceAll("\\.", "_"));
     }
 
     /**

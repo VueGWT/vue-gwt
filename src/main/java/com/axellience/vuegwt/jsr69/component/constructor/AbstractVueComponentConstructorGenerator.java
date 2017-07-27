@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.jsr69.component;
+package com.axellience.vuegwt.jsr69.component.constructor;
 
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
@@ -93,7 +93,7 @@ public abstract class AbstractVueComponentConstructorGenerator
      * @param generatedClassName The type name of our generated {@link VueConstructor}
      * @return A Class Builder
      */
-    private Builder createConstructorBuilderClass(TypeElement componentTypeElement,
+    protected Builder createConstructorBuilderClass(TypeElement componentTypeElement,
         String generatedClassName)
     {
         return TypeSpec

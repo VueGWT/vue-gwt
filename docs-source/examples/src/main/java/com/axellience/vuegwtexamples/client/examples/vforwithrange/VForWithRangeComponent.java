@@ -11,6 +11,4 @@ import jsinterop.annotations.JsType;
 @Component
 public class VForWithRangeComponent extends VueComponent
 {
-    @Override
-    public void created() {}
 }

@@ -10,8 +10,7 @@ public class ExclamationComponent extends VueComponent
 {
     public String message;
 
-    @Override
-    public void created() {
+    public ExclamationComponent() {
         this.message = "Hello Vue GWT!";
     }
 

@@ -8,7 +8,4 @@ import com.axellience.vuegwt.jsr69.component.annotations.Component;
  */
 @Component(components = AnchoredHeadingComponent.class)
 public class RenderAppComponent extends VueComponent
-{
-    @Override
-    public void created() {}
-}
+{}

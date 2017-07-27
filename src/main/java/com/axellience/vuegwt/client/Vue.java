@@ -1,11 +1,13 @@
 package com.axellience.vuegwt.client;
 
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsSimpleFunction;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
+import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.client.vue.VueConfig;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.google.gwt.dom.client.Element;
@@ -31,7 +33,8 @@ public abstract class Vue extends JsObject
      * @return The created and attached instance of our Component
      */
     @JsOverlay
-    public static <T extends VueComponent> T attach(String element, VueConstructor<T> vueConstructor)
+    public static <T extends VueComponent> T attach(String element,
+        VueConstructor<T> vueConstructor)
     {
         T vueInstance = vueConstructor.instantiate();
         vueInstance.$mount(element);
@@ -46,7 +49,8 @@ public abstract class Vue extends JsObject
      * @return The created and attached instance of our Component
      */
     @JsOverlay
-    public static <T extends VueComponent> T attach(Element element, VueConstructor<T> vueConstructor)
+    public static <T extends VueComponent> T attach(Element element,
+        VueConstructor<T> vueConstructor)
     {
         T vueInstance = vueConstructor.instantiate();
         vueInstance.$mount(element);
@@ -63,6 +67,16 @@ public abstract class Vue extends JsObject
     public static void setConfig(VueConfig config)
     {
         Vue.config = config;
+    }
+
+    @JsOverlay
+    public static <T extends VueComponent> VueConstructor<T> extendJavaComponent(
+        VueComponentOptions<T> componentOptions, VueComponentJsTypeConstructor<T> javaConstructor)
+    {
+        VueConstructor<T> extendedVueConstructor = extend(componentOptions);
+        VueGWTTools.mergeVueConstructorWithJavaComponent(extendedVueConstructor, javaConstructor);
+
+        return extendedVueConstructor;
     }
 
     // @formatter:off

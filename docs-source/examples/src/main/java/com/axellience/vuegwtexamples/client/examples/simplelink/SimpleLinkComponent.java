@@ -10,8 +10,7 @@ public class SimpleLinkComponent extends VueComponent
 {
     public String linkName;
 
-    @Override
-    public void created()
+    public SimpleLinkComponent()
     {
         this.linkName = "Hello Vue GWT!";
     }

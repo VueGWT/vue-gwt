@@ -11,9 +11,4 @@ import jsinterop.annotations.JsType;
 @Component(directives = FocusDirective.class)
 public class FocusDirectiveComponent extends VueComponent
 {
-    @Override
-    public void created()
-    {
-
-    }
 }

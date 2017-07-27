@@ -13,8 +13,7 @@ public class TreeComponent extends VueComponent
 {
     public Folder myFolder;
 
-    @Override
-    public void created()
+    public TreeComponent()
     {
         myFolder = new Folder("Root");
         myFolder.getContent().push(new Folder("Child 1"));

@@ -13,8 +13,7 @@ public class KittenComponent extends VueComponent
 {
     public KittenClientBundle myKittenBundle;
 
-    @Override
-    public void created() {
+    public KittenComponent() {
         myKittenBundle = KittenClientBundle.INSTANCE;
     }
 }

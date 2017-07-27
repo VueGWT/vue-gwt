@@ -1,11 +1,11 @@
 package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
-import com.axellience.vuegwt.jsr69.component.VueComponentConstructorGenerator;
-import com.axellience.vuegwt.jsr69.component.VueComponentOptionsGenerator;
-import com.axellience.vuegwt.jsr69.component.VueJsComponentConstructorGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
+import com.axellience.vuegwt.jsr69.component.constructor.VueComponentConstructorGenerator;
+import com.axellience.vuegwt.jsr69.component.constructor.VueJsComponentConstructorGenerator;
+import com.axellience.vuegwt.jsr69.component.constructor.jstype.VueComponentJsTypeGenerator;
 import com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator;
 import com.axellience.vuegwt.jsr69.directive.annotations.Directive;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
@@ -72,14 +72,14 @@ public class VueGwtProcessor extends AbstractProcessor
             roundEnv.getElementsAnnotatedWith(Component.class);
 
         TemplateProviderGenerator templateGenerator = new TemplateProviderGenerator(processingEnv);
-        VueComponentOptionsGenerator vueComponentOptionsGenerator =
-            new VueComponentOptionsGenerator(processingEnv);
+        VueComponentJsTypeGenerator vueComponentJsTypeGenerator =
+            new VueComponentJsTypeGenerator(processingEnv);
         VueComponentConstructorGenerator vueConstructorGenerator =
             new VueComponentConstructorGenerator(processingEnv);
 
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
-            vueComponentOptionsGenerator.generate(element);
+            vueComponentJsTypeGenerator.generate(element);
             vueConstructorGenerator.generate(element);
             Component componentAnnotation = element.getAnnotation(Component.class);
             if (componentAnnotation.hasTemplate())

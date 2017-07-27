@@ -14,10 +14,4 @@ public class TreeFolderComponent extends VueComponent
 {
     @Prop
     public Folder folder;
-
-    @Override
-    public void created()
-    {
-
-    }
 }

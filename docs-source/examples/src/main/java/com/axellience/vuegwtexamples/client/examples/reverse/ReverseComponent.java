@@ -14,8 +14,7 @@ public class ReverseComponent extends VueComponent
 {
     public String message;
 
-    @Override
-    public void created()
+    public ReverseComponent()
     {
         this.message = "Hello";
     }

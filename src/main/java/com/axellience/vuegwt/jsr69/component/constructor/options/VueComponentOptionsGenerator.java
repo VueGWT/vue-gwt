@@ -1,7 +1,8 @@
-package com.axellience.vuegwt.jsr69.component;
+package com.axellience.vuegwt.jsr69.component.constructor.options;
 
-import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.component.HasRender;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.hooks.HasActivated;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeCreate;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeDestroy;
@@ -14,12 +15,12 @@ import com.axellience.vuegwt.client.component.hooks.HasMounted;
 import com.axellience.vuegwt.client.component.hooks.HasUpdated;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
-import com.axellience.vuegwt.client.component.options.data.DataDefinition;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
+import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwt.jsr69.component.annotations.Prop;
@@ -35,7 +36,6 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -55,7 +55,7 @@ import java.util.Map;
  */
 public class VueComponentOptionsGenerator
 {
-    static String COMPONENT_OPTIONS_SUFFIX = "Options";
+    public static String COMPONENT_OPTIONS_SUFFIX = "Options";
 
     private static Map<String, Class> HOOKS_MAP = new HashMap<>();
 
@@ -76,40 +76,41 @@ public class VueComponentOptionsGenerator
 
     private final ProcessingEnvironment processingEnv;
     private final Elements elementsUtils;
-    private final Filer filer;
     private boolean hasComponentJsTypeAnnotation;
 
     public VueComponentOptionsGenerator(ProcessingEnvironment processingEnv)
     {
         this.processingEnv = processingEnv;
         this.elementsUtils = processingEnv.getElementUtils();
-        this.filer = processingEnv.getFiler();
     }
 
     /**
      * Generate an {@link VueComponentOptions} for our Vue Component.
-     * @param componentTypeElement The {@link VueComponent} class to generate {@link VueComponentOptions}
+     * @param componentTypeElement The {@link VueComponent} class to generate {@link
+     * VueComponentOptions}
      * from
      */
-    public void generate(TypeElement componentTypeElement)
+    public TypeSpec generate(TypeElement componentTypeElement)
     {
         String packageName =
             elementsUtils.getPackageOf(componentTypeElement).getQualifiedName().toString();
-        String typeName = componentTypeElement.getSimpleName().toString();
-        String generatedTypeName = typeName + COMPONENT_OPTIONS_SUFFIX;
+        String className = componentTypeElement.getSimpleName().toString();
+        String generatedClassName = className + COMPONENT_OPTIONS_SUFFIX;
         hasComponentJsTypeAnnotation = componentTypeElement.getAnnotation(JsType.class) != null;
 
         Component annotation = componentTypeElement.getAnnotation(Component.class);
 
         Builder optionsClassBuilder =
-            createOptionsClassBuilder(componentTypeElement, generatedTypeName);
+            createOptionsClassBuilder(componentTypeElement, generatedClassName);
 
         // Initialize constructor
         MethodSpec.Builder constructorBuilder =
             MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
 
         // Add the Java Component Instance initialization
-        constructorBuilder.addStatement("this.setJavaComponentInstance(new $T())",
+        constructorBuilder.addStatement(
+            "this.setVueComponentJsTypeConstructor($T.getJavaComponentConstructor($T.class))",
+            VueGWT.class,
             TypeName.get(componentTypeElement.asType()));
 
         // Set the name of the component
@@ -121,7 +122,7 @@ public class VueComponentOptionsGenerator
         {
             constructorBuilder.addStatement("this.setTemplateResource($T.INSTANCE.$L())",
                 ClassName.get(packageName,
-                    typeName + TemplateProviderGenerator.TEMPLATE_BUNDLE_SUFFIX),
+                    className + TemplateProviderGenerator.TEMPLATE_BUNDLE_SUFFIX),
                 TemplateProviderGenerator.TEMPLATE_BUNDLE_METHOD_NAME);
         }
 
@@ -134,12 +135,7 @@ public class VueComponentOptionsGenerator
         // Finish building the constructor
         optionsClassBuilder.addMethod(constructorBuilder.build());
 
-        // Build the ComponentOptions class
-        GenerationUtil.toJavaFile(filer,
-            optionsClassBuilder,
-            packageName,
-            generatedTypeName,
-            componentTypeElement);
+        return optionsClassBuilder.build();
     }
 
     /**
@@ -153,11 +149,9 @@ public class VueComponentOptionsGenerator
     {
         return TypeSpec
             .classBuilder(generatedTypeName)
-            .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+            .addModifiers(Modifier.PRIVATE, Modifier.FINAL, Modifier.STATIC)
             .superclass(ParameterizedTypeName.get(ClassName.get(VueComponentOptions.class),
-                ClassName.get(componentTypeElement)))
-            .addJavadoc("Vue Component Options for Component {@link $S}",
-                componentTypeElement.getQualifiedName().toString());
+                ClassName.get(componentTypeElement)));
     }
 
     /**
@@ -169,14 +163,13 @@ public class VueComponentOptionsGenerator
     private void processDataProperties(TypeElement componentTypeElement, Component annotation,
         MethodSpec.Builder constructorBuilder)
     {
-        constructorBuilder.addStatement("$T<$T> dataFields = new $T<>()",
+        constructorBuilder.addStatement("$T<$T> propertiesName = new $T<>()",
             List.class,
-            DataDefinition.class,
+            String.class,
             LinkedList.class);
         ElementFilter
             .fieldsIn(componentTypeElement.getEnclosedElements())
-            .forEach(variableElement ->
-            {
+            .forEach(variableElement -> {
                 if (!isVisibleInJS(variableElement))
                     return;
 
@@ -194,12 +187,10 @@ public class VueComponentOptionsGenerator
                 }
                 else
                 {
-                    constructorBuilder.addStatement("dataFields.add(new $T($S))",
-                        DataDefinition.class,
-                        javaName);
+                    constructorBuilder.addStatement("propertiesName.add($S)", javaName);
                 }
             });
-        constructorBuilder.addStatement("this.initData(dataFields, $L)", annotation.useFactory());
+        constructorBuilder.addStatement("this.initData(propertiesName, $L)", annotation.useFactory());
     }
 
     /**
@@ -213,8 +204,7 @@ public class VueComponentOptionsGenerator
     {
         ElementFilter
             .methodsIn(componentTypeElement.getEnclosedElements())
-            .forEach(executableElement ->
-            {
+            .forEach(executableElement -> {
                 String javaName = executableElement.getSimpleName().toString();
 
                 if (!isVisibleInJS(executableElement) && !isHookMethod(processingEnv,
@@ -254,10 +244,6 @@ public class VueComponentOptionsGenerator
                 else if (isHookMethod(processingEnv, componentTypeElement, executableElement))
                 {
                     constructorBuilder.addStatement("this.addJavaLifecycleHook($S)", javaName);
-                }
-                else
-                {
-                    constructorBuilder.addStatement("this.addJavaMethod($S)", javaName);
                 }
             });
     }
@@ -301,7 +287,7 @@ public class VueComponentOptionsGenerator
                 JsTools.class,
                 JsTools.class,
                 "$options",
-                "vuegwt$javaComponentInstance",
+                "vuegwt$javaComponentProto",
                 "render")
             .addStatement("return $T.call($L, this, new $T($L))",
                 JsTools.class,
