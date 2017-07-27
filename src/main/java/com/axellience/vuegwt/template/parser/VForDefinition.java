@@ -36,10 +36,11 @@ public class VForDefinition
             return;
 
         boolean iterateOnArray = !inExpression.startsWith("(Object)");
-        inExpressionType = "Object";
 
         if (iterateOnArray)
         {
+            inExpressionType = "JsArray";
+
             if (vForVariableAndIndex(loopVariablesDefinition, context))
                 return;
             if (vForVariable(loopVariablesDefinition, context))
@@ -47,6 +48,8 @@ public class VForDefinition
         }
         else
         {
+            inExpressionType = "Object";
+
             if (vForVariableAndKeyAndIndex(loopVariablesDefinition, context))
                 return;
             if (vForVariableAndKey(loopVariablesDefinition, context))
@@ -217,6 +220,9 @@ public class VForDefinition
 
     public String getInExpression()
     {
+        if ("JsArray".equals(inExpressionType))
+            return "JsArray.from(" + inExpression + ")";
+
         return inExpression;
     }
 
@@ -243,5 +249,10 @@ public class VForDefinition
         }
 
         return variableDefinition;
+    }
+
+    public boolean isInExpressionJava()
+    {
+        return !"int".equals(inExpressionType);
     }
 }

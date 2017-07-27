@@ -382,8 +382,8 @@ public class TemplateParser
 
         String inExpression = vForDef.getInExpression();
 
-        // Process in expression if it's not just an "int"
-        if (!"int".equals(vForDef.getInExpressionType()))
+        // Process in expression if it's java
+        if (vForDef.isInExpressionJava())
         {
             TemplateExpression templateExpression =
                 this.processJavaExpression(inExpression, context, result);

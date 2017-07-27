@@ -52,6 +52,12 @@ public class JsArray<T>
     }
 
     @JsOverlay
+    public static <T> JsArray<T> from(JsArray<T> jsArray)
+    {
+        return jsArray;
+    }
+
+    @JsOverlay
     public static <T> JsArray<T> empty()
     {
         return new JsArray<>();
