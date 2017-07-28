@@ -382,8 +382,8 @@ public class TemplateParser
 
         String inExpression = vForDef.getInExpression();
 
-        // Process in expression if it's not just an "int"
-        if (!"int".equals(vForDef.getInExpressionType()))
+        // Process in expression if it's java
+        if (vForDef.isInExpressionJava())
         {
             TemplateExpression templateExpression =
                 this.processJavaExpression(inExpression, context, result);
@@ -466,7 +466,13 @@ public class TemplateParser
     private void processNameExpressionVariable(NameExpr nameExpr, TemplateParserContext context,
         Set<TemplateExpressionParameter> parameters)
     {
-        VariableInfo variableInfo = context.findVariableInContext(nameExpr.getNameAsString());
+        String name = nameExpr.getNameAsString();
+        if (context.hasImport(name)) {
+            nameExpr.setName(context.getFullyQualifiedNameForClassName(name));
+            return;
+        }
+
+        VariableInfo variableInfo = context.findVariableInContext(name);
         if (variableInfo instanceof LocalVariableInfo)
         {
             LocalVariableInfo localVariableInfo = (LocalVariableInfo) variableInfo;

@@ -2,19 +2,17 @@ package com.axellience.vuegwtexamples.client.examples.extendjavacomponent;
 
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
-@JsType
 @Component
 public class ChildComponent extends ParentComponent
 {
-    public int childValue;
+    @JsProperty int childValue;
 
-    @Override
-    public void created()
+    public ChildComponent()
     {
         this.childValue = 10;
     }

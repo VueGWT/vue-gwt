@@ -1,14 +1,15 @@
-package com.axellience.vuegwt.jsr69.component;
+package com.axellience.vuegwt.jsr69.component.constructor;
 
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.VueGWT;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.client.tools.VueGwtTools;
+import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
+import com.axellience.vuegwt.jsr69.component.constructor.options.VueComponentOptionsGenerator;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -22,7 +23,7 @@ import javax.lang.model.type.MirroredTypesException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.axellience.vuegwt.jsr69.component.VueComponentOptionsGenerator.COMPONENT_OPTIONS_SUFFIX;
+import static com.axellience.vuegwt.jsr69.component.constructor.options.VueComponentOptionsGenerator.COMPONENT_OPTIONS_SUFFIX;
 import static com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator.DIRECTIVE_OPTIONS_SUFFIX;
 
 /**
@@ -32,19 +33,24 @@ import static com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator
  */
 public class VueComponentConstructorGenerator extends AbstractVueComponentConstructorGenerator
 {
+    private final VueComponentOptionsGenerator vueComponentOptionsGenerator;
+
     public VueComponentConstructorGenerator(ProcessingEnvironment processingEnv)
     {
         super(processingEnv);
+
+        vueComponentOptionsGenerator = new VueComponentOptionsGenerator(processingEnv);
     }
 
     @Override
-    protected void createStaticRegistration(TypeElement componentTypeElement,
-        TypeName generatedTypeName, Builder vueConstructorClassBuilder)
+    protected Builder createConstructorBuilderClass(TypeElement componentTypeElement,
+        String generatedClassName)
     {
-        vueConstructorClassBuilder.addStaticBlock(CodeBlock.of("$T.register($S, $T.get());",
-            VueGWT.class,
-            componentTypeElement.getQualifiedName().toString(),
-            generatedTypeName));
+        Builder builder =
+            super.createConstructorBuilderClass(componentTypeElement, generatedClassName);
+        builder.addType(vueComponentOptionsGenerator.generate(componentTypeElement));
+
+        return builder;
     }
 
     @Override
@@ -57,30 +63,36 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             .addAnnotation(JsOverlay.class)
             .returns(generatedTypeName);
 
-        TypeName optionsTypeName = ClassName.get(packageName, className + COMPONENT_OPTIONS_SUFFIX);
-        createInstanceBuilder.addStatement("$T componentOptions = new $T()",
+        String optionsTypeName = className + COMPONENT_OPTIONS_SUFFIX;
+        createInstanceBuilder.addStatement("$L componentOptions = new $L()",
             optionsTypeName,
             optionsTypeName);
 
         // Set parent
         TypeName superClass = TypeName.get(componentTypeElement.getSuperclass());
-        if (!TypeName.get(Vue.class).equals(superClass))
+        if (!TypeName.get(VueComponent.class).equals(superClass))
         {
             TypeName superConstructor =
                 ClassName.bestGuess(superClass.toString() + CONSTRUCTOR_SUFFIX);
-            createInstanceBuilder.addStatement("$L = ($T) $T.get().extend($L)",
+            createInstanceBuilder.addStatement(
+                "$L = ($T) $T.get().extendJavaComponent($L, $T.getJavaConstructor($T.class))",
                 INSTANCE_PROP,
                 generatedTypeName,
                 superConstructor,
-                "componentOptions");
+                "componentOptions",
+                VueGWT.class,
+                ClassName.get(componentTypeElement));
         }
         else
         {
-            createInstanceBuilder.addStatement("$L = ($T) $T.extend($L)",
+            createInstanceBuilder.addStatement(
+                "$L = ($T) $T.extendJavaComponent($L, $T.getJavaConstructor($T.class))",
                 INSTANCE_PROP,
                 generatedTypeName,
                 Vue.class,
-                "componentOptions");
+                "componentOptions",
+                VueGWT.class,
+                ClassName.get(componentTypeElement));
         }
 
         // Inject dependencies
@@ -136,7 +148,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
                 .of(componentsClass)
                 .forEach(clazz -> injectDependenciesBuilder.addStatement(
                     "components.set($S, $T.get())",
-                    VueGwtTools.componentToTagName(clazz.getName()),
+                    VueGWTTools.componentToTagName(clazz.getName()),
                     ClassName.bestGuess(clazz.getCanonicalName() + CONSTRUCTOR_SUFFIX)));
         }
         catch (MirroredTypesException mte)
@@ -146,11 +158,10 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             if (!classTypeMirrors.isEmpty())
                 addGetComponentsStatement(injectDependenciesBuilder);
 
-            classTypeMirrors.forEach(classTypeMirror ->
-            {
+            classTypeMirrors.forEach(classTypeMirror -> {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
                 injectDependenciesBuilder.addStatement("components.set($S, $T.get())",
-                    VueGwtTools.componentToTagName(classTypeElement.getSimpleName().toString()),
+                    VueGWTTools.componentToTagName(classTypeElement.getSimpleName().toString()),
                     ClassName.bestGuess(classTypeElement.getQualifiedName() + CONSTRUCTOR_SUFFIX));
             });
         }
@@ -183,7 +194,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
                 .of(componentsClass)
                 .forEach(clazz -> injectDependenciesBuilder.addStatement(
                     "directives.set($S, new $T())",
-                    VueGwtTools.directiveToTagName(clazz.getName()),
+                    VueGWTTools.directiveToTagName(clazz.getName()),
                     ClassName.bestGuess(clazz.getCanonicalName() + DIRECTIVE_OPTIONS_SUFFIX)));
         }
         catch (MirroredTypesException mte)
@@ -193,11 +204,10 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             if (!classTypeMirrors.isEmpty())
                 addGetDirectivesStatement(injectDependenciesBuilder);
 
-            classTypeMirrors.forEach(classTypeMirror ->
-            {
+            classTypeMirrors.forEach(classTypeMirror -> {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
                 injectDependenciesBuilder.addStatement("directives.set($S, new $T())",
-                    VueGwtTools.directiveToTagName(classTypeElement.getSimpleName().toString()),
+                    VueGWTTools.directiveToTagName(classTypeElement.getSimpleName().toString()),
                     ClassName.bestGuess(classTypeElement.getQualifiedName()
                         + DIRECTIVE_OPTIONS_SUFFIX));
             });

@@ -16,7 +16,7 @@
 
 package com.axellience.vuegwt.template;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.template.TemplateExpressionBase;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 import com.axellience.vuegwt.client.template.TemplateResource;
@@ -24,6 +24,9 @@ import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
+import com.axellience.vuegwt.template.compiler.VueTemplateCompiler;
+import com.axellience.vuegwt.template.compiler.VueTemplateCompilerException;
+import com.axellience.vuegwt.template.compiler.VueTemplateCompilerResult;
 import com.axellience.vuegwt.template.parser.TemplateParser;
 import com.axellience.vuegwt.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.template.parser.result.TemplateParserResult;
@@ -89,44 +92,41 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("new " + typeName + TemplateProviderGenerator.TEMPLATE_RESOURCE_SUFFIX + "() {");
         sw.indent();
 
+        // Add the get name method
+        generateGetName(method, sw);
+
         // Get template content from HTML file
         String templateContent = Util.readURLAsString(resource);
 
-        // Process it and replace with the result
+        // Process it
         TemplateParserResult templateParserResult =
             new TemplateParser().parseHtmlTemplate(templateContent, typeOracle.findType(typeName));
-        templateContent = templateParserResult.getTemplateWithReplacements();
 
-        // Computed properties
+        // Compile the resulting HTML template String
+        processTemplateString(sw, templateParserResult.getTemplateWithReplacements(), context);
+
+        // Declare computed properties
         JClassType componentClass = typeOracle.findType(typeName);
         Set<String> doneComputed = new HashSet<>();
         processComputedProperties(sw, componentClass, doneComputed);
-
         processComponentStyles(sw, templateParserResult);
-        processTemplateString(method, sw, templateContent);
+
+        // Process the java expressions from the template
         processTemplateExpressions(sw, templateParserResult);
 
+        // End class
         sw.outdent();
         sw.println("}");
 
         return sw.toString();
     }
 
-    private URL getResource(TreeLogger logger, ResourceContext context, JMethod method)
-    {
-        URL[] resources;
-        try
-        {
-            resources = ResourceGeneratorUtil.findResources(logger, context, method);
-        }
-        catch (UnableToCompleteException e)
-        {
-            resources = null;
-        }
-
-        return resources == null ? null : resources[0];
-    }
-
+    /**
+     * Generate an empty template resource (when no template is found).
+     * @param method The resource method with the @Source annotation
+     * @param sw The source writer
+     * @return
+     */
     private String generateEmptyTemplateResource(JMethod method, SourceWriter sw)
     {
         sw.println("new " + TemplateResource.class.getName() + "() {");
@@ -138,6 +138,11 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         return sw.toString();
     }
 
+    /**
+     * Get the type name from the HTML template path.
+     * @param method The resource method with the @Source annotation
+     * @return The full qualified name of the Class
+     */
     private String getTypeName(JMethod method)
     {
         Source resourceAnnotation = method.getAnnotation(Source.class);
@@ -145,7 +150,83 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         return resourcePath.substring(0, resourcePath.length() - 5).replaceAll("/", ".");
     }
 
-    private void processTemplateExpressions(SourceWriter sw, TemplateParserResult templateParserResult)
+    /**
+     * Compile the HTML template and transform it to a JS render function.
+     * @param sw The source writer
+     * @param templateString The HTML template string to compile
+     */
+    private void processTemplateString(SourceWriter sw, String templateString,
+        ResourceContext context) throws UnableToCompleteException
+    {
+        VueTemplateCompilerResult result;
+        try
+        {
+            VueTemplateCompiler vueTemplateCompiler =
+                new VueTemplateCompiler(context.getGeneratorContext().getResourcesOracle());
+            result = vueTemplateCompiler.compile(templateString);
+        }
+        catch (VueTemplateCompilerException e)
+        {
+            e.printStackTrace();
+            throw new UnableToCompleteException();
+        }
+
+        generateGetRenderFunction(sw, result);
+        generateGetStaticRenderFunctions(sw, result);
+    }
+
+    /**
+     * Generate the method that returns the body of the render function.
+     * @param sw The source writer
+     * @param result The result from compilation using vue-template-compiler
+     */
+    private void generateGetRenderFunction(SourceWriter sw, VueTemplateCompilerResult result)
+    {
+        sw.println("public String getRenderFunction() {");
+        sw.indent();
+
+        String renderFunction = result.getRenderFunction();
+        sw.print("return ");
+        writeLongString(sw, renderFunction);
+        sw.println(";");
+        sw.outdent();
+        sw.println("}");
+    }
+
+    /**
+     * Generate the method that returns the body of the static render functions.
+     * @param sw The source writer
+     * @param result The result from compilation using vue-template-compiler
+     */
+    private void generateGetStaticRenderFunctions(SourceWriter sw, VueTemplateCompilerResult result)
+    {
+        sw.println("public String[] getStaticRenderFunctions() {");
+        sw.indent();
+
+        sw.println("return new String[] {");
+        sw.indent();
+        boolean isFirst = true;
+        for (String staticRenderFunction : result.getStaticRenderFunctions())
+        {
+            if (isFirst)
+                isFirst = false;
+            else
+                sw.println(",");
+
+            writeLongString(sw, staticRenderFunction);
+        }
+        sw.outdent();
+        sw.println("};");
+        sw.println("}");
+    }
+
+    /**
+     * Process the expressions found in the HTML template
+     * @param sw The source writer
+     * @param templateParserResult Result from the parsing of the HTML Template
+     */
+    private void processTemplateExpressions(SourceWriter sw,
+        TemplateParserResult templateParserResult)
     {
         for (TemplateExpression expression : templateParserResult.getExpressions())
         {
@@ -155,6 +236,11 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         generateGetTemplateExpressions(sw, templateParserResult);
     }
 
+    /**
+     * Generate the Java method for an expression in the Template
+     * @param sw The source writer
+     * @param expression An expression from the HTML template
+     */
     private void generateTemplateExpressionMethod(SourceWriter sw, TemplateExpression expression)
     {
         String expressionReturnType = expression.getReturnType();
@@ -168,13 +254,9 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             .map(param -> param.getType() + " " + param.getName())
             .toArray(String[]::new);
 
-        sw.println("public "
-            + expressionReturnType
-            + " "
-            + expression.getId()
-            + "("
-            + String.join(", ", parameters)
-            + ") {");
+        sw.println("public " + expressionReturnType + " " + expression.getId() + "(" + String.join(
+            ", ",
+            parameters) + ") {");
         sw.indent();
 
         if (isString(expressionReturnType))
@@ -194,12 +276,11 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("}");
     }
 
-    private boolean isString(String expressionReturnType)
-    {
-        return "java.lang.String".equals(expressionReturnType) || "String".equals(
-            expressionReturnType);
-    }
-
+    /**
+     * Generate the method to get the list of template expressions
+     * @param sw The source writer
+     * @param templateParserResult Result from the parsing of the HTML Template
+     */
     private void generateGetTemplateExpressions(SourceWriter sw,
         TemplateParserResult templateParserResult)
     {
@@ -224,21 +305,13 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("}");
     }
 
-    private void processTemplateString(JMethod method, SourceWriter sw, String templateContent)
+    /**
+     * Generate the getName method of our generator
+     * @param method The method we are generating
+     * @param sw The source writer
+     */
+    private void generateGetName(JMethod method, SourceWriter sw)
     {
-        sw.println("public String getText() {");
-        sw.indent();
-        if (templateContent.length() > MAX_STRING_CHUNK)
-        {
-            writeLongString(sw, templateContent);
-        }
-        else
-        {
-            sw.println("return \"" + Generator.escape(templateContent) + "\";");
-        }
-        sw.outdent();
-        sw.println("}");
-
         sw.println("public String getName() {");
         sw.indent();
         sw.println("return \"" + method.getName() + "\";");
@@ -246,6 +319,11 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("}");
     }
 
+    /**
+     * Generate the method returning Styles declared in the template.
+     * @param sw The source writer
+     * @param templateParserResult Result from the parsing of the HTML Template
+     */
     private void processComponentStyles(SourceWriter sw, TemplateParserResult templateParserResult)
     {
         for (Entry<String, String> entry : templateParserResult.getStyleImports().entrySet())
@@ -280,12 +358,20 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("}");
     }
 
+    /**
+     * Process computed properties.
+     * This will generate a field in the Template for each Computed property.
+     * It will recursively generate for the parent too.
+     * @param sw The source writer
+     * @param vueComponentClass The Component Class
+     * @param doneComputed Computed that have already been processed
+     */
     private void processComputedProperties(SourceWriter sw, JClassType vueComponentClass,
         Set<String> doneComputed)
     {
         if (vueComponentClass == null || vueComponentClass
             .getQualifiedSourceName()
-            .equals(Vue.class.getCanonicalName()))
+            .equals(VueComponent.class.getCanonicalName()))
             return;
 
         for (JMethod jMethod : vueComponentClass.getMethods())
@@ -307,24 +393,55 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
     }
 
     /**
+     * Check if a given expressionReturnType is String.
+     * @param expressionReturnType The return type
+     * @return True if this is a String, false otherwise
+     */
+    private boolean isString(String expressionReturnType)
+    {
+        return "java.lang.String".equals(expressionReturnType) || "String".equals(
+            expressionReturnType);
+    }
+
+    /**
      * A single constant that is too long will crash the compiler with an out of
      * memory error. Break up the constant and generate code that appends using a
      * buffer.
      */
-
     private void writeLongString(SourceWriter sw, String toWrite)
     {
-        sw.println("StringBuilder builder = new StringBuilder();");
-        int offset = 0;
-        int length = toWrite.length();
-        while (offset < length - 1)
+        if (toWrite.length() > MAX_STRING_CHUNK)
         {
-            int subLength = Math.min(MAX_STRING_CHUNK, length - offset);
-            sw.print("builder.append(\"");
-            sw.print(Generator.escape(toWrite.substring(offset, offset + subLength)));
-            sw.println("\");");
-            offset += subLength;
+            sw.println("new StringBuilder()");
+            int offset = 0;
+            int length = toWrite.length();
+            while (offset < length - 1)
+            {
+                int subLength = Math.min(MAX_STRING_CHUNK, length - offset);
+                sw.print(".append(\"");
+                sw.print(Generator.escape(toWrite.substring(offset, offset + subLength)));
+                sw.println("\")");
+                offset += subLength;
+            }
         }
-        sw.println("return builder.toString();");
+        else
+        {
+            sw.println("\"" + Generator.escape(toWrite) + "\"");
+        }
+    }
+
+    private URL getResource(TreeLogger logger, ResourceContext context, JMethod method)
+    {
+        URL[] resources;
+        try
+        {
+            resources = ResourceGeneratorUtil.findResources(logger, context, method);
+        }
+        catch (UnableToCompleteException e)
+        {
+            resources = null;
+        }
+
+        return resources == null ? null : resources[0];
     }
 }

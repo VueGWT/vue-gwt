@@ -31,14 +31,12 @@ That's why for any complex logic, you should use a **computed property**.
 ```
 
 ```java
-@JsType
 @Component
-public class ReverseComponent extends Vue
+public class ReverseComponent extends VueComponent
 {
-    public String message;
+    @JsProperty String message;
 
-    @Override
-    public void created() {
+    public ReverseComponent() {
         this.message = "Hello";
     }
 
@@ -83,14 +81,12 @@ You may have noticed we can achieve the same result by invoking a method in the 
 ```
 
 ```java
-@JsType
 @Component
-public class ReverseComponent extends Vue
+public class ReverseComponent extends VueComponent
 {
-    public String message;
+    @JsProperty String message;
 
-    @Override
-    public void created() {
+    public ReverseComponent() {
         this.message = "Hello";
     }
 
@@ -135,16 +131,14 @@ However, it is often a better idea to use a computed property rather than an imp
 ```
 
 ```java
-@JsType
 @Component
-public class JohnSnowComponent extends Vue
+public class JohnSnowComponent extends VueComponent
 {
-    public String firstName;
-    public String lastName;
-    public String fullName;
+    @JsProperty String firstName;
+    @JsProperty String lastName;
+    @JsProperty String fullName;
 
-    @Override
-    public void created() {
+    public JohnSnowComponent() {
         this.firstName = "John";
         this.lastName = "Snow";
         this.fullName = "John Snow";
@@ -165,15 +159,13 @@ public class JohnSnowComponent extends Vue
 The above code is imperative and repetitive. Compare it with a computed property version:
 
 ```java
-@JsType
 @Component
-public class JohnSnowComponent extends Vue
+public class JohnSnowComponent extends VueComponent
 {
-    public String firstName;
-    public String lastName;
+    @JsProperty String firstName;
+    @JsProperty String lastName;
 
-    @Override
-    public void created() {
+    public JohnSnowComponent() {
         this.firstName = "John";
         this.lastName = "Snow";
     }
@@ -192,15 +184,13 @@ Much better, isn't it?
 Computed properties are by default getter-only, but you can also provide a setter when you need it:
 
 ```java
-@JsType
 @Component
-public class JohnSnowComponent extends Vue
+public class JohnSnowComponent extends VueComponent
 {
-    public String firstName;
-    public String lastName;
+    @JsProperty String firstName;
+    @JsProperty String lastName;
 
-    @Override
-    public void created() {
+    public JohnSnowComponent() {
         this.firstName = "John";
         this.lastName = "Snow";
     }
@@ -241,14 +231,12 @@ The mandatory `propertyName` attribute of the annotation indicate the property t
 
 Here is an example:
 ```java
-@JsType
 @Component
-public class JohnSnowComponent extends Vue
+public class JohnSnowComponent extends VueComponent
 {
-    public String message;
+    @JsProperty String message;
 
-    @Override
-    public void created() {
+    public JohnSnowComponent() {
         this.message = "Hello World!";
     }
 

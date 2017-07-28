@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.jsr69.component;
+package com.axellience.vuegwt.jsr69.component.constructor;
 
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;
@@ -24,13 +24,6 @@ public class VueJsComponentConstructorGenerator extends AbstractVueComponentCons
     public VueJsComponentConstructorGenerator(ProcessingEnvironment processingEnv)
     {
         super(processingEnv);
-    }
-
-    @Override
-    protected void createStaticRegistration(TypeElement componentTypeElement,
-        TypeName generatedTypeName, Builder vueConstructorClassBuilder)
-    {
-        // Do nothing
     }
 
     @Override

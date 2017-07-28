@@ -1,14 +1,14 @@
 package com.axellience.vuegwt.client.component.options;
 
-import com.axellience.vuegwt.client.Vue;
-import com.axellience.vuegwt.client.component.HasCustomizeOptions;
+import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
-import com.axellience.vuegwt.client.component.options.data.DataDefinition;
 import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JSON;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.template.TemplateExpressionBase;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
@@ -36,9 +36,9 @@ import java.util.Map.Entry;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public abstract class VueComponentOptions<T extends Vue> extends JsObject
+public abstract class VueComponentOptions<T extends VueComponent> extends JsObject
 {
-    @JsProperty protected T vuegwt$javaComponentInstance;
+    @JsProperty private VueComponentJsTypeConstructor<T> vuegwt$vueComponentJsTypeConstructor;
 
     @JsProperty private Object data;
     @JsProperty private JsObject props;
@@ -54,25 +54,27 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     @JsProperty private JsObject<VueDirectiveOptions> directives;
     @JsProperty private JsObject<VueComponentOptions> components;
 
-    @JsProperty private Vue parent;
+    @JsProperty private VueComponent parent;
     @JsProperty private String name;
+
+    @JsProperty private JsArray<Object> staticRenderFns;
 
     private Map<String, CssResource> componentStyles;
 
     /**
      * Set the Java Component Instance on this Options
      * This instance will be used to retrieve the methods from our Options
-     * @param javaComponentInstance An instance of the VueComponent class for this Component
+     * @param vueComponentJsTypeConstructor An instance of the VueComponent class for this Component
      */
     @JsOverlay
-    protected final void setJavaComponentInstance(T javaComponentInstance)
+    protected final void setVueComponentJsTypeConstructor(
+        VueComponentJsTypeConstructor<T> vueComponentJsTypeConstructor)
     {
-        this.vuegwt$javaComponentInstance = javaComponentInstance;
+        this.vuegwt$vueComponentJsTypeConstructor = vueComponentJsTypeConstructor;
 
-        if (this.vuegwt$javaComponentInstance instanceof HasCustomizeOptions)
-        {
-            ((HasCustomizeOptions) this.vuegwt$javaComponentInstance).customizeOptions(this);
-        }
+        Object customizeOption = getJavaComponentMethod("customizeOptions");
+        if (customizeOption != null)
+            JsTools.call(customizeOption, this, this);
     }
 
     /**
@@ -85,7 +87,24 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     {
         this.initStyles(templateResource);
         this.initExpressions(templateResource);
-        this.setTemplateText(templateResource.getText());
+        this.initRenderFunctions(templateResource);
+    }
+
+    /**
+     * Initialise the render functions
+     * @param templateResource
+     */
+    @JsOverlay
+    private final void initRenderFunctions(TemplateResource templateResource)
+    {
+        this.set("render", JsTools.createFunction(templateResource.getRenderFunction()));
+
+        JsArray<Object> staticRenderFns = new JsArray<>();
+        for (String staticRenderFunction : templateResource.getStaticRenderFunctions())
+        {
+            staticRenderFns.push(JsTools.createFunction(staticRenderFunction));
+        }
+        this.setStaticRenderFns(staticRenderFns);
     }
 
     /**
@@ -128,42 +147,22 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     }
 
     /**
-     * Set the template text
-     * @param templateText The HTML string of the template (processed by the TemplateParser)
-     */
-    @JsOverlay
-    private void setTemplateText(String templateText)
-    {
-        if ("".equals(templateText))
-            JsTools.unsetObjectProperty(this, "template");
-        else
-            this.template = templateText;
-    }
-
-    /**
      * Initialise the data structure, then set it to either a Factory or directly on the Component
-     * @param dataDefinitions List of all the name of the data properties
+     * @param propertiesName List of all the name of the data properties
      * @param useFactory Boolean representing whether or not to use a Factory
      */
     @JsOverlay
-    protected final void initData(List<DataDefinition> dataDefinitions, boolean useFactory)
+    protected final void initData(List<String> propertiesName, boolean useFactory)
     {
         JsObject dataObject = new JsObject();
-        for (DataDefinition dataDefinition : dataDefinitions)
+        for (String propertyName : propertiesName)
         {
-            Object dataDefaultValue =
-                JsTools.getObjectProperty(vuegwt$javaComponentInstance, dataDefinition.javaName);
-
-            if (dataDefaultValue == null)
-                dataDefaultValue = new JsObject();
-
-            dataObject.set(dataDefinition.jsName, dataDefaultValue);
+            dataObject.set(propertyName, null);
         }
 
         if (useFactory)
         {
-            this.setData((DataFactory) () ->
-            {
+            this.setData((DataFactory) () -> {
                 JsObject data = JSON.parse(JSON.stringify(dataObject));
                 copyStyles(data);
                 return data;
@@ -191,27 +190,6 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     }
 
     /**
-     * Add a method to this ComponentOptions
-     * @param javaName Name of the method in the Java Component
-     */
-    @JsOverlay
-    protected final void addJavaMethod(String javaName)
-    {
-        addJavaMethod(javaName, javaName);
-    }
-
-    /**
-     * Add a method to this ComponentOptions
-     * @param javaName Name of the method in the Java Component
-     * @param jsName Name of the method in the Template and the ComponentOptions
-     */
-    @JsOverlay
-    protected final void addJavaMethod(String javaName, String jsName)
-    {
-        addMethod(jsName, getJavaComponentMethod(javaName));
-    }
-
-    /**
      * Add a computed property to this ComponentOptions
      * If the computed has both a getter and a setter, this will be called twice, once for each.
      * @param javaName Name of the method in the Java Component
@@ -228,7 +206,7 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
             addComputedOptions(jsName, computedDefinition);
         }
 
-        Object method = JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
+        Object method = getJavaComponentMethod(javaName);
         if (kind == ComputedKind.GETTER)
             computedDefinition.get = method;
         else if (kind == ComputedKind.SETTER)
@@ -252,8 +230,7 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
 
         JsObject watchDefinition = new JsObject();
         watchDefinition.set("deep", true);
-        watchDefinition.set("handler",
-            JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName));
+        watchDefinition.set("handler", getJavaComponentMethod(javaName));
         addWatch(watchedPropertyName, watchDefinition);
     }
 
@@ -270,26 +247,21 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     /**
      * Add a prop to our ComponentOptions
      * This will allow to receive data from the outside of our Component
-     * @param javaName The name of the property in our Java Component
-     * @param jsName The name of the property in the Template and the ComponentOptions
+     * @param name The name of the property
      * @param required Is the property required (mandatory)
      * @param typeJsName JS name of the type of this property, if not null we will ask Vue to type
      * check based on it
      */
     @JsOverlay
-    protected final void addJavaProp(String javaName, String jsName, boolean required,
-        String typeJsName)
+    protected final void addJavaProp(String name, boolean required, String typeJsName)
     {
         PropOptions propDefinition = new PropOptions();
         propDefinition.required = required;
-        if (JsTools.objectHasProperty(vuegwt$javaComponentInstance, javaName))
-            propDefinition.defaultValue =
-                JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
 
         if (typeJsName != null)
             propDefinition.type = JsTools.getWindow().get(typeJsName);
 
-        addProp(jsName, propDefinition);
+        addProp(name, propDefinition);
     }
 
     /**
@@ -307,7 +279,8 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     @JsOverlay
     private Object getJavaComponentMethod(String javaName)
     {
-        return JsTools.getObjectProperty(vuegwt$javaComponentInstance, javaName);
+        JsObject vueComponentJsTypePrototype = vuegwt$vueComponentJsTypeConstructor.getPrototype();
+        return vueComponentJsTypePrototype.get(javaName);
     }
 
     @JsOverlay
@@ -463,6 +436,19 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     }
 
     @JsOverlay
+    public final JsArray<Object> getStaticRenderFns()
+    {
+        return staticRenderFns;
+    }
+
+    @JsOverlay
+    public final VueComponentOptions setStaticRenderFns(JsArray<Object> staticRenderFns)
+    {
+        this.staticRenderFns = staticRenderFns;
+        return this;
+    }
+
+    @JsOverlay
     public final JsObject<VueDirectiveOptions> getDirectives()
     {
         return directives;
@@ -489,13 +475,13 @@ public abstract class VueComponentOptions<T extends Vue> extends JsObject
     }
 
     @JsOverlay
-    public final Vue getParent()
+    public final VueComponent getParent()
     {
         return parent;
     }
 
     @JsOverlay
-    public final VueComponentOptions setParent(Vue parent)
+    public final VueComponentOptions setParent(VueComponent parent)
     {
         this.parent = parent;
         return this;

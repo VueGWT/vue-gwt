@@ -1,17 +1,15 @@
 package com.axellience.vuegwtexamples.client.examples.canhide;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
-@JsType
 @Component
-public class CanHideComponent extends Vue
+public class CanHideComponent extends VueComponent
 {
-    public boolean visible;
+    @JsProperty boolean visible;
 
-    @Override
-    public void created() {
+    public CanHideComponent() {
         this.visible = true;
     }
 }

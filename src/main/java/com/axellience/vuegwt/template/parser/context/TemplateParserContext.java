@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.template.parser.context;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -39,6 +40,7 @@ public class TemplateParserContext
 
         // Add some useful imports
         this.addImport(NativeEvent.class.getCanonicalName());
+        this.addImport(JsArray.class.getCanonicalName());
 
         // Init root context
         this.rootContext = new ContextLayer("");
@@ -52,7 +54,7 @@ public class TemplateParserContext
     {
         if (vueComponentClass == null || vueComponentClass
             .getQualifiedSourceName()
-            .equals(Vue.class.getCanonicalName()))
+            .equals(VueComponent.class.getCanonicalName()))
             return;
 
         for (JField jField : vueComponentClass.getFields())
@@ -101,7 +103,7 @@ public class TemplateParserContext
                 return contextLayer.getVariableInfo(name);
         }
 
-        throw new InvalidExpressionException("Couldn't find the type: " + name);
+        throw new InvalidExpressionException("Couldn't find the variable: " + name);
     }
 
     public JClassType getVueComponentClass()
@@ -153,6 +155,11 @@ public class TemplateParserContext
             return className;
 
         return classNameToFullyQualifiedName.get(className);
+    }
+
+    public boolean hasImport(String className)
+    {
+        return classNameToFullyQualifiedName.containsKey(className);
     }
 
     public void addRootVariable(String type, String name)

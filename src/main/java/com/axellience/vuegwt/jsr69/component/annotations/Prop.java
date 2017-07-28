@@ -15,12 +15,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 public @interface Prop
 {
     /**
-     * Name of the property
-     * @return The name of the property. If "" (default), then we use the Java name
-     */
-    String propertyName() default "";
-
-    /**
      * Is the property required
      * @return true if the property is required, false otherwise. Default to false.
      */

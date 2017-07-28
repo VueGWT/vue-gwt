@@ -105,6 +105,16 @@
 			<artifactId>jodd-json</artifactId>
 			<version>3.8.6</version>
 		</dependency>
+		<dependency>
+			<groupId>com.samaxes.maven</groupId>
+			<artifactId>minify-maven-plugin</artifactId>
+			<version>1.7.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.coveo</groupId>
+			<artifactId>nashorn-commonjs-modules</artifactId>
+			<version>1.0.8</version>
+		</dependency>
     </dependencies>
 
 	<distributionManagement>
@@ -141,6 +151,30 @@
 					<!-- Disable annotation processing for ourselves.-->
 					<compilerArgument>-proc:none</compilerArgument>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.samaxes.maven</groupId>
+				<artifactId>minify-maven-plugin</artifactId>
+				<version>1.7.6</version>
+				<executions>
+					<execution>
+						<id>default-minify</id>
+						<configuration>
+							<charset>UTF-8</charset>
+							<webappSourceDir>src/main/resources/com/axellience/vuegwt/client/resources</webappSourceDir>
+							<jsSourceDir>sources</jsSourceDir>
+							<webappTargetDir>src/main/resources/com/axellience/vuegwt/client/resources</webappTargetDir>
+							<jsTargetDir>.</jsTargetDir>
+
+							<bundleConfiguration>src/main/resources/com/axellience/vuegwt/client/resources/bundle.config.json</bundleConfiguration>
+							<jsEngine>CLOSURE</jsEngine>
+						</configuration>
+						<goals>
+							<goal>minify</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Maven test plugin -->

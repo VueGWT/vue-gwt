@@ -745,16 +745,15 @@
                                 
                                 <h1 id="the-vue-instance">The Vue Instance</h1>
 <p><em>This page comes from the <a href="https://vuejs.org/v2/guide/instance.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
-<h2 id="constructor">Constructor</h2>
-<p>Every Vue vm is bootstrapped by creating a <strong>root Vue instance</strong> with the <code>Vue.attach()</code> method:</p>
-<pre><code class="lang-java">DemoComponent vm = Vue.attach(<span class="hljs-string">&quot;#container&quot;</span>, DemoComponentConstructor.get());
+<h2 id="the-vm">The <code>vm</code></h2>
+<p>Every Vue vm is bootstrapped by creating a <strong>root Vue instance</strong>, for example with the <code>Vue.attach()</code> method:</p>
+<pre><code class="lang-java">DemoComponent vm = Vue.attach(<span class="hljs-string">&quot;#container&quot;</span>, DemoComponent.class);
 </code></pre>
 <p>Although not strictly associated with the <a href="https://en.wikipedia.org/wiki/Model_View_ViewModel" target="_blank">MVVM pattern</a>, Vue&apos;s design was partly inspired by it.
 As a convention, we often use the variable <code>vm</code> (short for ViewModel) to refer to our Vue instances.</p>
-<p>Vue.js requires options to configure your Vue instance.
-Vue GWT generate those for you based on your <code>@Component</code> class and various annotations.
-It then uses those options and <code>Vue.extend</code> to create a <code>VueConstructor</code> for your Component.</p>
-<p>Using our <code>VueConstructor</code> we can generate several instance of our Component:</p>
+<h2 id="constructor">Constructor</h2>
+<p>Vue GWT generate a <code>VueConstructor</code> for each of your <code>VueComponent</code> using annotation processing. 
+Using this generated <code>VueConstructor</code> we can generate several instance of our <code>VueComponent</code>:</p>
 <pre><code class="lang-java">DemoComponentConstructor demoConstructor = DemoComponentConstructor.get();
 
 DemoComponent vm1 = demoConstructor.instantiate();
@@ -773,13 +772,9 @@ Vue GWT configure those instance for you, but in the browser they really are jus
 <p>In Vue.js you pass all the data you want to observe as the <code>data</code> option of your Vue constructor.
 This <code>data</code> object is built for you by Vue GWT based on the public properties of your Java Class.</p>
 <p>For example this Vue Component:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> Todo todo;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> Todo todo;
 }
 </code></pre>
 <p>Will have the following <code>data</code> object in it&apos;s Vue options:</p>
@@ -844,13 +839,11 @@ These properties and methods are prefixed with <code>$</code> to differentiate t
 <p>In Vue GWT these methods and properties are defined in <code>Vue</code>, usually with the same name.
 Because your Components inherits from <code>Vue</code> you can simply access them in your Components.</p>
 <p>For example:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> Todo todo;
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> Todo todo;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">DemoComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.todo = <span class="hljs-keyword">new</span> Todo();
 
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.$data.get(<span class="hljs-string">&quot;todo&quot;</span>) == <span class="hljs-keyword">this</span>.todo) {
@@ -867,19 +860,18 @@ Because your Components inherits from <code>Vue</code> you can simply access the
 <h2 id="instance-lifecycle-hooks">Instance Lifecycle Hooks</h2>
 <p>Each Vue instance goes through a series of initialization steps when it is created - for example, it needs to set up data observation, compile the template, mount the instance to the DOM, and update the DOM when data changes.
 Along the way, it will also invoke some <strong>lifecycle hooks</strong>, which give us the opportunity to execute custom logic.
-For example, the <a href="https://vuejs.org/v2/api/#created" target="_blank"><code>created</code></a> hook is called after the instance is created:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> Todo todo;
+For example, the <a href="https://vuejs.org/v2/api/#mounted" target="_blank"><code>mounted</code></a> hook is called after the instance is mounted:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasMounted</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> Todo todo;
 
     <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-comment">// Hey there, I&apos;ve been created!</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mounted</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-comment">// Hey there, I&apos;ve been mounted!</span>
     }
 }
 </code></pre>
-<p>There are also other hooks which will be called at different stages of the instance&apos;s lifecycle, for example <a href="https://vuejs.org/v2/api/#mounted" target="_blank"><code>mounted</code></a>, <a href="https://vuejs.org/v2/api/#updated" target="_blank"><code>updated</code></a>, and <a href="https://vuejs.org/v2/api/#destroyed" target="_blank"><code>destroyed</code></a>.
+<p>There are also other hooks which will be called at different stages of the instance&apos;s lifecycle, for example <a href="https://vuejs.org/v2/api/#created" target="_blank"><code>created</code></a>, <a href="https://vuejs.org/v2/api/#updated" target="_blank"><code>updated</code></a>, and <a href="https://vuejs.org/v2/api/#destroyed" target="_blank"><code>destroyed</code></a>.
 You may have been wondering where the concept of &quot;controllers&quot; lives in the Vue world and the answer is: there are no controllers.
 Your custom logic for a component would be split among these lifecycle hooks.</p>
 <h2 id="lifecycle-diagram">Lifecycle Diagram</h2>
@@ -929,7 +921,7 @@ Your custom logic for a component would be split among these lifecycle hooks.</p
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"The Vue Instance","level":"2.1","depth":1,"next":{"title":"Template Syntax","level":"2.2","depth":1,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"previous":{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/the-vue-instance.md","mtime":"2017-07-17T10:39:07.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-19T13:23:54.618Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"The Vue Instance","level":"2.1","depth":1,"next":{"title":"Template Syntax","level":"2.2","depth":1,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"previous":{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/the-vue-instance.md","mtime":"2017-07-28T15:04:34.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-28T16:51:50.294Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

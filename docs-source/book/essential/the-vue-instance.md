@@ -2,22 +2,21 @@
 
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/instance.html) and has been adapted for Vue GWT.*
 
-## Constructor
+## The `vm`
 
-Every Vue vm is bootstrapped by creating a **root Vue instance** with the `Vue.attach()` method:
+Every Vue vm is bootstrapped by creating a **root Vue instance**, for example with the `Vue.attach()` method:
 
 ```java
-DemoComponent vm = Vue.attach("#container", DemoComponentConstructor.get());
+DemoComponent vm = Vue.attach("#container", DemoComponent.class);
 ```
 
 Although not strictly associated with the [MVVM pattern](https://en.wikipedia.org/wiki/Model_View_ViewModel), Vue's design was partly inspired by it.
 As a convention, we often use the variable `vm` (short for ViewModel) to refer to our Vue instances.
 
-Vue.js requires options to configure your Vue instance.
-Vue GWT generate those for you based on your `@Component` class and various annotations.
-It then uses those options and `Vue.extend` to create a `VueConstructor` for your Component.
+## Constructor
 
-Using our `VueConstructor` we can generate several instance of our Component:
+Vue GWT generate a `VueConstructor` for each of your `VueComponent` using annotation processing. 
+Using this generated `VueConstructor` we can generate several instance of our `VueComponent`:
 
 ```java
 DemoComponentConstructor demoConstructor = DemoComponentConstructor.get();
@@ -45,13 +44,9 @@ This `data` object is built for you by Vue GWT based on the public properties of
 
 For example this Vue Component:
 ```java
-@JsType
 @Component
-public class DemoComponent extends Vue {
-    public Todo todo;
-    
-    @Override
-    public void created() {}
+public class DemoComponent extends VueComponent {
+    @JsProperty Todo todo;
 }
 ```
 
@@ -140,13 +135,11 @@ Because your Components inherits from `Vue` you can simply access them in your C
 For example:
 
 ```java
-@JsType
 @Component
-public class DemoComponent extends Vue {
-    public Todo todo;
+public class DemoComponent extends VueComponent {
+    @JsProperty Todo todo;
     
-    @Override
-    public void created() {
+    public DemoComponent() {
         this.todo = new Todo();
         
         if (this.$data.get("todo") == this.todo) {
@@ -166,22 +159,21 @@ Consult the [Vue.js API reference](https://vuejs.org/v2/api/) for the full list 
 
 Each Vue instance goes through a series of initialization steps when it is created - for example, it needs to set up data observation, compile the template, mount the instance to the DOM, and update the DOM when data changes.
 Along the way, it will also invoke some **lifecycle hooks**, which give us the opportunity to execute custom logic.
-For example, the [`created`](https://vuejs.org/v2/api/#created) hook is called after the instance is created:
+For example, the [`mounted`](https://vuejs.org/v2/api/#mounted) hook is called after the instance is mounted:
 
 ```java
-@JsType
 @Component
-public class DemoComponent extends Vue {
-    public Todo todo;
+public class DemoComponent extends VueComponent implements HasMounted {
+    @JsProperty Todo todo;
     
     @Override
-    public void created() {
-        // Hey there, I've been created!
+    public void mounted() {
+        // Hey there, I've been mounted!
     }
 }
 ```
 
-There are also other hooks which will be called at different stages of the instance's lifecycle, for example [`mounted`](https://vuejs.org/v2/api/#mounted), [`updated`](https://vuejs.org/v2/api/#updated), and [`destroyed`](https://vuejs.org/v2/api/#destroyed).
+There are also other hooks which will be called at different stages of the instance's lifecycle, for example [`created`](https://vuejs.org/v2/api/#created), [`updated`](https://vuejs.org/v2/api/#updated), and [`destroyed`](https://vuejs.org/v2/api/#destroyed).
 You may have been wondering where the concept of "controllers" lives in the Vue world and the answer is: there are no controllers.
 Your custom logic for a component would be split among these lifecycle hooks.
 

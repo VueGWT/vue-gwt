@@ -1,23 +1,21 @@
 package com.axellience.vuegwtexamples.client.examples.vforwithindex;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
-@JsType
 @Component
-public class VForWithIndexComponent extends Vue
+public class VForWithIndexComponent extends VueComponent
 {
-    public JsArray<Todo> todos;
-    public String parentMessage;
+    @JsProperty JsArray<Todo> todos;
+    @JsProperty String parentMessage;
 
-    @Override
-    public void created() {
+    public VForWithIndexComponent() {
         this.parentMessage = "Message from parent";
 
         this.todos = new JsArray<>();

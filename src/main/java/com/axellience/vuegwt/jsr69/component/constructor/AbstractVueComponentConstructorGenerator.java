@@ -1,6 +1,6 @@
-package com.axellience.vuegwt.jsr69.component;
+package com.axellience.vuegwt.jsr69.component.constructor;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
@@ -33,7 +33,7 @@ import javax.lang.model.util.Elements;
  */
 public abstract class AbstractVueComponentConstructorGenerator
 {
-    static String CONSTRUCTOR_SUFFIX = "Constructor";
+    public static String CONSTRUCTOR_SUFFIX = "Constructor";
     static String INSTANCE_PROP = "vuegwt$constructor";
     static String DEPENDENCIES_INJECTED_PROP = "vuegwt$areDependenciesInjected";
 
@@ -48,7 +48,7 @@ public abstract class AbstractVueComponentConstructorGenerator
 
     /**
      * Generate our {@link VueConstructor} class.
-     * @param componentTypeElement The {@link Vue} class to
+     * @param componentTypeElement The {@link VueComponent} class to
      * generate {@link VueComponentOptions} from
      */
     public void generate(TypeElement componentTypeElement)
@@ -61,10 +61,6 @@ public abstract class AbstractVueComponentConstructorGenerator
 
         Builder vueConstructorClassBuilder =
             createConstructorBuilderClass(componentTypeElement, generatedClassName);
-
-        createStaticRegistration(componentTypeElement,
-            generatedTypeName,
-            vueConstructorClassBuilder);
 
         createProperties(generatedTypeName, vueConstructorClassBuilder);
 
@@ -84,16 +80,13 @@ public abstract class AbstractVueComponentConstructorGenerator
             componentTypeElement);
     }
 
-    protected abstract void createStaticRegistration(TypeElement componentTypeElement,
-        TypeName generatedTypeName, Builder vueConstructorClassBuilder);
-
     /**
      * Create the builder to build our {@link VueConstructor} class.
      * @param componentTypeElement The Component we generate for
      * @param generatedClassName The type name of our generated {@link VueConstructor}
      * @return A Class Builder
      */
-    private Builder createConstructorBuilderClass(TypeElement componentTypeElement,
+    protected Builder createConstructorBuilderClass(TypeElement componentTypeElement,
         String generatedClassName)
     {
         return TypeSpec

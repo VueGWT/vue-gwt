@@ -50,7 +50,7 @@ public class VueDirectiveOptionsGenerator
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .superclass(VueDirectiveOptions.class)
             .addAnnotation(JsType.class)
-            .addJavadoc("Vue Directive Options for directive {@link $S}",
+            .addJavadoc("VueComponent Directive Options for directive {@link $S}",
                 directiveTypeElement.getQualifiedName().toString());
 
         // Initialize constructor

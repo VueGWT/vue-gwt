@@ -56,13 +56,11 @@ When you get started with a component that just generates a heading based on the
 ```
 
 ```java
-@JsType
 @Component
-public class AnchoredHeadingComponent extends Vue {
-    @Prop(required = true) public Integer level;
-
-    @Override
-    public void created() {}
+public class AnchoredHeadingComponent extends VueComponent {
+    @JsProperty
+    @Prop(required = true)
+    Integer level;
 }
 ```
 
@@ -72,13 +70,11 @@ It's not only verbose, but we're duplicating `<slot></slot>` for every heading l
 While templates work great for most components, it's clear that this isn't one of them. So let's try rewriting it with a `render` function:
 
 ```java
-@JsType
 @Component(hasTemplate = false)
-public class AnchoredHeadingComponent extends Vue implements HasRender {
-    @Prop(required = true) public Integer level;
-
-    @Override
-    public void created() {}
+public class AnchoredHeadingComponent extends VueComponent implements HasRender {
+    @JsProperty
+    @Prop(required = true)
+    public Integer level;
 
     @Override
     public VNode render(VNodeBuilder builder) {
@@ -141,12 +137,12 @@ public class VNodeBuilder {
 
     /**
      * Create a VNode with the given Component
-     * @param vueConstructor Constructor for the Component we want
+     * @param vueComponentClass Class for the VueComponent we want
      * @param data Information for the new VNode (attributes...)
      * @param children Children
      * @return a new VNode of this Component
      */
-    public VNode el(Class<Vue> vueConstructor, VNodeData data, Object... children) { ... }
+    public VNode el(Class<VueComponent> vueComponentClass, VNodeData data, Object... children) { ... }
 }
 ```
 
@@ -227,15 +223,13 @@ Here is the JavaScript definition of the Data Object:
 With this knowledge, we can now finish the component we started:
 
 ```java
-@JsType
 @Component(hasTemplate = false)
-public class AnchoredHeadingComponent extends Vue implements HasRender {
+public class AnchoredHeadingComponent extends VueComponent implements HasRender {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
 
-    @Prop(required = true) public Integer level;
-
-    @Override
-    public void created() {}
+    @JsProperty
+    @Prop(required = true)
+    Integer level;
 
     @Override
     public VNode render(VNodeBuilder builder) {

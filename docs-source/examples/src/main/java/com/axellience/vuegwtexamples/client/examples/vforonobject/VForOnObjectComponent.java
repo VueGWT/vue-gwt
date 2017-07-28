@@ -1,22 +1,21 @@
 package com.axellience.vuegwtexamples.client.examples.vforonobject;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
-@JsType
 @Component
-public class VForOnObjectComponent extends Vue
+public class VForOnObjectComponent extends VueComponent
 {
+    @JsProperty
     public JsObject<Object> myObject;
 
-    @Override
-    public void created() {
+    public VForOnObjectComponent() {
         this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);

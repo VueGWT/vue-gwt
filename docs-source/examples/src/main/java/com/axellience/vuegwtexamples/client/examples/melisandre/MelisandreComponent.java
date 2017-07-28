@@ -1,20 +1,18 @@
 package com.axellience.vuegwtexamples.client.examples.melisandre;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
-@JsType
 @Component
-public class MelisandreComponent extends Vue
+public class MelisandreComponent extends VueComponent
 {
-    public boolean isRed;
+    @JsProperty boolean isRed;
 
-    @Override
-    public void created() {
+    public MelisandreComponent() {
         this.isRed = true;
     }
 }

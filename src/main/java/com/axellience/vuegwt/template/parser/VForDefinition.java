@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.template.parser;
 
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 
@@ -12,6 +11,11 @@ import java.util.regex.Pattern;
  */
 public class VForDefinition
 {
+    private enum VForDefinitionType
+    {
+        ARRAY, OBJECT, RANGE
+    }
+
     private static Pattern VFOR_VARIABLE = Pattern.compile("([^ ]*) ([^ ]*)");
     private static Pattern VFOR_VARIABLE_AND_INDEX =
         Pattern.compile("\\(([^ ]*) ([^,]*),([^\\)]*)\\)");
@@ -21,7 +25,7 @@ public class VForDefinition
         Pattern.compile("\\(([^ ]*) ([^,]*),([^,]*),([^\\)]*)\\)");
 
     private final String inExpression;
-    private String inExpressionType;
+    private final VForDefinitionType type;
     private LocalVariableInfo loopVariableInfo = null;
     private LocalVariableInfo keyVariableInfo = null;
     private LocalVariableInfo indexVariableInfo = null;
@@ -34,12 +38,16 @@ public class VForDefinition
         inExpression = splitExpression[1].trim();
 
         if (vForOnRange(inExpression, loopVariablesDefinition, context))
+        {
+            type = VForDefinitionType.RANGE;
             return;
+        }
 
         boolean iterateOnArray = !inExpression.startsWith("(Object)");
+
         if (iterateOnArray)
         {
-            inExpressionType = JsArray.class.getCanonicalName();
+            type = VForDefinitionType.ARRAY;
 
             if (vForVariableAndIndex(loopVariablesDefinition, context))
                 return;
@@ -48,7 +56,7 @@ public class VForDefinition
         }
         else
         {
-            inExpressionType = "Object";
+            type = VForDefinitionType.OBJECT;
 
             if (vForVariableAndKeyAndIndex(loopVariablesDefinition, context))
                 return;
@@ -68,8 +76,7 @@ public class VForDefinition
      * @param context The context of the parser
      * @return true if we managed the case, false otherwise
      */
-    private boolean vForVariable(String loopVariablesDefinition,
-        TemplateParserContext context)
+    private boolean vForVariable(String loopVariablesDefinition, TemplateParserContext context)
     {
         Matcher matcher = VFOR_VARIABLE.matcher(loopVariablesDefinition);
         if (matcher.matches())
@@ -158,12 +165,14 @@ public class VForDefinition
         TemplateParserContext context)
     {
         // Try to parse the inExpression as an Int
-        try {
+        try
+        {
             Integer.parseInt(inExpression);
             this.initLoopVariable("int", loopVariableDefinition, context);
-            inExpressionType = "int";
             return true;
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             return false;
         }
     }
@@ -220,12 +229,18 @@ public class VForDefinition
 
     public String getInExpression()
     {
+        if (type == VForDefinitionType.ARRAY)
+            return "JsArray.from(" + inExpression + ")";
+
         return inExpression;
     }
 
     public String getInExpressionType()
     {
-        return inExpressionType;
+        if (type == VForDefinitionType.RANGE)
+            return "int";
+
+        return "Object";
     }
 
     public String getVariableDefinition()
@@ -246,5 +261,10 @@ public class VForDefinition
         }
 
         return variableDefinition;
+    }
+
+    public boolean isInExpressionJava()
+    {
+        return type != VForDefinitionType.RANGE;
     }
 }

@@ -804,30 +804,25 @@ We will call it <code>SimpleLinkComponent</code>.
 This Component will simply display an html link.</p>
 <h4 id="declaring-the-component">Declaring the Component</h4>
 <h5 id="java-class">Java Class</h5>
-<p>To create our Component, we must create a Class annotated by <code>@Component</code> that extends <code>Vue</code>.</p>
+<p>To create our Component, we must create a Class annotated by <code>@Component</code> that extends <code>VueComponent</code>.</p>
 <p><strong><em>SimpleLinkComponent.java</em></strong></p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleLinkComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> String linkName;
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleLinkComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> String linkName;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">SimpleLinkComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.linkName = <span class="hljs-string">&quot;Hello Vue GWT!&quot;</span>;
     }
 }
 </code></pre>
-<p>The method <code>created</code> that is overridden in our Component is mandatory.
-It will be called each time an instance of your Component is created.
-You can see it as your Component &quot;constructor&quot;.</p>
-<h5 id="why-public-methodsproperties">Why Public Methods/Properties?</h5>
-<p>Only <code>JsInterop</code> attributes and methods of our Class will be accessible in our template.</p>
+<h5 id="why-jsproperty">Why <code>@JsProperty</code>?</h5>
+<p>Only <code>JsInterop</code> attributes of our Class will be accessible in our template.</p>
 <p>Meaning either:</p>
 <ul>
-<li>Adding the <code>@JsType</code> annotation to our Class and setting attributes/methods to <code>public</code></li>
-<li>Adding the <code>@JsProperty</code>/<code>@JsMethod</code> annotation to each attribute/method and setting them to <code>protected</code></li>
+<li>Adding the <code>@JsType</code> annotation to our Class and setting attributes to <code>public</code></li>
+<li>Adding the <code>@JsProperty</code> annotation to each attribute and setting them to at least <code>protected</code>.</li>
 </ul>
-<p>In this documentation we chose to use the <code>@JsType</code> annotation and to set all our properties/methods to <code>public</code> for brevity.</p>
+<p>In this documentation we chose to use the <code>@JsProperty</code> annotation on properties.</p>
 <h5 id="html-template">HTML Template</h5>
 <p>We will then create a template for our <code>SimpleLinkComponent</code>.
 It should have the same name as our Java Class file and be in the same package.
@@ -857,24 +852,22 @@ First, in our GWT index page we add a div to attach the instance:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;simpleLinkComponentContainer&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <p>Then when GWT starts, we need to bootstrap an instance of our <code>SimpleLinkComponent</code> and attach it in our <code>simpleLinkComponentContainer</code> div.</p>
-<p>To do this we simply call the Vue.attach() static method and pass the selector of our container and a <code>VueConstructor</code> for our Component.</p>
+<p>To do this we simply call the Vue.attach() static method and pass the selector of our container and the class of our Component.</p>
 <p><strong><em>RootGwtApp.java</em></strong></p>
 <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootGwtApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
-        Vue.attach(<span class="hljs-string">&quot;#simpleLinkComponentContainer&quot;</span>, SimpleLinkComponentConstructor.get());
+        SimpleLinkComponent simpleLinkComponent = Vue.attach(<span class="hljs-string">&quot;#simpleLinkComponentContainer&quot;</span>, SimpleLinkComponent.class);
     }
 }
 </code></pre>
 <p>In typical application we only do this for the first root Component.
 We can then use <a href="./#composing-with-components">Component composition</a>.</p>
-<h5 id="where-does-simplelinkcomponentconstructor-comes-from">Where Does <code>SimpleLinkComponentConstructor</code> Comes From?</h5>
-<p>It comes from the annotation processor.
-It automatically processes classes annotated with <code>@Component</code> and generate the corresponding <code>VueConstructor</code> for you.</p>
-<p>The generated <code>VueConstructor</code> class have a static method <code>get()</code> to get an instance of it.
-This instance is the Java representation of a Vue constructor in JavaScript.</p>
-<p>Behind the scene, our Java Component Class is converted to the options that Vue.js is expecting:</p>
+<h5 id="why-cant-i-just-do-new-simplelinkcomponent">Why can&apos;t I just do <code>new SimpleLinkComponent()</code>?</h5>
+<p>Behind the scene, our Java <code>VueComponent</code> Class is converted to the options that Vue.js is expecting:</p>
 <pre><code class="lang-javascript">{
-    template: <span class="hljs-string">&apos;&lt;a href=&quot;https://github.com/Axellience/vue-gwt&quot;&gt;{{ linkName }}&lt;/a&gt;&apos;</span>,
+    render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        ...
+    },
     data: {
         linkName: <span class="hljs-literal">null</span>
     },
@@ -886,21 +879,20 @@ This instance is the Java representation of a Vue constructor in JavaScript.</p>
 }
 </code></pre>
 <p>Those options are passed to the <a href="https://vuejs.org/v2/api/#Vue-extend" target="_blank"><code>Vue.extend()</code></a> JavaScript method.
-The result is a <code>VueConstructor</code> we can use to generate new instances of Component.</p>
+The result is a <code>VueConstructor</code> we can use to generate new instances of our <code>VueComponent</code>.</p>
+<p>When you call <code>attach</code>, <code>VueGWT</code> get this <code>VueConstructor</code> for you and use it to create a new instance of your Component.</p>
 <h3 id="binding-element-attributes">Binding Element Attributes</h3>
 <p>Our <code>SimpleLinkComponent</code> component works, but the target of our link is set in the template.
 What if we wanted to declare it in our Component?</p>
 <p>Luckily, in addition to text interpolation, we can also bind element attributes.
 Let see how to do this with a new <code>LinkComponent</code>.
 This one will allow us to set the link <code>href</code> attribute in our Java Class.</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LinkComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> String linkTarget;
-    <span class="hljs-keyword">public</span> String linkName;
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LinkComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> String linkTarget;
+    <span class="hljs-meta">@JsProperty</span> String linkName;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">LinkComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.linkTarget = <span class="hljs-string">&quot;https://github.com/Axellience/vue-gwt&quot;</span>;
         <span class="hljs-keyword">this</span>.linkName = <span class="hljs-string">&quot;Hello Vue GWT!&quot;</span>;
     }
@@ -928,13 +920,11 @@ Let&apos;s check this with a small example:</p>
     The property &quot;visible&quot; is set to true!
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CanHideComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> visible;
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CanHideComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">boolean</span> visible;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">CanHideComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.visible = <span class="hljs-keyword">true</span>;
     }
 }
@@ -967,19 +957,17 @@ For example, the <code>v-for</code> directive can be used for displaying a list 
 }
 </code></pre>
 <p>We will then create a list of <code>Todo</code> in a <code>SimpleTodoListComponent</code>.</p>
-<p>Because Vue.js is only able to observe JavaScript Arrays you must use the <a href="../js-interop/#js-array">provided <code>JsArray</code> object</a> class in your Components.
-This object will be represented as a native JavaScript Array in the browser.</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleTodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> JsArray&lt;Todo&gt; todos;
+<p>Vue GWT observe Java Collections for you.
+For now this work for <code>List</code>, <code>Set</code> and <code>Map</code>.</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleTodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> List&lt;Todo&gt; todos;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">new</span> JsArray&lt;&gt;();
-        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Java&quot;</span>));
-        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Vue GWT&quot;</span>));
-        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Build something awesome&quot;</span>));
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">SimpleTodoListComponent</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+        <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Java&quot;</span>));
+        <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Vue GWT&quot;</span>));
+        <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Build something awesome&quot;</span>));
     }
 }
 </code></pre>
@@ -1009,13 +997,11 @@ But you can try removing a Todo in console:</p>
     <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;addExclamationMark()&quot;</span>&gt;</span>Add an explanation mark<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExclamationComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> String message;
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExclamationComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> String message;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ExclamationComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello Vue GWT!&quot;</span>;
     }
 
@@ -1039,13 +1025,11 @@ But you can try removing a Todo in console:</p>
     <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;message&quot;</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MessageComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> String message;
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MessageComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> String message;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">MessageComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.message = <span class="hljs-string">&quot;Hello Vue GWT!&quot;</span>;
     }
 }
@@ -1072,11 +1056,8 @@ We will then instantiate this component in an <code>ParentComponent</code>.</p>
 <p>This Component will display a simple message.</p>
 <p><strong><em>TodoComponent.java</em></strong></p>
 <p>We first create a Class like for our previous examples.</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
 }
 </code></pre>
 <p>We then create an HTML file with our Component template.
@@ -1089,11 +1070,8 @@ We add this file next to our Java class as before.</p>
 <p><strong><em>ParentComponent.java</em></strong></p>
 <p>We will then create our <code>ParentComponent</code> that uses <code>TodoComponent</code>.</p>
 <p>We first register <code>TodoComponent</code> to be used in our <code>ParentComponent</code> by passing it to the <code>@Component</code> annotation.</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>(components = {TodoComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {TodoComponent.class})
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
 }
 </code></pre>
 <p><strong><em>ParentComponent.html</em></strong></p>
@@ -1114,17 +1092,15 @@ We add this file next to our Java class as before.</p>
 We should be able to pass data from the parent scope into child components.</p>
 <p>Let&#x2019;s modify our <code>TodoComponent</code> to make it accept a property.</p>
 <p><strong><em>TodoComponent.java</em></strong></p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@Prop</span>
-    <span class="hljs-keyword">public</span> Todo todo;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
+    <span class="hljs-meta">@JsProperty</span>
+    Todo todo;
 }
 </code></pre>
 <p>The <code>@Prop</code> annotation tells Vue GWT that our <code>todo</code> property will be passed from a parent component.</p>
+<p>Be careful, you still need to use the <code>@JsProperty</code> to tell VueGWT to not rename this property.</p>
 <p><strong><em>TodoComponent.html</em></strong></p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>
     {{ todo.getText() }}
@@ -1134,17 +1110,15 @@ We should be able to pass data from the parent scope into child components.</p>
 <p>Let&apos;s see how to pass this value from the parent.</p>
 <p>We create a list of <code>Todos</code> like before.
 Let&apos;s call it <code>TodoListComponent</code>:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsType</span>
-<span class="hljs-meta">@Component</span>(components = {TodoComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Vue</span> </span>{
-    <span class="hljs-keyword">public</span> JsArray&lt;Todo&gt; todos;
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {TodoComponent.class})
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> List&lt;Todo&gt; todos;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">new</span> JsArray&lt;&gt;();
-        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Java&quot;</span>));
-        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Vue GWT&quot;</span>));
-        <span class="hljs-keyword">this</span>.todos.push(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Build something awesome&quot;</span>));
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">TodoListComponent</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+        <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Java&quot;</span>));
+        <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Vue GWT&quot;</span>));
+        <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Build something awesome&quot;</span>));
     }
 }
 </code></pre>
@@ -1174,7 +1148,7 @@ We will talk a lot more about components later in the guide, but here&#x2019;s a
   <span class="hljs-tag">&lt;/<span class="hljs-name">app-view</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<h3 id="how-is-the-component-html-name-set">How Is the Component Html Name Set?</h3>
+<h3 id="how-is-the-component-html-name-set">How Is the Component HTML Name Set?</h3>
 <p>The name of the html element for our Component in the template (here, <code>todo</code>) is determined using the Component&apos;s Class name.</p>
 <p>The name is converted from CamelCase to kebab-case.
 If the name ends with &quot;Component&quot; this part is dropped.</p>
@@ -1187,11 +1161,11 @@ If the name ends with &quot;Component&quot; this part is dropped.</p>
 <h3 id="registering-components-globally">Registering Components Globally</h3>
 <p>Components can also be registered globally.
 They will then be usable in any Component in your app.
-You won&apos;t need to pass the <code>VueConstructor</code> of your Component to the <code>components</code> attribute in the <code>@Component</code> annotation.</p>
+You won&apos;t need to pass the class of your <code>VueComponent</code> to the <code>components</code> attribute in the <code>@Component</code> annotation.</p>
 <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootGwtApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-comment">// Register TodoComponent globally</span>
-        Vue.component(<span class="hljs-string">&quot;todo&quot;</span>, TodoComponentConstructor.get());
+        Vue.component(<span class="hljs-string">&quot;todo&quot;</span>, TodoComponent.class);
     }
 }
 </code></pre>
@@ -1241,7 +1215,7 @@ You won&apos;t need to pass the <code>VueConstructor</code> of your Component to
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.3","depth":1,"next":{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},"previous":{"title":"Project Setup","level":"1.2","depth":1,"path":"project-setup.md","ref":"project-setup.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/README.md","mtime":"2017-07-18T09:32:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-19T13:23:54.618Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.3","depth":1,"next":{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},"previous":{"title":"Project Setup","level":"1.2","depth":1,"path":"project-setup.md","ref":"project-setup.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/README.md","mtime":"2017-07-28T14:55:16.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-28T16:51:50.294Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -1,26 +1,27 @@
 package com.axellience.vuegwtexamples.client.examples.evennumbers;
 
-import com.axellience.vuegwt.client.Vue;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
-@JsType
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
-public class EvenNumbersComponent extends Vue
+public class EvenNumbersComponent extends VueComponent
 {
-    public JsArray<Integer> numbers;
+    @JsProperty List<Integer> numbers;
 
-    @Override
-    public void created()
+    public EvenNumbersComponent()
     {
-        this.numbers = JsArray.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        this.numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }
 
     @Computed
-    public JsArray<Integer> getEvenNumbers()
+    public List<Integer> getEvenNumbers()
     {
-        return this.numbers.filter(number -> number % 2 == 0);
+        return this.numbers.stream().filter(number -> number % 2 == 0).collect(Collectors.toList());
     }
 }

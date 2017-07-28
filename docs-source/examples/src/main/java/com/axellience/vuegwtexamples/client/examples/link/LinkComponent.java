@@ -1,18 +1,16 @@
 package com.axellience.vuegwtexamples.client.examples.link;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
-@JsType
 @Component
-public class LinkComponent extends Vue
+public class LinkComponent extends VueComponent
 {
-    public String linkTarget;
-    public String linkName;
+    @JsProperty String linkTarget;
+    @JsProperty String linkName;
 
-    @Override
-    public void created() {
+    public LinkComponent() {
         this.linkTarget = "https://github.com/Axellience/vue-gwt";
         this.linkName = "Hello Vue GWT!";
     }

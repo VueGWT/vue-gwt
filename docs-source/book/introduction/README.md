@@ -22,36 +22,30 @@ This Component will simply display an html link.
 #### Declaring the Component
 
 ##### Java Class
-To create our Component, we must create a Class annotated by `@Component` that extends `Vue`.
+To create our Component, we must create a Class annotated by `@Component` that extends `VueComponent`.
 
 ***SimpleLinkComponent.java***
 ```java
-@JsType
 @Component
-public class SimpleLinkComponent extends Vue {
-    public String linkName;
+public class SimpleLinkComponent extends VueComponent {
+    @JsProperty String linkName;
     
-    @Override
-    public void created() {
+    public SimpleLinkComponent() {
         this.linkName = "Hello Vue GWT!";
     }
 }
 ```
 
-The method `created` that is overridden in our Component is mandatory.
-It will be called each time an instance of your Component is created.
-You can see it as your Component "constructor".
+##### Why `@JsProperty`?
 
-##### Why Public Methods/Properties?
-
-Only `JsInterop` attributes and methods of our Class will be accessible in our template.
+Only `JsInterop` attributes of our Class will be accessible in our template.
 
 Meaning either:
 
- * Adding the `@JsType` annotation to our Class and setting attributes/methods to `public`
- * Adding the `@JsProperty`/`@JsMethod` annotation to each attribute/method and setting them to `protected`
+ * Adding the `@JsType` annotation to our Class and setting attributes to `public`
+ * Adding the `@JsProperty` annotation to each attribute and setting them to at least `protected`.
 
-In this documentation we chose to use the `@JsType` annotation and to set all our properties/methods to `public` for brevity.
+In this documentation we chose to use the `@JsProperty` annotation on properties.
 
 ##### HTML Template
 
@@ -100,14 +94,14 @@ First, in our GWT index page we add a div to attach the instance:
 
 Then when GWT starts, we need to bootstrap an instance of our `SimpleLinkComponent` and attach it in our `simpleLinkComponentContainer` div.
 
-To do this we simply call the Vue.attach() static method and pass the selector of our container and a `VueConstructor` for our Component.
+To do this we simply call the Vue.attach() static method and pass the selector of our container and the class of our Component.
 
 ***RootGwtApp.java***
 
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
-        Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponentConstructor.get());
+        SimpleLinkComponent simpleLinkComponent = Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponent.class);
     }
 }
 ```
@@ -115,18 +109,14 @@ public class RootGwtApp implements EntryPoint {
 In typical application we only do this for the first root Component.
 We can then use [Component composition](README.md#composing-with-components).
 
-##### Where Does `SimpleLinkComponentConstructor` Comes From?
+##### Why can't I just do `new SimpleLinkComponent()`?
 
-It comes from the annotation processor.
-It automatically processes classes annotated with `@Component` and generate the corresponding `VueConstructor` for you.
-
-The generated `VueConstructor` class have a static method `get()` to get an instance of it.
-This instance is the Java representation of a Vue constructor in JavaScript.
-
-Behind the scene, our Java Component Class is converted to the options that Vue.js is expecting:
+Behind the scene, our Java `VueComponent` Class is converted to the options that Vue.js is expecting:
 ```javascript
 {
-    template: '<a href="https://github.com/Axellience/vue-gwt">{{ linkName }}</a>',
+    render: function() {
+    	...
+    },
     data: {
         linkName: null
     },
@@ -139,7 +129,9 @@ Behind the scene, our Java Component Class is converted to the options that Vue.
 ```
 
 Those options are passed to the [`Vue.extend()`](https://vuejs.org/v2/api/#Vue-extend) JavaScript method.
-The result is a `VueConstructor` we can use to generate new instances of Component.
+The result is a `VueConstructor` we can use to generate new instances of our `VueComponent`.
+
+When you call `attach`, `VueGWT` get this `VueConstructor` for you and use it to create a new instance of your Component.
 
 ### Binding Element Attributes
 
@@ -151,14 +143,12 @@ Let see how to do this with a new `LinkComponent`.
 This one will allow us to set the link `href` attribute in our Java Class.
 
 ```java
-@JsType
 @Component
-public class LinkComponent extends Vue {
-    public String linkTarget;
-    public String linkName;
+public class LinkComponent extends VueComponent {
+    @JsProperty String linkTarget;
+    @JsProperty String linkName;
     
-    @Override
-    public void created() {
+    public LinkComponent() {
         this.linkTarget = "https://github.com/Axellience/vue-gwt";
         this.linkName = "Hello Vue GWT!";
     }
@@ -198,13 +188,11 @@ Let's check this with a small example:
 ```
 
 ```java
-@JsType
 @Component
-public class CanHideComponent extends Vue {
-    public boolean visible;
+public class CanHideComponent extends VueComponent {
+    @JsProperty boolean visible;
 
-    @Override
-    public void created() {
+    public CanHideComponent() {
         this.visible = true;
     }
 }
@@ -249,21 +237,19 @@ public class Todo
 
 We will then create a list of `Todo` in a `SimpleTodoListComponent`.
 
-Because Vue.js is only able to observe JavaScript Arrays you must use the [provided `JsArray` object](../js-interop/README.md#js-array) class in your Components.
-This object will be represented as a native JavaScript Array in the browser.
+Vue GWT observe Java Collections for you.
+For now this work for `List`, `Set` and `Map`.
 
 ```java
-@JsType
 @Component
-public class SimpleTodoListComponent extends Vue {
-    public JsArray<Todo> todos;
+public class SimpleTodoListComponent extends VueComponent {
+    @JsProperty List<Todo> todos;
     
-    @Override
-    public void created() {
-        this.todos = new JsArray<>();
-        this.todos.push(new Todo("Learn Java"));
-        this.todos.push(new Todo("Learn Vue GWT"));
-        this.todos.push(new Todo("Build something awesome"));
+    public SimpleTodoListComponent() {
+        this.todos = new LinkedList<>();
+        this.todos.add(new Todo("Learn Java"));
+        this.todos.add(new Todo("Learn Vue GWT"));
+        this.todos.add(new Todo("Build something awesome"));
     }
 }
 ```
@@ -306,13 +292,11 @@ To let users interact with your app, we can use the `v-on` directive to attach e
 ```
 
 ```java
-@JsType
 @Component
-public class ExclamationComponent extends Vue {
-    public String message;
+public class ExclamationComponent extends VueComponent {
+    @JsProperty String message;
     
-    @Override
-    public void created() {
+    public ExclamationComponent() {
         this.message = "Hello Vue GWT!";
     }
     
@@ -346,13 +330,11 @@ Vue also provides the [v-model directive](../forms.md) that makes two-way bindin
 ```
 
 ```java
-@JsType
 @Component
-public class MessageComponent extends Vue {
-    public String message;
+public class MessageComponent extends VueComponent {
+    @JsProperty String message;
     
-    @Override
-    public void created() {
+    public MessageComponent() {
         this.message = "Hello Vue GWT!";
     }
 }
@@ -391,11 +373,8 @@ This Component will display a simple message.
 We first create a Class like for our previous examples.
 
 ```java
-@JsType
 @Component
-public class TodoComponent extends Vue {
-    @Override
-    public void created() {}
+public class TodoComponent extends VueComponent {
 }
 ```
 
@@ -416,11 +395,8 @@ We will then create our `ParentComponent` that uses `TodoComponent`.
 We first register `TodoComponent` to be used in our `ParentComponent` by passing it to the `@Component` annotation.
 
 ```java
-@JsType
 @Component(components = {TodoComponent.class})
-public class ParentComponent extends Vue {
-    @Override
-    public void created() {}
+public class ParentComponent extends VueComponent {
 }
 ```
 
@@ -450,18 +426,17 @@ Let’s modify our `TodoComponent` to make it accept a property.
 
 ***TodoComponent.java***
 ```java
-@JsType
 @Component
-public class TodoComponent extends Vue {
+public class TodoComponent extends VueComponent {
     @Prop
-    public Todo todo;
-    
-    @Override
-    public void created() {}
+    @JsProperty
+    Todo todo;
 }
 ```
 
 The `@Prop` annotation tells Vue GWT that our `todo` property will be passed from a parent component.
+
+Be careful, you still need to use the `@JsProperty` to tell VueGWT to not rename this property.
 
 ***TodoComponent.html***
 ```html
@@ -478,17 +453,15 @@ We create a list of `Todos` like before.
 Let's call it `TodoListComponent`:
 
 ```java
-@JsType
 @Component(components = {TodoComponent.class})
-public class TodoListComponent extends Vue {
-    public JsArray<Todo> todos;
+public class TodoListComponent extends VueComponent {
+    @JsProperty List<Todo> todos;
     
-    @Override
-    public void created() {
-        this.todos = new JsArray<>();
-        this.todos.push(new Todo("Learn Java"));
-        this.todos.push(new Todo("Learn Vue GWT"));
-        this.todos.push(new Todo("Build something awesome"));
+    public TodoListComponent() {
+        this.todos = new LinkedList<>();
+        this.todos.add(new Todo("Learn Java"));
+        this.todos.add(new Todo("Learn Vue GWT"));
+        this.todos.add(new Todo("Build something awesome"));
     }
 }
 ```
@@ -527,7 +500,7 @@ We will talk a lot more about components later in the guide, but here’s an (im
 </div>
 ```
 
-### How Is the Component Html Name Set?
+### How Is the Component HTML Name Set?
 
 The name of the html element for our Component in the template (here, `todo`) is determined using the Component's Class name.
 
@@ -544,13 +517,13 @@ For example:
 
 Components can also be registered globally.
 They will then be usable in any Component in your app.
-You won't need to pass the `VueConstructor` of your Component to the `components` attribute in the `@Component` annotation.
+You won't need to pass the class of your `VueComponent` to the `components` attribute in the `@Component` annotation.
 
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
         // Register TodoComponent globally
-        Vue.component("todo", TodoComponentConstructor.get());
+        Vue.component("todo", TodoComponent.class);
     }
 }
 ```

@@ -1,12 +1,14 @@
 package com.axellience.vuegwt.client.vue;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.VueGWT;
+import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsFunction;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.tools.VueGwtTools;
+import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
 import jsinterop.annotations.JsOverlay;
@@ -14,24 +16,39 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * A Java representation of a Vue Constructor.
- * Vue Constructor are JavaScript Function obtained when calling Vue.extend().
+ * A Java representation of a VueComponent Constructor.
+ * VueComponent Constructor are JavaScript Function obtained when calling VueComponent.extend().
  * All the {@link Component} and {@link JsComponent} get a generated VueConstructor.
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public class VueConstructor<T extends Vue> extends JsFunction
+public class VueConstructor<T extends VueComponent> extends JsFunction
 {
+    static
+    {
+        VueGWT.inject();
+    }
+
     @JsOverlay
     public final T instantiate()
     {
-        return VueGwtTools.createInstanceForVueClass(this);
+        return VueGWTTools.createInstanceForVueClass(this);
     }
 
     @JsOverlay
     public final <K extends T> VueConstructor<K> extend(VueComponentOptions<K> vueComponentOptions)
     {
-        return VueGwtTools.extendVueClass(this, vueComponentOptions);
+        return VueGWTTools.extendVueClass(this, vueComponentOptions);
+    }
+
+    @JsOverlay
+    public final <K extends T> VueConstructor<K> extendJavaComponent(
+        VueComponentOptions<K> componentOptions, VueComponentJsTypeConstructor<K> javaConstructor)
+    {
+        VueConstructor<K> extendedVueConstructor = extend(componentOptions);
+        VueGWTTools.mergeVueConstructorWithJavaComponent(extendedVueConstructor, javaConstructor);
+
+        return extendedVueConstructor;
     }
 
     @JsOverlay

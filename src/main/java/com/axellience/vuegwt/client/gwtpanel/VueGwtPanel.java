@@ -1,14 +1,15 @@
 package com.axellience.vuegwt.client.gwtpanel;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.VueGWT;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Wrap a {@link Vue} instance in a GWT Panel
+ * Wrap a {@link VueComponent} instance in a GWT Panel
  * @author Adrien Baron
  */
-public class VueGwtPanel<T extends Vue> extends SimplePanel
+public class VueGwtPanel<T extends VueComponent> extends SimplePanel
 {
     private T vueComponentInstance;
 
@@ -16,6 +17,12 @@ public class VueGwtPanel<T extends Vue> extends SimplePanel
     {
         super();
         vueComponentInstance = vueConstructor.instantiate();
+    }
+
+    public VueGwtPanel(Class<T> vueClass)
+    {
+        super();
+        vueComponentInstance = VueGWT.createInstance(vueClass);
     }
 
     @Override

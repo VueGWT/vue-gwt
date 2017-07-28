@@ -1,20 +1,18 @@
 package com.axellience.vuegwtexamples.client.examples.buttonplusone;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
-@JsType
 @Component
-public class ButtonPlusOneComponent extends Vue
+public class ButtonPlusOneComponent extends VueComponent
 {
-    public int counter;
+    @JsProperty int counter;
 
-    @Override
-    public void created()
+    public ButtonPlusOneComponent()
     {
         this.counter = 0;
     }

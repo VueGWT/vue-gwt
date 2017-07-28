@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.counterwithevent;
 
-import com.axellience.vuegwt.client.Vue;
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
@@ -9,13 +9,12 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component
-public class ButtonCounterComponent extends Vue
+public class ButtonCounterComponent extends VueComponent
 {
     @JsProperty
     protected int counter;
 
-    @Override
-    public void created() {
+    public ButtonCounterComponent() {
         this.counter = 0;
     }
 
