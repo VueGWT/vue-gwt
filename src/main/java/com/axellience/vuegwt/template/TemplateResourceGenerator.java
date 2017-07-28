@@ -103,7 +103,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
             new TemplateParser().parseHtmlTemplate(templateContent, typeOracle.findType(typeName));
 
         // Compile the resulting HTML template String
-        processTemplateString(sw, templateParserResult.getTemplateWithReplacements());
+        processTemplateString(sw, templateParserResult.getTemplateWithReplacements(), context);
 
         // Declare computed properties
         JClassType componentClass = typeOracle.findType(typeName);
@@ -155,13 +155,15 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
      * @param sw The source writer
      * @param templateString The HTML template string to compile
      */
-    private void processTemplateString(SourceWriter sw, String templateString)
-    throws UnableToCompleteException
+    private void processTemplateString(SourceWriter sw, String templateString,
+        ResourceContext context) throws UnableToCompleteException
     {
         VueTemplateCompilerResult result;
         try
         {
-            result = VueTemplateCompiler.TEMPLATE_COMPILER.compile(templateString);
+            VueTemplateCompiler vueTemplateCompiler =
+                new VueTemplateCompiler(context.getGeneratorContext().getResourcesOracle());
+            result = vueTemplateCompiler.compile(templateString);
         }
         catch (VueTemplateCompilerException e)
         {
