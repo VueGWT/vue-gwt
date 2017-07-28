@@ -50,6 +50,8 @@ public class VueGwtExamplesApp implements EntryPoint
      */
     public void onModuleLoad()
     {
+        VueGWT.init();
+
         VueConstructor vueClass = (VueConstructor) JsTools.getWindow().get("FullJsComponent");
         VueComponent myComponent = vueClass.instantiate();
         myComponent.$mount("#fullJsComponent");
