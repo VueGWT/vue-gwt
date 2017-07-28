@@ -2,10 +2,7 @@
 
 ## ✅ Configure Maven
 
-Vue GWT uses Maven.
-
-### Add the Dependency
-Add Vue GWT to your project `pom.xml`:
+To add Vue GWT to your Maven project, simply add the following to your `pom.xml`:
 
 ```xml
 <project>
@@ -34,11 +31,14 @@ Add Vue GWT to your project `pom.xml`:
 </project>
 ```
 
-### Add Annotation Processing Configuration
-In the `plugins` section of your `pom.xml`:
+## ✅ Annotation Processing Configuration
+
+Vue GWT uses Java Annotation processing under the hood, this requires a little configuration.
+
+First, in the `plugins` section of your Maven `pom.xml` add the following `plugin`:
+
 ```xml
 <project>
-
     <plugins>
         ...
         <plugin>
@@ -55,11 +55,12 @@ In the `plugins` section of your `pom.xml`:
             </configuration>
         </plugin>
     </plugins>
-    
 </project>
 ```
 
-This is useful for Eclipse:
+### Eclipse
+If you use Eclipse, you need the following to your `pom.xml` to enable automatic annotation processing:
+
 ```xml
 <pluginManagement>
     <plugins>
@@ -98,9 +99,23 @@ This is useful for Eclipse:
 </pluginManagement>
 ```
 
+### IntelliJ IDEA
+By default IntelliJ doesn't support automatic annotation processing when the app is running.
+But don't worry, enabling it is easy!
+
+Go to `File -> Settings -> Build, Execution, Deployment -> Compiler` and enable “Make project automatically”
+
+Open the Action window :
+* Linux : `CTRL+SHIFT+A`
+* MacOS : `SHIFT+COMMAND+A`
+* Windows : `CTRL+ALT+SHIFT+/`
+
+Enter `Registry...` and enable `compiler.automake.allow.when.app.running`.
+
 ## ✅ Configure `JsInterop`
-Vue GWT relies heavily on `JsInterop`.
-You must enable it in SuperDevMode and Maven.
+
+Vue GWT relies heavily on GWT `JsInterop`.
+It is not enabled by default in GWT 2.8, so you must enable it in your SuperDevMode and Maven configurations.
 
 ### SuperDevMode
 For SuperDevMode, simply add this flag to your devMode parameters:
@@ -108,7 +123,7 @@ For SuperDevMode, simply add this flag to your devMode parameters:
 `-generateJsInteropExports`
 
 ### Maven
-For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-maven-plugin/), add the following in your `pom.xml`:
+For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-maven-plugin/), add the following to your `pom.xml`:
 
 ```xml
 <plugins>
@@ -123,39 +138,28 @@ For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-
 </plugins>
 ```
 
-## ✅ Configure Your GWT Module
+## ✅ Configure Your GWT App
 
+### Add the Module Dependency
 You must add Vue GWT dependency in your module `.gwt.xml` file:
 
 ```xml
 <inherits name='com.axellience.vuegwt.VueGwt'/>
 ```
 
-## ✅ Add Vue.js Library to Your Index.html
+## Init Vue GWT
+In your application `EntryPoint` class, add this on top of the `onModuleLoad()` method:
 
-In your GWT app index.html add the following tag in the &lt;head&gt; section:
-
-```html
-<!-- Vue JS Framework -->
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
+```java
+VueGWT.initWithVueLib();
 ```
 
-## ✅ IDE Configuration
+This will inject Vue.js in your app, and init Vue GWT.
 
-### Eclipse
-Just import your project as a Maven project.
+If you already have Vue.js included and you don't Vue GWT to inject it for you, you can call this instead:
 
-### IntelliJ IDEA
-By default IntelliJ doesn't support automatic compilation on file change.
-But don't worry, enabling it is easy!
+```java
+VueGWT.init();
+```
 
-Go to `File -> Settings -> Build, Execution, Deployment -> Compiler` and enable “Make project automatically”
-
-Open the Action window :
-* Linux : `CTRL+SHIFT+A`
-* Mac OSX : `SHIFT+COMMAND+A`
-* Windows : `CTRL+ALT+SHIFT+/`
-
-Enter `Registry...` and enable `compiler.automake.allow.when.app.running`
-
-You are good to go! **[Let's start using Vue GWT](introduction/README.md)**
+Congratulation, you are good to go! **[Let's start using Vue GWT](introduction/README.md)**
