@@ -110,6 +110,11 @@
 			<artifactId>minify-maven-plugin</artifactId>
 			<version>1.7.6</version>
 		</dependency>
+		<dependency>
+			<groupId>com.coveo</groupId>
+			<artifactId>nashorn-commonjs-modules</artifactId>
+			<version>1.0.8</version>
+		</dependency>
     </dependencies>
 
 	<distributionManagement>

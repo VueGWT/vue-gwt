@@ -14,15 +14,15 @@ import java.util.Map;
  * <p>
  * Modified by Adrien Baron
  */
-@DefaultExtensions(value = { ".txt" })
+@DefaultExtensions(value = { ".html" })
 @ResourceGeneratorType(TemplateResourceGenerator.class)
 public interface TemplateResource extends ResourcePrototype
 {
     String EXPRESSION_PREFIX       = "VGWT_";
     String EXPRESSION_SUFFIX       = "_EXPR";
-    String COLLECTION_ARRAY_SUFFIX = "_ARRAY";
 
-    String getText();
+    String getRenderFunction();
+    String[] getStaticRenderFunctions();
     List<TemplateExpressionBase> getTemplateExpressions();
     Map<String, CssResource> getTemplateStyles();
 }

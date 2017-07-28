@@ -54,6 +54,8 @@ public class JsTools
 
     public static native Object call(Object method, Object thisArg, Object... args);
 
+    public static native Object createFunction(String functionBody);
+
     @JsIgnore
     public static <T> T get(Object o, int index)
     {

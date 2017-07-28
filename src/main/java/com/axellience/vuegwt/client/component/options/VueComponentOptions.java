@@ -8,6 +8,7 @@ import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JSON;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.template.TemplateExpressionBase;
 import com.axellience.vuegwt.client.template.TemplateExpressionKind;
@@ -56,6 +57,8 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     @JsProperty private VueComponent parent;
     @JsProperty private String name;
 
+    @JsProperty private JsArray<Object> staticRenderFns;
+
     private Map<String, CssResource> componentStyles;
 
     /**
@@ -84,7 +87,24 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     {
         this.initStyles(templateResource);
         this.initExpressions(templateResource);
-        this.setTemplateText(templateResource.getText());
+        this.initRenderFunctions(templateResource);
+    }
+
+    /**
+     * Initialise the render functions
+     * @param templateResource
+     */
+    @JsOverlay
+    private final void initRenderFunctions(TemplateResource templateResource)
+    {
+        this.set("render", JsTools.createFunction(templateResource.getRenderFunction()));
+
+        JsArray<Object> staticRenderFns = new JsArray<>();
+        for (String staticRenderFunction : templateResource.getStaticRenderFunctions())
+        {
+            staticRenderFns.push(JsTools.createFunction(staticRenderFunction));
+        }
+        this.setStaticRenderFns(staticRenderFns);
     }
 
     /**
@@ -124,19 +144,6 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
                 addMethod(expressionId, JsTools.get(templateResource, expressionId));
             }
         }
-    }
-
-    /**
-     * Set the template text
-     * @param templateText The HTML string of the template (processed by the TemplateParser)
-     */
-    @JsOverlay
-    private void setTemplateText(String templateText)
-    {
-        if ("".equals(templateText))
-            JsTools.unsetObjectProperty(this, "template");
-        else
-            this.template = templateText;
     }
 
     /**
@@ -425,6 +432,19 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     public final VueComponentOptions setTemplate(String template)
     {
         this.template = template;
+        return this;
+    }
+
+    @JsOverlay
+    public final JsArray<Object> getStaticRenderFns()
+    {
+        return staticRenderFns;
+    }
+
+    @JsOverlay
+    public final VueComponentOptions setStaticRenderFns(JsArray<Object> staticRenderFns)
+    {
+        this.staticRenderFns = staticRenderFns;
         return this;
     }
 

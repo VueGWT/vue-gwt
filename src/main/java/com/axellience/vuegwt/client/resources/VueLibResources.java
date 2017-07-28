@@ -8,6 +8,6 @@ import com.google.gwt.resources.client.TextResource;
  */
 public interface VueLibResources extends ClientBundle
 {
-    @Source("vue.min.js")
+    @Source("vue.runtime.min.js")
     TextResource vueScript();
 }

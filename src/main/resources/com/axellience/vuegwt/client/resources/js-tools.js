@@ -58,3 +58,6 @@ jsTools.getDeepValue = function (obj, path) {
 	}
 	return obj;
 };
+jsTools.createFunction = function (body) {
+	return new Function(body);
+};
