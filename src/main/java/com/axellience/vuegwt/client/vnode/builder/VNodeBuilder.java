@@ -62,13 +62,13 @@ public class VNodeBuilder
 
     /**
      * Create a VNode with the given Component
-     * @param vueConstructor Constructor for the Component we want
+     * @param vueComponentClass Class for the {@link VueComponent} we want
      * @param data Information for the new VNode (attributes...)
      * @param children Children
      * @return a new VNode of this Component
      */
-    public VNode el(Class<VueComponent> vueConstructor, VNodeData data, Object... children)
+    public VNode el(Class<VueComponent> vueComponentClass, VNodeData data, Object... children)
     {
-        return this.function.create(vueConstructor, data, children);
+        return this.function.create(vueComponentClass, data, children);
     }
 }
