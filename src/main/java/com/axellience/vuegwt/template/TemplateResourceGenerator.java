@@ -247,7 +247,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         if ("VOID".equals(expressionReturnType))
             expressionReturnType = "void";
 
-        sw.println("@jsinterop.annotations.JsMethod");
+        jsMethodAnnotation(sw);
         String[] parameters = expression
             .getParameters()
             .stream()
@@ -334,7 +334,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
                 + ".INSTANCE."
                 + StyleProviderGenerator.STYLE_BUNDLE_METHOD_NAME
                 + "()";
-            sw.println("@jsinterop.annotations.JsProperty");
+            jsPropertyAnnotation(sw);
             sw.println("private "
                 + entry.getValue()
                 + " "
@@ -386,7 +386,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
                 continue;
 
             doneComputed.add(propertyName);
-            sw.println("@jsinterop.annotations.JsProperty");
+            jsPropertyAnnotation(sw);
             sw.println(jMethod.getReturnType().getQualifiedSourceName() + " " + propertyName + ";");
         }
         processComputedProperties(sw, vueComponentClass.getSuperclass(), doneComputed);
@@ -428,6 +428,18 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         {
             sw.println("\"" + Generator.escape(toWrite) + "\"");
         }
+    }
+
+    private void jsPropertyAnnotation(SourceWriter sw)
+    {
+        sw.println("@SuppressWarnings(\"unusable-by-js\")");
+        sw.println("@jsinterop.annotations.JsProperty");
+    }
+
+    private void jsMethodAnnotation(SourceWriter sw)
+    {
+        sw.println("@SuppressWarnings(\"unusable-by-js\")");
+        sw.println("@jsinterop.annotations.JsMethod");
     }
 
     private URL getResource(TreeLogger logger, ResourceContext context, JMethod method)

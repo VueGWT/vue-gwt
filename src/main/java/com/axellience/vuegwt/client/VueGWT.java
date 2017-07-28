@@ -25,8 +25,8 @@ import java.util.LinkedList;
 @JsType(namespace = JsPackage.GLOBAL)
 public class VueGWT
 {
-    public static boolean isReady = false;
-    public static JsArray<JsRunnable> onReadyCallbacks = new JsArray<>();
+    private static boolean isReady = false;
+    private static JsArray<JsRunnable> onReadyCallbacks = new JsArray<>();
     private static LinkedList<Runnable> onReadyCallbacksJava = new LinkedList<>();
 
     private static final JsObject<VueConstructor<? extends VueComponent>> componentConstructors =
@@ -90,6 +90,7 @@ public class VueGWT
      * @param <T> The type of the {@link VueComponent}
      * @return The created instance of our Component (not yet mounted)
      */
+    @JsIgnore
     public static <T extends VueComponent> T createInstance(Class<T> vueComponentClass)
     {
         return getConstructor(vueComponentClass).instantiate();
@@ -134,6 +135,7 @@ public class VueGWT
      * @param vueConstructor A {@link VueConstructor} you can use to instantiate components
      * @param <T> The type of the {@link VueComponent}
      */
+    @JsIgnore
     public static <T extends VueComponent> void register(String qualifiedName,
         VueConstructor<T> vueConstructor)
     {
@@ -148,6 +150,7 @@ public class VueGWT
      * @param <T> The type of the {@link VueComponent}
      * @return The Java constructor of our {@link VueComponent}
      */
+    @JsIgnore
     public static <T extends VueComponent> VueComponentJsTypeConstructor<T> getJavaConstructor(
         Class<T> vueComponentClass)
     {
