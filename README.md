@@ -11,15 +11,17 @@ It let you write Vue.js components in Java.
 ## Features
 
 * **Vue.js** Components with a **Java controller**
-* Java **type checking** in the templates
-* Use **regular Java objects** in your templates
-* Support most of Vue.js features
+* Template expressions **type checking** at compile time
+* **HTML templates are compiled** during Java Compilation (only requires Vue.js runtime)
+* Use **regular Java Objects and Collections** in your templates
+* Support **most of Vue.js features**
+* Integrates with GWT Resources and Widgets
 
 ## Who is this for?
 
 * You want to code a **Vue app with type checking**, and take advantage of GWT optimizations. 
-* You have **GWT app**, and you want **easy to write views** with 2 way data binding.
-* You have a **Vue app** and you need to **use a Java library in a Component**.
+* You have **GWT app**, and you want **easy to write views** with **2 way data binding**.
+* You have a **Vue app** and you need to **use a Java library in some Components**.
 
 ## What does it look like?
 
