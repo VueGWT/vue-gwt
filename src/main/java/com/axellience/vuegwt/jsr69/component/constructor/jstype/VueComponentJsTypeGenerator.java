@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.jsr69.component.constructor.jstype;
 
+import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -7,6 +8,7 @@ import com.axellience.vuegwt.jsr69.component.annotations.PropValidator;
 import com.axellience.vuegwt.jsr69.component.annotations.Watch;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -22,6 +24,8 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.axellience.vuegwt.jsr69.component.constructor.AbstractVueComponentConstructorGenerator.CONSTRUCTOR_SUFFIX;
 
 /**
  * Generate a class extending our {@link VueComponent} class.
@@ -65,6 +69,8 @@ public class VueComponentJsTypeGenerator
                         + "\"")
                 .build());
 
+        createConstructorStaticRegistration(packageName, className, vueComponentJsTypeClassBuilder);
+
         generateProxyConstructor(componentTypeElement, vueComponentJsTypeClassBuilder);
         generateProxyMethods(componentTypeElement, vueComponentJsTypeClassBuilder);
 
@@ -73,6 +79,27 @@ public class VueComponentJsTypeGenerator
             packageName,
             generatedClassName,
             componentTypeElement);
+    }
+
+    /**
+     * Register the constructor in VueGWT.
+     * This is done here because JsType class will always be included in GWT output.
+     * The Constructor is not @JsType.
+     * @param packageName The VueComponent Package
+     * @param className The VueComponent Class Name
+     * @param vueComponentJsTypeClassBuilder The builder for our VueComponentJsType class
+     */
+    protected void createConstructorStaticRegistration(String packageName, String className,
+        Builder vueComponentJsTypeClassBuilder)
+    {
+        vueComponentJsTypeClassBuilder.addStaticBlock(CodeBlock
+            .builder()
+            .addStatement("$T.onVueReady(() -> $T.register($S, $T.get()))",
+                VueGWT.class,
+                VueGWT.class,
+                packageName + "." + className,
+                ClassName.bestGuess(packageName + "." + className + CONSTRUCTOR_SUFFIX))
+            .build());
     }
 
     /**

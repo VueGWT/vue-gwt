@@ -10,7 +10,6 @@ import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.constructor.options.VueComponentOptionsGenerator;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -41,19 +40,6 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
         super(processingEnv);
 
         vueComponentOptionsGenerator = new VueComponentOptionsGenerator(processingEnv);
-    }
-
-    @Override
-    protected void createStaticRegistration(TypeElement componentTypeElement,
-        TypeName generatedTypeName, Builder vueConstructorClassBuilder)
-    {
-        vueConstructorClassBuilder.addStaticBlock(CodeBlock
-            .builder()
-            .addStatement("$T.register($S, $T.get())",
-                VueGWT.class,
-                componentTypeElement.getQualifiedName().toString(),
-                generatedTypeName)
-            .build());
     }
 
     @Override
@@ -89,7 +75,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             TypeName superConstructor =
                 ClassName.bestGuess(superClass.toString() + CONSTRUCTOR_SUFFIX);
             createInstanceBuilder.addStatement(
-                "$L = ($T) $T.get().extendJavaComponent($L, $T.getJavaComponentConstructor($T.class))",
+                "$L = ($T) $T.get().extendJavaComponent($L, $T.getJavaConstructor($T.class))",
                 INSTANCE_PROP,
                 generatedTypeName,
                 superConstructor,
@@ -100,7 +86,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
         else
         {
             createInstanceBuilder.addStatement(
-                "$L = ($T) $T.extendJavaComponent($L, $T.getJavaComponentConstructor($T.class))",
+                "$L = ($T) $T.extendJavaComponent($L, $T.getJavaConstructor($T.class))",
                 INSTANCE_PROP,
                 generatedTypeName,
                 Vue.class,

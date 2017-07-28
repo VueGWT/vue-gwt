@@ -27,8 +27,6 @@ public class VueGWTTools
     public static native <T extends VueComponent, K extends T> VueConstructor<K> extendVueClass(
         VueConstructor<T> vueClassToExtend, VueComponentOptions<K> vueComponentOptions);
 
-    public static native String getFunctionBody(Object jsFunction);
-
     @JsMethod(name = "wrapMethodWithBefore")
     public static native <T> String wrapMethod(T object, String methodName,
         BeforeMethodCall<T> afterMethodCall);

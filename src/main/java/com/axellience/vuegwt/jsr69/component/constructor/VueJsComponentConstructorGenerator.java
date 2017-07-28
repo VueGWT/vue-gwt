@@ -27,13 +27,6 @@ public class VueJsComponentConstructorGenerator extends AbstractVueComponentCons
     }
 
     @Override
-    protected void createStaticRegistration(TypeElement componentTypeElement,
-        TypeName generatedTypeName, Builder vueConstructorClassBuilder)
-    {
-        // Do nothing
-    }
-
-    @Override
     protected void createCreateInstanceMethod(TypeElement jsComponentTypeElement,
         String packageName, String className, TypeName generatedTypeName,
         Builder vueConstructorClassBuilder)

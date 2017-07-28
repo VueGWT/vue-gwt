@@ -56,6 +56,8 @@ public class JsTools
 
     public static native Object createFunction(String functionBody);
 
+    public static native String getFunctionBody(Object jsFunction);
+
     @JsIgnore
     public static <T> T get(Object o, int index)
     {
@@ -84,7 +86,8 @@ public class JsTools
     // Injection
     private static boolean isInjected;
 
-    static {
+    static
+    {
         inject();
     }
 

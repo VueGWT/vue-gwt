@@ -109,7 +109,7 @@ public class VueComponentOptionsGenerator
 
         // Add the Java Component Instance initialization
         constructorBuilder.addStatement(
-            "this.setVueComponentJsTypeConstructor($T.getJavaComponentConstructor($T.class))",
+            "this.setVueComponentJsTypeConstructor($T.getJavaConstructor($T.class))",
             VueGWT.class,
             TypeName.get(componentTypeElement.asType()));
 

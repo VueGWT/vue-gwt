@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.resources;
 
+import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.jsnative.html.HTMLDocument;
 import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
 import com.google.gwt.core.client.GWT;
@@ -23,5 +24,8 @@ public class VueLib
         VueLibResources resources = GWT.create(VueLibResources.class);
         scriptElement.innerHTML = resources.vueScript().getText();
         document.body.appendChild(scriptElement);
+
+        // Warn that Vue has been loaded
+        VueGWT.setVueReady();
     }
 }

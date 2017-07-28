@@ -16,6 +16,8 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
+import static com.axellience.vuegwt.client.VueGWT.createInstance;
+
 /**
  * The Java representation of Vue.
  * @author Adrien Baron
@@ -23,6 +25,10 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public abstract class Vue extends JsObject
 {
+    static {
+        VueGWT.inject();
+    }
+
     @JsProperty private static VueConfig config;
 
     /**
@@ -43,6 +49,21 @@ public abstract class Vue extends JsObject
 
     /**
      * Create a {@link Vue} instance and mount it on a DOM element.
+     * @param element CSS selector for the element to attach in
+     * @param vueComponentClass The Class of the Component to create
+     * @param <T> {@link Vue} we want to attach
+     * @return The created and attached instance of our Component
+     */
+    @JsOverlay
+    public static <T extends VueComponent> T attach(String element, Class<T> vueComponentClass)
+    {
+        T vueInstance = createInstance(vueComponentClass);
+        vueInstance.$mount(element);
+        return vueInstance;
+    }
+
+    /**
+     * Create a {@link Vue} instance and mount it on a DOM element.
      * @param element DOM Element we want to attach our component in
      * @param vueConstructor The constructor of the Component to create
      * @param <T> {@link Vue} we want to attach
@@ -53,6 +74,21 @@ public abstract class Vue extends JsObject
         VueConstructor<T> vueConstructor)
     {
         T vueInstance = vueConstructor.instantiate();
+        vueInstance.$mount(element);
+        return vueInstance;
+    }
+
+    /**
+     * Create a {@link Vue} instance and mount it on a DOM element.
+     * @param element DOM Element we want to attach our component in
+     * @param vueComponentClass The Class of the Component to create
+     * @param <T> {@link Vue} we want to attach
+     * @return The created and attached instance of our Component
+     */
+    @JsOverlay
+    public static <T extends VueComponent> T attach(Element element, Class<T> vueComponentClass)
+    {
+        T vueInstance = createInstance(vueComponentClass);
         vueInstance.$mount(element);
         return vueInstance;
     }
