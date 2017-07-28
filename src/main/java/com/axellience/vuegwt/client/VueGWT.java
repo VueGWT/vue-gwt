@@ -70,6 +70,9 @@ public class VueGWT
      */
     public static VueConstructor<? extends VueComponent> getConstructor(String qualifiedName)
     {
+        if (!componentConstructors.hasOwnProperty(qualifiedName))
+            throw new RuntimeException("Couldn't find VueConstructor for Component: " + qualifiedName + ". Make sure that annotation are being processed, and that you added the -generateJsInteropExports flag to GWT.");
+
         return componentConstructors.get(qualifiedName);
     }
 
