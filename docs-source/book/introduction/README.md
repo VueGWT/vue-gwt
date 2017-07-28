@@ -94,14 +94,14 @@ First, in our GWT index page we add a div to attach the instance:
 
 Then when GWT starts, we need to bootstrap an instance of our `SimpleLinkComponent` and attach it in our `simpleLinkComponentContainer` div.
 
-To do this we simply call the Vue.attach() static method and pass the selector of our container and a `VueConstructor` for our Component.
+To do this we simply call the Vue.attach() static method and pass the selector of our container and the class of our Component.
 
 ***RootGwtApp.java***
 
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
-        Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponentConstructor.get());
+        SimpleLinkComponent simpleLinkComponent = Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponent.class);
     }
 }
 ```
@@ -109,18 +109,14 @@ public class RootGwtApp implements EntryPoint {
 In typical application we only do this for the first root Component.
 We can then use [Component composition](README.md#composing-with-components).
 
-##### Where Does `SimpleLinkComponentConstructor` Comes From?
+##### Why can't I just do `new SimpleLinkComponent()`?
 
-It comes from the annotation processor.
-It automatically processes classes annotated with `@Component` and generate the corresponding `VueConstructor` for you.
-
-The generated `VueConstructor` class have a static method `get()` to get an instance of it.
-This instance is the Java representation of a Vue constructor in JavaScript.
-
-Behind the scene, our Java Component Class is converted to the options that Vue.js is expecting:
+Behind the scene, our Java `VueComponent` Class is converted to the options that Vue.js is expecting:
 ```javascript
 {
-    template: '<a href="https://github.com/Axellience/vue-gwt">{{ linkName }}</a>',
+    render: function() {
+    	...
+    },
     data: {
         linkName: null
     },
@@ -133,7 +129,9 @@ Behind the scene, our Java Component Class is converted to the options that Vue.
 ```
 
 Those options are passed to the [`Vue.extend()`](https://vuejs.org/v2/api/#Vue-extend) JavaScript method.
-The result is a `VueConstructor` we can use to generate new instances of Component.
+The result is a `VueConstructor` we can use to generate new instances of our `VueComponent`.
+
+When you call `attach`, `VueGWT` get this `VueConstructor` for you and use it to create a new instance of your Component.
 
 ### Binding Element Attributes
 
@@ -502,7 +500,7 @@ We will talk a lot more about components later in the guide, but here’s an (im
 </div>
 ```
 
-### How Is the Component Html Name Set?
+### How Is the Component HTML Name Set?
 
 The name of the html element for our Component in the template (here, `todo`) is determined using the Component's Class name.
 
@@ -519,13 +517,13 @@ For example:
 
 Components can also be registered globally.
 They will then be usable in any Component in your app.
-You won't need to pass the `VueConstructor` of your Component to the `components` attribute in the `@Component` annotation.
+You won't need to pass the class of your `VueComponent` to the `components` attribute in the `@Component` annotation.
 
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
         // Register TodoComponent globally
-        Vue.component("todo", TodoComponentConstructor.get());
+        Vue.component("todo", TodoComponent.class);
     }
 }
 ```

@@ -30,10 +30,10 @@ public class MyComponent extends VueComponent
 </div>
 ```
 
-To register a global component, you can use `Vue.component(tagName, MyComponentConstructor.get())`. For example:
+To register a global component, you can use `Vue.component(tagName, MyComponent.class)`. For example:
 
 ```java
-Vue.component('my-component', MyComponentConstructor.get())
+Vue.component('my-component', MyComponent.class);
 ```
 
 <p class="info-panel">
@@ -60,8 +60,8 @@ public class ParentComponent extends VueComponent {
 
 ```java
 // Somewhere in your App
-Vue.component('my-component', MyComponentConstructor.get());
-Vue.attach("#rootComponent", RootComponentConstructor.get());
+Vue.component('my-component', MyComponent.class);
+Vue.attach("#rootComponent", RootComponent.class);
 ```
 
 Which will render:
@@ -840,7 +840,7 @@ However, they can only do so with the `name` option:
 When you register a component globally using `Vue.component`, the global ID is automatically set as the component's `name` option.
 
 ```java
-Vue.component("unique-name-of-my-component", MyComponentConstructor.get());
+Vue.component("unique-name-of-my-component", MyComponent.class);
 ```
 
 If you're not careful, recursive components can also lead to infinite loops:

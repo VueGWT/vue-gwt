@@ -8,6 +8,12 @@ Vue GWT allows us to make our nice Java Components.
 But the Vue.js ecosystem is vast, it would be a shame if we couldn't take advantage of existing JS Components.
 Well let's see how we can do that!
 
+<p class="info-panel">
+    This examples declare Vue components directly in the index.html.
+    For this to work, you need Vue loaded before you declare them.
+    You can comment <code>VueLib.inject()</code> in your GWT app, and a JS dependency to Vue in your index.html instead. 
+</p>
+
 ### Instantiating a JS Component in Java
 
 Let's say we have the following JS Component declared in JavaScript:
@@ -145,17 +151,13 @@ We can also [extend JS Components](extending-components.md#extending-js-componen
 
 ## Using our Java Components in JS {#using-java-components-in-js}
 
-It's possible to expose your Java Components to be used in JS applications.
+It's possible to get our Java Components to use them in a JS application.
 
-For this in your GWT app you can just set the `VueConstructor` for your Component on Window.
-
-```java
-JsTools.getWindow().set("MyJavaComponent", MyJavaComponentConstructor.get());
-```
-
-You can then instantiate your Java Component from JavaScript:
+The `VueGWT` global object has a `getConstructor` that allow you to retrieve the VueConstructor for your Java Component.
+Beware this object only exist after your GWT app loading (which is async).
  
 ```js
+const MyJavaComponent = VueGWT.getConstructor("com.package.MyJavaComponent");
 const vm = new MyJavaComponent();
 vm.$mount("#javaComponent");
 ```
