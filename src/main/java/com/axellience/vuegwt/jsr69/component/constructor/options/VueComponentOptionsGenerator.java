@@ -87,8 +87,8 @@ public class VueComponentOptionsGenerator
     /**
      * Generate an {@link VueComponentOptions} for our Vue Component.
      * @param componentTypeElement The {@link VueComponent} class to generate {@link
-     * VueComponentOptions}
-     * from
+     * VueComponentOptions} from
+     * @return The generated TypeSpec for our {@link VueComponentOptions} class
      */
     public TypeSpec generate(TypeElement componentTypeElement)
     {
