@@ -4,7 +4,7 @@ import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.client.jsnative.jsfunctions.JsSimpleFunction;
+import com.axellience.vuegwt.client.jsnative.jsfunctions.JsRunnable;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.VueGWTTools;
@@ -25,10 +25,6 @@ import static com.axellience.vuegwt.client.VueGWT.createInstance;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public abstract class Vue extends JsObject
 {
-    static {
-        VueGWT.inject();
-    }
-
     @JsProperty private static VueConfig config;
 
     /**
@@ -118,7 +114,7 @@ public abstract class Vue extends JsObject
     // @formatter:off
     public static native <T extends VueComponent> VueConstructor<T> extend(VueComponentOptions<T> componentOptions);
 
-    public static native void nextTick(JsSimpleFunction callback, JsArray context);
+    public static native void nextTick(JsRunnable callback, JsArray context);
 
     public static native <T> T set(Object object, String key, T value);
     public static native boolean set(Object object, String key, boolean value);

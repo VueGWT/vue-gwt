@@ -94,7 +94,7 @@ public class VueComponentJsTypeGenerator
     {
         vueComponentJsTypeClassBuilder.addStaticBlock(CodeBlock
             .builder()
-            .addStatement("$T.onVueReady(() -> $T.register($S, $T.get()))",
+            .addStatement("$T.onReady(() -> $T.register($S, $T.get()))",
                 VueGWT.class,
                 VueGWT.class,
                 packageName + "." + className,

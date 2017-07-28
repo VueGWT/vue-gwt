@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.client.vnode;
 
-import com.axellience.vuegwt.client.jsnative.jsfunctions.JsSimpleFunction;
+import com.axellience.vuegwt.client.jsnative.jsfunctions.JsRunnable;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -13,36 +13,36 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class InlineTemplate
 {
-    @JsProperty protected JsSimpleFunction render;
-    @JsProperty protected JsArray<JsSimpleFunction> staticRenderFns;
+    @JsProperty protected JsRunnable render;
+    @JsProperty protected JsArray<JsRunnable> staticRenderFns;
 
     @JsOverlay
-    public final JsSimpleFunction getRender()
+    public final JsRunnable getRender()
     {
         return render;
     }
 
     @JsOverlay
-    public final InlineTemplate setRender(JsSimpleFunction render)
+    public final InlineTemplate setRender(JsRunnable render)
     {
         this.render = render;
         return this;
     }
 
     @JsOverlay
-    public final JsArray<JsSimpleFunction> getStaticRenderFns()
+    public final JsArray<JsRunnable> getStaticRenderFns()
     {
         return staticRenderFns;
     }
 
     @JsOverlay
-    public final InlineTemplate setStaticRenderFns(JsArray<JsSimpleFunction> staticRenderFns)
+    public final InlineTemplate setStaticRenderFns(JsArray<JsRunnable> staticRenderFns)
     {
         this.staticRenderFns = staticRenderFns;
         return this;
     }
     @JsOverlay
-    public final InlineTemplate addStaticRenderFn(JsSimpleFunction staticRenderFn)
+    public final InlineTemplate addStaticRenderFn(JsRunnable staticRenderFn)
     {
         if (this.staticRenderFns == null)
             this.staticRenderFns = new JsArray<>();

@@ -7,7 +7,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface JsSimpleFunction
+public interface JsRunnable
 {
-    void execute();
+    void run();
 }
