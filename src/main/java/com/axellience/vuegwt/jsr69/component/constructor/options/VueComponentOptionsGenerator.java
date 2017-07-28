@@ -170,14 +170,18 @@ public class VueComponentOptionsGenerator
         ElementFilter
             .fieldsIn(componentTypeElement.getEnclosedElements())
             .forEach(variableElement -> {
-                if (!isVisibleInJS(variableElement))
-                    return;
-
                 String javaName = variableElement.getSimpleName().toString();
                 Prop prop = variableElement.getAnnotation(Prop.class);
 
                 if (prop != null)
                 {
+                    if (!isVisibleInJS(variableElement))
+                        throw new RuntimeException("@Prop "
+                            + javaName
+                            + " must also have at @JsProperty annotation in VueComponent "
+                            + componentTypeElement.getQualifiedName().toString()
+                            + ".");
+
                     constructorBuilder.addStatement("this.addJavaProp($S, $L, $S)",
                         javaName,
                         prop.required(),
@@ -186,6 +190,10 @@ public class VueComponentOptionsGenerator
                 }
                 else
                 {
+                    // Ignore properties not visible in JS
+                    if (!isVisibleInJS(variableElement))
+                        return;
+
                     constructorBuilder.addStatement("propertiesName.add($S)", javaName);
                 }
             });
@@ -277,7 +285,8 @@ public class VueComponentOptionsGenerator
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(JsMethod.class)
             .addParameter(CreateElementFunction.class, "createElementFunction")
-            .addStatement("Object componentRenderMethod = $T.get($T.get($T.get($T.get(this, $S), $S), $S), $S)",
+            .addStatement(
+                "Object componentRenderMethod = $T.get($T.get($T.get($T.get(this, $S), $S), $S), $S)",
                 JsTools.class,
                 JsTools.class,
                 JsTools.class,
