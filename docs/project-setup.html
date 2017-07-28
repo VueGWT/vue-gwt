@@ -745,9 +745,7 @@
                                 
                                 <h1 id="setup-on-your-project">Setup on Your Project</h1>
 <h2 id="&#x2705;-configure-maven">&#x2705; Configure Maven</h2>
-<p>Vue GWT uses Maven.</p>
-<h3 id="add-the-dependency">Add the Dependency</h3>
-<p>Add Vue GWT to your project <code>pom.xml</code>:</p>
+<p>To add Vue GWT to your Maven project, simply add the following to your <code>pom.xml</code>:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">project</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">properties</span>&gt;</span>
         ...
@@ -773,10 +771,10 @@
     <span class="hljs-tag">&lt;/<span class="hljs-name">repositories</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">project</span>&gt;</span>
 </code></pre>
-<h3 id="add-annotation-processing-configuration">Add Annotation Processing Configuration</h3>
-<p>In the <code>plugins</code> section of your <code>pom.xml</code>:</p>
+<h2 id="&#x2705;-annotation-processing-configuration">&#x2705; Annotation Processing Configuration</h2>
+<p>Vue GWT uses Java Annotation processing under the hood, this requires a little configuration.</p>
+<p>First, in the <code>plugins</code> section of your Maven <code>pom.xml</code> add the following <code>plugin</code>:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">project</span>&gt;</span>
-
     <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
         ...
         <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
@@ -793,10 +791,10 @@
             <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
-
 <span class="hljs-tag">&lt;/<span class="hljs-name">project</span>&gt;</span>
 </code></pre>
-<p>This is useful for Eclipse:</p>
+<h3 id="eclipse">Eclipse</h3>
+<p>If you use Eclipse, you need the following to your <code>pom.xml</code> to enable automatic annotation processing:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">pluginManagement</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
         <span class="hljs-comment">&lt;!--This plugin&apos;s configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.--&gt;</span>
@@ -833,14 +831,25 @@
     <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">pluginManagement</span>&gt;</span>
 </code></pre>
+<h3 id="intellij-idea">IntelliJ IDEA</h3>
+<p>By default IntelliJ doesn&apos;t support automatic annotation processing when the app is running.
+But don&apos;t worry, enabling it is easy!</p>
+<p>Go to <code>File -&gt; Settings -&gt; Build, Execution, Deployment -&gt; Compiler</code> and enable &#x201C;Make project automatically&#x201D;</p>
+<p>Open the Action window :</p>
+<ul>
+<li>Linux : <code>CTRL+SHIFT+A</code></li>
+<li>MacOS : <code>SHIFT+COMMAND+A</code></li>
+<li>Windows : <code>CTRL+ALT+SHIFT+/</code></li>
+</ul>
+<p>Enter <code>Registry...</code> and enable <code>compiler.automake.allow.when.app.running</code>.</p>
 <h2 id="&#x2705;-configure-jsinterop">&#x2705; Configure <code>JsInterop</code></h2>
-<p>Vue GWT relies heavily on <code>JsInterop</code>.
-You must enable it in SuperDevMode and Maven.</p>
+<p>Vue GWT relies heavily on GWT <code>JsInterop</code>.
+It is not enabled by default in GWT 2.8, so you must enable it in your SuperDevMode and Maven configurations.</p>
 <h3 id="superdevmode">SuperDevMode</h3>
 <p>For SuperDevMode, simply add this flag to your devMode parameters:</p>
 <p><code>-generateJsInteropExports</code></p>
 <h3 id="maven">Maven</h3>
-<p>For Maven, if you use <a href="https://gwt-maven-plugin.github.io/gwt-maven-plugin/" target="_blank">GWT Maven Plugin</a>, add the following in your <code>pom.xml</code>:</p>
+<p>For Maven, if you use <a href="https://gwt-maven-plugin.github.io/gwt-maven-plugin/" target="_blank">GWT Maven Plugin</a>, add the following to your <code>pom.xml</code>:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
     <span class="hljs-comment">&lt;!-- Mojo&apos;s Maven Plugin for GWT --&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
@@ -852,30 +861,20 @@ You must enable it in SuperDevMode and Maven.</p>
     <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
 </code></pre>
-<h2 id="&#x2705;-configure-your-gwt-module">&#x2705; Configure Your GWT Module</h2>
+<h2 id="&#x2705;-configure-your-gwt-app">&#x2705; Configure Your GWT App</h2>
+<h3 id="add-the-module-dependency">Add the Module Dependency</h3>
 <p>You must add Vue GWT dependency in your module <code>.gwt.xml</code> file:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">inherits</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&apos;com.axellience.vuegwt.VueGwt&apos;</span>/&gt;</span>
 </code></pre>
-<h2 id="&#x2705;-add-vuejs-library-to-your-indexhtml">&#x2705; Add Vue.js Library to Your Index.html</h2>
-<p>In your GWT app index.html add the following tag in the &lt;head&gt; section:</p>
-<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- Vue JS Framework --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://unpkg.com/vue/dist/vue.js&quot;</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<h2 id="init-vue-gwt">Init Vue GWT</h2>
+<p>In your application <code>EntryPoint</code> class, add this on top of the <code>onModuleLoad()</code> method:</p>
+<pre><code class="lang-java">VueGWT.initWithVueLib();
 </code></pre>
-<h2 id="&#x2705;-ide-configuration">&#x2705; IDE Configuration</h2>
-<h3 id="eclipse">Eclipse</h3>
-<p>Just import your project as a Maven project.</p>
-<h3 id="intellij-idea">IntelliJ IDEA</h3>
-<p>By default IntelliJ doesn&apos;t support automatic compilation on file change.
-But don&apos;t worry, enabling it is easy!</p>
-<p>Go to <code>File -&gt; Settings -&gt; Build, Execution, Deployment -&gt; Compiler</code> and enable &#x201C;Make project automatically&#x201D;</p>
-<p>Open the Action window :</p>
-<ul>
-<li>Linux : <code>CTRL+SHIFT+A</code></li>
-<li>Mac OSX : <code>SHIFT+COMMAND+A</code></li>
-<li>Windows : <code>CTRL+ALT+SHIFT+/</code></li>
-</ul>
-<p>Enter <code>Registry...</code> and enable <code>compiler.automake.allow.when.app.running</code></p>
-<p>You are good to go! <strong><a href="introduction/">Let&apos;s start using Vue GWT</a></strong></p>
+<p>This will inject Vue.js in your app, and init Vue GWT.</p>
+<p>If you already have Vue.js included and you don&apos;t Vue GWT to inject it for you, you can call this instead:</p>
+<pre><code class="lang-java">VueGWT.init();
+</code></pre>
+<p>Congratulation, you are good to go! <strong><a href="introduction/">Let&apos;s start using Vue GWT</a></strong></p>
 
                                 
                                 </section>
@@ -919,7 +918,7 @@ But don&apos;t worry, enabling it is easy!</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Project Setup","level":"1.2","depth":1,"next":{"title":"Getting Started","level":"1.3","depth":1,"path":"introduction/README.md","ref":"introduction/README.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"anchor":"#conditional-and-loop","path":"introduction/README.md","ref":"introduction/README.md#conditional-and-loop","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"anchor":"#handling-user-input","path":"introduction/README.md","ref":"introduction/README.md#handling-user-input","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]}]},"previous":{"title":"About Vue GWT","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"project-setup.md","mtime":"2017-07-19T13:46:30.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-28T16:51:50.294Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Project Setup","level":"1.2","depth":1,"next":{"title":"Getting Started","level":"1.3","depth":1,"path":"introduction/README.md","ref":"introduction/README.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"anchor":"#conditional-and-loop","path":"introduction/README.md","ref":"introduction/README.md#conditional-and-loop","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"anchor":"#handling-user-input","path":"introduction/README.md","ref":"introduction/README.md#handling-user-input","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]}]},"previous":{"title":"About Vue GWT","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"project-setup.md","mtime":"2017-07-28T22:21:32.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-28T22:22:59.846Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
