@@ -34,7 +34,7 @@ import static com.axellience.vuegwt.jsr69.component.constructor.AbstractVueCompo
  */
 public class VueComponentJsTypeGenerator
 {
-    private final String JS_TYPE_SUFFIX = "JsType";
+    private static final String JS_TYPE_SUFFIX = "JsType";
     private final Elements elementsUtils;
     private final Filer filer;
 
