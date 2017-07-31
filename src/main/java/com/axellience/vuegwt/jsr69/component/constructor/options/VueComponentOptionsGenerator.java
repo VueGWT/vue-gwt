@@ -178,7 +178,7 @@ public class VueComponentOptionsGenerator
                     if (!isVisibleInJS(variableElement))
                         throw new RuntimeException("@Prop "
                             + javaName
-                            + " must also have at @JsProperty annotation in VueComponent "
+                            + " must also have @JsProperty annotation in VueComponent "
                             + componentTypeElement.getQualifiedName().toString()
                             + ".");
 
