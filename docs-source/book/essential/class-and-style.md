@@ -81,12 +81,12 @@ This is a common and powerful pattern:
 ```
 ```java
 @Component
-public class StylishComponent extends VueComponent
-{
+public class StylishComponent extends VueComponent {
     @JsProperty boolean isActive;
     @JsProperty Error error;
 
-    public StylishComponent() {
+    @Override
+    public void created() {
         this.isActive = true;
         this.error = null;
     }
@@ -206,11 +206,11 @@ It is often a good idea to bind to a style object directly so that the template 
 ```
 ```java
 @Component
-public class StylishComponent extends VueComponent
-{
+public class StylishComponent extends VueComponent {
     @JsProperty JsObject<String> styleObject;
 
-    public StylishComponent() {
+    @Override
+    public void created() {
         this.styleObject = new JsObject<>();
         this.styleObject.set("color", "red");
         this.styleObject.set("fontSize", "20px");

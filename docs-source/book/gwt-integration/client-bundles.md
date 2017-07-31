@@ -30,11 +30,11 @@ This will expose the bundle to the Template.
 
 ```java
 @Component
-public class KittenComponent extends VueComponent
-{
+public class KittenComponent extends VueComponent {
     @JsProperty KittenClientBundle myKittenBundle;
 
-    public KittenComponent() {
+    @Override
+    public void created() {
         myKittenBundle = KittenClientBundle.INSTANCE;
     }
 }

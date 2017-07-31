@@ -12,7 +12,9 @@ public class SharedDataModelComponent extends VueComponent
 {
     @JsProperty int counter;
 
-    public SharedDataModelComponent() {
+    @Override
+    public void created()
+    {
         this.counter = 0;
     }
 }

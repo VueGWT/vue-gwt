@@ -11,6 +11,12 @@ import com.google.gwt.user.client.Window;
 @Component
 public class VOnWithDOMEventComponent extends VueComponent
 {
+    @Override
+    public void created()
+    {
+
+    }
+
     public void warn(String message, NativeEvent event)
     {
         if (event != null)

@@ -14,7 +14,8 @@ public class TodoListComponent extends VueComponent
     @JsProperty
     protected List<Todo> todos;
 
-    public TodoListComponent()
+    @Override
+    public void created()
     {
         this.todos = new LinkedList<>();
         this.todos.add(new Todo("Learn Java"));

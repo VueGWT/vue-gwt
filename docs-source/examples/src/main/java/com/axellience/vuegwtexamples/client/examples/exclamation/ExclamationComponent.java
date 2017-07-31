@@ -9,7 +9,9 @@ public class ExclamationComponent extends VueComponent
 {
     @JsProperty String message;
 
-    public ExclamationComponent() {
+    @Override
+    public void created()
+    {
         this.message = "Hello Vue GWT!";
     }
 

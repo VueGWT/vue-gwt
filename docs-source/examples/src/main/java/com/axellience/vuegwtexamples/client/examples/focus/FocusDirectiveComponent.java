@@ -9,4 +9,9 @@ import com.axellience.vuegwt.jsr69.component.annotations.Component;
 @Component(directives = FocusDirective.class)
 public class FocusDirectiveComponent extends VueComponent
 {
+    @Override
+    public void created()
+    {
+
+    }
 }

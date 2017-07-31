@@ -15,7 +15,9 @@ public class RecursiveComponent extends VueComponent
     @JsProperty
     Integer counter;
 
-    public RecursiveComponent() {
+    @Override
+    public void created()
+    {
         if (this.counter == null)
             this.counter = 0;
     }

@@ -21,7 +21,8 @@ For example:
 public class ButtonPlusOneComponent extends VueComponent {
     @JsProperty int counter;
 
-    public ButtonPlusOneComponent() {
+    @Override
+    public void created() {
         this.counter = 0;
     }
 }
@@ -57,6 +58,9 @@ public class GreetComponent extends VueComponent {
     public void greet() {
         Window.alert("Hello from GWT!");
     }
+    
+    @Override
+    public void created() {}
 }
 ```
 

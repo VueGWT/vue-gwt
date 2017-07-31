@@ -47,6 +47,9 @@ For example this Vue Component:
 @Component
 public class DemoComponent extends VueComponent {
     @JsProperty Todo todo;
+    
+    @Override
+    public void created() {}
 }
 ```
 
@@ -139,7 +142,8 @@ For example:
 public class DemoComponent extends VueComponent {
     @JsProperty Todo todo;
     
-    public DemoComponent() {
+    @Override
+    public void created() {
         this.todo = new Todo();
         
         if (this.$data.get("todo") == this.todo) {
@@ -165,6 +169,9 @@ For example, the [`mounted`](https://vuejs.org/v2/api/#mounted) hook is called a
 @Component
 public class DemoComponent extends VueComponent implements HasMounted {
     @JsProperty Todo todo;
+    
+    @Override
+    public void created() {}
     
     @Override
     public void mounted() {

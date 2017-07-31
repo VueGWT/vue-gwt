@@ -15,7 +15,8 @@ public class TodoTextComponent extends VueComponent
 {
     @JsProperty Todo todo;
 
-    public TodoTextComponent()
+    @Override
+    public void created()
     {
         this.todo = new Todo("Hello World!");
     }

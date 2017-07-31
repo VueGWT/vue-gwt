@@ -800,8 +800,9 @@ In some cases, they may also appear as a native HTML element extended with the s
 <h3 id="registration">Registration</h3>
 <p>We already saw how to define a Component in Vue GWT.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
@@ -825,6 +826,8 @@ Here&apos;s the full example:</p>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-comment">// Somewhere in your App</span>
@@ -841,6 +844,8 @@ Vue.attach(<span class="hljs-string">&quot;#rootComponent&quot;</span>, RootComp
 You can make a component available only in the scope of another instance/component by registering it with the <code>components</code> annotation option:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {MyComponent.class})
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 <p>In that case the name of your Component is determined using the Component&apos;s Class name.</p>
@@ -876,6 +881,9 @@ A workaround is to use the <code>is</code> special attribute:</p>
     <span class="hljs-meta">@JsProperty</span> String winter;
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">boolean</span> is;
     <span class="hljs-meta">@JsProperty</span> String coming;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 <p>Will result in the following <code>dataObject</code> Object:</p>
@@ -900,11 +908,11 @@ So to avoid confusion and errors, it&apos;s better to always assign your initial
 The same <code>dataObject</code> instance will be passed to all your instance of your Component and their data model will be shared.</p>
 <p>Here is a working example:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(useFactory = <span class="hljs-keyword">false</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SharedDataModelComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SharedDataModelComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> counter;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">SharedDataModelComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.counter = <span class="hljs-number">0</span>;
     }
 }
@@ -941,6 +949,9 @@ A child component needs to explicitly declare the props it expects to receive us
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     <span class="hljs-keyword">public</span> String message;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 <p>Then we can pass a plain string to it like so:</p>
@@ -953,6 +964,9 @@ A child component needs to explicitly declare the props it expects to receive us
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     String myMessage;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 <pre><code class="lang-html"><span class="hljs-comment">&lt;!-- kebab-case in HTML --&gt;</span>
@@ -1005,7 +1019,8 @@ If you do, Vue will warn you in the console.</p>
 
     <span class="hljs-meta">@JsProperty</span> String counter;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">MyComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.counter = <span class="hljs-keyword">this</span>.initialCounter;
     }
 }
@@ -1023,6 +1038,9 @@ If you do, Vue will warn you in the console.</p>
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getNormalizedSize</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.size.trim().toLowerCase();
     }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 <p class="info-panel">
@@ -1086,11 +1104,11 @@ This is where Vue&apos;s custom event system comes in.</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;increment()&quot;</span>&gt;</span>{{ counter }}<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> counter;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ButtonCounterComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.counter = <span class="hljs-number">0</span>;
     }
 
@@ -1108,11 +1126,11 @@ This is where Vue&apos;s custom event system comes in.</p>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {ButtonCounterComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterWithEventComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterWithEventComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> total;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">CounterWithEventComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.total = <span class="hljs-number">0</span>;
     }
 
@@ -1218,11 +1236,11 @@ A simple rule of thumb for component scope is:</p>
 The parent&apos;s template is not aware of the state of a child component.</p>
 <p>If you need to bind child-scope directives on a component root node, you should do so in the child component&apos;s own template:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">boolean</span> someChildProperty;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ChildComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.total = <span class="hljs-keyword">true</span>;
     }
 }
@@ -1314,11 +1332,11 @@ This is not yet supported by Vue GWT.</p>
 <h2 id="dynamic-components">Dynamic Components </h2>
 <p>You can use the same mount point and dynamically switch between multiple components using the reserved <code>&lt;component&gt;</code> element and dynamically bind to its <code>is</code> attribute:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = { TargaryenComponent.class, StarkComponent.class, LannisterComponent.class })
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HousesComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HousesComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> String currentHouse;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">HousesComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.currentHouse = <span class="hljs-string">&quot;targaryen&quot;</span>;
     }
 }
@@ -1368,9 +1386,9 @@ To achieve this you have to assign a reference ID to the child component using <
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = { UserProfileComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span>{
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ParentComponent</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         UserProfileComponent userProfileComponent = <span class="hljs-keyword">this</span>.$refs.get(<span class="hljs-string">&quot;profile&quot;</span>);
     }
 }
@@ -1405,7 +1423,8 @@ However, they can only do so with the <code>name</code> option:</p>
     <span class="hljs-meta">@JsProperty</span>
     Integer counter;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RecursiveComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.counter == <span class="hljs-keyword">null</span>)
             <span class="hljs-keyword">this</span>.counter = <span class="hljs-number">0</span>;
     }
@@ -1502,7 +1521,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-07-28T17:40:58.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-28T23:10:32.862Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-07-31T09:53:55.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-31T10:08:08.773Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

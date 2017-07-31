@@ -25,7 +25,8 @@ The `v-for` directive requires a special syntax in the form of `Type item in ite
 public class SimpleTodoListComponent extends VueComponent {
     @JsProperty List<Todo> todos;
     
-    public SimpleTodoListComponent() {
+    @Override
+    public void created() {
         this.todos = new LinkedList<>();
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
@@ -61,7 +62,8 @@ public class VForWithIndexComponent extends VueComponent
     @JsProperty List<Todo> todos;
     @JsProperty String parentMessage;
 
-    public VForWithIndexComponent() {
+    @Override
+    public void created() {
         this.parentMessage = "Message from parent";
 
         this.todos = new LinkedList<>();
@@ -121,7 +123,8 @@ public class VForOnObjectComponent extends VueComponent
 {
     @JsProperty JsObject<Object> myObject;
 
-    public VForOnObjectComponent() {
+    @Override
+    public void created() {
         this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);
@@ -335,18 +338,16 @@ For example:
 
 ```java
 @Component
-public class EvenNumbersComponent extends VueComponent
-{
+public class EvenNumbersComponent extends VueComponent {
     @JsProperty List<Integer> numbers;
 
-    public EvenNumbersComponent()
-    {
+    @Override
+    public void created() {
         this.numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }
 
     @Computed
-    public List<Integer> getEvenNumbers()
-    {
+    public List<Integer> getEvenNumbers() {
         return this.numbers.stream().filter(number -> number % 2 == 0).collect(Collectors.toList());
     }
 }
@@ -374,5 +375,8 @@ public class EvenNumbersComponent extends VueComponent {
     public List<Integer> getEven(List<Integer> numbers) {
         return this.numbers.stream().filter(number -> number % 2 == 0).collect(Collectors.toList());
     }
+    
+    @Override
+    public void created() {}
 }
 ```

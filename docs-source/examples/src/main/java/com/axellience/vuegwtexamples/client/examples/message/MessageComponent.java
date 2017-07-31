@@ -9,7 +9,9 @@ public class MessageComponent extends VueComponent
 {
     @JsProperty String message;
 
-    public MessageComponent() {
+    @Override
+    public void created()
+    {
         this.message = "Hello VueComponent GWT!";
     }
 }

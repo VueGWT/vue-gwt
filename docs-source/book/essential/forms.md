@@ -30,7 +30,8 @@ You can use a computed properties along with the regular `v-model`:
 public class TodoTextComputedComponent extends VueComponent {
     @JsProperty Todo todo;
 
-    public TodoTextComputedComponent() {
+    @Override
+    public void created() {
         this.todo = new Todo("Hello World!");
     }
 
@@ -78,7 +79,8 @@ In those case you can use the following syntax:
 public class TodoTextComponent extends VueComponent {
     @JsProperty Todo todo;
     
-    public TodoTextComponent() {
+    @Override
+    public void created() {
         this.todo = new Todo("Hello World!");
     }
 

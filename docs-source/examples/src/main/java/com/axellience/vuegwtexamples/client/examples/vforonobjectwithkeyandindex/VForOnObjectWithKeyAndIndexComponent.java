@@ -14,7 +14,9 @@ public class VForOnObjectWithKeyAndIndexComponent extends VueComponent
 {
     @JsProperty JsObject<Object> myObject;
 
-    public VForOnObjectWithKeyAndIndexComponent() {
+    @Override
+    public void created()
+    {
         this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);

@@ -15,7 +15,9 @@ public class VForWithIndexComponent extends VueComponent
     @JsProperty JsArray<Todo> todos;
     @JsProperty String parentMessage;
 
-    public VForWithIndexComponent() {
+    @Override
+    public void created()
+    {
         this.parentMessage = "Message from parent";
 
         this.todos = new JsArray<>();

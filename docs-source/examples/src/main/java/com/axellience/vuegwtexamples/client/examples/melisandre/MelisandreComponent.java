@@ -12,7 +12,9 @@ public class MelisandreComponent extends VueComponent
 {
     @JsProperty boolean isRed;
 
-    public MelisandreComponent() {
+    @Override
+    public void created()
+    {
         this.isRed = true;
     }
 }

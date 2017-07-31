@@ -14,7 +14,8 @@ public class EvenNumbersComponent extends VueComponent
 {
     @JsProperty List<Integer> numbers;
 
-    public EvenNumbersComponent()
+    @Override
+    public void created()
     {
         this.numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }

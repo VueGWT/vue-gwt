@@ -51,8 +51,9 @@ For the Java part, nothing is needed, so we can just create an empty Component c
 
 ```java
 @Component
-public class MelisandreComponent extends VueComponent
-{
+public class MelisandreComponent extends VueComponent {
+    @Override
+    public void created() {}
 }
 ```
 
@@ -89,11 +90,11 @@ First we add a boolean in our `MelisandreComponent`:
 
 ```java
 @Component
-public class MelisandreComponent extends VueComponent
-{
+public class MelisandreComponent extends VueComponent {
     @JsProperty boolean isRed;
 
-    public MelisandreComponent() {
+    @Override
+    public void created() {
         this.isRed = true;
     }
 }

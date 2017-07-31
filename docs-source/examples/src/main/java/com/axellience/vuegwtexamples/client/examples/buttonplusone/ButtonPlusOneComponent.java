@@ -12,7 +12,8 @@ public class ButtonPlusOneComponent extends VueComponent
 {
     @JsProperty int counter;
 
-    public ButtonPlusOneComponent()
+    @Override
+    public void created()
     {
         this.counter = 0;
     }

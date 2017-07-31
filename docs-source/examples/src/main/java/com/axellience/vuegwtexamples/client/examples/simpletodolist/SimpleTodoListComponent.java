@@ -13,7 +13,9 @@ public class SimpleTodoListComponent extends VueComponent
 {
     @JsProperty List<Todo> todos;
 
-    public SimpleTodoListComponent() {
+    @Override
+    public void created()
+    {
         this.todos = new LinkedList<>();
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));

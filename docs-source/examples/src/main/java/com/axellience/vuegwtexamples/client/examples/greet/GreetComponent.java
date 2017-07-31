@@ -10,6 +10,12 @@ import com.google.gwt.user.client.Window;
 @Component
 public class GreetComponent extends VueComponent
 {
+    @Override
+    public void created()
+    {
+
+    }
+
     public void greet()
     {
         Window.alert("Hello from GWT!");

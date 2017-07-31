@@ -38,7 +38,7 @@ import java.util.Map.Entry;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public abstract class VueComponentOptions<T extends VueComponent> extends JsObject
 {
-    @JsProperty private VueComponentJsTypeConstructor<T> vuegwt$vueComponentJsTypeConstructor;
+    private VueComponentJsTypeConstructor<T> vueComponentJsTypeConstructor;
 
     @JsProperty private Object data;
     @JsProperty private JsObject props;
@@ -70,7 +70,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     protected final void setVueComponentJsTypeConstructor(
         VueComponentJsTypeConstructor<T> vueComponentJsTypeConstructor)
     {
-        this.vuegwt$vueComponentJsTypeConstructor = vueComponentJsTypeConstructor;
+        this.vueComponentJsTypeConstructor = vueComponentJsTypeConstructor;
 
         Object customizeOption = getJavaComponentMethod("customizeOptions");
         if (customizeOption != null)
@@ -279,7 +279,7 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     @JsOverlay
     private Object getJavaComponentMethod(String javaName)
     {
-        JsObject vueComponentJsTypePrototype = vuegwt$vueComponentJsTypeConstructor.getPrototype();
+        JsObject vueComponentJsTypePrototype = vueComponentJsTypeConstructor.getPrototype();
         return vueComponentJsTypePrototype.get(javaName);
     }
 

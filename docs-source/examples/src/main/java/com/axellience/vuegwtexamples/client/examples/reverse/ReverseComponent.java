@@ -13,7 +13,8 @@ public class ReverseComponent extends VueComponent
 {
     @JsProperty String message;
 
-    public ReverseComponent()
+    @Override
+    public void created()
     {
         this.message = "Hello";
     }

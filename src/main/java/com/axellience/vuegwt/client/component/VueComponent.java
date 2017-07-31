@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.component;
 
+import com.axellience.vuegwt.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.functions.OnEvent;
 import com.axellience.vuegwt.client.component.options.functions.OnNextTick;
@@ -24,7 +25,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public abstract class VueComponent extends JsObject
+public abstract class VueComponent extends JsObject implements HasCreated
 {
     /* ---------------------------------------------
 

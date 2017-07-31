@@ -23,7 +23,8 @@ Let's say we have the following Component:
 public class ParentComponent extends VueComponent {
     @JsProperty String parentMessage;
 
-    public ParentComponent() {
+    @Override
+    public void created() {
         this.parentMessage = "This is a message from the parent";
     }
 
@@ -132,6 +133,9 @@ public class ParentJsComponent extends VueComponent {
     public String parentMessage;
 
     public native int parentMultiplyBy2(int value);
+    
+    @Override
+    public native void created();
 
     @Computed
     public native String getParentComputed();

@@ -17,6 +17,9 @@ public class ParentJsComponent extends VueComponent
 
     public native int parentMultiplyBy2(int value);
 
+    @Override
+    public native void created();
+
     @Computed
     public native String getParentComputed();
 }

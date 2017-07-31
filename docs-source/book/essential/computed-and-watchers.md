@@ -32,11 +32,11 @@ That's why for any complex logic, you should use a **computed property**.
 
 ```java
 @Component
-public class ReverseComponent extends VueComponent
-{
+public class ReverseComponent extends VueComponent {
     @JsProperty String message;
 
-    public ReverseComponent() {
+    @Override
+    public void created() {
         this.message = "Hello";
     }
 
@@ -82,11 +82,11 @@ You may have noticed we can achieve the same result by invoking a method in the 
 
 ```java
 @Component
-public class ReverseComponent extends VueComponent
-{
+public class ReverseComponent extends VueComponent {
     @JsProperty String message;
 
-    public ReverseComponent() {
+    @Override
+    public void created() {
         this.message = "Hello";
     }
 
@@ -132,13 +132,13 @@ However, it is often a better idea to use a computed property rather than an imp
 
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent
-{
+public class JohnSnowComponent extends VueComponent {
     @JsProperty String firstName;
     @JsProperty String lastName;
     @JsProperty String fullName;
 
-    public JohnSnowComponent() {
+    @Override
+    public void created() {
         this.firstName = "John";
         this.lastName = "Snow";
         this.fullName = "John Snow";
@@ -160,12 +160,12 @@ The above code is imperative and repetitive. Compare it with a computed property
 
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent
-{
+public class JohnSnowComponent extends VueComponent {
     @JsProperty String firstName;
     @JsProperty String lastName;
 
-    public JohnSnowComponent() {
+    @Override
+    public void created() {
         this.firstName = "John";
         this.lastName = "Snow";
     }
@@ -185,12 +185,12 @@ Computed properties are by default getter-only, but you can also provide a sette
 
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent
-{
+public class JohnSnowComponent extends VueComponent {
     @JsProperty String firstName;
     @JsProperty String lastName;
 
-    public JohnSnowComponent() {
+    @Override
+    public void created() {
         this.firstName = "John";
         this.lastName = "Snow";
     }
@@ -232,11 +232,11 @@ The mandatory `propertyName` attribute of the annotation indicate the property t
 Here is an example:
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent
-{
+public class JohnSnowComponent extends VueComponent {
     @JsProperty String message;
 
-    public JohnSnowComponent() {
+    @Override
+    public void created() {
         this.message = "Hello World!";
     }
 

@@ -30,11 +30,16 @@ To create our Component, we must create a Class annotated by `@Component` that e
 public class SimpleLinkComponent extends VueComponent {
     @JsProperty String linkName;
     
-    public SimpleLinkComponent() {
+    @Override
+    public void created() {
         this.linkName = "Hello Vue GWT!";
     }
 }
 ```
+
+The method `created` that is overridden in our Component is mandatory.
+It will be called each time an instance of your Component is created.
+You can see it as your Component "constructor".
 
 ##### Why `@JsProperty`?
 
@@ -148,7 +153,8 @@ public class LinkComponent extends VueComponent {
     @JsProperty String linkTarget;
     @JsProperty String linkName;
     
-    public LinkComponent() {
+    @Override
+    public void created() {
         this.linkTarget = "https://github.com/Axellience/vue-gwt";
         this.linkName = "Hello Vue GWT!";
     }
@@ -192,7 +198,8 @@ Let's check this with a small example:
 public class CanHideComponent extends VueComponent {
     @JsProperty boolean visible;
 
-    public CanHideComponent() {
+    @Override
+    public void created() {
         this.visible = true;
     }
 }
@@ -245,7 +252,8 @@ For now this work for `List`, `Set` and `Map`.
 public class SimpleTodoListComponent extends VueComponent {
     @JsProperty List<Todo> todos;
     
-    public SimpleTodoListComponent() {
+    @Override
+    public void created() {
         this.todos = new LinkedList<>();
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
@@ -296,7 +304,8 @@ To let users interact with your app, we can use the `v-on` directive to attach e
 public class ExclamationComponent extends VueComponent {
     @JsProperty String message;
     
-    public ExclamationComponent() {
+    @Override
+    public void created() {
         this.message = "Hello Vue GWT!";
     }
     
@@ -334,7 +343,8 @@ Vue also provides the [v-model directive](../forms.md) that makes two-way bindin
 public class MessageComponent extends VueComponent {
     @JsProperty String message;
     
-    public MessageComponent() {
+    @Override
+    public void created() {
         this.message = "Hello Vue GWT!";
     }
 }
@@ -375,6 +385,8 @@ We first create a Class like for our previous examples.
 ```java
 @Component
 public class TodoComponent extends VueComponent {
+    @Override
+    public void created() {}
 }
 ```
 
@@ -397,6 +409,8 @@ We first register `TodoComponent` to be used in our `ParentComponent` by passing
 ```java
 @Component(components = {TodoComponent.class})
 public class ParentComponent extends VueComponent {
+    @Override
+    public void created() {}
 }
 ```
 
@@ -431,6 +445,9 @@ public class TodoComponent extends VueComponent {
     @Prop
     @JsProperty
     Todo todo;
+    
+    @Override
+    public void created() {}
 }
 ```
 
@@ -457,7 +474,8 @@ Let's call it `TodoListComponent`:
 public class TodoListComponent extends VueComponent {
     @JsProperty List<Todo> todos;
     
-    public TodoListComponent() {
+    @Override
+    public void created() {
         this.todos = new LinkedList<>();
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));

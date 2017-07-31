@@ -73,21 +73,6 @@
 			}
 		}
 	};
-
-	/**
-	 * Vue GWT plugin that call the Java Constructor once our Component is created
-	 */
-	Vue.use(function (Vue) {
-		Vue.mixin({
-			created: function () {
-				if (!this.$options.vuegwt$vueComponentJsTypeConstructor || this.vuegwt$constructorApplied)
-					return;
-
-				this.vuegwt$constructorApplied = true;
-				this.$options.vuegwt$vueComponentJsTypeConstructor.apply(this);
-			}
-		})
-	});
 })(window);(function (context) {
 	if (!context.VueGWT)
 		context.VueGWT = {};

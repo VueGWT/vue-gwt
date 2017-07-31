@@ -806,7 +806,8 @@ The <code>v-for</code> directive requires a special syntax in the form of <code>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleTodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> List&lt;Todo&gt; todos;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">SimpleTodoListComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
         <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Java&quot;</span>));
         <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Vue GWT&quot;</span>));
@@ -835,7 +836,8 @@ The <code>v-for</code> directive requires a special syntax in the form of <code>
     <span class="hljs-meta">@JsProperty</span> List&lt;Todo&gt; todos;
     <span class="hljs-meta">@JsProperty</span> String parentMessage;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">VForWithIndexComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.parentMessage = <span class="hljs-string">&quot;Message from parent&quot;</span>;
 
         <span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
@@ -879,7 +881,8 @@ This tells Vue GWT that you are iterating on an <code>Object</code> and not an r
 </span>{
     <span class="hljs-meta">@JsProperty</span> JsObject&lt;Object&gt; myObject;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">VForOnObjectComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.myObject = <span class="hljs-keyword">new</span> JsObject&lt;&gt;();
         <span class="hljs-keyword">this</span>.myObject.set(<span class="hljs-string">&quot;myString&quot;</span>, <span class="hljs-string">&quot;Hello World&quot;</span>);
         <span class="hljs-keyword">this</span>.myObject.set(<span class="hljs-string">&quot;myInt&quot;</span>, <span class="hljs-number">12</span>);
@@ -1031,18 +1034,16 @@ In this case, you can create a computed property that returns the filtered or so
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvenNumbersComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvenNumbersComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> List&lt;Integer&gt; numbers;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">EvenNumbersComponent</span><span class="hljs-params">()</span>
-    </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.numbers = Arrays.asList(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>);
     }
 
     <span class="hljs-meta">@Computed</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Integer&gt; <span class="hljs-title">getEvenNumbers</span><span class="hljs-params">()</span>
-    </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Integer&gt; <span class="hljs-title">getEvenNumbers</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.numbers.stream().filter(number -&gt; number % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>).collect(Collectors.toList());
     }
 }
@@ -1064,6 +1065,9 @@ In this case, you can create a computed property that returns the filtered or so
     <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Integer&gt; <span class="hljs-title">getEven</span><span class="hljs-params">(List&lt;Integer&gt; numbers)</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.numbers.stream().filter(number -&gt; number % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>).collect(Collectors.toList());
     }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 
@@ -1109,7 +1113,7 @@ In this case, you can create a computed property that returns the filtered or so
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"2.6","depth":1,"next":{"title":"Event Handling","level":"2.7","depth":1,"path":"essential/events.md","ref":"essential/events.md","articles":[]},"previous":{"title":"Conditional Rendering","level":"2.5","depth":1,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/list.md","mtime":"2017-07-28T17:40:58.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-28T23:10:32.862Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"2.6","depth":1,"next":{"title":"Event Handling","level":"2.7","depth":1,"path":"essential/events.md","ref":"essential/events.md","articles":[]},"previous":{"title":"Conditional Rendering","level":"2.5","depth":1,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/list.md","mtime":"2017-07-31T09:51:18.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-31T10:08:08.773Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
