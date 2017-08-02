@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.client.template;
+package com.axellience.vuegwt.client.component.template;
 
 /**
  * @author Adrien Baron

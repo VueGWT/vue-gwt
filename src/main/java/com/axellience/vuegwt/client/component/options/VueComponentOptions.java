@@ -1,18 +1,17 @@
 package com.axellience.vuegwt.client.component.options;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
 import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
+import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
+import com.axellience.vuegwt.client.component.template.TemplateExpressionBase;
+import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JSON;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.client.template.TemplateExpressionBase;
-import com.axellience.vuegwt.client.template.TemplateExpressionKind;
-import com.axellience.vuegwt.client.template.TemplateResource;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.google.gwt.resources.client.CssResource;
 import jsinterop.annotations.JsOverlay;
@@ -20,9 +19,6 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -36,9 +32,250 @@ import java.util.Map.Entry;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public abstract class VueComponentOptions<T extends VueComponent> extends JsObject
+public class VueComponentOptions<T extends VueComponent> extends JsObject
 {
-    private VueComponentJsTypeConstructor<T> vueComponentJsTypeConstructor;
+    private ComponentWithTemplate<T> componentWithTemplate;
+    private JsObject dataFields;
+
+    /**
+     * Set the {@link ComponentWithTemplate} on this {@link VueComponentOptions}.
+     * This instance will be used to retrieve the java methods of our {@link VueComponent}.
+     * @param componentWithTemplate An instance of the {@link ComponentWithTemplate} class for this
+     * Component
+     */
+    @JsOverlay
+    public final void setComponentWithTemplate(ComponentWithTemplate<T> componentWithTemplate)
+    {
+        this.componentWithTemplate = componentWithTemplate;
+
+        if (componentWithTemplate.getRenderFunction() != null)
+        {
+            this.injectStyles();
+            this.initExpressions();
+            this.initRenderFunctions();
+        }
+    }
+
+    /**
+     * Find styles in the {@link ComponentWithTemplate} and ensure they are injected.
+     */
+    @JsOverlay
+    private void injectStyles()
+    {
+        for (CssResource style : componentWithTemplate.getTemplateStyles().values())
+        {
+            style.ensureInjected();
+        }
+    }
+
+    /**
+     * Add template expressions to this {@link VueComponentOptions}.
+     */
+    @JsOverlay
+    private void initExpressions()
+    {
+        for (TemplateExpressionBase expression : componentWithTemplate.getTemplateExpressions())
+        {
+            String expressionId = expression.getId();
+            if (expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
+            {
+                ComputedOptions computedDefinition = new ComputedOptions();
+                addComputedOptions(expressionId, computedDefinition);
+                computedDefinition.get = getJavaComponentMethod(expressionId);
+            }
+            else
+            {
+                addMethod(expressionId, getJavaComponentMethod(expressionId));
+            }
+        }
+    }
+
+    /**
+     * Initialise the render functions from our template.
+     */
+    @JsOverlay
+    private void initRenderFunctions()
+    {
+        this.set("render", JsTools.createFunction(componentWithTemplate.getRenderFunction()));
+
+        JsArray<Object> staticRenderFns = new JsArray<>();
+        for (String staticRenderFunction : componentWithTemplate.getStaticRenderFunctions())
+        {
+            staticRenderFns.push(JsTools.createFunction(staticRenderFunction));
+        }
+        this.setStaticRenderFns(staticRenderFns);
+    }
+
+    /**
+     * Add a data field to the Component. Vue.js will observe all this fields when the Component
+     * will be bootstrapped.
+     * @param fieldName Name of the field
+     */
+    @JsOverlay
+    public final void addDataField(String fieldName)
+    {
+        if (dataFields == null)
+            dataFields = new JsObject();
+
+        dataFields.set(fieldName, null);
+    }
+
+    /**
+     * Initialise the data structure, then set it to either a Factory or directly on the Component.
+     * @param useFactory Boolean representing whether or not to use a Factory.
+     */
+    @JsOverlay
+    public final void initData(boolean useFactory)
+    {
+        if (useFactory)
+        {
+            String dataFieldsJSON = JSON.stringify(dataFields);
+            this.setData((DataFactory) () -> {
+                JsObject data = JSON.parse(dataFieldsJSON);
+                addStylesToData(data);
+                return data;
+            });
+        }
+        else
+        {
+            addStylesToData(dataFields);
+            this.setData((DataFactory) () -> dataFields);
+        }
+    }
+
+    /**
+     * Copy the Component styles from GWT to the data of the ComponentOptions.
+     * @param data The data of the ComponentOptions
+     */
+    @JsOverlay
+    private void addStylesToData(JsObject data)
+    {
+        if (componentWithTemplate.getTemplateStyles() == null)
+            return;
+
+        for (Entry<String, CssResource> style : componentWithTemplate
+            .getTemplateStyles()
+            .entrySet())
+            data.set(style.getKey(), style.getValue());
+    }
+
+    /**
+     * Add a computed property to this ComponentOptions.
+     * If the computed has both a getter and a setter, this will be called twice, once for each.
+     * @param javaMethodName Name of the method in the {@link ComponentWithTemplate}
+     * @param computedPropertyName Name of the computed property in the Template and the
+     * ComponentOptions
+     * @param kind Kind of the computed method (getter or setter)
+     */
+    @JsOverlay
+    public final void addJavaComputed(String javaMethodName, String computedPropertyName,
+        ComputedKind kind)
+    {
+        ComputedOptions computedDefinition = getComputedOptions(computedPropertyName);
+        if (computedDefinition == null)
+        {
+            computedDefinition = new ComputedOptions();
+            addComputedOptions(computedPropertyName, computedDefinition);
+        }
+
+        Object method = getJavaComponentMethod(javaMethodName);
+        if (kind == ComputedKind.GETTER)
+            computedDefinition.get = method;
+        else if (kind == ComputedKind.SETTER)
+            computedDefinition.set = method;
+    }
+
+    /**
+     * Add a watch property to this Component Definition
+     * @param javaMethodName Name of the method in the {@link ComponentWithTemplate}
+     * @param watchedPropertyName Name of the property name to watch in the data model
+     * @param isDeep Is the watcher deep (will watch child properties)
+     */
+    @JsOverlay
+    public final void addJavaWatch(String javaMethodName, String watchedPropertyName,
+        boolean isDeep)
+    {
+        if (!isDeep)
+        {
+            addWatch(watchedPropertyName, getJavaComponentMethod(javaMethodName));
+            return;
+        }
+
+        JsObject watchDefinition = new JsObject();
+        watchDefinition.set("deep", true);
+        watchDefinition.set("handler", getJavaComponentMethod(javaMethodName));
+        addWatch(watchedPropertyName, watchDefinition);
+    }
+
+    /**
+     * Add the given lifecycle hook to the {@link VueComponentOptions}.
+     * @param hookName Name of the hook to add
+     */
+    @JsOverlay
+    public final void addRootJavaMethod(String hookName)
+    {
+        set(hookName, getJavaComponentMethod(hookName));
+    }
+
+    /**
+     * Add a prop to our ComponentOptions.
+     * This will allow to receive data from the outside of our Component.
+     * @param propName The name of the property
+     * @param required Is the property required (mandatory)
+     * @param jsTypeName JS name of the type of this property, if not null we will ask Vue to type
+     * check based on it
+     */
+    @JsOverlay
+    public final void addJavaProp(String propName, boolean required, String jsTypeName)
+    {
+        PropOptions propDefinition = new PropOptions();
+        propDefinition.required = required;
+
+        if (jsTypeName != null)
+            propDefinition.type = JsTools.getWindow().get(jsTypeName);
+
+        addProp(propName, propDefinition);
+    }
+
+    /**
+     * Add a custom prop validator to validate a property
+     * @param javaMethodName Name of the method in the {@link ComponentWithTemplate}
+     * @param propertyName The name of the property to validate
+     */
+    @JsOverlay
+    public final void addJavaPropValidator(String javaMethodName, String propertyName)
+    {
+        PropOptions propDefinition = (PropOptions) props.get(propertyName);
+        propDefinition.validator = getJavaComponentMethod(javaMethodName);
+    }
+
+    /**
+     * Get the given java method from the {@link ComponentWithTemplate}.
+     * @param javaMethodName Name of the Java method to retrieve
+     * @return The JS function that represent our Java method.
+     */
+    @JsOverlay
+    private Object getJavaComponentMethod(String javaMethodName)
+    {
+        return JsTools.get(componentWithTemplate, javaMethodName);
+    }
+
+    /**
+     * Return the {@link ComponentWithTemplate} instance.
+     * @return The instance of {@link ComponentWithTemplate} we use to get the methods from
+     */
+    @JsOverlay
+    public final ComponentWithTemplate<T> getComponentWithTemplate()
+    {
+        return componentWithTemplate;
+    }
+
+
+    /* ---------------------------------------------
+
+              Instance Properties and Methods
+
+      ---------------------------------------------*/
 
     @JsProperty private Object data;
     @JsProperty private JsObject props;
@@ -58,230 +295,6 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     @JsProperty private String name;
 
     @JsProperty private JsArray<Object> staticRenderFns;
-
-    private Map<String, CssResource> componentStyles;
-
-    /**
-     * Set the Java Component Instance on this Options
-     * This instance will be used to retrieve the methods from our Options
-     * @param vueComponentJsTypeConstructor An instance of the VueComponent class for this Component
-     */
-    @JsOverlay
-    protected final void setVueComponentJsTypeConstructor(
-        VueComponentJsTypeConstructor<T> vueComponentJsTypeConstructor)
-    {
-        this.vueComponentJsTypeConstructor = vueComponentJsTypeConstructor;
-
-        Object customizeOption = getJavaComponentMethod("customizeOptions");
-        if (customizeOption != null)
-            JsTools.call(customizeOption, this, this);
-    }
-
-    /**
-     * Set the template resource for the component
-     * Add all the expression from the template to this Options
-     * @param templateResource A generated TemplateResource
-     */
-    @JsOverlay
-    protected final void setTemplateResource(TemplateResource templateResource)
-    {
-        this.initStyles(templateResource);
-        this.initExpressions(templateResource);
-        this.initRenderFunctions(templateResource);
-    }
-
-    /**
-     * Initialise the render functions
-     * @param templateResource
-     */
-    @JsOverlay
-    private final void initRenderFunctions(TemplateResource templateResource)
-    {
-        this.set("render", JsTools.createFunction(templateResource.getRenderFunction()));
-
-        JsArray<Object> staticRenderFns = new JsArray<>();
-        for (String staticRenderFunction : templateResource.getStaticRenderFunctions())
-        {
-            staticRenderFns.push(JsTools.createFunction(staticRenderFunction));
-        }
-        this.setStaticRenderFns(staticRenderFns);
-    }
-
-    /**
-     * Find styles in the template resources and ensure they are injected
-     * @param templateResource A generated TemplateResource
-     */
-    @JsOverlay
-    private void initStyles(TemplateResource templateResource)
-    {
-        componentStyles = new HashMap<>();
-        for (Entry<String, CssResource> styleInfo : templateResource.getTemplateStyles().entrySet())
-        {
-            CssResource style = styleInfo.getValue();
-            style.ensureInjected();
-            componentStyles.put(styleInfo.getKey(), style);
-        }
-    }
-
-    /**
-     * Add template expressions to the ComponentOptions
-     * @param templateResource A generated TemplateResource
-     */
-    @JsOverlay
-    private void initExpressions(TemplateResource templateResource)
-    {
-        for (TemplateExpressionBase expression : templateResource.getTemplateExpressions())
-        {
-            String expressionId = expression.getId();
-            if (expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
-            {
-                ComputedOptions computedDefinition = new ComputedOptions();
-                addComputedOptions(expressionId, computedDefinition);
-                computedDefinition.get = JsTools.get(templateResource, expressionId);
-            }
-            else
-            {
-                addMethod(expressionId, JsTools.get(templateResource, expressionId));
-            }
-        }
-    }
-
-    /**
-     * Initialise the data structure, then set it to either a Factory or directly on the Component
-     * @param propertiesName List of all the name of the data properties
-     * @param useFactory Boolean representing whether or not to use a Factory
-     */
-    @JsOverlay
-    protected final void initData(List<String> propertiesName, boolean useFactory)
-    {
-        JsObject dataObject = new JsObject();
-        for (String propertyName : propertiesName)
-        {
-            dataObject.set(propertyName, null);
-        }
-
-        if (useFactory)
-        {
-            this.setData((DataFactory) () -> {
-                JsObject data = JSON.parse(JSON.stringify(dataObject));
-                copyStyles(data);
-                return data;
-            });
-        }
-        else
-        {
-            copyStyles(dataObject);
-            this.setData((DataFactory) () -> dataObject);
-        }
-    }
-
-    /**
-     * Copy the Component styles from GWT to the data of the ComponentOptions
-     * @param data The data of the ComponentOptions
-     */
-    @JsOverlay
-    private void copyStyles(JsObject data)
-    {
-        if (componentStyles == null)
-            return;
-
-        for (Entry<String, CssResource> style : componentStyles.entrySet())
-            data.set(style.getKey(), style.getValue());
-    }
-
-    /**
-     * Add a computed property to this ComponentOptions
-     * If the computed has both a getter and a setter, this will be called twice, once for each.
-     * @param javaName Name of the method in the Java Component
-     * @param jsName Name of the computed property in the Template and the ComponentOptions
-     * @param kind Kind of the computed method (getter or setter)
-     */
-    @JsOverlay
-    protected final void addJavaComputed(String javaName, String jsName, ComputedKind kind)
-    {
-        ComputedOptions computedDefinition = getComputedOptions(jsName);
-        if (computedDefinition == null)
-        {
-            computedDefinition = new ComputedOptions();
-            addComputedOptions(jsName, computedDefinition);
-        }
-
-        Object method = getJavaComponentMethod(javaName);
-        if (kind == ComputedKind.GETTER)
-            computedDefinition.get = method;
-        else if (kind == ComputedKind.SETTER)
-            computedDefinition.set = method;
-    }
-
-    /**
-     * Add a watch property to this Component Definition
-     * @param javaName Name of the method in the Java Component
-     * @param watchedPropertyName Name of the property name to watch in the data model
-     * @param isDeep Is the watcher deep (will watch child properties)
-     */
-    @JsOverlay
-    protected final void addJavaWatch(String javaName, String watchedPropertyName, boolean isDeep)
-    {
-        if (!isDeep)
-        {
-            addWatch(watchedPropertyName, getJavaComponentMethod(javaName));
-            return;
-        }
-
-        JsObject watchDefinition = new JsObject();
-        watchDefinition.set("deep", true);
-        watchDefinition.set("handler", getJavaComponentMethod(javaName));
-        addWatch(watchedPropertyName, watchDefinition);
-    }
-
-    /**
-     * Add the given lifecycle hook to the ComponentOptions
-     * @param hookName Name of the hook to add
-     */
-    @JsOverlay
-    protected final void addJavaLifecycleHook(String hookName)
-    {
-        set(hookName, getJavaComponentMethod(hookName));
-    }
-
-    /**
-     * Add a prop to our ComponentOptions
-     * This will allow to receive data from the outside of our Component
-     * @param name The name of the property
-     * @param required Is the property required (mandatory)
-     * @param typeJsName JS name of the type of this property, if not null we will ask Vue to type
-     * check based on it
-     */
-    @JsOverlay
-    protected final void addJavaProp(String name, boolean required, String typeJsName)
-    {
-        PropOptions propDefinition = new PropOptions();
-        propDefinition.required = required;
-
-        if (typeJsName != null)
-            propDefinition.type = JsTools.getWindow().get(typeJsName);
-
-        addProp(name, propDefinition);
-    }
-
-    /**
-     * Add a custom prop validator to validate a property
-     * @param methodName The name of the method in the Java Component
-     * @param propertyName The name of the property to validate
-     */
-    @JsOverlay
-    protected final void addJavaPropValidator(String methodName, String propertyName)
-    {
-        PropOptions propDefinition = (PropOptions) props.get(propertyName);
-        propDefinition.validator = getJavaComponentMethod(methodName);
-    }
-
-    @JsOverlay
-    private Object getJavaComponentMethod(String javaName)
-    {
-        JsObject vueComponentJsTypePrototype = vueComponentJsTypeConstructor.getPrototype();
-        return vueComponentJsTypePrototype.get(javaName);
-    }
 
     @JsOverlay
     public final Object getData()
@@ -498,11 +511,5 @@ public abstract class VueComponentOptions<T extends VueComponent> extends JsObje
     {
         this.name = name;
         return this;
-    }
-
-    @JsOverlay
-    public final Map<String, CssResource> getComponentStyles()
-    {
-        return componentStyles;
     }
 }

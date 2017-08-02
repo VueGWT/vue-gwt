@@ -56,21 +56,20 @@
 			return result;
 		};
 	};
-	tools.mergeVueConstructorWithJavaComponent = function (extendedVueConstructor, jsTypeConstructor) {
+	tools.extendVueConstructorWithJavaComponent = function (extendedVueConstructor, componentWithTemplate) {
 		const vueProto = extendedVueConstructor.prototype;
-		let jsTypeProto = jsTypeConstructor.prototype;
-		// Copy from the @JsType VueComponent prototype
-		for (let protoProp in jsTypeProto) {
-			if (jsTypeProto.hasOwnProperty(protoProp) && !vueProto.hasOwnProperty(protoProp)) {
-				vueProto[protoProp] = jsTypeProto[protoProp];
+		const componentWithTemplateProto = Object.getPrototypeOf(componentWithTemplate);
+		if (!componentWithTemplateProto || componentWithTemplateProto === Object.prototype)
+			return;
+
+		// Copy from the ComponentWithTemplate prototype
+		for (let protoProp in componentWithTemplateProto) {
+			if (componentWithTemplateProto.hasOwnProperty(protoProp) && !vueProto.hasOwnProperty(protoProp)) {
+				vueProto[protoProp] = componentWithTemplateProto[protoProp];
 			}
 		}
-		// Also copy from our VueComponent prototype
-		jsTypeProto = Object.getPrototypeOf(jsTypeProto);
-		for (let protoProp in jsTypeProto) {
-			if (jsTypeProto.hasOwnProperty(protoProp) && !vueProto.hasOwnProperty(protoProp)) {
-				vueProto[protoProp] = jsTypeProto[protoProp];
-			}
-		}
+
+		// Call recursively
+		tools.extendVueConstructorWithJavaComponent(extendedVueConstructor, componentWithTemplateProto);
 	};
 })(window);

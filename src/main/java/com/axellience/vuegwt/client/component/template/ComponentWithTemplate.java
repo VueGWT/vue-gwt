@@ -1,5 +1,6 @@
-package com.axellience.vuegwt.client.template;
+package com.axellience.vuegwt.client.component.template;
 
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.template.TemplateResourceGenerator;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ResourcePrototype;
@@ -16,10 +17,9 @@ import java.util.Map;
  */
 @DefaultExtensions(value = { ".html" })
 @ResourceGeneratorType(TemplateResourceGenerator.class)
-public interface TemplateResource extends ResourcePrototype
+public interface ComponentWithTemplate<T extends VueComponent> extends ResourcePrototype
 {
-    String EXPRESSION_PREFIX       = "VGWT_";
-    String EXPRESSION_SUFFIX       = "_EXPR";
+    String EXPRESSION_PREFIX = "exp$";
 
     String getRenderFunction();
     String[] getStaticRenderFunctions();

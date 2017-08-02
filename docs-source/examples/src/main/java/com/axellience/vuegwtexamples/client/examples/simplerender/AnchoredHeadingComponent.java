@@ -14,7 +14,7 @@ import jsinterop.annotations.JsProperty;
 /**
  * @author Adrien Baron
  */
-@Component(hasTemplate = false)
+@Component
 public class AnchoredHeadingComponent extends VueComponent implements HasRender
 {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");

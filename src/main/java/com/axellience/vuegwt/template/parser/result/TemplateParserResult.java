@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.template.parser.result;
 
-import com.axellience.vuegwt.client.template.TemplateExpressionKind;
+import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.axellience.vuegwt.client.template.TemplateResource.EXPRESSION_PREFIX;
-import static com.axellience.vuegwt.client.template.TemplateResource.EXPRESSION_SUFFIX;
+import static com.axellience.vuegwt.client.component.template.ComponentWithTemplate.EXPRESSION_PREFIX;
 
 /**
  * @author Adrien Baron
@@ -33,7 +32,7 @@ public class TemplateParserResult
     public TemplateExpression addExpression(TemplateExpressionKind kind, String expression,
         String expressionType, Set<TemplateExpressionParameter> parameters)
     {
-        String id = EXPRESSION_PREFIX + this.expressions.size() + EXPRESSION_SUFFIX;
+        String id = EXPRESSION_PREFIX + this.expressions.size();
         if (kind == TemplateExpressionKind.COMPUTED_PROPERTY && !parameters.isEmpty())
             kind = TemplateExpressionKind.METHOD;
 

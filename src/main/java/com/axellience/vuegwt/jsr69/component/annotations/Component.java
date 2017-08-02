@@ -27,12 +27,6 @@ public @interface Component
     boolean useFactory() default true;
 
     /**
-     * Whether this component has a template file
-     * @return true if it has a template, false otherwise
-     */
-    boolean hasTemplate() default true;
-
-    /**
      * Components to register on this component instance
      * @return This list of {@link VueComponent} to register on this Component
      */

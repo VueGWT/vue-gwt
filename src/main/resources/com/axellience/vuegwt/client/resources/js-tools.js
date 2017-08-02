@@ -53,6 +53,9 @@
 	jsTools.call = function (func, thisArg, args) {
 		return func.call(thisArg, args);
 	};
+	jsTools.callOnContext = function (func, args) {
+		return func(args);
+	};
 	jsTools.getDeepValue = function (obj, path) {
 		for (let i = 0, pathObj = path.split('.'), len = pathObj.length; i < len; i++) {
 			obj = obj[pathObj[i]];

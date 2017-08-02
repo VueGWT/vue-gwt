@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.client.vue;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.jstype.VueComponentJsTypeConstructor;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsFunction;
@@ -37,10 +36,11 @@ public class VueConstructor<T extends VueComponent> extends JsFunction
 
     @JsOverlay
     public final <K extends T> VueConstructor<K> extendJavaComponent(
-        VueComponentOptions<K> componentOptions, VueComponentJsTypeConstructor<K> javaConstructor)
+        VueComponentOptions<K> componentOptions)
     {
         VueConstructor<K> extendedVueConstructor = extend(componentOptions);
-        VueGWTTools.mergeVueConstructorWithJavaComponent(extendedVueConstructor, javaConstructor);
+        VueGWTTools.extendVueConstructorWithJavaComponent(extendedVueConstructor,
+            componentOptions.getComponentWithTemplate());
 
         return extendedVueConstructor;
     }

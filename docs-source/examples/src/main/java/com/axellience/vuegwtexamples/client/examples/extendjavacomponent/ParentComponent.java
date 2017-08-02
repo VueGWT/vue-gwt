@@ -8,7 +8,7 @@ import jsinterop.annotations.JsProperty;
 /**
  * @author Adrien Baron
  */
-@Component(hasTemplate = false)
+@Component
 public class ParentComponent extends VueComponent
 {
     @JsProperty String parentMessage;

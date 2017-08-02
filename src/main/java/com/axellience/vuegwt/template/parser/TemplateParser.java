@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.template.parser;
 
-import com.axellience.vuegwt.client.template.TemplateExpressionKind;
+import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.template.parser.context.VariableInfo;

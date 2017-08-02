@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.template.parser.result;
 
-import com.axellience.vuegwt.client.template.TemplateExpressionBase;
-import com.axellience.vuegwt.client.template.TemplateExpressionKind;
+import com.axellience.vuegwt.client.component.template.TemplateExpressionBase;
+import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 
 import java.util.Collection;
 import java.util.LinkedList;

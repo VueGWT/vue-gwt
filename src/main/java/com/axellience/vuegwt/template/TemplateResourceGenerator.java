@@ -17,11 +17,10 @@
 package com.axellience.vuegwt.template;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.template.TemplateExpressionBase;
-import com.axellience.vuegwt.client.template.TemplateExpressionKind;
-import com.axellience.vuegwt.client.template.TemplateResource;
+import com.axellience.vuegwt.client.component.template.TemplateExpressionBase;
+import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
-import com.axellience.vuegwt.jsr69.component.TemplateProviderGenerator;
+import com.axellience.vuegwt.jsr69.component.ComponentWithTemplateGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompiler;
@@ -75,21 +74,22 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         URL resource = getResource(logger, context, method);
         SourceWriter sw = new StringSourceWriter();
 
+        TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
+        String typeName = getTypeName(method);
+        String generatedTypeName = typeName + ComponentWithTemplateGenerator.WITH_TEMPLATE_SUFFIX;
+
         // No resource for the template
         if (resource == null)
         {
-            return generateEmptyTemplateResource(method, sw);
+            return generateEmptyTemplateResource(method, generatedTypeName, sw);
         }
 
         // Convenience when examining the generated code.
         if (!AbstractResourceGenerator.STRIP_COMMENTS)
             sw.println("// " + resource.toExternalForm());
 
-        TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
-        String typeName = getTypeName(method);
-
         // Start class
-        sw.println("new " + typeName + TemplateProviderGenerator.TEMPLATE_RESOURCE_SUFFIX + "() {");
+        sw.println("new " + generatedTypeName + "() {");
         sw.indent();
 
         // Add the get name method
@@ -124,15 +124,23 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
     /**
      * Generate an empty template resource (when no template is found).
      * @param method The resource method with the @Source annotation
+     * @param generatedTypeName Name of the generated template resource
      * @param sw The source writer
      * @return
      */
-    private String generateEmptyTemplateResource(JMethod method, SourceWriter sw)
+    private String generateEmptyTemplateResource(JMethod method, String generatedTypeName,
+        SourceWriter sw)
     {
-        sw.println("new " + TemplateResource.class.getName() + "() {");
+        sw.println("new " + generatedTypeName + "() {");
         sw.indent();
         sw.println("public String getText() {return \"\";}");
         sw.println("public String getName() {return \"" + method.getName() + "\";}");
+        sw.println("public String getRenderFunction() {return null;}");
+        sw.println("public String[] getStaticRenderFunctions() {return null;}");
+        sw.println(
+            "public java.util.List<com.axellience.vuegwt.client.component.template.TemplateExpressionBase> getTemplateExpressions() {return null;}");
+        sw.println(
+            "public java.util.Map<String, com.google.gwt.resources.client.CssResource> getTemplateStyles() {return null;}");
         sw.outdent();
         sw.println("}");
         return sw.toString();

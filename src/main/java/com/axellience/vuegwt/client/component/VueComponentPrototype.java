@@ -1,14 +1,13 @@
 package com.axellience.vuegwt.client.component;
 
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * The Java representation of a Vue Component.
- * Whenever you want to add a component to your application you should extends this class and add
- * the {@link Component} annotation.
+ * The Java representation of a {@link VueComponent} JS prototype.
+ * Vue.js components will extend this prototype to get access to private Java methods.
+ * It will also allow GWT to recognize them as instance of the Java {@link VueComponent}.
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
