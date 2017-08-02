@@ -16,12 +16,8 @@
 
 package com.axellience.vuegwt.template;
 
-import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.template.TemplateExpressionBase;
 import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
-import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.ComponentWithTemplateGenerator;
-import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompiler;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompilerException;
@@ -32,7 +28,6 @@ import com.axellience.vuegwt.template.parser.result.TemplateParserResult;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.util.Util;
@@ -47,17 +42,16 @@ import com.google.gwt.user.rebind.StringSourceWriter;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Original Source: GWT Project http://www.gwtproject.org/
  * <p>
  * Modified by Adrien Baron
  */
-public final class TemplateResourceGenerator extends AbstractResourceGenerator
+public final class ComponentWithTemplateResourceGenerator extends AbstractResourceGenerator
     implements SupportsGeneratorResultCaching
 {
     /**
@@ -105,10 +99,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         // Compile the resulting HTML template String
         processTemplateString(sw, templateParserResult.getTemplateWithReplacements(), context);
 
-        // Declare computed properties
-        JClassType componentClass = typeOracle.findType(typeName);
-        Set<String> doneComputed = new HashSet<>();
-        processComputedProperties(sw, componentClass, doneComputed);
+        // Declare component styles
         processComponentStyles(sw, templateParserResult);
 
         // Process the java expressions from the template
@@ -137,8 +128,7 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("public String getName() {return \"" + method.getName() + "\";}");
         sw.println("public String getRenderFunction() {return null;}");
         sw.println("public String[] getStaticRenderFunctions() {return null;}");
-        sw.println(
-            "public java.util.List<com.axellience.vuegwt.client.component.template.TemplateExpressionBase> getTemplateExpressions() {return null;}");
+        sw.println("public String[] getTemplateComputedProperties() {return null;}");
         sw.println(
             "public java.util.Map<String, com.google.gwt.resources.client.CssResource> getTemplateStyles() {return null;}");
         sw.outdent();
@@ -292,23 +282,17 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
     private void generateGetTemplateExpressions(SourceWriter sw,
         TemplateParserResult templateParserResult)
     {
-        sw.println("public java.util.List getTemplateExpressions() {");
+        sw.println("public String[] getTemplateComputedProperties() {");
         sw.indent();
-        sw.println("java.util.List result = new java.util.LinkedList();");
-        for (TemplateExpression expression : templateParserResult.getExpressions())
-        {
-            sw.println("result.add(new "
-                + TemplateExpressionBase.class.getCanonicalName()
-                + "("
-                + TemplateExpressionKind.class.getCanonicalName()
-                + "."
-                + expression.getKind().toString()
-                + ", \""
-                + expression.getId()
-                + "\""
-                + "));");
-        }
-        sw.println("return result;");
+
+        String expressionIds = templateParserResult
+            .getExpressions()
+            .stream()
+            .filter(expression -> expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
+            .map(expression -> "\"" + expression.getId() + "\"")
+            .collect(Collectors.joining(", "));
+
+        sw.println("return new String[] { " + expressionIds + " };");
         sw.outdent();
         sw.println("}");
     }
@@ -364,40 +348,6 @@ public final class TemplateResourceGenerator extends AbstractResourceGenerator
         sw.println("return result;");
         sw.outdent();
         sw.println("}");
-    }
-
-    /**
-     * Process computed properties.
-     * This will generate a field in the Template for each Computed property.
-     * It will recursively generate for the parent too.
-     * @param sw The source writer
-     * @param vueComponentClass The Component Class
-     * @param doneComputed Computed that have already been processed
-     */
-    private void processComputedProperties(SourceWriter sw, JClassType vueComponentClass,
-        Set<String> doneComputed)
-    {
-        if (vueComponentClass == null || vueComponentClass
-            .getQualifiedSourceName()
-            .equals(VueComponent.class.getCanonicalName()))
-            return;
-
-        for (JMethod jMethod : vueComponentClass.getMethods())
-        {
-            Computed computed = jMethod.getAnnotation(Computed.class);
-            if (computed == null)
-                continue;
-
-            String propertyName =
-                GenerationUtil.getComputedPropertyName(computed, jMethod.getName());
-            if (doneComputed.contains(propertyName))
-                continue;
-
-            doneComputed.add(propertyName);
-            jsPropertyAnnotation(sw);
-            sw.println(jMethod.getReturnType().getQualifiedSourceName() + " " + propertyName + ";");
-        }
-        processComputedProperties(sw, vueComponentClass.getSuperclass(), doneComputed);
     }
 
     /**

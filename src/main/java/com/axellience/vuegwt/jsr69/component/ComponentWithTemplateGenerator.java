@@ -29,6 +29,7 @@ import com.axellience.vuegwt.jsr69.component.annotations.Watch;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -44,13 +45,16 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -276,14 +280,58 @@ public class ComponentWithTemplateGenerator
             if ("void".equals(method.getReturnType().toString()))
                 kind = ComputedKind.SETTER;
 
+            String propertyName = GenerationUtil.getComputedPropertyName(computed, methodName);
             optionsBuilder.addStatement("options.addJavaComputed($S, $S, $T.$L)",
                 methodName,
-                GenerationUtil.getComputedPropertyName(computed, methodName),
+                propertyName,
                 ComputedKind.class,
                 kind);
 
             generateProxyMethod(componentWithTemplateBuilder, method);
         });
+
+        addComputedAttributes(component, componentWithTemplateBuilder, new HashSet<>());
+    }
+
+    /**
+     * Add attributes for the computed properties.
+     * This is needed for the Template expressions to compile in Java.
+     * @param component The component we are currently processing
+     * @param componentWithTemplateBuilder Builder for the ComponentWithTemplate class
+     * @param alreadyDone Name of the computed properties already done
+     */
+    private void addComputedAttributes(TypeElement component, Builder componentWithTemplateBuilder,
+        Set<String> alreadyDone)
+    {
+        getMethodsWithAnnotation(component, Computed.class).forEach(method -> {
+            Computed computed = method.getAnnotation(Computed.class);
+            String methodName = method.getSimpleName().toString();
+
+            String propertyName = GenerationUtil.getComputedPropertyName(computed, methodName);
+            if (alreadyDone.contains(propertyName))
+                return;
+
+            TypeName propertyType;
+            if ("void".equals(method.getReturnType().toString()))
+                propertyType = TypeName.get(method.getParameters().get(0).asType());
+            else
+                propertyType = TypeName.get(method.getReturnType());
+
+            componentWithTemplateBuilder.addField(FieldSpec
+                .builder(propertyType, propertyName)
+                .addAnnotation(JsProperty.class)
+                .build());
+            alreadyDone.add(propertyName);
+        });
+
+        TypeElement superClass =
+            (TypeElement) ((DeclaredType) component.getSuperclass()).asElement();
+
+        // Stop when we reach VueComponent
+        if (VueComponent.class.getCanonicalName().equals(superClass.getQualifiedName().toString()))
+            return;
+
+        addComputedAttributes(superClass, componentWithTemplateBuilder, alreadyDone);
     }
 
     /**
@@ -383,7 +431,6 @@ public class ComponentWithTemplateGenerator
         MethodSpec.Builder proxyMethodBuilder = MethodSpec
             .methodBuilder(originalMethod.getSimpleName().toString())
             .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(JsMethod.class)
             .returns(ClassName.get(originalMethod.getReturnType()));
 
         originalMethod

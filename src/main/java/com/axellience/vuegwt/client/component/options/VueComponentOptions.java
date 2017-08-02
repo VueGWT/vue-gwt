@@ -6,8 +6,6 @@ import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
 import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
-import com.axellience.vuegwt.client.component.template.TemplateExpressionBase;
-import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JSON;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
@@ -74,19 +72,9 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     private void initExpressions()
     {
-        for (TemplateExpressionBase expression : componentWithTemplate.getTemplateExpressions())
+        for (String expressionId : componentWithTemplate.getTemplateComputedProperties())
         {
-            String expressionId = expression.getId();
-            if (expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
-            {
-                ComputedOptions computedDefinition = new ComputedOptions();
-                addComputedOptions(expressionId, computedDefinition);
-                computedDefinition.get = getJavaComponentMethod(expressionId);
-            }
-            else
-            {
-                addMethod(expressionId, getJavaComponentMethod(expressionId));
-            }
+            addJavaComputed(expressionId, expressionId, ComputedKind.GETTER);
         }
     }
 
