@@ -1,65 +1,48 @@
 package com.axellience.vuegwt.template.parser.context;
 
+import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.template.parser.variable.VariableInfo;
 import com.google.gwt.core.ext.typeinfo.JField;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A context layer holding local variables for a v-for.
  * @author Adrien Baron
  */
 public class ContextLayer
 {
     private final Map<String, VariableInfo> variables = new HashMap<>();
-    private final String contextPrefix;
 
-    public ContextLayer(String contextPrefix)
-    {
-        this.contextPrefix = contextPrefix;
-    }
-
-    private VariableInfo addVariable(VariableInfo variableInfo)
+    private <T extends VariableInfo> T addVariable(T variableInfo)
     {
         variables.put(variableInfo.getName(), variableInfo);
         return variableInfo;
     }
 
-    public VariableInfo addVariable(JField jField)
-    {
-        return addVariable(new VariableInfo(jField.getType().getQualifiedSourceName(),
-            jField.getName()));
-    }
-
-    public VariableInfo addVariable(Class type, String name)
-    {
-        return addVariable(new VariableInfo(type.getCanonicalName(), name));
-    }
-
-    public VariableInfo addVariable(String type, String name)
+    VariableInfo addVariable(String type, String name)
     {
         return addVariable(new VariableInfo(type, name));
     }
 
-    public LocalVariableInfo addLocalVariable(String type, String templateName)
+    LocalVariableInfo addLocalVariable(String type, String templateName)
     {
-        return (LocalVariableInfo) addVariable(new LocalVariableInfo(type,
-            templateName,
-            contextPrefix + templateName));
+        return addVariable(new LocalVariableInfo(type, templateName));
     }
 
-    public Collection<VariableInfo> getVariables()
+    VariableInfo addVariable(JField jField)
     {
-        return variables.values();
+        return addVariable(jField.getType().getQualifiedSourceName(), jField.getName());
     }
 
-    public VariableInfo getVariableInfo(String name)
+    VariableInfo addVariable(Class type, String name)
+    {
+        return addVariable(type.getCanonicalName(), name);
+    }
+
+    VariableInfo getVariableInfo(String name)
     {
         return variables.get(name);
-    }
-
-    public boolean hasVariable(String name)
-    {
-        return variables.containsKey(name);
     }
 }

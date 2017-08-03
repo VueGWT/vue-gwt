@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.template.parser.result;
 
-import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
+import com.axellience.vuegwt.template.parser.variable.VariableInfo;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,48 +11,81 @@ import java.util.Set;
 import static com.axellience.vuegwt.client.component.template.ComponentWithTemplate.EXPRESSION_PREFIX;
 
 /**
+ * Result of a template parsing.
  * @author Adrien Baron
  */
 public class TemplateParserResult
 {
-    private String templateWithReplacements;
+    private String processedTemplate;
     private final List<TemplateExpression> expressions = new LinkedList<>();
     private final Map<String, String> styleImports = new HashMap<>();
 
-    public String getTemplateWithReplacements()
+    /**
+     * Set the processed template, once all the Java expression has been replaced by
+     * methods/computed properties.
+     * @param processedTemplate The processed template
+     */
+    public void setProcessedTemplate(String processedTemplate)
     {
-        return templateWithReplacements;
+        this.processedTemplate = processedTemplate;
     }
 
-    public void setTemplateWithReplacements(String templateWithReplacements)
+    /**
+     * Get the processed template, once all the Java expression has been replaced by
+     * methods/computed properties.
+     * @return The processed template
+     */
+    public String getProcessedTemplate()
     {
-        this.templateWithReplacements = templateWithReplacements;
+        return processedTemplate;
     }
 
-    public TemplateExpression addExpression(TemplateExpressionKind kind, String expression,
-        String expressionType, Set<TemplateExpressionParameter> parameters)
+    /**
+     * Add an expression to the result.
+     * All the Java methods from the template will be added here so we can add them to our Vue.js
+     * component.
+     * @param expression The Java expression
+     * @param expressionType The type of the expression, determined depending on the context it is
+     * used in.
+     * @param parameters The parameters this expression depends on (can be empty)
+     * @return The {@link TemplateExpression} for this Java expression, will be used to get the
+     * string to put in the template instead.
+     */
+    public TemplateExpression addExpression(String expression, String expressionType,
+        Set<VariableInfo> parameters)
     {
         String id = EXPRESSION_PREFIX + this.expressions.size();
-        if (kind == TemplateExpressionKind.COMPUTED_PROPERTY && !parameters.isEmpty())
-            kind = TemplateExpressionKind.METHOD;
 
         TemplateExpression templateExpression =
-            new TemplateExpression(kind, id, expression.trim(), expressionType, parameters);
+            new TemplateExpression(id, expression.trim(), expressionType, parameters);
 
         this.expressions.add(templateExpression);
         return templateExpression;
     }
 
+    /**
+     * Return the list of expression we found in the template.
+     * @return The list of {@link TemplateExpression}
+     */
     public List<TemplateExpression> getExpressions()
     {
         return expressions;
     }
 
+    /**
+     * Add a style import we found in the template.
+     * @param styleName The name of the style in the template
+     * @param className The fully qualified name of the style class
+     */
     public void addStyleImports(String styleName, String className)
     {
         this.styleImports.put(styleName, className);
     }
 
+    /**
+     * Return the list of style imports we found in the template
+     * @return List of style imports we found in the template
+     */
     public Map<String, String> getStyleImports()
     {
         return styleImports;

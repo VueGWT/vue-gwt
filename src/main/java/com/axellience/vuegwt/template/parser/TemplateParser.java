@@ -1,12 +1,12 @@
 package com.axellience.vuegwt.template.parser;
 
-import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
-import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
+import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.template.parser.context.VariableInfo;
+import com.axellience.vuegwt.template.parser.exceptions.TemplateExpressionException;
 import com.axellience.vuegwt.template.parser.result.TemplateExpression;
-import com.axellience.vuegwt.template.parser.result.TemplateExpressionParameter;
 import com.axellience.vuegwt.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.template.parser.variable.VariableInfo;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -34,6 +34,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
+ * Parse an HTML Vue GWT template.
+ * <br>
+ * This parser find all the Java expression and process them. It will throw explicit exceptions
+ * if a variable cannot be find in the context.
+ * It also automatically decide of the Java type of a given expression depending on the context
+ * where it is used.
  * @author Adrien Baron
  */
 public class TemplateParser
@@ -44,6 +50,11 @@ public class TemplateParser
     private final JsonParser jsonParser;
     private final JsonSerializer jsonSerializer;
 
+    private TemplateParserContext context;
+    private TemplateParserResult result;
+
+    private String currentExpressionReturnType;
+
     public TemplateParser()
     {
         this.jsonParser = new JsonParser();
@@ -53,28 +64,35 @@ public class TemplateParser
         this.jsonSerializer.deep(true);
     }
 
-    public TemplateParserResult parseHtmlTemplate(String htmlTemplate, JClassType vueComponentClass)
+    /**
+     * Parse a given HTML template and return the a result object containing the expressions, styles
+     * and a transformed HTML.
+     * @param htmlTemplate The HTML template to process, as a String
+     * @param componentWithTemplateClass The {@link ComponentWithTemplate} class of the component we
+     * are processing
+     * @return A {@link TemplateParserResult} containing the processed template, expressions and styles
+     */
+    public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
+        JClassType componentWithTemplateClass)
     {
-        TemplateParserResult result = new TemplateParserResult();
+        result = new TemplateParserResult();
         Parser parser = Parser.htmlParser();
         parser.settings(new ParseSettings(true, true)); // tag, attribute preserve case
         Document doc = parser.parseInput(htmlTemplate, "");
 
-        TemplateParserContext parserContext = new TemplateParserContext(vueComponentClass);
-        processImports(doc, parserContext, result);
-        processNode(doc, parserContext, result);
+        context = new TemplateParserContext(componentWithTemplateClass);
+        processImports(doc);
+        processNode(doc);
 
-        result.setTemplateWithReplacements(doc.body().html());
+        result.setProcessedTemplate(doc.body().html());
         return result;
     }
 
     /**
-     * Process java imports in the template
+     * Add java imports in the template to the context.
      * @param doc The document to process
-     * @param context Context of the parser
      */
-    private void processImports(Document doc, TemplateParserContext context,
-        TemplateParserResult result)
+    private void processImports(Document doc)
     {
         Set<Element> importElements = new HashSet<>();
         for (Element element : doc.getAllElements())
@@ -103,43 +121,49 @@ public class TemplateParser
     }
 
     /**
-     * Recursive method that will process the whole view DOM tree
+     * Recursive method that will process the whole template DOM tree.
      * @param node Current node being processed
-     * @param context Context of the parser
-     * @param result Result of the template parsing
      */
-    private void processNode(Node node, TemplateParserContext context, TemplateParserResult result)
+    private void processNode(Node node)
     {
-        boolean shouldPopContextLayer = false;
         context.setCurrentNode(node);
+
+        boolean nodeHasVFor = node.attributes().hasKey("v-for");
+        if (nodeHasVFor)
+        {
+            // Add a context layer for our v-for
+            context.addContextLayer();
+
+            // Process the v-for expression, and update our attribute
+            String processedVForValue = processVForValue(node.attr("v-for"));
+            node.attr("v-for", processedVForValue);
+        }
+
         if (node instanceof TextNode)
         {
-            processTextNode((TextNode) node, context, result);
+            processTextNode((TextNode) node);
         }
         else if (node instanceof Element)
         {
-            shouldPopContextLayer = processElementNode((Element) node, context, result);
+            processElementNode((Element) node);
         }
 
         // Recurse downwards
         node.childNodes().
-            forEach(child -> processNode(child, context, result));
+            forEach(this::processNode);
 
-        // After recursing downward, pop the context layer
-        if (shouldPopContextLayer)
+        if (nodeHasVFor)
         {
+            // After downward recursion, pop the context layer
             context.popContextLayer();
         }
     }
 
     /**
-     * Process text node to check for {{ }} vue expressions
+     * Process text node to check for {{ }} vue expressions.
      * @param node Current node being processed
-     * @param context Context of the parser
-     * @param result Result of the template parsing
      */
-    private void processTextNode(TextNode node, TemplateParserContext context,
-        TemplateParserResult result)
+    private void processTextNode(TextNode node)
     {
         String elementText = node.text();
 
@@ -154,10 +178,9 @@ public class TemplateParser
             if (start > 0)
                 newText.append(elementText.substring(lastEnd, start));
 
-            context.setCurrentExpressionKind(TemplateExpressionKind.COMPUTED_PROPERTY);
-            context.setCurrentExpressionReturnType("String");
+            currentExpressionReturnType = "String";
             String expressionString = elementText.substring(start + 2, end - 2).trim();
-            String processedExpression = processExpression(expressionString, context, result);
+            String processedExpression = processExpression(expressionString);
             newText.append("{{ ").append(processedExpression).append(" }}");
             lastEnd = end;
         }
@@ -169,30 +192,11 @@ public class TemplateParser
     }
 
     /**
-     * Process Element node to check for vue attributes
+     * Process Element node to check for vue attributes.
      * @param element Current node being processed
-     * @param context Context of the parser
-     * @param result Result of the template parsing
      */
-    private boolean processElementNode(Element element, TemplateParserContext context,
-        TemplateParserResult result)
+    private void processElementNode(Element element)
     {
-        boolean shouldPopContext = false;
-
-        // First try to find v-for
-        for (Attribute attribute : element.attributes())
-        {
-            if (!"v-for".equals(attribute.getKey()))
-                continue;
-
-            // Add a context
-            context.addContextLayer();
-            shouldPopContext = true;
-
-            // Process the for expression and declare local variables if necessary
-            attribute.setValue(processVForValue(attribute.getValue(), context, result));
-        }
-
         // Iterate on element attributes
         for (Attribute attribute : element.attributes())
         {
@@ -204,189 +208,135 @@ public class TemplateParser
             if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
                 continue;
 
-            context.setCurrentExpressionReturnType("Object");
-            context.setCurrentExpressionKind(TemplateExpressionKind.COMPUTED_PROPERTY);
-
+            currentExpressionReturnType = "Object";
             if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0)
             {
-                context.setCurrentExpressionReturnType("void");
-                context.setCurrentExpressionKind(TemplateExpressionKind.METHOD);
+                currentExpressionReturnType = "void";
             }
 
             if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
             {
-                context.setCurrentExpressionReturnType("boolean");
+                currentExpressionReturnType = "boolean";
             }
 
             if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName))
                 && isJSONObject(attribute.getValue()))
             {
-                context.setCurrentExpressionReturnType("boolean");
+                currentExpressionReturnType = "boolean";
             }
 
             if ((":style".equals(attributeName) || "v-bind:style".equals(attributeName))
                 && isJSONObject(attribute.getValue()))
             {
-                context.setCurrentExpressionReturnType("String");
+                currentExpressionReturnType = "String";
             }
 
-            attribute.setValue(processExpression(attribute.getValue(), context, result));
+            attribute.setValue(processExpression(attribute.getValue()));
         }
-
-        return shouldPopContext;
     }
 
     /**
-     * Process a template expression
-     * Will rename local variables if necessary
+     * Process a template expression.
+     * The expression can either be a JSON object, a JSON array or a Java expression.
      * @param expressionString The expression as it is in the HTML template
-     * @param context The current context
-     * @param result The result of the template parser
      * @return A processed expression, should be placed in the HTML in place of the original
      * expression
      */
-    private String processExpression(String expressionString, TemplateParserContext context,
-        TemplateParserResult result)
+    private String processExpression(String expressionString)
     {
         if ("".equals(expressionString))
             return "";
 
-        // Try to parse the expression as JSON Object or Array
-        try
+        if (isJSONArray(expressionString) || isJSONObject(expressionString))
         {
-            Object mapOrList = jsonParser.parse(expressionString);
-            return processMapOrList(mapOrList, context, result);
-        }
-        catch (JsonException ignore)
-        {
-            // Ignore exception
+            try
+            {
+                // Try to parse the expression as JSON Object or Array
+                Object mapOrList = jsonParser.parse(expressionString);
+                return processMapOrList(mapOrList);
+            }
+            catch (JsonException e)
+            {
+                throw new TemplateExpressionException("Error while parsing JSON expression",
+                    expressionString,
+                    context,
+                    e);
+            }
         }
 
-        // Process as a JavaExpression instead
-        return processJavaExpression(expressionString, context, result).toTemplateString();
+        return processJavaExpression(expressionString).toTemplateString();
     }
 
-    private String processMapOrList(Object mapOrList, TemplateParserContext context,
-        TemplateParserResult result)
+    /**
+     * JSON object is parsed either as a map (for {}) or an List (for []).
+     * @param mapOrList The map or list to process
+     * @return A processed expression, should be placed in place of the original one
+     */
+    private String processMapOrList(Object mapOrList)
     {
         if (mapOrList instanceof List)
         {
-            return processArrayExpression((List) mapOrList, context, result);
+            return processArrayExpression((List) mapOrList);
         }
         else if (mapOrList instanceof Map)
         {
-            return processMapExpression((Map<String, Object>) mapOrList, context, result);
+            return processMapExpression((Map<String, Object>) mapOrList);
         }
 
-        return processJavaExpression(mapOrList.toString(), context, result).toTemplateString();
+        return processJavaExpression(mapOrList.toString()).toTemplateString();
     }
 
-    private String processArrayExpression(List<Object> listOfExpression,
-        TemplateParserContext context, TemplateParserResult result)
+    /**
+     * Process an array expression.
+     * @param listOfExpression The list of expressions to process.
+     * @return A processed JSON array, should be placed in place of the original one
+     */
+    private String processArrayExpression(List<Object> listOfExpression)
     {
         listOfExpression = listOfExpression
             .stream()
-            .map(exp -> markValue(this.processMapOrList(exp, context, result)))
+            .map(exp -> markValue(this.processMapOrList(exp)))
             .collect(Collectors.toList());
 
         return unquoteMarkedValues(jsonSerializer.serialize(listOfExpression));
     }
 
     /**
-     * Process all the keys in a given JSON object
+     * Process all the keys in a given JSON object.
      * @param map the JSON object to process
-     * @param context The current context
-     * @param result The result of the template parser
-     * @return
+     * @return A processed JSON object, should be placed in place of the original one
      */
-    private String processMapExpression(Map<String, Object> map, TemplateParserContext context,
-        TemplateParserResult result)
+    private String processMapExpression(Map<String, Object> map)
     {
         Map<String, String> resultMap = new HashMap<>();
         for (String key : map.keySet())
         {
-            resultMap.put(key, markValue(processMapOrList(map.get(key), context, result)));
+            resultMap.put(key, markValue(processMapOrList(map.get(key))));
         }
 
         return unquoteMarkedValues(jsonSerializer.serialize(resultMap));
     }
 
     /**
-     * Process the given string as a Java expression.
-     * @param expressionString A valid Java expression
-     * @param context The current context
-     * @param result The result of the template parser
-     * @return A processed expression, should be placed in the HTML in place of the original
-     * expression
-     */
-    private TemplateExpression processJavaExpression(String expressionString,
-        TemplateParserContext context, TemplateParserResult result)
-    {
-        Expression expression;
-        try
-        {
-            expression = JavaParser.parseExpression(expressionString);
-        }
-        catch (ParseProblemException e)
-        {
-            throw new InvalidExpressionException("'"
-                + expressionString
-                + "' - Current Node: "
-                + context.getCurrentNode());
-        }
-
-        // If there is a cast first, we use this as the type of our expression and remove it
-        if (expression instanceof CastExpr)
-        {
-            CastExpr castExpr = (CastExpr) expression;
-            context.setCurrentExpressionReturnType(getCastType(castExpr, context));
-            expression = castExpr.getExpression();
-        }
-
-        // Process expression variables
-        Set<TemplateExpressionParameter> parameters = new HashSet<>();
-        processExpressionVariables(expression, context, parameters);
-        expressionString = expression.toString();
-
-        // Add the resulting expression to our template expressions
-        return result.addExpression(context.getCurrentExpressionKind(),
-            expressionString,
-            context.getCurrentExpressionReturnType(),
-            parameters);
-    }
-
-    private String getCastType(CastExpr castExpr, TemplateParserContext context)
-    {
-        return context.getFullyQualifiedNameForClassName(castExpr.getType().toString());
-    }
-
-    /**
-     * Process a v-for value
-     * Determine the type of the collection that's being iterated. Throw an exception if it can't
-     * determine the type.
-     * It will also register the loop variable as a local variable in the context stack.
+     * Process a v-for value.
+     * It will register the loop variables as a local variable in the context stack.
      * @param vForValue The value of the v-for attribute
-     * @param context The current context
-     * @param result The result of the template parser
      * @return A processed v-for value, should be placed in the HTML in place of the original
      * v-for value
      */
-    private String processVForValue(String vForValue, TemplateParserContext context,
-        TemplateParserResult result)
+    private String processVForValue(String vForValue)
     {
         VForDefinition vForDef = new VForDefinition(vForValue, context);
 
         // Set return of the "in" expression
-        context.setCurrentExpressionReturnType(vForDef.getInExpressionType());
-        context.setCurrentExpressionKind(TemplateExpressionKind.COMPUTED_PROPERTY);
+        currentExpressionReturnType = vForDef.getInExpressionType();
 
         String inExpression = vForDef.getInExpression();
 
         // Process in expression if it's java
         if (vForDef.isInExpressionJava())
         {
-            TemplateExpression templateExpression =
-                this.processJavaExpression(inExpression, context, result);
+            TemplateExpression templateExpression = this.processJavaExpression(inExpression);
             inExpression = templateExpression.toTemplateString();
         }
 
@@ -395,34 +345,62 @@ public class TemplateParser
     }
 
     /**
-     * Process all variables in the expression from the view
-     * Replace loop variables and computed properties with the ones used in Java
-     * Process $event variables and resolve casts
-     * @param expression An expression from the View
-     * @param context The context containing all the local variables
+     * Process the given string as a Java expression.
+     * @param expressionString A valid Java expression
+     * @return A processed expression, should be placed in the HTML in place of the original
+     * expression
      */
-    private void processExpressionVariables(Expression expression, TemplateParserContext context,
-        Set<TemplateExpressionParameter> parameters)
+    private TemplateExpression processJavaExpression(String expressionString)
+    {
+        Expression expression;
+        try
+        {
+            expression = JavaParser.parseExpression(expressionString);
+        }
+        catch (ParseProblemException parseException)
+        {
+            throw new TemplateExpressionException(
+                "Couldn't parse Expression, make sure it is valid Java.",
+                expressionString,
+                context,
+                parseException);
+        }
+
+        // First, resolve all the casts
+        resolveCasts(expression);
+
+        // Find the parameters used by the expression
+        Set<VariableInfo> expressionParameters = new HashSet<>();
+        processNameExpressions(expression, expressionParameters);
+
+        // Update the expression as it might have been changed
+        expressionString = expression.toString();
+
+        // If there is a cast first, we use this as the type of our expression
+        if (expression instanceof CastExpr)
+        {
+            CastExpr castExpr = (CastExpr) expression;
+            currentExpressionReturnType = castExpr.getType().toString();
+        }
+
+        // Add the resulting expression to our template expressions
+        return result.addExpression(expressionString,
+            currentExpressionReturnType,
+            expressionParameters);
+    }
+
+    /**
+     * Resolve all the Cast in the expression.
+     * This will replace the Class with the full qualified name using the template imports.
+     * @param expression A Java expression from the Template
+     */
+    private void resolveCasts(Expression expression)
     {
         // Resolve Cast types based on imports
         if (expression instanceof CastExpr)
         {
             CastExpr castExpr = ((CastExpr) expression);
-            castExpr.setType(getCastType(castExpr, context));
-        }
-
-        //
-        if (expression instanceof NameExpr)
-        {
-            NameExpr nameExpr = ((NameExpr) expression);
-            if ("$event".equals(nameExpr.getNameAsString()))
-            {
-                processEventExpressionVariable(nameExpr, parameters);
-            }
-            else
-            {
-                processNameExpressionVariable(nameExpr, context, parameters);
-            }
+            castExpr.setType(getCastType(castExpr));
         }
 
         expression
@@ -430,60 +408,96 @@ public class TemplateParser
             .stream()
             .filter(Expression.class::isInstance)
             .map(Expression.class::cast)
-            .forEach(exp -> processExpressionVariables(exp, context, parameters));
+            .forEach(this::resolveCasts);
     }
 
     /**
-     * Process an event variable passed on v-on. This variable must have a valid cast in front.
-     * @param nameExpr
-     * @param parameters
+     * Process all the name expressions in our Expression.
+     * This will find all the parameters this expression depends on.
+     * This is either the local variables (from a v-for loop) or the $event variable.
+     * @param expression An expression from the Template
      */
-    private void processEventExpressionVariable(NameExpr nameExpr,
-        Set<TemplateExpressionParameter> parameters)
+    private void processNameExpressions(Expression expression, Set<VariableInfo> parameters)
+    {
+        if (expression instanceof NameExpr)
+        {
+            NameExpr nameExpr = ((NameExpr) expression);
+            if ("$event".equals(nameExpr.getNameAsString()))
+                processEventParameter(expression, nameExpr, parameters);
+            else
+                processNameExpression(expression, nameExpr, parameters);
+        }
+
+        expression
+            .getChildNodes()
+            .stream()
+            .filter(Expression.class::isInstance)
+            .map(Expression.class::cast)
+            .forEach(exp -> processNameExpressions(exp, parameters));
+    }
+
+    /**
+     * Process the $event variable passed on v-on. This variable must have a valid cast in front.
+     * @param expression The currently processed expression
+     * @param nameExpr The variable we are processing
+     * @param parameters A set of parameters for the current expression
+     */
+    private void processEventParameter(Expression expression, NameExpr nameExpr,
+        Set<VariableInfo> parameters)
     {
         if (nameExpr.getParentNode().isPresent() && nameExpr
             .getParentNode()
             .get() instanceof CastExpr)
         {
             CastExpr castExpr = (CastExpr) nameExpr.getParentNode().get();
-            parameters.add(new TemplateExpressionParameter(castExpr.getType().toString(),
-                "$event"));
+            parameters.add(new VariableInfo(castExpr.getType().toString(), "$event"));
         }
         else
         {
-            throw new InvalidExpressionException(
-                "$event should always be casted to it's intended type.");
+            throw new TemplateExpressionException(
+                "$event should always be casted to it's intended type.",
+                expression.toString(),
+                context);
         }
     }
 
     /**
-     * Process name expression to replace loop variables and computed properties
-     * with the ones used in Java
-     * @param nameExpr
-     * @param context
-     * @param parameters
+     * Process a name expression to determine if it exists in the context.
+     * If it does, and it's a local variable (from a v-for) we add it to our parameters
+     * @param expression The currently processed expression
+     * @param nameExpr The variable we are processing
+     * @param parameters A set of parameters for the current expression
      */
-    private void processNameExpressionVariable(NameExpr nameExpr, TemplateParserContext context,
-        Set<TemplateExpressionParameter> parameters)
+    private void processNameExpression(Expression expression, NameExpr nameExpr,
+        Set<VariableInfo> parameters)
     {
         String name = nameExpr.getNameAsString();
-        if (context.hasImport(name)) {
+        if (context.hasImport(name))
+        {
+            // This is a direct Class reference, we just replace with the fully qualified name
             nameExpr.setName(context.getFullyQualifiedNameForClassName(name));
             return;
         }
 
-        VariableInfo variableInfo = context.findVariableInContext(name);
+        VariableInfo variableInfo = context.findVariable(name);
+        if (variableInfo == null)
+        {
+            throw new TemplateExpressionException("Couldn't find variable "
+                + name
+                + " in the Component. Make sure you didn't forget the @JsProperty annotation.",
+                expression.toString(),
+                context);
+        }
+
         if (variableInfo instanceof LocalVariableInfo)
         {
-            LocalVariableInfo localVariableInfo = (LocalVariableInfo) variableInfo;
-            nameExpr.setName(localVariableInfo.getGlobalName());
-            parameters.add(new TemplateExpressionParameter(variableInfo.getType(),
-                localVariableInfo.getGlobalName()));
+            parameters.add(variableInfo);
         }
-        else
-        {
-            nameExpr.setName(variableInfo.getName());
-        }
+    }
+
+    private String getCastType(CastExpr castExpr)
+    {
+        return context.getFullyQualifiedNameForClassName(castExpr.getType().toString());
     }
 
     private String markValue(String value)
@@ -500,14 +514,11 @@ public class TemplateParser
 
     private boolean isJSONObject(String value)
     {
-        try
-        {
-            Object mapOrList = jsonParser.parse(value);
-            return mapOrList instanceof Map;
-        }
-        catch (Exception ignored)
-        {
-            return false;
-        }
+        return value.trim().startsWith("{");
+    }
+
+    private boolean isJSONArray(String value)
+    {
+        return value.trim().startsWith("[");
     }
 }

@@ -47,6 +47,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 /**
+ * This generator parse and compile the HTML template.
+ * The resulting object has information that can be passed to Vue when declaring the component.
  * Original Source: GWT Project http://www.gwtproject.org/
  * <p>
  * Modified by Adrien Baron
@@ -69,13 +71,13 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
         SourceWriter sw = new StringSourceWriter();
 
         TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
-        String typeName = getTypeName(method);
-        String generatedTypeName = typeName + ComponentWithTemplateGenerator.WITH_TEMPLATE_SUFFIX;
+        String withTemplateTypeName =
+            getTypeName(method) + ComponentWithTemplateGenerator.WITH_TEMPLATE_SUFFIX;
 
         // No resource for the template
         if (resource == null)
         {
-            return generateEmptyTemplateResource(method, generatedTypeName, sw);
+            return generateEmptyTemplateResource(method, withTemplateTypeName, sw);
         }
 
         // Convenience when examining the generated code.
@@ -83,7 +85,7 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
             sw.println("// " + resource.toExternalForm());
 
         // Start class
-        sw.println("new " + generatedTypeName + "() {");
+        sw.println("new " + withTemplateTypeName + "() {");
         sw.indent();
 
         // Add the get name method
@@ -93,11 +95,12 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
         String templateContent = Util.readURLAsString(resource);
 
         // Process it
-        TemplateParserResult templateParserResult =
-            new TemplateParser().parseHtmlTemplate(templateContent, typeOracle.findType(typeName));
+        TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
+            templateContent,
+            typeOracle.findType(withTemplateTypeName));
 
         // Compile the resulting HTML template String
-        processTemplateString(sw, templateParserResult.getTemplateWithReplacements(), context);
+        compileTemplateString(sw, templateParserResult.getProcessedTemplate(), context);
 
         // Declare component styles
         processComponentStyles(sw, templateParserResult);
@@ -153,7 +156,7 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
      * @param sw The source writer
      * @param templateString The HTML template string to compile
      */
-    private void processTemplateString(SourceWriter sw, String templateString,
+    private void compileTemplateString(SourceWriter sw, String templateString,
         ResourceContext context) throws UnableToCompleteException
     {
         VueTemplateCompilerResult result;
@@ -241,7 +244,7 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
      */
     private void generateTemplateExpressionMethod(SourceWriter sw, TemplateExpression expression)
     {
-        String expressionReturnType = expression.getReturnType();
+        String expressionReturnType = expression.getType();
         if ("VOID".equals(expressionReturnType))
             expressionReturnType = "void";
 

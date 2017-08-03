@@ -1,12 +1,14 @@
 package com.axellience.vuegwt.template.parser;
 
-import com.axellience.vuegwt.template.parser.context.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.template.parser.exceptions.TemplateExpressionException;
+import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * An object used to process a v-for expression from the Template.
  * @author Adrien Baron
  */
 public class VForDefinition
@@ -32,7 +34,7 @@ public class VForDefinition
 
     public VForDefinition(String vForValue, TemplateParserContext context)
     {
-        String[] splitExpression = splitVForExpression(vForValue);
+        String[] splitExpression = splitVForExpression(vForValue, context);
 
         String loopVariablesDefinition = splitExpression[0].trim();
         inExpression = splitExpression[1].trim();
@@ -66,7 +68,10 @@ public class VForDefinition
                 return;
         }
 
-        throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
+        throw new TemplateExpressionException(
+            "Invalid v-for found, they should be in the form: \"Todo todo in myTodos\"",
+            vForValue,
+            context);
     }
 
     /**
@@ -213,16 +218,20 @@ public class VForDefinition
     /**
      * Split the value of a v-for into 2 blocks (before/after the " in " or " of ")
      * @param vForValue The value of the v-for attribute
+     * @param context
      * @return The two
      */
-    private String[] splitVForExpression(String vForValue)
+    private String[] splitVForExpression(String vForValue, TemplateParserContext context)
     {
         String[] splitExpression = vForValue.split(" in ");
         if (splitExpression.length != 2)
             splitExpression = vForValue.split(" of ");
 
         if (splitExpression.length != 2)
-            throw new InvalidExpressionException("Invalid v-for found: " + vForValue);
+            throw new TemplateExpressionException(
+                "Invalid v-for found, they should be in the form: \"Todo todo in myTodos\"",
+                vForValue,
+                context);
 
         return splitExpression;
     }
@@ -245,17 +254,17 @@ public class VForDefinition
 
     public String getVariableDefinition()
     {
-        String variableDefinition = loopVariableInfo.getGlobalName();
+        String variableDefinition = loopVariableInfo.getName();
 
         if (keyVariableInfo != null || indexVariableInfo != null)
         {
             variableDefinition = "(" + variableDefinition;
 
             if (keyVariableInfo != null)
-                variableDefinition += ", " + keyVariableInfo.getGlobalName();
+                variableDefinition += ", " + keyVariableInfo.getName();
 
             if (indexVariableInfo != null)
-                variableDefinition += ", " + indexVariableInfo.getGlobalName();
+                variableDefinition += ", " + indexVariableInfo.getName();
 
             variableDefinition += ")";
         }

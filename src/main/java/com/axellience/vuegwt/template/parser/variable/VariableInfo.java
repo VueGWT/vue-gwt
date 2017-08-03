@@ -1,6 +1,9 @@
-package com.axellience.vuegwt.template.parser.context;
+package com.axellience.vuegwt.template.parser.variable;
 
 /**
+ * Information about a Variable in the template.
+ * Can be for example a variable accessible from Java (@JsProperty), a Computed Property a loop
+ * variable (v-for) or method parameters.
  * @author Adrien Baron
  */
 public class VariableInfo
