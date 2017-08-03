@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.component.options;
 
+import com.axellience.vuegwt.client.component.HasCustomizeOptions;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
@@ -45,6 +46,9 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     public final void setComponentWithTemplate(ComponentWithTemplate<T> componentWithTemplate)
     {
         this.componentWithTemplate = componentWithTemplate;
+
+        if (componentWithTemplate instanceof HasCustomizeOptions)
+            ((HasCustomizeOptions) componentWithTemplate).customizeOptions(this);
 
         if (componentWithTemplate.getRenderFunction() != null)
         {
