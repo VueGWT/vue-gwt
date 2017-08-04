@@ -9,6 +9,7 @@ import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.client.vue.VueConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -32,44 +33,59 @@ import static com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator
  */
 public class VueComponentConstructorGenerator extends AbstractVueComponentConstructorGenerator
 {
+    private static String DEPENDENCIES_INJECTED_PROP = "areDependenciesInjected";
+
     public VueComponentConstructorGenerator(ProcessingEnvironment processingEnv)
     {
         super(processingEnv);
     }
 
     @Override
-    protected void createCreateInstanceMethod(TypeElement componentTypeElement, String packageName,
-        String className, TypeName generatedTypeName, Builder vueConstructorClassBuilder)
+    protected void createProperties(TypeName vueConstructorType, Builder vueConstructorBuilder)
+    {
+        super.createProperties(vueConstructorType, vueConstructorBuilder);
+
+        vueConstructorBuilder.addField(FieldSpec
+            .builder(TypeName.BOOLEAN,
+                DEPENDENCIES_INJECTED_PROP,
+                Modifier.PRIVATE,
+                Modifier.STATIC)
+            .addAnnotation(JsOverlay.class)
+            .build());
+    }
+
+    @Override
+    protected void createCreateInstanceMethod(TypeElement component, String packageName,
+        String className, TypeName vueConstructorType, Builder vueConstructorBuilder)
     {
         MethodSpec.Builder createInstanceBuilder = MethodSpec
             .methodBuilder("createInstance")
             .addModifiers(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL)
             .addAnnotation(JsOverlay.class)
-            .returns(generatedTypeName);
+            .returns(vueConstructorType);
 
         String componentWithTemplateClassName = className + WITH_TEMPLATE_SUFFIX;
         createInstanceBuilder.addStatement("$T<$T> componentOptions = $T.getOptions()",
             VueComponentOptions.class,
-            componentTypeElement.asType(),
+            component.asType(),
             ClassName.bestGuess(packageName + "." + componentWithTemplateClassName));
 
         // Set parent
-        TypeName superClass = TypeName.get(componentTypeElement.getSuperclass());
+        TypeName superClass = TypeName.get(component.getSuperclass());
         if (!TypeName.get(VueComponent.class).equals(superClass))
         {
             TypeName superConstructor =
                 ClassName.bestGuess(superClass.toString() + CONSTRUCTOR_SUFFIX);
-            createInstanceBuilder.addStatement("$L = ($T) $T.get().extendJavaComponent($L)",
-                INSTANCE_PROP,
-                generatedTypeName,
+            createInstanceBuilder.addStatement(
+                "constructor = ($T) $T.getSupplier().get().extendJavaComponent($L)",
+                vueConstructorType,
                 superConstructor,
                 "componentOptions");
         }
         else
         {
-            createInstanceBuilder.addStatement("$L = ($T) $T.extendJavaComponent($L)",
-                INSTANCE_PROP,
-                generatedTypeName,
+            createInstanceBuilder.addStatement("constructor = ($T) $T.extendJavaComponent($L)",
+                vueConstructorType,
                 Vue.class,
                 "componentOptions");
         }
@@ -81,10 +97,10 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             .addStatement("injectDependencies()")
             .endControlFlow();
 
-        createInstanceBuilder.addStatement("return $L", INSTANCE_PROP);
-        vueConstructorClassBuilder.addMethod(createInstanceBuilder.build());
+        createInstanceBuilder.addStatement("return constructor");
+        vueConstructorBuilder.addMethod(createInstanceBuilder.build());
 
-        createInjectDependenciesMethod(componentTypeElement, vueConstructorClassBuilder);
+        createInjectDependenciesMethod(component, vueConstructorBuilder);
     }
 
     /**
@@ -126,7 +142,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
             Stream
                 .of(componentsClass)
                 .forEach(clazz -> injectDependenciesBuilder.addStatement(
-                    "components.set($S, $T.get())",
+                    "components.set($S, $T.getSupplier().get())",
                     VueGWTTools.componentToTagName(clazz.getName()),
                     ClassName.bestGuess(clazz.getCanonicalName() + CONSTRUCTOR_SUFFIX)));
         }
@@ -139,7 +155,7 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
 
             classTypeMirrors.forEach(classTypeMirror -> {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
-                injectDependenciesBuilder.addStatement("components.set($S, $T.get())",
+                injectDependenciesBuilder.addStatement("components.set($S, $T.getSupplier().get())",
                     VueGWTTools.componentToTagName(classTypeElement.getSimpleName().toString()),
                     ClassName.bestGuess(classTypeElement.getQualifiedName() + CONSTRUCTOR_SUFFIX));
             });
@@ -148,10 +164,10 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
 
     private void addGetComponentsStatement(MethodSpec.Builder injectDependenciesBuilder)
     {
-        injectDependenciesBuilder.addStatement("$T<$T> components = $L.getOptionsComponents()",
+        injectDependenciesBuilder.addStatement(
+            "$T<$T> components = constructor.getOptionsComponents()",
             JsObject.class,
-            VueConstructor.class,
-            INSTANCE_PROP);
+            VueConstructor.class);
     }
 
     /**
@@ -195,9 +211,9 @@ public class VueComponentConstructorGenerator extends AbstractVueComponentConstr
 
     private void addGetDirectivesStatement(MethodSpec.Builder injectDependenciesBuilder)
     {
-        injectDependenciesBuilder.addStatement("$T<$T> directives = $L.getOptionsDirectives()",
+        injectDependenciesBuilder.addStatement(
+            "$T<$T> directives = constructor.getOptionsDirectives()",
             JsObject.class,
-            VueDirectiveOptions.class,
-            INSTANCE_PROP);
+            VueDirectiveOptions.class);
     }
 }

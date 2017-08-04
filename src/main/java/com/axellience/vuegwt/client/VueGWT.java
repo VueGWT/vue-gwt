@@ -5,7 +5,6 @@ import com.axellience.vuegwt.client.jsnative.html.HTMLDocument;
 import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsRunnable;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.resources.VueGwtResources;
 import com.axellience.vuegwt.client.resources.VueLibResources;
 import com.axellience.vuegwt.client.tools.JsTools;
@@ -16,7 +15,10 @@ import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author Adrien Baron
@@ -28,8 +30,9 @@ public class VueGWT
     private static JsArray<JsRunnable> onReadyCallbacks = new JsArray<>();
     private static LinkedList<Runnable> onReadyCallbacksJava = new LinkedList<>();
 
-    private static final JsObject<VueConstructor<? extends VueComponent>> componentConstructors =
-        new JsObject<>();
+    private static final Map<String, VueConstructor<? extends VueComponent>> constructors =
+        new HashMap<>();
+    private static final Map<String, Supplier<?>> constructorSuppliers = new HashMap<>();
 
     /**
      * Inject scripts necessary for Vue GWT to work.
@@ -118,14 +121,17 @@ public class VueGWT
      * @param qualifiedName The fully qualified name of the {@link VueComponent} class
      * @return A {@link VueConstructor} you can use to instantiate components
      */
-    public static VueConstructor<? extends VueComponent> getConstructor(String qualifiedName)
+    public static <T extends VueComponent> VueConstructor<T> getConstructor(String qualifiedName)
     {
-        if (!componentConstructors.hasOwnProperty(qualifiedName))
-            throw new RuntimeException("Couldn't find VueConstructor for Component: "
-                + qualifiedName
-                + ". Make sure that annotation are being processed, and that you added the -generateJsInteropExports flag to GWT.");
+        if (constructorSuppliers.containsKey(qualifiedName))
+            return (VueConstructor<T>) constructorSuppliers.get(qualifiedName).get();
 
-        return componentConstructors.get(qualifiedName);
+        if (constructors.containsKey(qualifiedName))
+            return (VueConstructor<T>) constructors.get(qualifiedName);
+
+        throw new RuntimeException("Couldn't find VueConstructor for Component: "
+            + qualifiedName
+            + ". Make sure that annotation are being processed, and that you added the -generateJsInteropExports flag to GWT. You can also try a \"mvn clean\" on your maven project.");
     }
 
     /**
@@ -138,7 +144,20 @@ public class VueGWT
     public static <T extends VueComponent> void register(String qualifiedName,
         VueConstructor<T> vueConstructor)
     {
-        componentConstructors.set(qualifiedName, vueConstructor);
+        constructors.put(qualifiedName, vueConstructor);
+    }
+
+    /**
+     * Register a {@link Supplier} returning the {@link VueConstructor} for a given {@link
+     * VueComponent}.
+     * @param qualifiedName The fully qualified name of the {@link VueComponent} class
+     * @param vueConstructorSupplier A {@link Supplier} which provides {@link VueConstructor} that
+     * you can use to instantiate components
+     */
+    @JsIgnore
+    public static void register(String qualifiedName, Supplier<?> vueConstructorSupplier)
+    {
+        constructorSuppliers.put(qualifiedName, vueConstructorSupplier);
     }
 
     /**

@@ -23,6 +23,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import java.util.function.Supplier;
 
 /**
  * Abstract class to generate {@link VueConstructor} from the user Vue Component classes.
@@ -34,8 +35,9 @@ import javax.lang.model.util.Elements;
 public abstract class AbstractVueComponentConstructorGenerator
 {
     public static String CONSTRUCTOR_SUFFIX = "Constructor";
-    static String INSTANCE_PROP = "vuegwt$constructor";
-    static String DEPENDENCIES_INJECTED_PROP = "vuegwt$areDependenciesInjected";
+    
+    private static String INSTANCE_PROP = "constructor";
+    private static String SUPPLIER_PROP = "supplier";
 
     private final Elements elementsUtils;
     private final Filer filer;
@@ -48,52 +50,51 @@ public abstract class AbstractVueComponentConstructorGenerator
 
     /**
      * Generate our {@link VueConstructor} class.
-     * @param componentTypeElement The {@link VueComponent} class to
-     * generate {@link VueComponentOptions} from
+     * @param component The {@link VueComponent} class to generate {@link VueComponentOptions} from
      */
-    public void generate(TypeElement componentTypeElement)
+    public void generate(TypeElement component)
     {
-        String packageName =
-            elementsUtils.getPackageOf(componentTypeElement).getQualifiedName().toString();
-        String className = componentTypeElement.getSimpleName().toString();
-        String generatedClassName = className + CONSTRUCTOR_SUFFIX;
-        TypeName generatedTypeName = ClassName.get(packageName, generatedClassName);
+        String packageName = elementsUtils.getPackageOf(component).getQualifiedName().toString();
+        String className = component.getSimpleName().toString();
+        String vueConstructorClassName = className + CONSTRUCTOR_SUFFIX;
+        TypeName vueConstructorType = ClassName.get(packageName, vueConstructorClassName);
 
-        Builder vueConstructorClassBuilder =
-            createConstructorBuilderClass(componentTypeElement, generatedClassName);
+        Builder vueConstructorBuilder =
+            createConstructorBuilderClass(component, vueConstructorClassName);
 
-        createProperties(generatedTypeName, vueConstructorClassBuilder);
+        createProperties(vueConstructorType, vueConstructorBuilder);
 
-        createGetMethod(generatedTypeName, vueConstructorClassBuilder);
+        createGetSupplierMethod(vueConstructorType, vueConstructorBuilder);
+        createGetMethod(vueConstructorType, vueConstructorBuilder);
 
-        createCreateInstanceMethod(componentTypeElement,
+        createCreateInstanceMethod(component,
             packageName,
             className,
-            generatedTypeName,
-            vueConstructorClassBuilder);
+            vueConstructorType,
+            vueConstructorBuilder);
 
         // Build the ComponentOptions class
         GenerationUtil.toJavaFile(filer,
-            vueConstructorClassBuilder,
+            vueConstructorBuilder,
             packageName,
-            generatedClassName,
-            componentTypeElement);
+            vueConstructorClassName,
+            component);
     }
 
     /**
      * Create the builder to build our {@link VueConstructor} class.
-     * @param componentTypeElement The Component we generate for
-     * @param generatedClassName The type name of our generated {@link VueConstructor}
+     * @param component The Component we generate for
+     * @param vueConstructorClassName The type name of our generated {@link VueConstructor}
      * @return A Class Builder
      */
-    protected Builder createConstructorBuilderClass(TypeElement componentTypeElement,
-        String generatedClassName)
+    protected Builder createConstructorBuilderClass(TypeElement component,
+        String vueConstructorClassName)
     {
         return TypeSpec
-            .classBuilder(generatedClassName)
+            .classBuilder(vueConstructorClassName)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .superclass(ParameterizedTypeName.get(ClassName.get(VueConstructor.class),
-                ClassName.get(componentTypeElement)))
+                ClassName.get(component)))
             .addAnnotation(AnnotationSpec
                 .builder(JsType.class)
                 .addMember("isNative", "true", true)
@@ -101,48 +102,69 @@ public abstract class AbstractVueComponentConstructorGenerator
                 .addMember("name", "\"Function\"")
                 .build())
             .addJavadoc("VueConstructor for Component {@link $S}",
-                componentTypeElement.getQualifiedName().toString());
+                component.getQualifiedName().toString());
     }
 
     /**
      * Create the createInstance method. This method will return a new instance of our generated
      * {@link VueConstructor} while making sure dependencies are injected.
-     * @param componentTypeElement The Component we generate for
+     * @param component The Component we generate for
      * @param packageName The name of the package this Component is in
      * @param className The name of our Component class
-     * @param generatedTypeName The generated type name for our {@link VueConstructor}
-     * @param vueConstructorClassBuilder The builder to create our {@link VueConstructor} class
+     * @param vueConstructorType The generated type name for our {@link VueConstructor}
+     * @param vueConstructorBuilder The builder to create our {@link VueConstructor} class
      */
-    protected abstract void createCreateInstanceMethod(TypeElement componentTypeElement,
-        String packageName, String className, TypeName generatedTypeName,
-        Builder vueConstructorClassBuilder);
+    protected abstract void createCreateInstanceMethod(TypeElement component, String packageName,
+        String className, TypeName vueConstructorType, Builder vueConstructorBuilder);
 
     /**
      * Create the static properties used in our {@link VueConstructor}.
-     * @param generatedTypeName
-     * @param vueConstructorClassBuilder
+     * @param vueConstructorType The generated type name for our {@link VueConstructor}
+     * @param vueConstructorBuilder The builder to create our {@link VueConstructor} class
      */
-    private void createProperties(TypeName generatedTypeName, Builder vueConstructorClassBuilder)
+    protected void createProperties(TypeName vueConstructorType, Builder vueConstructorBuilder)
     {
-        vueConstructorClassBuilder.addField(FieldSpec
-            .builder(generatedTypeName, INSTANCE_PROP, Modifier.PRIVATE, Modifier.STATIC)
-            .addAnnotation(JsOverlay.class)
-            .build());
-
-        vueConstructorClassBuilder.addField(FieldSpec
-            .builder(TypeName.BOOLEAN,
-                DEPENDENCIES_INJECTED_PROP,
+        vueConstructorBuilder.addField(FieldSpec
+            .builder(ParameterizedTypeName.get(ClassName.get(Supplier.class), vueConstructorType),
+                SUPPLIER_PROP,
                 Modifier.PRIVATE,
                 Modifier.STATIC)
             .addAnnotation(JsOverlay.class)
             .build());
+
+        vueConstructorBuilder.addField(FieldSpec
+            .builder(vueConstructorType, INSTANCE_PROP, Modifier.PRIVATE, Modifier.STATIC)
+            .addAnnotation(JsOverlay.class)
+            .build());
+    }
+
+    /**
+     * Create the method that create the Supplier for our VueConstructor.
+     * This Supplier is used to retrieve the instance of our VueConstructor.
+     * It is registered in VueGWT on application start.
+     * @param vueConstructorType The generated type name for our {@link VueConstructor}
+     * @param vueConstructorBuilder The builder to create our {@link VueConstructor} class
+     */
+    private void createGetSupplierMethod(TypeName vueConstructorType, Builder vueConstructorBuilder)
+    {
+        MethodSpec.Builder getBuilder = MethodSpec
+            .methodBuilder("getSupplier")
+            .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+            .addAnnotation(JsOverlay.class)
+            .returns(ParameterizedTypeName.get(ClassName.get(Supplier.class), vueConstructorType))
+            .beginControlFlow("if ($L == null)", SUPPLIER_PROP)
+            .addStatement("$L = () -> get()", SUPPLIER_PROP)
+            .endControlFlow()
+            .addStatement("return $L", SUPPLIER_PROP);
+
+        vueConstructorBuilder.addMethod(getBuilder.build());
     }
 
     private void createGetMethod(TypeName generatedTypeName, Builder vueConstructorClassBuilder)
     {
         MethodSpec.Builder getBuilder = MethodSpec
             .methodBuilder("get")
-            .addModifiers(Modifier.STATIC, Modifier.PUBLIC, Modifier.FINAL)
+            .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
             .addAnnotation(JsOverlay.class)
             .returns(generatedTypeName)
             .beginControlFlow("if ($L == null)", INSTANCE_PROP)

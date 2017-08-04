@@ -164,7 +164,7 @@ public class ComponentWithTemplateGenerator
         // Add a block that registers the VueConstructor for the VueComponent
         componentWithTemplateBuilder.addStaticBlock(CodeBlock
             .builder()
-            .addStatement("$T.onReady(() -> $T.register($S, $T.get()))",
+            .addStatement("$T.onReady(() -> $T.register($S, $T.getSupplier()))",
                 VueGWT.class,
                 VueGWT.class,
                 component.getQualifiedName(),
