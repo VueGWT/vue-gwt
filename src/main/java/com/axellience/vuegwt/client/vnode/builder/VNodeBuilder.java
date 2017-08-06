@@ -3,7 +3,7 @@ package com.axellience.vuegwt.client.vnode.builder;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vnode.VNodeData;
-import com.axellience.vuegwt.client.vue.VueConstructor;
+import com.axellience.vuegwt.client.vue.VueJsConstructor;
 
 /**
  * @author Adrien Baron
@@ -51,13 +51,13 @@ public class VNodeBuilder
 
     /**
      * Create a VNode with the given Component
-     * @param vueConstructor Constructor for the Component we want
+     * @param vueJsConstructor Constructor for the Component we want
      * @param children Children
      * @return a new VNode of this Component
      */
-    public VNode el(VueConstructor<VueComponent> vueConstructor, Object... children)
+    public VNode el(VueJsConstructor<VueComponent> vueJsConstructor, Object... children)
     {
-        return this.function.create(vueConstructor, children, null);
+        return this.function.create(vueJsConstructor, children, null);
     }
 
     /**

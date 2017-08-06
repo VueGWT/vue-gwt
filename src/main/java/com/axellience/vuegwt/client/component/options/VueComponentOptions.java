@@ -18,6 +18,9 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
+import javax.inject.Provider;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -34,6 +37,7 @@ import java.util.Map.Entry;
 public class VueComponentOptions<T extends VueComponent> extends JsObject
 {
     private ComponentWithTemplate<T> componentWithTemplate;
+    private Map<String, Provider<?>> componentWithTemplateProviders;
     private JsObject dataFields;
 
     /**
@@ -262,28 +266,54 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
         return componentWithTemplate;
     }
 
+    @JsOverlay
+    public final Provider<?> getProvider(Class<T> component)
+    {
+        return getProviders().get(component.getCanonicalName());
+    }
+
+    @JsOverlay
+    public final void addProvider(Class<T> component, Provider<?> componentWithTemplateProvider)
+    {
+        getProviders().put(component.getCanonicalName(), componentWithTemplateProvider);
+    }
+
+    @JsOverlay
+    public final void addAllProviders(Map<String, Provider<?>> providers)
+    {
+        getProviders().putAll(providers);
+    }
+
+    @JsOverlay
+    public final Map<String, Provider<?>> getProviders()
+    {
+        if (this.componentWithTemplateProviders == null)
+            this.componentWithTemplateProviders = new HashMap<>();
+
+        return componentWithTemplateProviders;
+    }
 
     /* ---------------------------------------------
 
               Instance Properties and Methods
 
       ---------------------------------------------*/
-
     @JsProperty private Object data;
     @JsProperty private JsObject props;
-    @JsProperty private JsObject propsData;
 
+    @JsProperty private JsObject propsData;
     @JsProperty private JsObject<ComputedOptions> computed;
     @JsProperty private JsObject methods;
+
     @JsProperty private JsObject watch;
-
     @JsProperty private Object el;
+
     @JsProperty private String template;
-
     @JsProperty private JsObject<VueDirectiveOptions> directives;
-    @JsProperty private JsObject<VueComponentOptions> components;
 
+    @JsProperty private JsObject<VueComponentOptions> components;
     @JsProperty private VueComponent parent;
+
     @JsProperty private String name;
 
     @JsProperty private JsArray<Object> staticRenderFns;

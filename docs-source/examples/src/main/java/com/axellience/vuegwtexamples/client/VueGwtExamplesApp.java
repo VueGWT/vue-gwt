@@ -4,7 +4,8 @@ import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.vue.VueConstructor;
+import com.axellience.vuegwt.client.vue.VueFactory;
+import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
@@ -15,7 +16,7 @@ import com.axellience.vuegwtexamples.client.examples.extendjavacomponent.ChildCo
 import com.axellience.vuegwtexamples.client.examples.extendsjscomponent.ChildJavaComponent;
 import com.axellience.vuegwtexamples.client.examples.focus.FocusDirectiveComponent;
 import com.axellience.vuegwtexamples.client.examples.greet.GreetComponent;
-import com.axellience.vuegwtexamples.client.examples.instanciatejscomponent.FullJsWithMethodsComponentConstructor;
+import com.axellience.vuegwtexamples.client.examples.instanciatejscomponent.FullJsWithMethodsComponentFactory;
 import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
 import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
@@ -52,7 +53,7 @@ public class VueGwtExamplesApp implements EntryPoint
     {
         VueGWT.init();
 
-        VueConstructor vueClass = (VueConstructor) JsTools.getWindow().get("FullJsComponent");
+        VueJsConstructor vueClass = (VueJsConstructor) JsTools.getWindow().get("FullJsComponent");
         VueComponent myComponent = vueClass.instantiate();
         myComponent.$mount("#fullJsComponent");
 
@@ -89,20 +90,20 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("renderAppComponent", RenderAppComponent.class);
         this.addExample("extendJavaComponent", ChildComponent.class);
         this.addExample("extendJsComponent", ChildJavaComponent.class);
-        this.addExample("fullJsWithMethodsComponent", FullJsWithMethodsComponentConstructor.get());
+        this.addExample("fullJsWithMethodsComponent", FullJsWithMethodsComponentFactory.get());
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleVueClass)
     {
-        addExample(exampleId, VueGWT.getConstructor(exampleVueClass));
+        addExample(exampleId, VueGWT.getFactory(exampleVueClass));
     }
 
-    private void addExample(String exampleId, VueConstructor<? extends VueComponent> exampleVueConstructor)
+    private void addExample(String exampleId, VueFactory<? extends VueComponent> exampleVueFactory)
     {
         // If we find the containing div for this example, we instantiate it
         if (Document.get().getElementById(exampleId) != null)
         {
-            VueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVueConstructor);
+            VueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVueFactory);
             JsTools.getWindow().set(exampleId, exampleInstance);
         }
     }

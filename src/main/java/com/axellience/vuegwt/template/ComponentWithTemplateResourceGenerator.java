@@ -17,8 +17,6 @@
 package com.axellience.vuegwt.template;
 
 import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
-import com.axellience.vuegwt.jsr69.component.ComponentWithTemplateGenerator;
-import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompiler;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompilerException;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompilerResult;
@@ -46,6 +44,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.COMPONENT_WITH_TEMPLATE_SUFFIX;
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.STYLE_BUNDLE_METHOD_NAME;
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.styleBundleName;
+
 /**
  * This generator parse and compile the HTML template.
  * The resulting object has information that can be passed to Vue when declaring the component.
@@ -71,8 +73,7 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
         SourceWriter sw = new StringSourceWriter();
 
         TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
-        String withTemplateTypeName =
-            getTypeName(method) + ComponentWithTemplateGenerator.WITH_TEMPLATE_SUFFIX;
+        String withTemplateTypeName = getTypeName(method) + COMPONENT_WITH_TEMPLATE_SUFFIX;
 
         // No resource for the template
         if (resource == null)
@@ -323,12 +324,9 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
     {
         for (Entry<String, String> entry : templateParserResult.getStyleImports().entrySet())
         {
-            String styleInterfaceName = entry.getValue();
-            String styleInstance = styleInterfaceName
-                + StyleProviderGenerator.STYLE_BUNDLE_SUFFIX
-                + ".INSTANCE."
-                + StyleProviderGenerator.STYLE_BUNDLE_METHOD_NAME
-                + "()";
+            String styleInstance =
+                styleBundleName(entry.getValue()) + ".INSTANCE." + STYLE_BUNDLE_METHOD_NAME + "()";
+
             jsPropertyAnnotation(sw);
             sw.println("private "
                 + entry.getValue()

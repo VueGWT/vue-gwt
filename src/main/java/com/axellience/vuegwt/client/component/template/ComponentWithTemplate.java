@@ -20,8 +20,26 @@ public interface ComponentWithTemplate<T extends VueComponent> extends ResourceP
 {
     String EXPRESSION_PREFIX = "exp$";
 
-    String getRenderFunction();
-    String[] getStaticRenderFunctions();
-    String[] getTemplateComputedProperties();
-    Map<String, CssResource> getTemplateStyles();
+    default String getRenderFunction()
+    {
+        return null;
+    }
+    default String[] getStaticRenderFunctions()
+    {
+        return null;
+    }
+    default String[] getTemplateComputedProperties()
+    {
+        return null;
+    }
+    default Map<String, CssResource> getTemplateStyles()
+    {
+        return null;
+    }
+
+    @Override
+    default String getName()
+    {
+        return null;
+    }
 }

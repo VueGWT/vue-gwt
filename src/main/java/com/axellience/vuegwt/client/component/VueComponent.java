@@ -18,6 +18,10 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
+import javax.inject.Provider;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The Java representation of a Vue Component.
  * Whenever you want to add a component to your application you should extends this class and add
@@ -27,6 +31,8 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public abstract class VueComponent extends JsObject implements HasCreated
 {
+    private Map<String, Provider<?>> childProviders;
+
     /* ---------------------------------------------
 
               Instance Properties and Methods
@@ -172,5 +178,39 @@ public abstract class VueComponent extends JsObject implements HasCreated
     public final Object $listeners()
     {
         return $listeners;
+    }
+
+    @JsOverlay
+    protected final <T extends VueComponent> void addChildProvider(Class<T> childClass,
+        Provider<?> provider)
+    {
+        if (this.childProviders == null)
+            this.childProviders = new HashMap<>();
+
+        this.childProviders.put(childClass.getCanonicalName(), provider);
+    }
+
+    @JsOverlay
+    private <T extends VueComponent> Provider<?> getChildProvider(Class<T> childClass)
+    {
+        if (childProviders == null)
+            return null;
+
+        return childProviders.get(childClass.getCanonicalName());
+    }
+
+    @JsOverlay
+    protected final <T extends VueComponent> Provider<?> getProvider(Class<T> componentClass)
+    {
+        // If we have a parent, try to get the provider from it
+        if (this.$parent != null)
+        {
+            Provider<?> fromParent = this.$parent.getChildProvider(componentClass);
+            if (fromParent != null)
+                return fromParent;
+        }
+
+        // Otherwise return our default provider from options
+        return this.$options.getProvider(componentClass);
     }
 }

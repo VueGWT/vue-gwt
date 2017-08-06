@@ -7,14 +7,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
  * Annotation placed on Vue Components
  * @author Adrien Baron
  */
 @Target(TYPE)
-@Retention(SOURCE)
+@Retention(CLASS)
 public @interface Component
 {
     String name() default "";

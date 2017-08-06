@@ -8,13 +8,14 @@ import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.resources.VueGwtResources;
 import com.axellience.vuegwt.client.resources.VueLibResources;
 import com.axellience.vuegwt.client.tools.JsTools;
-import com.axellience.vuegwt.client.vue.VueConstructor;
+import com.axellience.vuegwt.client.vue.VueFactory;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
+import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -30,9 +31,9 @@ public class VueGWT
     private static JsArray<JsRunnable> onReadyCallbacks = new JsArray<>();
     private static LinkedList<Runnable> onReadyCallbacksJava = new LinkedList<>();
 
-    private static final Map<String, VueConstructor<? extends VueComponent>> constructors =
+    private static final Map<String, VueFactory<? extends VueComponent>> factories =
         new HashMap<>();
-    private static final Map<String, Supplier<?>> constructorSuppliers = new HashMap<>();
+    private static final Map<String, Provider<?>> factoryProviders = new HashMap<>();
 
     /**
      * Inject scripts necessary for Vue GWT to work.
@@ -95,69 +96,68 @@ public class VueGWT
     @JsIgnore
     public static <T extends VueComponent> T createInstance(Class<T> vueComponentClass)
     {
-        return getConstructor(vueComponentClass).instantiate();
+        return getFactory(vueComponentClass).create();
     }
 
     /**
-     * Return the {@link VueConstructor} for the given {@link VueComponent} class.
+     * Return the {@link VueFactory} for the given {@link VueComponent} class.
      * @param vueComponentClass The {@link VueComponent} class
      * @param <T> The type of the {@link VueComponent}
-     * @return A {@link VueConstructor} you can use to instantiate components
+     * @return A {@link VueFactory} you can use to instantiate components
      */
     @JsIgnore
-    public static <T extends VueComponent> VueConstructor<T> getConstructor(
-        Class<T> vueComponentClass)
+    public static <T extends VueComponent> VueFactory<T> getFactory(Class<T> vueComponentClass)
     {
         if (JavaScriptObject.class.equals(vueComponentClass))
         {
             throw new RuntimeException(
-                "You can't use the .class of a JsComponent to instantiate it. Please use MyComponentConstructor.get() instead.");
+                "You can't use the .class of a JsComponent to instantiate it. Please use MyComponentFactory.get() instead.");
         }
-        return (VueConstructor<T>) getConstructor(vueComponentClass.getCanonicalName());
+        return (VueFactory<T>) getFactory(vueComponentClass.getCanonicalName());
     }
 
     /**
-     * Return the {@link VueConstructor} for the given {@link VueComponent} fully qualified name.
+     * Return the {@link VueFactory} for the given {@link VueComponent} fully qualified name.
      * @param qualifiedName The fully qualified name of the {@link VueComponent} class
-     * @return A {@link VueConstructor} you can use to instantiate components
+     * @return A {@link VueFactory} you can use to instantiate components
      */
-    public static <T extends VueComponent> VueConstructor<T> getConstructor(String qualifiedName)
+    public static <T extends VueComponent> VueFactory<T> getFactory(String qualifiedName)
     {
-        if (constructorSuppliers.containsKey(qualifiedName))
-            return (VueConstructor<T>) constructorSuppliers.get(qualifiedName).get();
+        if (factoryProviders.containsKey(qualifiedName))
+            return (VueFactory<T>) factoryProviders.get(qualifiedName).get();
 
-        if (constructors.containsKey(qualifiedName))
-            return (VueConstructor<T>) constructors.get(qualifiedName);
+        if (factories.containsKey(qualifiedName))
+            return (VueFactory<T>) factories.get(qualifiedName);
 
-        throw new RuntimeException("Couldn't find VueConstructor for Component: "
+        throw new RuntimeException("Couldn't find VueFactory for Component: "
             + qualifiedName
             + ". Make sure that annotation are being processed, and that you added the -generateJsInteropExports flag to GWT. You can also try a \"mvn clean\" on your maven project.");
     }
 
     /**
-     * Register a {@link VueConstructor} for a given {@link VueComponent} fully qualified name.
+     * Register a {@link VueFactory} for a given {@link VueComponent} fully qualified name.
      * @param qualifiedName The fully qualified name of the {@link VueComponent} class
-     * @param vueConstructor A {@link VueConstructor} you can use to instantiate components
+     * @param vueFactory A {@link VueFactory} you can use to instantiate components
      * @param <T> The type of the {@link VueComponent}
      */
     @JsIgnore
     public static <T extends VueComponent> void register(String qualifiedName,
-        VueConstructor<T> vueConstructor)
+        VueFactory<T> vueFactory)
     {
-        constructors.put(qualifiedName, vueConstructor);
+        factories.put(qualifiedName, vueFactory);
     }
 
     /**
-     * Register a {@link Supplier} returning the {@link VueConstructor} for a given {@link
+     * Register a {@link Supplier} returning the {@link VueFactory} for a given {@link
      * VueComponent}.
      * @param qualifiedName The fully qualified name of the {@link VueComponent} class
-     * @param vueConstructorSupplier A {@link Supplier} which provides {@link VueConstructor} that
+     * @param vueFactoryProvider A static {@link Provider} which provides {@link VueFactory} that
      * you can use to instantiate components
      */
     @JsIgnore
-    public static void register(String qualifiedName, Supplier<?> vueConstructorSupplier)
+    public static void register(String qualifiedName, Provider<?> vueFactoryProvider)
     {
-        constructorSuppliers.put(qualifiedName, vueConstructorSupplier);
+        factoryProviders.put(qualifiedName, vueFactoryProvider);
     }
 
     /**

@@ -5,7 +5,7 @@ import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.vue.VueConstructor;
+import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.google.gwt.regexp.shared.RegExp;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
@@ -22,10 +22,10 @@ public class VueGWTTools
     private static RegExp directiveEnd = RegExp.compile("Directive$");
 
     public static native <T extends VueComponent> T createInstanceForVueClass(
-        VueConstructor<T> vueClass);
+        VueJsConstructor<T> vueClass);
 
-    public static native <T extends VueComponent, K extends T> VueConstructor<K> extendVueClass(
-        VueConstructor<T> vueClassToExtend, VueComponentOptions<K> vueComponentOptions);
+    public static native <T extends VueComponent, K extends T> VueJsConstructor<K> extendVueClass(
+        VueJsConstructor<T> vueClassToExtend, VueComponentOptions<K> vueComponentOptions);
 
     @JsMethod(name = "wrapMethodWithBefore")
     public static native <T> String wrapMethod(T object, String methodName,
@@ -39,7 +39,7 @@ public class VueGWTTools
         BeforeMethodCall<T> beforeMethodCall, AfterMethodCall<T> afterMethodCall);
 
     public static native <T extends VueComponent> void extendVueConstructorWithJavaComponent(
-        VueConstructor<T> extendedVueConstructor, ComponentWithTemplate<T> componentWithTemplate);
+        VueJsConstructor<T> extendedVueJsConstructor, ComponentWithTemplate<T> componentWithTemplate);
 
     public static native <T> JsArray<T> javaArrayToJsArray(Object[] javaArray);
 

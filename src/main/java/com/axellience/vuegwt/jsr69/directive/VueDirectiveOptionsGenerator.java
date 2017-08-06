@@ -2,7 +2,9 @@ package com.axellience.vuegwt.jsr69.directive;
 
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
+import com.axellience.vuegwt.jsr69.GenerationNameUtil;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -21,9 +23,6 @@ import javax.lang.model.util.Elements;
  */
 public class VueDirectiveOptionsGenerator
 {
-    public static String DIRECTIVE_OPTIONS_SUFFIX = "Options";
-    private static String JDI = "vuegwt$javaDirectiveInstance";
-
     private final Elements elementsUtils;
     private final Filer filer;
 
@@ -40,13 +39,10 @@ public class VueDirectiveOptionsGenerator
      */
     public void generate(TypeElement directiveTypeElement)
     {
-        String packageName =
-            elementsUtils.getPackageOf(directiveTypeElement).getQualifiedName().toString();
-        String typeName = directiveTypeElement.getSimpleName().toString();
-        String generatedTypeName = typeName + DIRECTIVE_OPTIONS_SUFFIX;
+        ClassName optionsClassName = GenerationNameUtil.directiveOptionsName(directiveTypeElement);
 
         Builder componentClassBuilder = TypeSpec
-            .classBuilder(generatedTypeName)
+            .classBuilder(optionsClassName)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .superclass(VueDirectiveOptions.class)
             .addAnnotation(JsType.class)
@@ -59,7 +55,7 @@ public class VueDirectiveOptionsGenerator
 
         // Add the Java Component Instance initialization
         constructorBuilder.addStatement("this.$L = new $T()",
-            JDI,
+            "vuegwt$javaDirectiveInstance",
             TypeName.get(directiveTypeElement.asType()));
 
         // Call the method to copy hooks functions
@@ -71,8 +67,7 @@ public class VueDirectiveOptionsGenerator
         // Build the DirectiveOptions class
         GenerationUtil.toJavaFile(filer,
             componentClassBuilder,
-            packageName,
-            generatedTypeName,
+            optionsClassName,
             directiveTypeElement);
     }
 }

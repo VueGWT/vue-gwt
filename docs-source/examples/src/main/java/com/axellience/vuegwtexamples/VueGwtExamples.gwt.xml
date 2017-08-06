@@ -7,6 +7,8 @@
 
     <inherits name='com.axellience.vuegwt.VueGwt'/>
 
+
+
     <!-- Specify the app entry point class.                   -->
     <entry-point class='com.axellience.vuegwtexamples.client.VueGwtExamplesApp'/>
 

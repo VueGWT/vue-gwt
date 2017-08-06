@@ -16,11 +16,11 @@ import jsinterop.annotations.JsType;
 /**
  * A Java representation of a VueComponent Constructor.
  * VueComponent Constructor are JavaScript Function obtained when calling VueComponent.extend().
- * All the {@link Component} and {@link JsComponent} get a generated VueConstructor.
+ * All the {@link Component} and {@link JsComponent} get a generated VueJsConstructor.
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public class VueConstructor<T extends VueComponent> extends JsFunction
+public class VueJsConstructor<T extends VueComponent> extends JsFunction
 {
     @JsOverlay
     public final T instantiate()
@@ -29,27 +29,36 @@ public class VueConstructor<T extends VueComponent> extends JsFunction
     }
 
     @JsOverlay
-    public final <K extends T> VueConstructor<K> extend(VueComponentOptions<K> vueComponentOptions)
+    public final <K extends T> VueJsConstructor<K> extend(
+        VueComponentOptions<K> vueComponentOptions)
     {
         return VueGWTTools.extendVueClass(this, vueComponentOptions);
     }
 
     @JsOverlay
-    public final <K extends T> VueConstructor<K> extendJavaComponent(
+    public final <K extends T> VueJsConstructor<K> extendJavaComponent(
         VueComponentOptions<K> componentOptions)
     {
-        VueConstructor<K> extendedVueConstructor = extend(componentOptions);
-        VueGWTTools.extendVueConstructorWithJavaComponent(extendedVueConstructor,
+        componentOptions.addAllProviders(getOptions().getProviders());
+        VueJsConstructor<K> extendedVueJsConstructor = extend(componentOptions);
+        VueGWTTools.extendVueConstructorWithJavaComponent(extendedVueJsConstructor,
             componentOptions.getComponentWithTemplate());
 
-        return extendedVueConstructor;
+        return extendedVueJsConstructor;
     }
 
     @JsOverlay
-    protected final JsObject<VueConstructor> getOptionsComponents()
+    public final VueComponentOptions<T> getOptions()
     {
-        JsObject options = JsTools.get(this, "options");
-        JsObject<VueConstructor> components = (JsObject<VueConstructor>) options.get("components");
+        return JsTools.get(this, "options");
+    }
+
+    @JsOverlay
+    public final JsObject<VueJsConstructor> getOptionsComponents()
+    {
+        JsObject options = getOptions();
+        JsObject<VueJsConstructor> components =
+            (JsObject<VueJsConstructor>) options.get("components");
         if (components == null)
         {
             components = new JsObject<>();
@@ -59,7 +68,7 @@ public class VueConstructor<T extends VueComponent> extends JsFunction
     }
 
     @JsOverlay
-    protected final JsObject<VueDirectiveOptions> getOptionsDirectives()
+    public final JsObject<VueDirectiveOptions> getOptionsDirectives()
     {
         JsObject options = JsTools.get(this, "options");
         JsObject<VueDirectiveOptions> directives =

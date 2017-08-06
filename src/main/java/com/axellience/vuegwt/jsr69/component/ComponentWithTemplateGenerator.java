@@ -58,7 +58,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.axellience.vuegwt.jsr69.component.constructor.AbstractVueComponentConstructorGenerator.CONSTRUCTOR_SUFFIX;
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME;
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentTemplateBundleName;
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentWithTemplateName;
 
 /**
  * Generate the TemplateProvider and {@link ComponentWithTemplate} for the user Java Components.
@@ -66,10 +69,6 @@ import static com.axellience.vuegwt.jsr69.component.constructor.AbstractVueCompo
  */
 public class ComponentWithTemplateGenerator
 {
-    public static String TEMPLATE_BUNDLE_SUFFIX = "TemplateBundle";
-    public static String TEMPLATE_BUNDLE_METHOD_NAME = "template";
-    public static String WITH_TEMPLATE_SUFFIX = "WithTemplate";
-
     private final ProcessingEnvironment processingEnv;
     private final Filer filer;
     private final Elements elementsUtils;
@@ -103,11 +102,10 @@ public class ComponentWithTemplateGenerator
     public void generate(TypeElement component)
     {
         // Template resource abstract class
-        String packageName = elementsUtils.getPackageOf(component).getQualifiedName().toString();
-        String generatedClassName = component.getSimpleName().toString() + WITH_TEMPLATE_SUFFIX;
+        ClassName componentWithSuffixClassName = componentWithTemplateName(component);
 
         Builder componentWithTemplateBuilder =
-            getComponentWithTemplateBuilder(component, generatedClassName);
+            getComponentWithTemplateBuilder(component, componentWithSuffixClassName);
 
         hasComponentJsTypeAnnotation = component.getAnnotation(JsType.class) != null;
 
@@ -121,6 +119,7 @@ public class ComponentWithTemplateGenerator
         processPropValidators(component, optionsBuilder, componentWithTemplateBuilder);
         processHooks(component, optionsBuilder);
         processRenderFunction(component, optionsBuilder, componentWithTemplateBuilder);
+        processInjection(component, optionsBuilder, componentWithTemplateBuilder);
 
         // Finish building Options getter
         optionsBuilder.addStatement("return options");
@@ -129,25 +128,22 @@ public class ComponentWithTemplateGenerator
         // And generate our Java Class
         GenerationUtil.toJavaFile(filer,
             componentWithTemplateBuilder,
-            packageName,
-            generatedClassName,
-            component);
+            componentWithSuffixClassName);
     }
 
     /**
      * Create and return the builder for the {@link ComponentWithTemplate} of our {@link
      * VueComponent}.
      * @param component The {@link VueComponent} we are generating for
-     * @param generatedClassName The name of the generated {@link ComponentWithTemplate} class
+     * @param withTemplateClassName The name of the generated {@link ComponentWithTemplate} class
      * @return A Builder to build the class
      */
     private Builder getComponentWithTemplateBuilder(TypeElement component,
-        String generatedClassName)
+        ClassName withTemplateClassName)
     {
         Builder componentWithTemplateBuilder = TypeSpec
-            .classBuilder(generatedClassName)
+            .classBuilder(withTemplateClassName)
             .addModifiers(Modifier.PUBLIC)
-            .addModifiers(Modifier.ABSTRACT)
             .superclass(TypeName.get(component.asType()))
             .addSuperinterface(ParameterizedTypeName.get(ClassName.get(ComponentWithTemplate.class),
                 ClassName.get(component)));
@@ -157,19 +153,20 @@ public class ComponentWithTemplateGenerator
         // tree shaking.
         componentWithTemplateBuilder.addAnnotation(AnnotationSpec
             .builder(JsType.class)
-            .addMember("namespace", "\"VueGWT.componentWithTemplateConstructors\"")
+            .addMember("namespace", "\"VueGWT.componentWithTemplateFactories\"")
             .addMember("name", "$S", component.getQualifiedName().toString().replaceAll("\\.", "_"))
             .build());
 
-        // Add a block that registers the VueConstructor for the VueComponent
+        // Add a block that registers the VueFactory for the VueComponent
         componentWithTemplateBuilder.addStaticBlock(CodeBlock
             .builder()
-            .addStatement("$T.onReady(() -> $T.register($S, $T.getSupplier()))",
+            .addStatement("$T.onReady(() -> $T.register($S, () -> $T.get()))",
                 VueGWT.class,
                 VueGWT.class,
                 component.getQualifiedName(),
-                ClassName.bestGuess(component.getQualifiedName() + CONSTRUCTOR_SUFFIX))
+                componentFactoryName(component))
             .build());
+
         return componentWithTemplateBuilder;
     }
 
@@ -196,12 +193,13 @@ public class ComponentWithTemplateGenerator
         if (!"".equals(annotation.name()))
             optionsMethodBuilder.addStatement("options.setName($S)", annotation.name());
 
-        String packageName = elementsUtils.getPackageOf(component).getQualifiedName().toString();
-        String className = component.getSimpleName().toString();
-
         optionsMethodBuilder.addStatement("options.setComponentWithTemplate($T.INSTANCE.$L())",
-            ClassName.get(packageName, className + TEMPLATE_BUNDLE_SUFFIX),
-            TEMPLATE_BUNDLE_METHOD_NAME);
+            componentTemplateBundleName(component),
+            COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME);
+
+        optionsMethodBuilder.addStatement("options.addProvider($T.class, () -> new $T())",
+            component,
+            componentWithTemplateName(component));
 
         return optionsMethodBuilder;
     }
@@ -416,6 +414,39 @@ public class ComponentWithTemplateGenerator
             .build());
 
         optionsBuilder.addStatement("options.addRootJavaMethod($S)", "render");
+    }
+
+    private void processInjection(TypeElement component, MethodSpec.Builder optionsBuilder,
+        Builder componentWithTemplateBuilder)
+    {
+        ClassName componentWithTemplateName = componentWithTemplateName(component);
+
+        MethodSpec.Builder createdMethodBuilder = MethodSpec
+            .methodBuilder("created")
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override.class)
+            .addStatement("$T javaInstance = ($T) this.getProvider($T.class).get()",
+                componentWithTemplateName,
+                componentWithTemplateName,
+                component);
+
+        ElementFilter
+            .fieldsIn(component.getEnclosedElements())
+            .stream()
+            .filter(property -> property.getAnnotation(Prop.class) == null)
+            .filter(property -> !property.getModifiers().contains(Modifier.STATIC))
+            .filter(property -> !property.getModifiers().contains(Modifier.FINAL))
+            .filter(property -> !property.getModifiers().contains(Modifier.PRIVATE))
+            .forEach(property -> {
+                String propertyName = property.getSimpleName().toString();
+                createdMethodBuilder.addStatement("$L = javaInstance.$L",
+                    propertyName,
+                    propertyName);
+            });
+
+        createdMethodBuilder.addStatement("super.created()");
+
+        componentWithTemplateBuilder.addMethod(createdMethodBuilder.build());
     }
 
     /**

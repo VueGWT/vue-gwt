@@ -19,7 +19,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
 import java.beans.Introspector;
 import java.io.IOException;
@@ -30,11 +29,11 @@ import java.io.Writer;
  */
 public class GenerationUtil
 {
-    public static boolean hasInterface(ProcessingEnvironment processingEnv, TypeMirror type, Class myInterface)
+    public static boolean hasInterface(ProcessingEnvironment processingEnv, TypeMirror type,
+        Class myInterface)
     {
-        TypeMirror interfaceType = processingEnv.getElementUtils()
-            .getTypeElement(myInterface.getCanonicalName())
-            .asType();
+        TypeMirror interfaceType =
+            processingEnv.getElementUtils().getTypeElement(myInterface.getCanonicalName()).asType();
 
         return processingEnv.getTypeUtils().isAssignable(type, interfaceType);
     }
@@ -53,15 +52,16 @@ public class GenerationUtil
         return methodName;
     }
 
-    public static void toJavaFile(Filer filer, Builder classBuilder, String packageName,
-        String className, TypeElement... originatingElement)
+    public static void toJavaFile(Filer filer, Builder classBuilder, ClassName className,
+        TypeElement... originatingElement)
     {
         try
         {
-            JavaFile javaFile = JavaFile.builder(packageName, classBuilder.build()).build();
+            JavaFile javaFile =
+                JavaFile.builder(className.packageName(), classBuilder.build()).build();
 
             JavaFileObject javaFileObject =
-                filer.createSourceFile(packageName + "." + className, originatingElement);
+                filer.createSourceFile(className.reflectionName(), originatingElement);
 
             Writer writer = javaFileObject.openWriter();
             javaFile.writeTo(writer);
@@ -73,18 +73,11 @@ public class GenerationUtil
         }
     }
 
-    public static void generateGwtBundle(TypeElement typeElement, String bundleSuffix,
-        String bundleMethodName, TypeName resourceType, String resourceExtension, Filer filer,
-        Elements elementsUtils)
+    public static void generateGwtBundle(TypeElement sourceType, ClassName bundleClassName,
+        String bundleMethodName, TypeName resourceType, String resourceExtension, Filer filer)
     {
-        // Template provider
-        String bundlePackage =
-            elementsUtils.getPackageOf(typeElement).getQualifiedName().toString();
-        String bundleName = typeElement.getSimpleName() + bundleSuffix;
-        ClassName bundleClassName = ClassName.get(bundlePackage, bundleName);
-
         Builder bundleClassBuilder = TypeSpec
-            .interfaceBuilder(bundleName)
+            .interfaceBuilder(bundleClassName)
             .addModifiers(Modifier.PUBLIC)
             .addSuperinterface(ClientBundle.class);
 
@@ -93,7 +86,7 @@ public class GenerationUtil
             .initializer(CodeBlock.of("$T.create($T.class)", GWT.class, bundleClassName))
             .build());
 
-        String typeElementName = typeElement.getQualifiedName().toString();
+        String typeElementName = sourceType.getQualifiedName().toString();
         String resourcePath = typeElementName.replaceAll("\\.", "/") + "." + resourceExtension;
         AnnotationSpec annotationSpec = AnnotationSpec
             .builder(Source.class)
@@ -107,10 +100,6 @@ public class GenerationUtil
             .returns(resourceType)
             .build());
 
-        GenerationUtil.toJavaFile(filer,
-            bundleClassBuilder,
-            bundlePackage,
-            bundleName,
-            typeElement);
+        GenerationUtil.toJavaFile(filer, bundleClassBuilder, bundleClassName, sourceType);
     }
 }

@@ -6,7 +6,9 @@ import com.squareup.javapoet.TypeName;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
+
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.STYLE_BUNDLE_METHOD_NAME;
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.styleBundleName;
 
 /**
  * Generate the Style Bundle for each Style
@@ -14,26 +16,20 @@ import javax.lang.model.util.Elements;
  */
 public class StyleProviderGenerator
 {
-    public static String STYLE_BUNDLE_SUFFIX = "_StyleBundle";
-    public static String STYLE_BUNDLE_METHOD_NAME = "style";
-
     private final Filer filer;
-    private final Elements elementsUtils;
 
     public StyleProviderGenerator(ProcessingEnvironment processingEnvironment)
     {
         filer = processingEnvironment.getFiler();
-        elementsUtils = processingEnvironment.getElementUtils();
     }
 
     public void generate(TypeElement styleTypeElement)
     {
         GenerationUtil.generateGwtBundle(styleTypeElement,
-            STYLE_BUNDLE_SUFFIX,
+            styleBundleName(styleTypeElement),
             STYLE_BUNDLE_METHOD_NAME,
             TypeName.get(styleTypeElement.asType()),
             "gss",
-            filer,
-            elementsUtils);
+            filer);
     }
 }

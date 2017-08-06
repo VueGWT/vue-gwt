@@ -4,14 +4,15 @@ import com.axellience.vuegwt.jsr69.component.ComponentWithTemplateGenerator;
 import com.axellience.vuegwt.jsr69.component.TemplateBundleGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
-import com.axellience.vuegwt.jsr69.component.constructor.VueComponentConstructorGenerator;
-import com.axellience.vuegwt.jsr69.component.constructor.VueJsComponentConstructorGenerator;
+import com.axellience.vuegwt.jsr69.component.factory.VueComponentFactoryGenerator;
+import com.axellience.vuegwt.jsr69.component.factory.VueJsComponentFactoryGenerator;
 import com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator;
 import com.axellience.vuegwt.jsr69.directive.annotations.Directive;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
 import com.axellience.vuegwt.jsr69.style.annotations.Style;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -25,11 +26,18 @@ import java.util.Set;
     "com.axellience.vuegwt.jsr69.component.annotations.Component",
     "com.axellience.vuegwt.jsr69.component.annotations.JsComponent",
     "com.axellience.vuegwt.jsr69.directive.annotations.Directive",
-    "com.axellience.vuegwt.jsr69.style.annotations.Style"
+    "com.axellience.vuegwt.jsr69.style.annotations.Style",
+    "com.axellience.vuegwt.jsr69.inject.annotations.VueInjector"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class VueGwtProcessor extends AbstractProcessor
 {
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv)
+    {
+        super.init(processingEnv);
+    }
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
@@ -68,21 +76,21 @@ public class VueGwtProcessor extends AbstractProcessor
 
     private void processComponentAnnotations(RoundEnvironment roundEnv)
     {
-        Set<? extends Element> annotatedElements =
+        Set<? extends Element> componentElements =
             roundEnv.getElementsAnnotatedWith(Component.class);
 
-        ComponentWithTemplateGenerator templateGenerator =
+        ComponentWithTemplateGenerator componentWithTemplateGenerator =
             new ComponentWithTemplateGenerator(processingEnv);
         TemplateBundleGenerator templateBundleGenerator =
             new TemplateBundleGenerator(processingEnv);
-        VueComponentConstructorGenerator vueConstructorGenerator =
-            new VueComponentConstructorGenerator(processingEnv);
+        VueComponentFactoryGenerator vueFactoryGenerator =
+            new VueComponentFactoryGenerator(processingEnv);
 
-        for (TypeElement element : ElementFilter.typesIn(annotatedElements))
+        for (TypeElement componentType : ElementFilter.typesIn(componentElements))
         {
-            vueConstructorGenerator.generate(element);
-            templateBundleGenerator.generate(element);
-            templateGenerator.generate(element);
+            vueFactoryGenerator.generate(componentType);
+            templateBundleGenerator.generate(componentType);
+            componentWithTemplateGenerator.generate(componentType);
         }
     }
 
@@ -91,8 +99,8 @@ public class VueGwtProcessor extends AbstractProcessor
         Set<? extends Element> annotatedElements =
             roundEnv.getElementsAnnotatedWith(JsComponent.class);
 
-        VueJsComponentConstructorGenerator vueJsComponentRegistrationGenerator =
-            new VueJsComponentConstructorGenerator(processingEnv);
+        VueJsComponentFactoryGenerator vueJsComponentRegistrationGenerator =
+            new VueJsComponentFactoryGenerator(processingEnv);
 
         for (TypeElement element : ElementFilter.typesIn(annotatedElements))
         {
