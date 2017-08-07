@@ -13,13 +13,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class TodoTextComponent extends VueComponent
 {
-    @JsProperty Todo todo;
-
-    @Override
-    public void created()
-    {
-        this.todo = new Todo("Hello World!");
-    }
+    @JsProperty Todo todo = new Todo("Hello World!");
 
     public void updateTodoText(NativeEvent event)
     {

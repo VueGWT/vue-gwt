@@ -11,13 +11,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class ParentComponent extends VueComponent
 {
-    @JsProperty String parentMessage;
-
-    @Override
-    public void created()
-    {
-        this.parentMessage = "This is a message from the parent";
-    }
+    @JsProperty String parentMessage = "This is a message from the parent";
 
     public int parentMultiplyBy2(int value)
     {

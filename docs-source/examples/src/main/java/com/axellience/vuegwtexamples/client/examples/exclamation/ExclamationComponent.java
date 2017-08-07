@@ -7,15 +7,10 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class ExclamationComponent extends VueComponent
 {
-    @JsProperty String message;
+    @JsProperty String message = "Hello Vue GWT!";
 
-    @Override
-    public void created()
+    public void addExclamationMark()
     {
-        this.message = "Hello Vue GWT!";
-    }
-
-    public void addExclamationMark() {
         this.message += "!";
     }
 }

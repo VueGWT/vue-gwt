@@ -10,11 +10,5 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class KittenComponent extends VueComponent
 {
-    @JsProperty KittenClientBundle myKittenBundle;
-
-    @Override
-    public void created()
-    {
-        myKittenBundle = KittenClientBundle.INSTANCE;
-    }
+    @JsProperty KittenClientBundle myKittenBundle = KittenClientBundle.INSTANCE;
 }

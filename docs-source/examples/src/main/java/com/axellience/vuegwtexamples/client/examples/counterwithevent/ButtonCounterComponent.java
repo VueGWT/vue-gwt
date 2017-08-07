@@ -12,13 +12,7 @@ import jsinterop.annotations.JsProperty;
 public class ButtonCounterComponent extends VueComponent
 {
     @JsProperty
-    protected int counter;
-
-    @Override
-    public void created()
-    {
-        this.counter = 0;
-    }
+    protected int counter = 0;
 
     @JsMethod
     protected void increment() {

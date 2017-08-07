@@ -7,11 +7,5 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class SimpleLinkComponent extends VueComponent
 {
-    @JsProperty String linkName;
-
-    @Override
-    public void created()
-    {
-        this.linkName = "Hello Vue GWT!";
-    }
+    @JsProperty String linkName = "Hello Vue GWT!";
 }

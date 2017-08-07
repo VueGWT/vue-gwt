@@ -64,6 +64,7 @@ import static com.axellience.vuegwt.jsr69.GenerationNameUtil.COMPONENT_TEMPLATE_
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentFactoryName;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentTemplateBundleName;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentWithTemplateName;
+import static com.axellience.vuegwt.jsr69.GenerationUtil.hasInterface;
 
 /**
  * Generate the TemplateProvider and {@link ComponentWithTemplate} for the user Java Components.
@@ -80,8 +81,8 @@ public class ComponentWithTemplateGenerator
     static
     {
         // Init the map of lifecycle hooks for fast type type check
+        // The "created" hook is not here because it is always generated
         HOOKS_MAP.put("beforeCreate", HasBeforeCreate.class);
-        HOOKS_MAP.put("created", HasCreated.class);
         HOOKS_MAP.put("beforeMount", HasBeforeMount.class);
         HOOKS_MAP.put("mounted", HasMounted.class);
         HOOKS_MAP.put("beforeUpdate", HasBeforeUpdate.class);
@@ -385,6 +386,9 @@ public class ComponentWithTemplateGenerator
      */
     private void processHooks(TypeElement component, MethodSpec.Builder optionsBuilder)
     {
+        // Always add created hook
+        optionsBuilder.addStatement("options.addRootJavaMethod($S)", "created");
+
         ElementFilter
             .methodsIn(component.getEnclosedElements())
             .stream()
@@ -403,7 +407,7 @@ public class ComponentWithTemplateGenerator
     private void processRenderFunction(TypeElement component, MethodSpec.Builder optionsBuilder,
         Builder componentWithTemplateBuilder)
     {
-        if (!GenerationUtil.hasInterface(processingEnv, component.asType(), HasRender.class))
+        if (!hasInterface(processingEnv, component.asType(), HasRender.class))
             return;
 
         componentWithTemplateBuilder.addMethod(MethodSpec
@@ -428,10 +432,14 @@ public class ComponentWithTemplateGenerator
     {
         ClassName componentWithTemplateName = componentWithTemplateName(component);
 
-        MethodSpec.Builder createdMethodBuilder = MethodSpec
-            .methodBuilder("created")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override.class);
+        boolean componentHasCreated =
+            hasInterface(processingEnv, component.asType(), HasCreated.class);
+
+        MethodSpec.Builder createdMethodBuilder =
+            MethodSpec.methodBuilder("created").addModifiers(Modifier.PUBLIC);
+
+        if (componentHasCreated)
+            createdMethodBuilder.addAnnotation(Override.class);
 
         // Get the list of fields to copy over
         List<VariableElement> fields = ElementFilter
@@ -462,7 +470,8 @@ public class ComponentWithTemplateGenerator
             });
         }
 
-        createdMethodBuilder.addStatement("super.created()");
+        if (componentHasCreated)
+            createdMethodBuilder.addStatement("super.created()");
 
         componentWithTemplateBuilder.addMethod(createdMethodBuilder.build());
     }
@@ -555,7 +564,7 @@ public class ComponentWithTemplateGenerator
     {
         String methodJavaName = method.getSimpleName().toString();
 
-        return HOOKS_MAP.containsKey(methodJavaName) && GenerationUtil.hasInterface(processingEnv,
+        return HOOKS_MAP.containsKey(methodJavaName) && hasInterface(processingEnv,
             component.asType(),
             HOOKS_MAP.get(methodJavaName));
     }

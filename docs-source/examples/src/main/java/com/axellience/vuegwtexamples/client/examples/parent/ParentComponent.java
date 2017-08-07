@@ -6,9 +6,4 @@ import com.axellience.vuegwt.jsr69.component.annotations.Component;
 @Component(components = TodoComponent.class)
 public class ParentComponent extends VueComponent
 {
-    @Override
-    public void created()
-    {
-
-    }
 }

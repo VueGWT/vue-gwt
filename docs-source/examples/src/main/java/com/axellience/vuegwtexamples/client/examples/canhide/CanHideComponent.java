@@ -7,11 +7,5 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class CanHideComponent extends VueComponent
 {
-    @JsProperty boolean visible;
-
-    @Override
-    public void created()
-    {
-        this.visible = true;
-    }
+    @JsProperty boolean visible = true;
 }

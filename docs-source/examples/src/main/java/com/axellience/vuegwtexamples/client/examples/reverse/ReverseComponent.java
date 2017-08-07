@@ -11,13 +11,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class ReverseComponent extends VueComponent
 {
-    @JsProperty String message;
-
-    @Override
-    public void created()
-    {
-        this.message = "Hello";
-    }
+    @JsProperty String message = "Hello";
 
     @Computed
     public String getReversedMessage()

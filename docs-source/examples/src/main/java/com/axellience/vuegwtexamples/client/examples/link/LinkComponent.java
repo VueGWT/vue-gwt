@@ -7,13 +7,6 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class LinkComponent extends VueComponent
 {
-    @JsProperty String linkTarget;
-    @JsProperty String linkName;
-
-    @Override
-    public void created()
-    {
-        this.linkTarget = "https://github.com/Axellience/vue-gwt";
-        this.linkName = "Hello Vue GWT!";
-    }
+    @JsProperty String linkName = "Hello Vue GWT!";
+    @JsProperty String linkTarget = "https://github.com/Axellience/vue-gwt";
 }

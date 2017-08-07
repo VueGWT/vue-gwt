@@ -11,13 +11,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class ChildJavaComponent extends ParentJsComponent
 {
-    @JsProperty int childValue;
-
-    @Override
-    public void created()
-    {
-        this.childValue = 10;
-    }
+    @JsProperty int childValue = 10;
 
     public int childMultiplyBy10(int value)
     {

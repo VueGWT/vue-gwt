@@ -10,11 +10,5 @@ import jsinterop.annotations.JsProperty;
 @Component(useFactory = false)
 public class SharedDataModelComponent extends VueComponent
 {
-    @JsProperty int counter;
-
-    @Override
-    public void created()
-    {
-        this.counter = 0;
-    }
+    @JsProperty int counter = 0;
 }

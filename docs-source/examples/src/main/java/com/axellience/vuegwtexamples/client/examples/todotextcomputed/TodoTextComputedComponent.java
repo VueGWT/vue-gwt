@@ -12,13 +12,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class TodoTextComputedComponent extends VueComponent
 {
-    @JsProperty Todo todo;
-
-    @Override
-    public void created()
-    {
-        this.todo = new Todo("Hello World!");
-    }
+    @JsProperty Todo todo = new Todo("Hello World!");
 
     @Computed
     public String getTodoText()

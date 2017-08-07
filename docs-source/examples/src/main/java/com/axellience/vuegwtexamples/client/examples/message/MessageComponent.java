@@ -7,11 +7,5 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class MessageComponent extends VueComponent
 {
-    @JsProperty String message;
-
-    @Override
-    public void created()
-    {
-        this.message = "Hello VueComponent GWT!";
-    }
+    @JsProperty String message = "Hello VueComponent GWT!";
 }

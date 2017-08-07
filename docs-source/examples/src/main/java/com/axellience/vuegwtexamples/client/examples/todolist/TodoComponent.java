@@ -15,10 +15,4 @@ public class TodoComponent extends VueComponent
     @Prop
     @JsProperty
     public Todo todo;
-
-    @Override
-    public void created()
-    {
-
-    }
 }

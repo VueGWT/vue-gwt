@@ -1,6 +1,7 @@
 package com.axellience.vuegwtexamples.client.examples.tree;
 
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import jsinterop.annotations.JsProperty;
 
@@ -8,7 +9,7 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component(components = TreeFolderComponent.class)
-public class TreeComponent extends VueComponent
+public class TreeComponent extends VueComponent implements HasCreated
 {
     @JsProperty Folder myFolder;
 

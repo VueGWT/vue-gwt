@@ -9,9 +9,4 @@ import com.axellience.vuegwt.jsr69.component.annotations.Component;
 @Component
 public class TodoComponent extends VueComponent
 {
-    @Override
-    public void created()
-    {
-
-    }
 }

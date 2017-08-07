@@ -10,13 +10,6 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class BindInlineStyleComponent extends VueComponent
 {
-    @JsProperty String activeColor;
-    @JsProperty float fontSize;
-
-    @Override
-    public void created()
-    {
-        activeColor = "red";
-        fontSize = 20;
-    }
+    @JsProperty String activeColor = "red";
+    @JsProperty float fontSize = 20;
 }

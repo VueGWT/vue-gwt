@@ -13,12 +13,5 @@ import jsinterop.annotations.JsType;
 public class FullJsWithMethodsComponent extends VueComponent
 {
     public int value;
-
-    @Override
-    public void created()
-    {
-
-    }
-
     public native int multiplyBy2(int value);
 }

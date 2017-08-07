@@ -10,11 +10,5 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class ButtonPlusOneComponent extends VueComponent
 {
-    @JsProperty int counter;
-
-    @Override
-    public void created()
-    {
-        this.counter = 0;
-    }
+    @JsProperty int counter = 0;
 }
