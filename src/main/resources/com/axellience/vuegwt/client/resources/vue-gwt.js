@@ -112,7 +112,7 @@
 			const proto = Object.getPrototypeOf(javaObject);
 			for (let key in proto) {
 				const value = proto[key];
-				if (typeof value !== "function" && typeof value !== "object")
+				if (value === null || (typeof value !== "function" && typeof value !== "object"))
 					cache.push({key: key, value: value});
 			}
 		}
