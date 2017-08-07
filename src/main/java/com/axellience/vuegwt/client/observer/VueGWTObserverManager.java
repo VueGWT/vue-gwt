@@ -3,6 +3,7 @@ package com.axellience.vuegwt.client.observer;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.CollectionObserver;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.MapObserver;
+import com.google.gwt.core.client.JavaScriptObject;
 import jsinterop.annotations.JsMethod;
 
 import java.util.LinkedList;
@@ -32,7 +33,7 @@ public class VueGWTObserverManager
      * @param observer A {@link VueGWTObserver} that will be called for every object to potentially
      * observe.
      */
-    public static void registerVueGWTObserver(VueGWTObserver observer)
+    private static void registerVueGWTObserver(VueGWTObserver observer)
     {
         observers.add(observer);
     }
@@ -62,38 +63,35 @@ public class VueGWTObserverManager
     @JsMethod(namespace = "VueGWT.observerManager")
     private static boolean observeJavaObject(Object object)
     {
-        if (isJavaObserved(object))
-            return true;
+        // Ignore pure JS objects
+        if (object.getClass() == JavaScriptObject.class)
+            return false;
 
+        // Check if we have a custom Java observer
         for (VueGWTObserver observer : observers)
-        {
             if (observer.observe(object))
-            {
-                setIsJavaObserved(object);
                 return true;
-            }
-        }
 
+        makeStaticallyInitializedPropertiesReactive(object, object.getClass().getCanonicalName());
         return false;
     }
 
     /**
-     * Return true if the object is already observed by Java
-     * @param object The object potentially already observed
-     * @return true if the object is already observed, false otherwise
+     * Due to GWT optimizations, properties on java object defined like this are not observable in
+     * Vue.js when not running in dev mode:
+     * <br>
+     * private String myText = "Default text";
+     * private int myInt = 0;
+     * <br>
+     * This is because GWT define the default value on the prototype and don't define it on the
+     * object.
+     * Therefore Vue.js don't see those properties when initializing it's observer.
+     * To fix the issue, we manually look for those properties and set them explicitly on the
+     * object.
+     * @param javaObject The Java object to observe
+     * @param className The Java class name to observe
      */
-    private static boolean isJavaObserved(Object object)
-    {
-        Boolean isObserved = (Boolean) ((JsObject) object).get("$vueGwtIsJavaObserved");
-        return isObserved != null && isObserved;
-    }
-
-    /**
-     * Set a flag to say our object is observed by Java
-     * @param object The object we are observing
-     */
-    private static void setIsJavaObserved(Object object)
-    {
-        ((JsObject) object).set("$vueGwtIsJavaObserved", true);
-    }
+    @JsMethod(namespace = "VueGWT.observerManager")
+    private native static void makeStaticallyInitializedPropertiesReactive(Object javaObject,
+        String className);
 }

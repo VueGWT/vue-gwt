@@ -59,17 +59,12 @@
 	tools.extendVueConstructorWithJavaComponent = function (extendedVueConstructor, componentWithTemplate) {
 		const vueProto = extendedVueConstructor.prototype;
 		const componentWithTemplateProto = Object.getPrototypeOf(componentWithTemplate);
-		if (!componentWithTemplateProto || componentWithTemplateProto === Object.prototype)
-			return;
 
 		// Copy from the ComponentWithTemplate prototype
 		for (let protoProp in componentWithTemplateProto) {
-			if (componentWithTemplateProto.hasOwnProperty(protoProp) && !vueProto.hasOwnProperty(protoProp)) {
+			if (!vueProto.hasOwnProperty(protoProp)) {
 				vueProto[protoProp] = componentWithTemplateProto[protoProp];
 			}
 		}
-
-		// Call recursively
-		tools.extendVueConstructorWithJavaComponent(extendedVueConstructor, componentWithTemplateProto);
 	};
 })(window);

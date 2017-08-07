@@ -7,8 +7,11 @@
 	const observerManager = context.VueGWT.observerManager;
 
 	/**
-	 * This object provides methods to integrate Java in Vue.js world
-	 * @author Adrien Baron
+	 * Wrap the default Vue Observer walk method to observe Java object.
+	 * Java world sometimes do things that are not observable by Vue.js. For example java
+	 * collections are not reactive.
+	 * By wrapping the observer we are able to customize how we observe those object.
+	 * @param ob
 	 */
 	observerManager.customizeVueObserver = function (ob) {
 		const obProto = Object.getPrototypeOf(ob);
@@ -20,6 +23,36 @@
 
 			return vueWalk.apply(this, arguments);
 		};
+	};
+
+	/**
+	 * Due to GWT optimization, properties on java object defined like this are not observable in Vue.js:
+	 * <br>
+	 * private String myText = "Default text";
+	 * <br>
+	 * This is because GWT define the default value on the prototype and don't define it on the object.
+	 * Therefore Vue.js don't see those properties when initializing it's observer.
+	 * To fix the issue, we manually look for those properties and set them explicitly on the
+	 * object.
+	 */
+	const staticPropertiesCache = {};
+	observerManager.makeStaticallyInitializedPropertiesReactive = function (javaObject, className) {
+		let cache = staticPropertiesCache[className];
+		if (!cache) {
+			cache = [];
+			const proto = Object.getPrototypeOf(javaObject);
+			for (let key in proto) {
+				const value = proto[key];
+				if (typeof value !== "function" && typeof value !== "object")
+					cache.push({key: key, value: value});
+			}
+		}
+
+		// Set values on the object
+		cache.forEach(entry => {
+			if (!javaObject.hasOwnProperty(entry.key))
+				javaObject[entry.key] = entry.value;
+		});
 	};
 
 	/**
