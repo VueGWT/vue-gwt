@@ -1,8 +1,9 @@
 package com.axellience.vuegwt.jsr69;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
 
-import javax.lang.model.element.Element;
+import javax.inject.Provider;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -93,13 +94,13 @@ public class GenerationNameUtil
         return ClassName.bestGuess(typeQualifiedName + suffix);
     }
 
-    public static String simpleName(Element typeElement)
+    public static ParameterizedTypeName providerOf(ClassName className)
     {
-        return typeElement.getSimpleName().toString();
+        return ParameterizedTypeName.get(ClassName.get(Provider.class), className);
     }
 
-    public static String qualifiedName(TypeElement typeElement)
+    public static String getPackage(TypeElement typeElement)
     {
-        return typeElement.getQualifiedName().toString();
+        return ClassName.get(typeElement).packageName();
     }
 }

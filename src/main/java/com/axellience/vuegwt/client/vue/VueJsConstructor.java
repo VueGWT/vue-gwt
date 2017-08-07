@@ -2,7 +2,6 @@ package com.axellience.vuegwt.client.vue;
 
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
-import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsFunction;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.JsTools;
@@ -54,28 +53,26 @@ public class VueJsConstructor<T extends VueComponent> extends JsFunction
     }
 
     @JsOverlay
-    public final JsObject<VueJsConstructor> getOptionsComponents()
+    public final JsObject getOptionsComponents()
     {
         JsObject options = getOptions();
-        JsObject<VueJsConstructor> components =
-            (JsObject<VueJsConstructor>) options.get("components");
+        JsObject components = (JsObject) options.get("components");
         if (components == null)
         {
-            components = new JsObject<>();
+            components = new JsObject();
             options.set("components", components);
         }
         return components;
     }
 
     @JsOverlay
-    public final JsObject<VueDirectiveOptions> getOptionsDirectives()
+    public final JsObject getOptionsDirectives()
     {
         JsObject options = JsTools.get(this, "options");
-        JsObject<VueDirectiveOptions> directives =
-            (JsObject<VueDirectiveOptions>) options.get("directives");
+        JsObject directives = (JsObject) options.get("directives");
         if (directives == null)
         {
-            directives = new JsObject<>();
+            directives = new JsObject();
             options.set("directives", directives);
         }
         return directives;

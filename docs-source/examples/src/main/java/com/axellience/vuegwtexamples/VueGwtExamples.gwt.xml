@@ -6,8 +6,7 @@
     <inherits name='com.google.gwt.user.User'/>
 
     <inherits name='com.axellience.vuegwt.VueGwt'/>
-
-
+	<inherits name="com.google.gwt.inject.Inject"/>
 
     <!-- Specify the app entry point class.                   -->
     <entry-point class='com.axellience.vuegwtexamples.client.VueGwtExamplesApp'/>

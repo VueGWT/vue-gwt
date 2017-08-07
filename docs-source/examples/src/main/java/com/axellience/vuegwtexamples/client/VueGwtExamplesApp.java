@@ -22,7 +22,6 @@ import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
 import com.axellience.vuegwtexamples.client.examples.message.MessageComponent;
 import com.axellience.vuegwtexamples.client.examples.parent.ParentComponent;
-import com.axellience.vuegwtexamples.client.examples.recursive.RecursiveComponent;
 import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
 import com.axellience.vuegwtexamples.client.examples.shareddatamodel.SharedDataModelComponent;
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
@@ -31,7 +30,6 @@ import com.axellience.vuegwtexamples.client.examples.simpletodolist.SimpleTodoLi
 import com.axellience.vuegwtexamples.client.examples.todolist.TodoListComponent;
 import com.axellience.vuegwtexamples.client.examples.todotext.TodoTextComponent;
 import com.axellience.vuegwtexamples.client.examples.todotextcomputed.TodoTextComputedComponent;
-import com.axellience.vuegwtexamples.client.examples.tree.TreeComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobject.VForOnObjectComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkey.VForOnObjectWithKeyComponent;
 import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkeyandindex.VForOnObjectWithKeyAndIndexComponent;
@@ -39,6 +37,7 @@ import com.axellience.vuegwtexamples.client.examples.vforwithindex.VForWithIndex
 import com.axellience.vuegwtexamples.client.examples.vforwithrange.VForWithRangeComponent;
 import com.axellience.vuegwtexamples.client.examples.vonwithdomevent.VOnWithDOMEventComponent;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 
 /**
@@ -56,6 +55,8 @@ public class VueGwtExamplesApp implements EntryPoint
         VueJsConstructor vueClass = (VueJsConstructor) JsTools.getWindow().get("FullJsComponent");
         VueComponent myComponent = vueClass.instantiate();
         myComponent.$mount("#fullJsComponent");
+
+        ExampleInjector exampleInjector = GWT.create(ExampleInjector.class);
 
         this.addExample("simpleLinkComponent", SimpleLinkComponent.class);
         this.addExample("linkComponent", LinkComponent.class);
@@ -84,8 +85,8 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("sharedDataModelComponent2", SharedDataModelComponent.class);
         this.addExample("sharedDataModelComponent3", SharedDataModelComponent.class);
         this.addExample("counterWithEventComponent", CounterWithEventComponent.class);
-        this.addExample("treeComponent", TreeComponent.class);
-        this.addExample("recursiveComponent", RecursiveComponent.class);
+        this.addExample("treeComponent", exampleInjector.treeComponentFactory());
+        this.addExample("recursiveComponent", exampleInjector.recursiveComponentFactory());
         this.addExample("focusDirectiveComponent", FocusDirectiveComponent.class);
         this.addExample("renderAppComponent", RenderAppComponent.class);
         this.addExample("extendJavaComponent", ChildComponent.class);

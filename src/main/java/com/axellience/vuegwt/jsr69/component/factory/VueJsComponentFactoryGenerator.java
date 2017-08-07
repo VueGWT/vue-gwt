@@ -5,6 +5,7 @@ import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -14,6 +15,11 @@ import jsinterop.annotations.JsType;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic.Kind;
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.getPackage;
 
 /**
  * Generate {@link VueFactory} from the user Vue Component classes annotated by {@link
@@ -28,22 +34,24 @@ public class VueJsComponentFactoryGenerator extends AbstractVueComponentFactoryG
     }
 
     @Override
-    protected void createConstructor(TypeElement component, ClassName vueFactoryType,
-        Builder vueFactoryBuilder)
+    protected List<CodeBlock> createInitMethod(TypeElement component, Builder vueFactoryBuilder)
     {
         JsType jsType = component.getAnnotation(JsType.class);
         if (jsType == null || !jsType.isNative())
-            throw new RuntimeException(component.asType().toString()
-                + " Js Component must have @JsType annotation with isNative to true.");
+        {
+            messager.printMessage(Kind.ERROR,
+                component.asType().toString()
+                    + " Js Component must have @JsType annotation with isNative to true.");
+        }
 
-        MethodSpec.Builder constructorBuilder =
-            MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE);
+        MethodSpec.Builder initBuilder =
+            MethodSpec.methodBuilder("init").addModifiers(Modifier.PRIVATE);
 
         String namespace = jsType.namespace();
         if (JsPackage.GLOBAL.equals(namespace))
             namespace = "";
         else if ("<auto>".equals(namespace))
-            namespace = vueFactoryType.packageName() + ".";
+            namespace = getPackage(component) + ".";
         else
             namespace += ".";
 
@@ -52,19 +60,14 @@ public class VueJsComponentFactoryGenerator extends AbstractVueComponentFactoryG
             name = component.getSimpleName().toString();
 
         // Static init block
-        constructorBuilder.addStatement("jsConstructor = ($T) $T.getDeepValue($T.getWindow(), $S)",
+        initBuilder.addStatement("jsConstructor = ($T) $T.getDeepValue($T.getWindow(), $S)",
             ParameterizedTypeName.get(ClassName.get(VueJsConstructor.class),
                 ClassName.get(component.asType())),
             JsTools.class,
             JsTools.class,
             namespace + name);
 
-        vueFactoryBuilder.addMethod(constructorBuilder.build());
-    }
-
-    @Override
-    protected void configureStaticInstance(TypeElement component, MethodSpec.Builder getBuilder)
-    {
-
+        vueFactoryBuilder.addMethod(initBuilder.build());
+        return new LinkedList<>();
     }
 }

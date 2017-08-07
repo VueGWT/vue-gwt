@@ -51,9 +51,6 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     {
         this.componentWithTemplate = componentWithTemplate;
 
-        if (componentWithTemplate instanceof HasCustomizeOptions)
-            ((HasCustomizeOptions) componentWithTemplate).customizeOptions(this);
-
         if (componentWithTemplate.getRenderFunction() != null)
         {
             this.injectStyles();
@@ -275,6 +272,14 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     public final void addProvider(Class<T> component, Provider<?> componentWithTemplateProvider)
     {
+        // Customize options with the provided ComponentWithTemplate
+        // This allows for example to declare route in a component with VueRouter
+        ComponentWithTemplate componentWithTemplate =
+            (ComponentWithTemplate) componentWithTemplateProvider.get();
+
+        if (componentWithTemplate instanceof HasCustomizeOptions)
+            ((HasCustomizeOptions) componentWithTemplate).customizeOptions(this);
+
         getProviders().put(component.getCanonicalName(), componentWithTemplateProvider);
     }
 

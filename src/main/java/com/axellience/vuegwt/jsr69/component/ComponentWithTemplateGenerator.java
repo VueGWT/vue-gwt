@@ -40,7 +40,9 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.inject.Inject;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -48,7 +50,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,7 +73,7 @@ public class ComponentWithTemplateGenerator
 {
     private final ProcessingEnvironment processingEnv;
     private final Filer filer;
-    private final Elements elementsUtils;
+    private final Messager messager;
 
     private static Map<String, Class> HOOKS_MAP = new HashMap<>();
 
@@ -96,7 +98,7 @@ public class ComponentWithTemplateGenerator
     {
         processingEnv = processingEnvironment;
         filer = processingEnvironment.getFiler();
-        elementsUtils = processingEnvironment.getElementUtils();
+        messager = processingEnvironment.getMessager();
     }
 
     public void generate(TypeElement component)
@@ -119,7 +121,7 @@ public class ComponentWithTemplateGenerator
         processPropValidators(component, optionsBuilder, componentWithTemplateBuilder);
         processHooks(component, optionsBuilder);
         processRenderFunction(component, optionsBuilder, componentWithTemplateBuilder);
-        processInjection(component, optionsBuilder, componentWithTemplateBuilder);
+        createCreatedMethod(component, componentWithTemplateBuilder);
 
         // Finish building Options getter
         optionsBuilder.addStatement("return options");
@@ -197,10 +199,6 @@ public class ComponentWithTemplateGenerator
             componentTemplateBundleName(component),
             COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME);
 
-        optionsMethodBuilder.addStatement("options.addProvider($T.class, () -> new $T())",
-            component,
-            componentWithTemplateName(component));
-
         return optionsMethodBuilder;
     }
 
@@ -247,11 +245,14 @@ public class ComponentWithTemplateGenerator
                 Prop prop = field.getAnnotation(Prop.class);
 
                 if (!isVisibleInJS(field))
-                    throw new RuntimeException("@Prop "
-                        + fieldName
-                        + " must also have @JsProperty annotation in VueComponent "
-                        + component.getQualifiedName().toString()
-                        + ".");
+                {
+                    messager.printMessage(Kind.ERROR,
+                        "@Prop "
+                            + fieldName
+                            + " must also have @JsProperty annotation in VueComponent "
+                            + component.getQualifiedName().toString()
+                            + ".");
+                }
 
                 optionsBuilder.addStatement("options.addJavaProp($S, $L, $S)",
                     fieldName,
@@ -416,37 +417,85 @@ public class ComponentWithTemplateGenerator
         optionsBuilder.addStatement("options.addRootJavaMethod($S)", "render");
     }
 
-    private void processInjection(TypeElement component, MethodSpec.Builder optionsBuilder,
-        Builder componentWithTemplateBuilder)
+    /**
+     * Create the "created" super method.
+     * This method will create a java instance of the component using the Provider.
+     * It will then copy the values over to our created component.
+     * @param component {@link VueComponent} to process
+     * @param componentWithTemplateBuilder Builder for the ComponentWithTemplate class
+     */
+    private void createCreatedMethod(TypeElement component, Builder componentWithTemplateBuilder)
     {
         ClassName componentWithTemplateName = componentWithTemplateName(component);
 
         MethodSpec.Builder createdMethodBuilder = MethodSpec
             .methodBuilder("created")
             .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override.class)
-            .addStatement("$T javaInstance = ($T) this.getProvider($T.class).get()",
-                componentWithTemplateName,
-                componentWithTemplateName,
-                component);
+            .addAnnotation(Override.class);
 
-        ElementFilter
+        // Get the list of fields to copy over
+        List<VariableElement> fields = ElementFilter
             .fieldsIn(component.getEnclosedElements())
             .stream()
             .filter(property -> property.getAnnotation(Prop.class) == null)
             .filter(property -> !property.getModifiers().contains(Modifier.STATIC))
+            .peek(this::validateProperty)
             .filter(property -> !property.getModifiers().contains(Modifier.FINAL))
             .filter(property -> !property.getModifiers().contains(Modifier.PRIVATE))
-            .forEach(property -> {
+            .collect(Collectors.toList());
+
+        // We only need to create a Java instance if their are fields to copy
+        if (!fields.isEmpty())
+        {
+            createdMethodBuilder.addStatement(
+                "$T javaInstance = ($T) this.$L.getProvider($T.class).get()",
+                componentWithTemplateName,
+                componentWithTemplateName,
+                "$options()",
+                component);
+
+            fields.forEach(property -> {
                 String propertyName = property.getSimpleName().toString();
                 createdMethodBuilder.addStatement("$L = javaInstance.$L",
                     propertyName,
                     propertyName);
             });
+        }
 
         createdMethodBuilder.addStatement("super.created()");
 
         componentWithTemplateBuilder.addMethod(createdMethodBuilder.build());
+    }
+
+    /**
+     * Validate properties. This will make sure that @Inject properties are not private or final.
+     * We can't inject final or private properties are injection is done at runtime by
+     * copying over properties from an injected instance of our Java Component.
+     * @param property The property to validate
+     */
+    private void validateProperty(VariableElement property)
+    {
+        if (property.getAnnotation(Inject.class) == null)
+            return;
+
+        if (property.getModifiers().contains(Modifier.PRIVATE))
+        {
+            messager.printMessage(Kind.ERROR,
+                "Property "
+                    + property.getSimpleName()
+                    + " in "
+                    + property
+                    .getEnclosingElement()
+                    .getSimpleName()
+                    + " cannot be injected and private. Please make it at least protected.");
+        }
+        if (property.getModifiers().contains(Modifier.FINAL))
+        {
+            messager.printMessage(Kind.ERROR,
+                "Property " + property.getSimpleName() + " in " + property
+                    .getEnclosingElement()
+                    .getSimpleName() + " cannot be injected and final.");
+        }
     }
 
     /**
