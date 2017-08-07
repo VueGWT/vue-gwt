@@ -134,9 +134,9 @@ Behind the scene, our Java `VueComponent` Class is converted to the options that
 ```
 
 Those options are passed to the [`Vue.extend()`](https://vuejs.org/v2/api/#Vue-extend) JavaScript method.
-The result is a `VueConstructor` we can use to generate new instances of our `VueComponent`.
+The result is a `VueJsConstructor` we can use to generate new instances of our `VueComponent`.
 
-When you call `attach`, `VueGWT` get this `VueConstructor` for you and use it to create a new instance of your Component.
+When you call `attach`, `VueGWT` get this `VueJsConstructor` for you and use it to create a new instance of your Component.
 
 ### Binding Element Attributes
 

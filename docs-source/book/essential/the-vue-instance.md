@@ -13,17 +13,17 @@ DemoComponent vm = Vue.attach("#container", DemoComponent.class);
 Although not strictly associated with the [MVVM pattern](https://en.wikipedia.org/wiki/Model_View_ViewModel), Vue's design was partly inspired by it.
 As a convention, we often use the variable `vm` (short for ViewModel) to refer to our Vue instances.
 
-## Constructor
+## Factory
 
-Vue GWT generate a `VueConstructor` for each of your `VueComponent` using annotation processing. 
-Using this generated `VueConstructor` we can generate several instance of our `VueComponent`:
+Vue GWT generate a `VueFactory` for each of your `VueComponent` using annotation processing. 
+Using this generated `VueFactory` we can generate several instance of our `VueComponent`:
 
 ```java
-DemoComponentConstructor demoConstructor = DemoComponentConstructor.get();
+DemoComponentFactory demoFactory = DemoComponentFactory.get();
 
-DemoComponent vm1 = demoConstructor.instantiate();
-DemoComponent vm2 = demoConstructor.instantiate();
-DemoComponent vm3 = demoConstructor.instantiate();
+DemoComponent vm1 = demoFactory.create();
+DemoComponent vm2 = demoFactory.create();
+DemoComponent vm3 = demoFactory.create();
 vm1.$mount("#myContainer1");
 vm2.$mount("#myContainer2");
 vm3.$mount("#myContainer3");

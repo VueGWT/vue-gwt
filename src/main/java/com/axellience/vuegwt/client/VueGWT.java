@@ -9,6 +9,7 @@ import com.axellience.vuegwt.client.resources.VueGwtResources;
 import com.axellience.vuegwt.client.resources.VueLibResources;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vue.VueFactory;
+import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import jsinterop.annotations.JsIgnore;
@@ -132,6 +133,30 @@ public class VueGWT
         throw new RuntimeException("Couldn't find VueFactory for Component: "
             + qualifiedName
             + ". Make sure that annotation are being processed, and that you added the -generateJsInteropExports flag to GWT. You can also try a \"mvn clean\" on your maven project.");
+    }
+
+    /**
+     * Return the {@link VueJsConstructor} for the given {@link VueComponent} class.
+     * @param vueComponentClass The {@link VueComponent} class
+     * @param <T> The type of the {@link VueComponent}
+     * @return A {@link VueJsConstructor} you can use to instantiate components
+     */
+    @JsIgnore
+    public static <T extends VueComponent> VueJsConstructor<T> getJsConstructor(
+        Class<T> vueComponentClass)
+    {
+        return getFactory(vueComponentClass).getJsConstructor();
+    }
+
+    /**
+     * Return the {@link VueJsConstructor} for the given {@link VueComponent} fully qualified name.
+     * @param qualifiedName The fully qualified name of the {@link VueComponent} class
+     * @return A {@link VueJsConstructor} you can use to instantiate components
+     */
+    public static <T extends VueComponent> VueJsConstructor<T> getJsConstructor(
+        String qualifiedName)
+    {
+        return (VueJsConstructor<T>) getFactory(qualifiedName).getJsConstructor();
     }
 
     /**
