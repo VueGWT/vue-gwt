@@ -61,9 +61,6 @@ public class AnchoredHeadingComponent extends VueComponent {
     @JsProperty
     @Prop(required = true)
     Integer level;
-    
-    @Override
-    public void created() {}
 }
 ```
 
@@ -83,9 +80,6 @@ public class AnchoredHeadingComponent extends VueComponent implements HasRender 
     public VNode render(VNodeBuilder builder) {
         return builder.el("h" + this.level, this.$slots().get("default"));
     }
-    
-    @Override
-    public void created() {}
 }
 ```
 
@@ -267,9 +261,6 @@ public class AnchoredHeadingComponent extends VueComponent implements HasRender 
             return child.getText();
         }).join("");
     }
-    
-    @Override
-    public void created() {}
 }
 ```
 

@@ -20,8 +20,6 @@ We already saw how to define a Component in Vue GWT.
 ```java
 @Component
 public class MyComponent extends VueComponent {
-    @Override
-    public void created() {}
 }
 ```
 
@@ -56,8 +54,6 @@ Here's the full example:
 ```java
 @Component
 public class ParentComponent extends VueComponent {
-    @Override
-    public void created() {}
 }
 ```
 
@@ -83,8 +79,6 @@ You can make a component available only in the scope of another instance/compone
 ```java
 @Component(components = {MyComponent.class})
 public class ParentComponent extends VueComponent {
-    @Override
-    public void created() {}
 }
 ```
 
@@ -137,9 +131,6 @@ public class StarkComponent extends VueComponent {
     @JsProperty String winter;
     @JsProperty boolean is;
     @JsProperty String coming;
-    
-    @Override
-    public void created() {}
 }
 ```
 
@@ -163,10 +154,6 @@ var options = {
 }
 ```
 
-In all the examples we always initialize our Component's properties in the `created` method.
-The reason is that even if simple values (`int`, `boolean`, `String`) would work once duplicated, Java Object instances wouldn't.
-So to avoid confusion and errors, it's better to always assign your initial values in the `created` method.
-
 If you don't want the factory behavior on a Component for some reasons, you can pass the option useFactory to `false` on your `@Component` annotation.
 The same `dataObject` instance will be passed to all your instance of your Component and their data model will be shared.
 
@@ -175,12 +162,7 @@ Here is a working example:
 ```java
 @Component(useFactory = false)
 public class SharedDataModelComponent extends VueComponent {
-    @JsProperty int counter;
-
-    @Override
-    public void created() {
-        this.counter = 0;
-    }
+    @JsProperty int counter = 0;
 }
 ```
 
@@ -228,9 +210,6 @@ public class ChildComponent extends VueComponent {
     @Prop
     @JsProperty
     public String message;
-    
-    @Override
-    public void created() {}
 }
 ```
 
@@ -250,9 +229,6 @@ public class ChildComponent extends VueComponent {
     @Prop
     @JsProperty
     String myMessage;
-    
-    @Override
-    public void created() {}
 }
 ```
 
@@ -318,7 +294,7 @@ The proper answer to these use cases are:
 
 ```java
 @Component
-public class MyComponent extends VueComponent {
+public class MyComponent extends VueComponent implements HasCreated {
     @Prop
     @JsProperty
     public String initialCounter;
@@ -345,9 +321,6 @@ public class MyComponent extends VueComponent {
     public String getNormalizedSize() {
         return this.size.trim().toLowerCase();
     }
-    
-    @Override
-    public void created() {}
 }
 ```
 
@@ -440,12 +413,7 @@ Here's an example:
 ```java
 @Component
 public class ButtonCounterComponent extends VueComponent {
-    @JsProperty int counter;
-
-    @Override
-    public void created() {
-        this.counter = 0;
-    }
+    @JsProperty int counter = 0;
 
     public void increment() {
         this.counter++;
@@ -466,12 +434,7 @@ public class ButtonCounterComponent extends VueComponent {
 ```java
 @Component(components = {ButtonCounterComponent.class})
 public class CounterWithEventComponent extends VueComponent {
-    @JsProperty int total;
-
-    @Override
-    public void created() {
-        this.total = 0;
-    }
+    @JsProperty int total = 0;
 
     public void incrementTotal() {
         this.total++;
@@ -626,11 +589,6 @@ If you need to bind child-scope directives on a component root node, you should 
 @Component
 public class ChildComponent extends VueComponent {
     @JsProperty boolean someChildProperty;
-
-    @Override
-    public void created() {
-        this.total = true;
-    }
 }
 ```
 
@@ -755,12 +713,7 @@ You can use the same mount point and dynamically switch between multiple compone
 ```java
 @Component(components = { TargaryenComponent.class, StarkComponent.class, LannisterComponent.class })
 public class HousesComponent extends VueComponent {
-    @JsProperty String currentHouse;
-
-    @Override
-    public void created() {
-        this.currentHouse = "targaryen";
-    }
+    @JsProperty String currentHouse = "targaryen";
 }
 ```
 
@@ -825,8 +778,8 @@ To achieve this you have to assign a reference ID to the child component using `
 ```
 
 ```java
-@Component(components = { UserProfileComponent.class})
-public class ParentComponent extends VueComponent {
+@Component(components = UserProfileComponent.class)
+public class ParentComponent extends VueComponent implements HasCreated {
     @Override
     public void created() {
         UserProfileComponent userProfileComponent = this.$refs.get("profile");
@@ -877,7 +830,7 @@ Bellow is an example recursive component:
 
 ```java
 @Component(name = "recursive")
-public class RecursiveComponent extends VueComponent {
+public class RecursiveComponent extends VueComponent implements HasCreated {
     @Prop
     @JsProperty
     Integer counter;

@@ -28,12 +28,7 @@ You can use a computed properties along with the regular `v-model`:
 ```java
 @Component
 public class TodoTextComputedComponent extends VueComponent {
-    @JsProperty Todo todo;
-
-    @Override
-    public void created() {
-        this.todo = new Todo("Hello World!");
-    }
+    @JsProperty Todo todo = new Todo("Hello World!");
 
     @Computed
     public String getTodoText() {
@@ -77,12 +72,7 @@ In those case you can use the following syntax:
 ```java
 @Component
 public class TodoTextComponent extends VueComponent {
-    @JsProperty Todo todo;
-    
-    @Override
-    public void created() {
-        this.todo = new Todo("Hello World!");
-    }
+    @JsProperty Todo todo = new Todo("Hello World!");
 
     public void updateMessage(NativeEvent event) {
         this.todo.setText(JsTools.get(event.getEventTarget(), "value"));

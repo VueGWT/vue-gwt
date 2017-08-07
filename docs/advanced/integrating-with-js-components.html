@@ -807,11 +807,11 @@ Well let&apos;s see how we can do that!</p>
 });
 </code></pre>
 <p>Let&apos;s try see how to instantiate it in Java:</p>
-<pre><code class="lang-java"><span class="hljs-comment">// First, we get the VueConstructor from Window</span>
-VueConstructor vueConstructor = (VueConstructor) JsTools.getWindow().get(<span class="hljs-string">&quot;FullJsComponent&quot;</span>);
+<pre><code class="lang-java"><span class="hljs-comment">// First, we get the VueJsConstructor from Window</span>
+VueJsConstructor vueJsConstructor = (VueJsConstructor) JsTools.getWindow().get(<span class="hljs-string">&quot;FullJsComponent&quot;</span>);
 <span class="hljs-comment">// We can then manipulate it exactly like</span>
-<span class="hljs-comment">// our VueConstructor generated from our Java Components</span>
-Vue myFullJsComponent = vueConstructor.instantiate();
+<span class="hljs-comment">// our VueJsConstructor generated from our Java Components</span>
+VueComponent myFullJsComponent = vueConstructor.instantiate();
 myFullJsComponent.$mount(<span class="hljs-string">&quot;#fullJsComponent&quot;</span>);
 </code></pre>
 <p>And here it is live:</p>
@@ -846,9 +846,6 @@ For this we need some kind of Java definition.</p>
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> <span class="hljs-keyword">int</span> <span class="hljs-title">multiplyBy2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 <p>Looks pretty similar to our Java Components, but there a few key differences:</p>
@@ -860,9 +857,9 @@ We don&apos;t need to provide their implementations, they will come from the JS 
 <li>You only need to declare what you want to interact with in the Class.
 If you don&apos;t need to call some methods or access some attributes from Java, you don&apos;t have to declare them.</li>
 </ul>
-<p>Because of the <code>@JsComponent</code> annotation, Vue GWT generates a <code>VueConstructor</code> class for us, just like with our Java components.</p>
+<p>Because of the <code>@JsComponent</code> annotation, Vue GWT generates a <code>VueFactory</code> class for us, just like with our Java components.</p>
 <p>So we can do:</p>
-<pre><code class="lang-java">FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentConstructor.get().instantiate();
+<pre><code class="lang-java">FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentFactory.get().create();
 myComponent.$mount(<span class="hljs-string">&quot;#fullJsWithMethodComponent&quot;</span>);
 JsTools.log(myComponent.value); <span class="hljs-comment">// 10</span>
 JsTools.log(myComponent.multiplyBy2(<span class="hljs-number">25</span>)); <span class="hljs-comment">// 50</span>
@@ -902,9 +899,9 @@ Which means you can also pass them to the <code>@Component</code> annotation <a 
 <p>We can also <a href="extending-components.html#extending-js-component">extend JS Components</a> (this is required for some Vue plugins for example).</p>
 <h2 id="using-java-components-in-js">Using our Java Components in JS </h2>
 <p>It&apos;s possible to get our Java Components to use them in a JS application.</p>
-<p>The <code>VueGWT</code> global object has a <code>getConstructor</code> that allow you to retrieve the VueConstructor for your Java Component.
+<p>The <code>VueGWT</code> global object has a <code>getJsConstructor</code> that allow you to retrieve the JS Constructor for your Java Component.
 Beware this object only exist after your GWT app loading (which is async).</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> MyJavaComponent = VueGWT.getConstructor(<span class="hljs-string">&quot;com.package.MyJavaComponent&quot;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> MyJavaComponent = VueGWT.getJsConstructor(<span class="hljs-string">&quot;com.package.MyJavaComponent&quot;</span>);
 <span class="hljs-keyword">const</span> vm = <span class="hljs-keyword">new</span> MyJavaComponent();
 vm.$mount(<span class="hljs-string">&quot;#javaComponent&quot;</span>);
 </code></pre>
@@ -952,7 +949,7 @@ vm.$mount(<span class="hljs-string">&quot;#javaComponent&quot;</span>);
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"4.1","depth":1,"next":{"title":"Using JS Components in Java","level":"4.1.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},"previous":{"title":"JsTools","level":"3.4.3","depth":2,"anchor":"#js-tools","path":"js-interop/README.md","ref":"js-interop/README.md#js-tools","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-07-31T09:46:24.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-31T10:08:08.773Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"4.1","depth":1,"next":{"title":"Using JS Components in Java","level":"4.1.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},"previous":{"title":"JsTools","level":"3.4.3","depth":2,"anchor":"#js-tools","path":"js-interop/README.md","ref":"js-interop/README.md#js-tools","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-08-07T15:58:37.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-07T16:22:07.984Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

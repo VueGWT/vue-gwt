@@ -77,9 +77,6 @@ public class FullJsWithMethodsComponent extends VueComponent {
     public int value;
 
     public native int multiplyBy2(int value);
-    
-    @Override
-    public void created() {}
 }
 ```
 

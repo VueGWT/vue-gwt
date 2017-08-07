@@ -21,12 +21,7 @@ Let's say we have the following Component:
 ```java
 @Component(hasTemplate = false)
 public class ParentComponent extends VueComponent {
-    @JsProperty String parentMessage;
-
-    @Override
-    public void created() {
-        this.parentMessage = "This is a message from the parent";
-    }
+    @JsProperty String parentMessage = "This is a message from the parent";
 
     public int parentMultiplyBy2(int value) {
         return value * 2;
@@ -133,9 +128,6 @@ public class ParentJsComponent extends VueComponent {
     public String parentMessage;
 
     public native int parentMultiplyBy2(int value);
-    
-    @Override
-    public native void created();
 
     @Computed
     public native String getParentComputed();

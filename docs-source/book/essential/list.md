@@ -22,12 +22,11 @@ The `v-for` directive requires a special syntax in the form of `Type item in ite
 
 ```java
 @Component
-public class SimpleTodoListComponent extends VueComponent {
-    @JsProperty List<Todo> todos;
+public class SimpleTodoListComponent extends VueComponent implements HasCreated {
+    @JsProperty List<Todo> todos = new LinkedList<>();
     
     @Override
     public void created() {
-        this.todos = new LinkedList<>();
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));
@@ -57,16 +56,12 @@ Inside `v-for` blocks we have full access to parent scope properties.
 
 ```java
 @Component
-public class VForWithIndexComponent extends VueComponent
-{
-    @JsProperty List<Todo> todos;
-    @JsProperty String parentMessage;
+public class VForWithIndexComponent extends VueComponent implements HasCreated {
+    @JsProperty String parentMessage = "Message from parent";
+    @JsProperty List<Todo> todos = new LinkedList<>();
 
     @Override
     public void created() {
-        this.parentMessage = "Message from parent";
-
-        this.todos = new LinkedList<>();
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));
@@ -119,13 +114,12 @@ This tells Vue GWT that you are iterating on an `Object` and not an regular Coll
 
 ```java
 @Component
-public class VForOnObjectComponent extends VueComponent
+public class VForOnObjectComponent extends VueComponent implements HasCreated
 {
-    @JsProperty JsObject<Object> myObject;
+    @JsProperty JsObject<Object> myObject = new JsObject<>();
 
     @Override
     public void created() {
-        this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);
         this.myObject.set("myTodo", new Todo("I'm a Todo"));
@@ -339,12 +333,7 @@ For example:
 ```java
 @Component
 public class EvenNumbersComponent extends VueComponent {
-    @JsProperty List<Integer> numbers;
-
-    @Override
-    public void created() {
-        this.numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-    }
+    @JsProperty List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
     @Computed
     public List<Integer> getEvenNumbers() {
@@ -375,8 +364,5 @@ public class EvenNumbersComponent extends VueComponent {
     public List<Integer> getEven(List<Integer> numbers) {
         return this.numbers.stream().filter(number -> number % 2 == 0).collect(Collectors.toList());
     }
-    
-    @Override
-    public void created() {}
 }
 ```

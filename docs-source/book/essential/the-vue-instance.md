@@ -47,9 +47,6 @@ For example this Vue Component:
 @Component
 public class DemoComponent extends VueComponent {
     @JsProperty Todo todo;
-    
-    @Override
-    public void created() {}
 }
 ```
 
@@ -92,29 +89,48 @@ In Vue.js only these proxied (observed) properties are **reactive**.
 If you attach a new property to the JS instance after it has been created, it will not trigger any view updates.
 
 When you add your Objects to your Component all their properties **must** already be set in the JS world.
+This means that they must have a value set, even if null before being set in your Component.
 
-Because of GWT optimization this is **ONLY** the case when you have **explicitly** set the property value on your instance.
-
-In these cases the `text` property **WON'T** be observed once your app is compiled and optimized:
+In this case the `text` property **WON'T** be observed:
 ```java
 public class Todo {
     private String text;
     public Todo() {}
+    
+    public void setText(String text) { this.text = text; }
 }
 
-public class Todo {
-    private String text = "Default Value";
-    public Todo() {}
+@Component
+public class MyComponent extends VueComponent implements HasCreated {
+    @JsProperty todo;
+    
+    @Override
+    public void created() {
+        todo = new Todo();
+        todo.setText("Bob"); // Won't update the Vue :(
+    }
 }
 ```
 
-But in these cases they **WILL**:
+But in these cases it will **WILL**:
 ```java
+// Any of those
+public class Todo {
+    private String text = null;
+    ...
+}
+
 public class Todo {
     private String text;
     public Todo() {
         this.text = null;
     }
+    ...
+}
+
+public class Todo {
+    private String text = "Default Value";
+    ...
 }
 
 public class Todo {
@@ -122,10 +138,55 @@ public class Todo {
     public Todo() {
         this.text = "Default Value";
     }
+    ...
+}
+
+public class Todo {
+    private String text;
+    public Todo(String defaultText) {
+        this.text = defaultText;
+    }
+    ...
+}
+
+// The text property will be observable in your Component
+@Component
+public class MyComponent extends VueComponent implements HasCreated {
+    @JsProperty todo;
+    
+    @Override
+    public void created() {
+        todo = new Todo();
+        todo.setText("Bob"); // Will update the Vue! 
+    }
 }
 ```
 
-**Be very careful** about this as the issue will only appear once your app is compiled, as GWT optimize less aggressively in dev mode.
+If you don't have the control over the Java class, you can also set a value before attaching your object to your Component data model.
+
+```java
+// This class comes from some library, I can't change it! How do I make text reactive?
+public class Todo {
+    private String text;
+    public Todo() {}
+    
+    public void setText(String text) { this.text = text; }
+}
+
+@Component
+public class MyComponent extends VueComponent implements HasCreated {
+    @JsProperty todo;
+    
+    @Override
+    public void created() {
+        Todo myTodo = new Todo(); // We store in a local variable
+        myTodo.setText("Bob"); // We set the value, this define the property
+        
+        this.todo = myTodo; // We attach myTodo, it starts being observed, Bob displays in the Vue!
+        todo.setText("Mickael"); // Will update the Vue to Mickael! 
+    }
+}
+```
 
 ## Component Properties and Methods
 
@@ -139,7 +200,7 @@ For example:
 
 ```java
 @Component
-public class DemoComponent extends VueComponent {
+public class DemoComponent extends VueComponent implements HasCreated {
     @JsProperty Todo todo;
     
     @Override
@@ -159,7 +220,7 @@ public class DemoComponent extends VueComponent {
 
 Consult the [Vue.js API reference](https://vuejs.org/v2/api/) for the full list of instance properties and methods.
 
-## Instance Lifecycle Hooks
+## Instance Lifecycle Hooks {#lifecycle-hooks}
 
 Each Vue instance goes through a series of initialization steps when it is created - for example, it needs to set up data observation, compile the template, mount the instance to the DOM, and update the DOM when data changes.
 Along the way, it will also invoke some **lifecycle hooks**, which give us the opportunity to execute custom logic.
@@ -169,9 +230,6 @@ For example, the [`mounted`](https://vuejs.org/v2/api/#mounted) hook is called a
 @Component
 public class DemoComponent extends VueComponent implements HasMounted {
     @JsProperty Todo todo;
-    
-    @Override
-    public void created() {}
     
     @Override
     public void mounted() {

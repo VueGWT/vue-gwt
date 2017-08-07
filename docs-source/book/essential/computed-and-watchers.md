@@ -33,12 +33,7 @@ That's why for any complex logic, you should use a **computed property**.
 ```java
 @Component
 public class ReverseComponent extends VueComponent {
-    @JsProperty String message;
-
-    @Override
-    public void created() {
-        this.message = "Hello";
-    }
+    @JsProperty String message = "Hello";
 
     @Computed // Note the annotation that tells Vue GWT that this is a Computed Properties
     public String getReversedMessage() {
@@ -83,12 +78,7 @@ You may have noticed we can achieve the same result by invoking a method in the 
 ```java
 @Component
 public class ReverseComponent extends VueComponent {
-    @JsProperty String message;
-
-    @Override
-    public void created() {
-        this.message = "Hello";
-    }
+    @JsProperty String message = "Hello";
 
     // Note that there a no more @Computed annotation
     public String getReversedMessage() {
@@ -132,7 +122,7 @@ However, it is often a better idea to use a computed property rather than an imp
 
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent {
+public class JohnSnowComponent extends VueComponent implements HasCreated {
     @JsProperty String firstName;
     @JsProperty String lastName;
     @JsProperty String fullName;
@@ -161,15 +151,9 @@ The above code is imperative and repetitive. Compare it with a computed property
 ```java
 @Component
 public class JohnSnowComponent extends VueComponent {
-    @JsProperty String firstName;
-    @JsProperty String lastName;
+    @JsProperty String firstName = "John";
+    @JsProperty String lastName = "Snow";
 
-    @Override
-    public void created() {
-        this.firstName = "John";
-        this.lastName = "Snow";
-    }
-    
     @Computed
     public String getFullName() {
         return this.firstName + " " + this.lastName;
@@ -186,14 +170,8 @@ Computed properties are by default getter-only, but you can also provide a sette
 ```java
 @Component
 public class JohnSnowComponent extends VueComponent {
-    @JsProperty String firstName;
-    @JsProperty String lastName;
-
-    @Override
-    public void created() {
-        this.firstName = "John";
-        this.lastName = "Snow";
-    }
+    @JsProperty String firstName = "John";
+    @JsProperty String lastName = "Snow";
 
     @Computed
     public String getFullName() {
@@ -233,12 +211,7 @@ Here is an example:
 ```java
 @Component
 public class JohnSnowComponent extends VueComponent {
-    @JsProperty String message;
-
-    @Override
-    public void created() {
-        this.message = "Hello World!";
-    }
+    @JsProperty String message = "Hello World!";
 
     @Watch(propertyName = "message")
     public void watchMessage(String newValue, String oldValue) {

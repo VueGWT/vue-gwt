@@ -751,14 +751,14 @@
 </code></pre>
 <p>Although not strictly associated with the <a href="https://en.wikipedia.org/wiki/Model_View_ViewModel" target="_blank">MVVM pattern</a>, Vue&apos;s design was partly inspired by it.
 As a convention, we often use the variable <code>vm</code> (short for ViewModel) to refer to our Vue instances.</p>
-<h2 id="constructor">Constructor</h2>
-<p>Vue GWT generate a <code>VueConstructor</code> for each of your <code>VueComponent</code> using annotation processing. 
-Using this generated <code>VueConstructor</code> we can generate several instance of our <code>VueComponent</code>:</p>
-<pre><code class="lang-java">DemoComponentConstructor demoConstructor = DemoComponentConstructor.get();
+<h2 id="factory">Factory</h2>
+<p>Vue GWT generate a <code>VueFactory</code> for each of your <code>VueComponent</code> using annotation processing. 
+Using this generated <code>VueFactory</code> we can generate several instance of our <code>VueComponent</code>:</p>
+<pre><code class="lang-java">DemoComponentFactory demoFactory = DemoComponentFactory.get();
 
-DemoComponent vm1 = demoConstructor.instantiate();
-DemoComponent vm2 = demoConstructor.instantiate();
-DemoComponent vm3 = demoConstructor.instantiate();
+DemoComponent vm1 = demoFactory.create();
+DemoComponent vm2 = demoFactory.create();
+DemoComponent vm3 = demoFactory.create();
 vm1.$mount(<span class="hljs-string">&quot;#myContainer1&quot;</span>);
 vm2.$mount(<span class="hljs-string">&quot;#myContainer2&quot;</span>);
 vm3.$mount(<span class="hljs-string">&quot;#myContainer3&quot;</span>);
@@ -775,9 +775,6 @@ This <code>data</code> object is built for you by Vue GWT based on the public pr
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> Todo todo;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 }
 </code></pre>
 <p>Will have the following <code>data</code> object in it&apos;s Vue options:</p>
@@ -807,25 +804,45 @@ It will then recursively observe all the properties of the Object you set on thi
 <h3 id="&#x26A0;&#xFE0F;-important-note-on-vue-gwt-observation">&#x26A0;&#xFE0F; Important Note on Vue GWT Observation</h3>
 <p>In Vue.js only these proxied (observed) properties are <strong>reactive</strong>.
 If you attach a new property to the JS instance after it has been created, it will not trigger any view updates.</p>
-<p>When you add your Objects to your Component all their properties <strong>must</strong> already be set in the JS world.</p>
-<p>Because of GWT optimization this is <strong>ONLY</strong> the case when you have <strong>explicitly</strong> set the property value on your instance.</p>
-<p>In these cases the <code>text</code> property <strong>WON&apos;T</strong> be observed once your app is compiled and optimized:</p>
+<p>When you add your Objects to your Component all their properties <strong>must</strong> already be set in the JS world.
+This means that they must have a value set, even if null before being set in your Component.</p>
+<p>In this case the <code>text</code> property <strong>WON&apos;T</strong> be observed:</p>
 <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span> </span>{
     <span class="hljs-keyword">private</span> String text;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Todo</span><span class="hljs-params">()</span> </span>{}
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setText</span><span class="hljs-params">(String text)</span> </span>{ <span class="hljs-keyword">this</span>.text = text; }
+}
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> todo;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        todo = <span class="hljs-keyword">new</span> Todo();
+        todo.setText(<span class="hljs-string">&quot;Bob&quot;</span>); <span class="hljs-comment">// Won&apos;t update the Vue :(</span>
+    }
+}
+</code></pre>
+<p>But in these cases it will <strong>WILL</strong>:</p>
+<pre><code class="lang-java"><span class="hljs-comment">// Any of those</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span> </span>{
+    <span class="hljs-keyword">private</span> String text = <span class="hljs-keyword">null</span>;
+    ...
 }
 
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span> </span>{
-    <span class="hljs-keyword">private</span> String text = <span class="hljs-string">&quot;Default Value&quot;</span>;
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Todo</span><span class="hljs-params">()</span> </span>{}
-}
-</code></pre>
-<p>But in these cases they <strong>WILL</strong>:</p>
-<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span> </span>{
     <span class="hljs-keyword">private</span> String text;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Todo</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.text = <span class="hljs-keyword">null</span>;
     }
+    ...
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span> </span>{
+    <span class="hljs-keyword">private</span> String text = <span class="hljs-string">&quot;Default Value&quot;</span>;
+    ...
 }
 
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span> </span>{
@@ -833,9 +850,52 @@ If you attach a new property to the JS instance after it has been created, it wi
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Todo</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.text = <span class="hljs-string">&quot;Default Value&quot;</span>;
     }
+    ...
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span> </span>{
+    <span class="hljs-keyword">private</span> String text;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Todo</span><span class="hljs-params">(String defaultText)</span> </span>{
+        <span class="hljs-keyword">this</span>.text = defaultText;
+    }
+    ...
+}
+
+<span class="hljs-comment">// The text property will be observable in your Component</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> todo;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        todo = <span class="hljs-keyword">new</span> Todo();
+        todo.setText(<span class="hljs-string">&quot;Bob&quot;</span>); <span class="hljs-comment">// Will update the Vue! </span>
+    }
 }
 </code></pre>
-<p><strong>Be very careful</strong> about this as the issue will only appear once your app is compiled, as GWT optimize less aggressively in dev mode.</p>
+<p>If you don&apos;t have the control over the Java class, you can also set a value before attaching your object to your Component data model.</p>
+<pre><code class="lang-java"><span class="hljs-comment">// This class comes from some library, I can&apos;t change it! How do I make text reactive?</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todo</span> </span>{
+    <span class="hljs-keyword">private</span> String text;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Todo</span><span class="hljs-params">()</span> </span>{}
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setText</span><span class="hljs-params">(String text)</span> </span>{ <span class="hljs-keyword">this</span>.text = text; }
+}
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> todo;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        Todo myTodo = <span class="hljs-keyword">new</span> Todo(); <span class="hljs-comment">// We store in a local variable</span>
+        myTodo.setText(<span class="hljs-string">&quot;Bob&quot;</span>); <span class="hljs-comment">// We set the value, this define the property</span>
+
+        <span class="hljs-keyword">this</span>.todo = myTodo; <span class="hljs-comment">// We attach myTodo, it starts being observed, Bob displays in the Vue!</span>
+        todo.setText(<span class="hljs-string">&quot;Mickael&quot;</span>); <span class="hljs-comment">// Will update the Vue to Mickael! </span>
+    }
+}
+</code></pre>
 <h2 id="component-properties-and-methods">Component Properties and Methods</h2>
 <p>In addition to data properties, Vue instances expose a number of useful instance properties and methods.
 These properties and methods are prefixed with <code>$</code> to differentiate them from proxied data properties.</p>
@@ -843,7 +903,7 @@ These properties and methods are prefixed with <code>$</code> to differentiate t
 Because your Components inherits from <code>Vue</code> you can simply access them in your Components.</p>
 <p>For example:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@JsProperty</span> Todo todo;
 
     <span class="hljs-meta">@Override</span>
@@ -861,16 +921,13 @@ Because your Components inherits from <code>Vue</code> you can simply access the
 }
 </code></pre>
 <p>Consult the <a href="https://vuejs.org/v2/api/" target="_blank">Vue.js API reference</a> for the full list of instance properties and methods.</p>
-<h2 id="instance-lifecycle-hooks">Instance Lifecycle Hooks</h2>
+<h2 id="lifecycle-hooks">Instance Lifecycle Hooks </h2>
 <p>Each Vue instance goes through a series of initialization steps when it is created - for example, it needs to set up data observation, compile the template, mount the instance to the DOM, and update the DOM when data changes.
 Along the way, it will also invoke some <strong>lifecycle hooks</strong>, which give us the opportunity to execute custom logic.
 For example, the <a href="https://vuejs.org/v2/api/#mounted" target="_blank"><code>mounted</code></a> hook is called after the instance is mounted:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasMounted</span> </span>{
     <span class="hljs-meta">@JsProperty</span> Todo todo;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{}
 
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mounted</span><span class="hljs-params">()</span> </span>{
@@ -928,7 +985,7 @@ Your custom logic for a component would be split among these lifecycle hooks.</p
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"The Vue Instance","level":"2.1","depth":1,"next":{"title":"Template Syntax","level":"2.2","depth":1,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"previous":{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/the-vue-instance.md","mtime":"2017-07-31T09:51:49.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-31T10:08:08.773Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"The Vue Instance","level":"2.1","depth":1,"next":{"title":"Template Syntax","level":"2.2","depth":1,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"previous":{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/the-vue-instance.md","mtime":"2017-08-07T16:15:49.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-07T16:22:07.984Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

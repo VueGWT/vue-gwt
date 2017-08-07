@@ -28,18 +28,9 @@ To create our Component, we must create a Class annotated by `@Component` that e
 ```java
 @Component
 public class SimpleLinkComponent extends VueComponent {
-    @JsProperty String linkName;
-    
-    @Override
-    public void created() {
-        this.linkName = "Hello Vue GWT!";
-    }
+    @JsProperty String linkName = "Hello Vue GWT!";
 }
 ```
-
-The method `created` that is overridden in our Component is mandatory.
-It will be called each time an instance of your Component is created.
-You can see it as your Component "constructor".
 
 ##### Why `@JsProperty`?
 
@@ -127,7 +118,8 @@ Behind the scene, our Java `VueComponent` Class is converted to the options that
     },
     methods: {
         created: function() {
-            this.linkName = "Hello Vue GWT!";
+        	const javaInstance = new SimpleLinkComponent(); 
+            this.linkName = javaInstance.linkName;
         }
     }
 }
@@ -150,14 +142,8 @@ This one will allow us to set the link `href` attribute in our Java Class.
 ```java
 @Component
 public class LinkComponent extends VueComponent {
-    @JsProperty String linkTarget;
-    @JsProperty String linkName;
-    
-    @Override
-    public void created() {
-        this.linkTarget = "https://github.com/Axellience/vue-gwt";
-        this.linkName = "Hello Vue GWT!";
-    }
+    @JsProperty String linkName = "Hello Vue GWT!";
+    @JsProperty String linkTarget = "https://github.com/Axellience/vue-gwt";
 }
 ```
 
@@ -196,12 +182,7 @@ Let's check this with a small example:
 ```java
 @Component
 public class CanHideComponent extends VueComponent {
-    @JsProperty boolean visible;
-
-    @Override
-    public void created() {
-        this.visible = true;
-    }
+    @JsProperty boolean visible = true;
 }
 ```
 
@@ -244,17 +225,19 @@ public class Todo
 
 We will then create a list of `Todo` in a `SimpleTodoListComponent`.
 
-Vue GWT observe Java Collections for you.
-For now this work for `List`, `Set` and `Map`.
+Vue.js support some [lifecycle hooks](../essential/the-vue-instance.md#lifecycle-hooks) that will be called at different moments of the life our our Component.
+You will notice that we don't use a constructor for our initialization logic but the `created` method by implementing the `HasCreated` interface.
+
+Your initialization logic must be defined in this `created` method.
+Using a Java constructor will result in an explicit error on the annotation processor.
 
 ```java
 @Component
-public class SimpleTodoListComponent extends VueComponent {
-    @JsProperty List<Todo> todos;
+public class SimpleTodoListComponent extends VueComponent implements HasCreated {
+    @JsProperty List<Todo> todos = new LinkedList<>();
     
     @Override
     public void created() {
-        this.todos = new LinkedList<>();
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));
@@ -271,6 +254,9 @@ public class SimpleTodoListComponent extends VueComponent {
 </ol>
 ```
 
+Vue GWT observes Java Collections for you.
+For now this observation work for `List`, `Set` and `Map`.
+
 Another difference with Vue.js is you must indicate your loop variable type.
 This is because Vue GWT compile templates expressions to Java and so needs the type information.
 You can import Java types in your template by using the `vue-gwt:import` element.
@@ -282,9 +268,9 @@ You can import Java types in your template by using the `vue-gwt:import` element
 {% endraw %}
 
 As the `Todo` class does not have the `@JsInterop` annotation it's not possible to create new Todos from the JavaScript console.
-But you can try removing a Todo in console:
+But you can try removing all the `Todo` from the list in your browser console:
 ```
-simpleTodoListComponent.todos.shift();
+simpleTodoListComponent.todos.clear();
 ```
 
 ## Handling User Input {#handling-user-input}
@@ -302,12 +288,7 @@ To let users interact with your app, we can use the `v-on` directive to attach e
 ```java
 @Component
 public class ExclamationComponent extends VueComponent {
-    @JsProperty String message;
-    
-    @Override
-    public void created() {
-        this.message = "Hello Vue GWT!";
-    }
+    @JsProperty String message = "Hello Vue GWT!";
     
     public void addExclamationMark() {
         this.message += "!";
@@ -341,12 +322,7 @@ Vue also provides the [v-model directive](../forms.md) that makes two-way bindin
 ```java
 @Component
 public class MessageComponent extends VueComponent {
-    @JsProperty String message;
-    
-    @Override
-    public void created() {
-        this.message = "Hello Vue GWT!";
-    }
+    @JsProperty String message = "Hello Vue GWT!";
 }
 ```
 
@@ -385,8 +361,6 @@ We first create a Class like for our previous examples.
 ```java
 @Component
 public class TodoComponent extends VueComponent {
-    @Override
-    public void created() {}
 }
 ```
 
@@ -409,8 +383,6 @@ We first register `TodoComponent` to be used in our `ParentComponent` by passing
 ```java
 @Component(components = {TodoComponent.class})
 public class ParentComponent extends VueComponent {
-    @Override
-    public void created() {}
 }
 ```
 
@@ -445,9 +417,6 @@ public class TodoComponent extends VueComponent {
     @Prop
     @JsProperty
     Todo todo;
-    
-    @Override
-    public void created() {}
 }
 ```
 
@@ -471,12 +440,11 @@ Let's call it `TodoListComponent`:
 
 ```java
 @Component(components = {TodoComponent.class})
-public class TodoListComponent extends VueComponent {
-    @JsProperty List<Todo> todos;
+public class TodoListComponent extends VueComponent implements HasCreated {
+    @JsProperty List<Todo> todos = new LinkedList<>();
     
     @Override
     public void created() {
-        this.todos = new LinkedList<>();
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));
