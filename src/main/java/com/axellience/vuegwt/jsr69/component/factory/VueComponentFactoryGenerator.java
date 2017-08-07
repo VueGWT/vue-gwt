@@ -38,7 +38,7 @@ import static com.axellience.vuegwt.jsr69.GenerationNameUtil.providerOf;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getComponentLocalComponents;
 
 /**
- * Generate {@link VueFactory} from the user Vue Component classes annotated by {@link
+ * Generate {@link VueFactory} from the user {@link VueComponent} classes annotated by {@link
  * Component}.
  * @author Adrien Baron
  */

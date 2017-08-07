@@ -3,6 +3,7 @@ package com.axellience.vuegwt.jsr69.component.factory;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.vue.VueFactory;
+import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
@@ -25,7 +26,7 @@ import java.util.List;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentFactoryName;
 
 /**
- * Abstract class to generate {@link VueFactory} from the user Vue Component classes.
+ * Abstract class to generate {@link VueFactory} from the user {@link VueComponent} classes.
  * It is inherited by {@link VueComponentFactoryGenerator} which generate for {@link Component}
  * annotated class and {@link VueJsComponentFactoryGenerator} which generate for {@link
  * JsComponent} annotated class.
@@ -33,7 +34,7 @@ import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentFactoryNam
  */
 public abstract class AbstractVueComponentFactoryGenerator
 {
-    protected static String INSTANCE_PROP = "INSTANCE";
+    private static String INSTANCE_PROP = "INSTANCE";
 
     private final Filer filer;
     protected final Messager messager;
@@ -56,7 +57,7 @@ public abstract class AbstractVueComponentFactoryGenerator
 
         createProperties(vueFactoryClassName, vueFactoryBuilder);
         List<CodeBlock> staticInitParameters = createInitMethod(component, vueFactoryBuilder);
-        createGetMethod(vueFactoryClassName, vueFactoryBuilder, staticInitParameters);
+        createStaticGetMethod(vueFactoryClassName, vueFactoryBuilder, staticInitParameters);
 
         // Build the ComponentOptions class
         GenerationUtil.toJavaFile(filer, vueFactoryBuilder, vueFactoryClassName, component);
@@ -68,8 +69,7 @@ public abstract class AbstractVueComponentFactoryGenerator
      * @param vueFactoryClassName The type name of our generated {@link VueFactory}
      * @return A Class Builder
      */
-    protected Builder createFactoryBuilderClass(TypeElement component,
-        ClassName vueFactoryClassName)
+    private Builder createFactoryBuilderClass(TypeElement component, ClassName vueFactoryClassName)
     {
         return TypeSpec
             .classBuilder(vueFactoryClassName)
@@ -82,10 +82,10 @@ public abstract class AbstractVueComponentFactoryGenerator
     }
 
     /**
-     * Create the method that will inject dependencies.
-     * By dependencies we mean locally declared Components and Directives.
+     * Create the method that init the wrapped {@link VueJsConstructor}
      * @param component The Component we generate for
      * @param vueFactoryClassBuilder The builder of the VueFactory we are generating
+     * @return The list of parameters call to pass when call the created init method
      */
     protected abstract List<CodeBlock> createInitMethod(TypeElement component,
         Builder vueFactoryClassBuilder);
@@ -95,7 +95,7 @@ public abstract class AbstractVueComponentFactoryGenerator
      * @param vueFactoryType The generated type name for our {@link VueFactory}
      * @param vueFactoryBuilder The builder to create our {@link VueFactory} class
      */
-    protected void createProperties(ClassName vueFactoryType, Builder vueFactoryBuilder)
+    private void createProperties(ClassName vueFactoryType, Builder vueFactoryBuilder)
     {
         vueFactoryBuilder.addField(FieldSpec
             .builder(vueFactoryType, INSTANCE_PROP, Modifier.PRIVATE, Modifier.STATIC)
@@ -104,12 +104,12 @@ public abstract class AbstractVueComponentFactoryGenerator
 
     /**
      * Create a static get method that can be used to retrieve an instance of our Factory.
-     * This method will not support injection.
+     * Factory retrieved using this method do NOT support injection.
      * @param vueFactoryClassName The type name of our generated {@link VueFactory}
      * @param vueFactoryBuilder The builder to create our {@link VueFactory} class
      * @param staticInitParameters Parameters from the init method, null if we shouldn't call it
      */
-    private void createGetMethod(ClassName vueFactoryClassName, Builder vueFactoryBuilder,
+    private void createStaticGetMethod(ClassName vueFactoryClassName, Builder vueFactoryBuilder,
         List<CodeBlock> staticInitParameters)
     {
         MethodSpec.Builder getBuilder = MethodSpec

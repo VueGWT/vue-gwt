@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.jsr69.component;
 
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 
 import javax.lang.model.element.TypeElement;
@@ -12,10 +13,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * Utilities methods to manipulate the {@link Component} annotation
  * @author Adrien Baron
  */
 public class ComponentGenerationUtil
 {
+    /**
+     * Return the list of {@link VueComponent} dependencies listed on {@link Component#components()}.
+     * When retrieving this list, it can produce a {@link MirroredTypesException}.
+     * The case is managed here and we always returns {@link TypeMirror} of the dependencies.
+     * @param elementsUtil The Element utils provided by the annotation processor environement.
+     * @param component The {@link Component} annotation to process
+     * @return The list of TypeMirror of the {@link VueComponent} the {@link Component} depends on
+     */
     public static List<TypeMirror> getComponentLocalComponents(Elements elementsUtil,
         TypeElement component)
     {

@@ -20,6 +20,7 @@ import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
+import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -67,7 +68,11 @@ import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentWithTempla
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasInterface;
 
 /**
- * Generate the TemplateProvider and {@link ComponentWithTemplate} for the user Java Components.
+ * Generate the {@link ComponentWithTemplate} for the user Java {@link VueComponent}.
+ * This {@link ComponentWithTemplate} will wrap any non JsInterop methods from the original
+ * component to make them visible to JS.
+ * It also provides the {@link VueComponentOptions} that will be passed down to Vue.js
+ * to initialize our {@link VueJsConstructor}.
  * @author Adrien Baron
  */
 public class ComponentWithTemplateGenerator

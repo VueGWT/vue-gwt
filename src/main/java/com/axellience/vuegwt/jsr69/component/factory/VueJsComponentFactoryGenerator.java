@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.jsr69.component.factory;
 
+import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
@@ -22,7 +23,7 @@ import java.util.List;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.getPackage;
 
 /**
- * Generate {@link VueFactory} from the user Vue Component classes annotated by {@link
+ * Generate {@link VueFactory} from the user {@link VueComponent} classes annotated by {@link
  * JsComponent}.
  * @author Adrien Baron
  */

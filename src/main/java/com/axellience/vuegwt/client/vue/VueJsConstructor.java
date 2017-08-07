@@ -13,9 +13,10 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * A Java representation of a VueComponent Constructor.
- * VueComponent Constructor are JavaScript Function obtained when calling VueComponent.extend().
- * All the {@link Component} and {@link JsComponent} get a generated VueJsConstructor.
+ * A Java representation of a Vue.js Constructor.
+ * Vue.js Constructor are JavaScript Function obtained when calling VueComponent.extend().
+ * All the {@link Component} and {@link JsComponent} get a generated {@link VueFactory} that wraps a
+ * {@link VueJsConstructor}.
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")

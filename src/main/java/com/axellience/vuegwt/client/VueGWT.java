@@ -120,6 +120,7 @@ public class VueGWT
     /**
      * Return the {@link VueFactory} for the given {@link VueComponent} fully qualified name.
      * @param qualifiedName The fully qualified name of the {@link VueComponent} class
+     * @param <T> The type of the {@link VueComponent}
      * @return A {@link VueFactory} you can use to instantiate components
      */
     public static <T extends VueComponent> VueFactory<T> getFactory(String qualifiedName)
@@ -151,6 +152,7 @@ public class VueGWT
     /**
      * Return the {@link VueJsConstructor} for the given {@link VueComponent} fully qualified name.
      * @param qualifiedName The fully qualified name of the {@link VueComponent} class
+     * @param <T> The type of the {@link VueComponent}
      * @return A {@link VueJsConstructor} you can use to instantiate components
      */
     public static <T extends VueComponent> VueJsConstructor<T> getJsConstructor(
