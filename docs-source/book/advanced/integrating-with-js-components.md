@@ -27,11 +27,11 @@ window.FullJsComponent = Vue.extend({
 Let's try see how to instantiate it in Java:
 
 ```java
-// First, we get the VueConstructor from Window
-VueConstructor vueConstructor = (VueConstructor) JsTools.getWindow().get("FullJsComponent");
+// First, we get the VueJsConstructor from Window
+VueJsConstructor vueJsConstructor = (VueJsConstructor) JsTools.getWindow().get("FullJsComponent");
 // We can then manipulate it exactly like
-// our VueConstructor generated from our Java Components
-Vue myFullJsComponent = vueConstructor.instantiate();
+// our VueJsConstructor generated from our Java Components
+VueComponent myFullJsComponent = vueConstructor.instantiate();
 myFullJsComponent.$mount("#fullJsComponent");
 ```
 
@@ -92,12 +92,12 @@ We don't need to provide their implementations, they will come from the JS Compo
 * You only need to declare what you want to interact with in the Class.
 If you don't need to call some methods or access some attributes from Java, you don't have to declare them.
 
-Because of the `@JsComponent` annotation, Vue GWT generates a `VueConstructor` class for us, just like with our Java components.
+Because of the `@JsComponent` annotation, Vue GWT generates a `VueFactory` class for us, just like with our Java components.
 
 So we can do:
 
 ```java
-FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentConstructor.get().instantiate();
+FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentFactory.get().create();
 myComponent.$mount("#fullJsWithMethodComponent");
 JsTools.log(myComponent.value); // 10
 JsTools.log(myComponent.multiplyBy2(25)); // 50
@@ -156,11 +156,11 @@ We can also [extend JS Components](extending-components.md#extending-js-componen
 
 It's possible to get our Java Components to use them in a JS application.
 
-The `VueGWT` global object has a `getConstructor` that allow you to retrieve the VueConstructor for your Java Component.
+The `VueGWT` global object has a `getJsConstructor` that allow you to retrieve the JS Constructor for your Java Component.
 Beware this object only exist after your GWT app loading (which is async).
  
 ```js
-const MyJavaComponent = VueGWT.getConstructor("com.package.MyJavaComponent");
+const MyJavaComponent = VueGWT.getJsConstructor("com.package.MyJavaComponent");
 const vm = new MyJavaComponent();
 vm.$mount("#javaComponent");
 ```
