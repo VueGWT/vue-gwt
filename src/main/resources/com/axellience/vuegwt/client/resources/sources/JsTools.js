@@ -71,4 +71,7 @@
 		// Strip comments
 		return m.replace(/^\s*\/\/.*$/mg, '').trim();
 	};
+	jsTools.debugger = function () {
+		debugger;
+	}
 })(window);

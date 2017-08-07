@@ -22,6 +22,8 @@ public class JsTools
     @JsMethod(namespace = "console")
     public static native void log(Object object);
 
+    public static native void debugger();
+
     public static native JsObject getWindow();
 
     public static native boolean objectHasProperty(Object object, String property);
