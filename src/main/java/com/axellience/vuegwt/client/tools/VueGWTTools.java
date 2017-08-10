@@ -1,8 +1,8 @@
 package com.axellience.vuegwt.client.tools;
 
+import com.axellience.vuegwt.client.component.ComponentJavaPrototype;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
-import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
 import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
@@ -38,8 +38,9 @@ public class VueGWTTools
     public static native <T> String wrapMethod(T object, String methodName,
         BeforeMethodCall<T> beforeMethodCall, AfterMethodCall<T> afterMethodCall);
 
-    public static native <T extends VueComponent> void extendVueConstructorWithJavaComponent(
-        VueJsConstructor<T> extendedVueJsConstructor, ComponentWithTemplate<T> componentWithTemplate);
+    public static native <T extends VueComponent> void extendVueConstructorWithJavaPrototype(
+        VueJsConstructor<T> extendedVueJsConstructor,
+        ComponentJavaPrototype<T> componentJavaPrototype);
 
     public static native <T> JsArray<T> javaArrayToJsArray(Object[] javaArray);
 

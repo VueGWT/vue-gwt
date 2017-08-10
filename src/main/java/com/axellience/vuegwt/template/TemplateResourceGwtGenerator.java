@@ -44,7 +44,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import static com.axellience.vuegwt.jsr69.GenerationNameUtil.COMPONENT_WITH_TEMPLATE_SUFFIX;
+import static com.axellience.vuegwt.client.component.template.TemplateExpressionKind.COMPUTED_PROPERTY;
+import static com.axellience.vuegwt.client.component.template.TemplateExpressionKind.METHOD;
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.COMPONENT_TEMPLATE_RESOURCE_SUFFIX;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.STYLE_BUNDLE_METHOD_NAME;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.styleBundleName;
 
@@ -55,7 +57,7 @@ import static com.axellience.vuegwt.jsr69.GenerationNameUtil.styleBundleName;
  * <p>
  * Modified by Adrien Baron
  */
-public final class ComponentWithTemplateResourceGenerator extends AbstractResourceGenerator
+public final class TemplateResourceGwtGenerator extends AbstractResourceGenerator
     implements SupportsGeneratorResultCaching
 {
     /**
@@ -73,12 +75,12 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
         SourceWriter sw = new StringSourceWriter();
 
         TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
-        String withTemplateTypeName = getTypeName(method) + COMPONENT_WITH_TEMPLATE_SUFFIX;
+        String templateResourceTypeName = getTypeName(method) + COMPONENT_TEMPLATE_RESOURCE_SUFFIX;
 
         // No resource for the template
         if (resource == null)
         {
-            return generateEmptyTemplateResource(method, withTemplateTypeName, sw);
+            return generateEmptyTemplateResource(method, templateResourceTypeName, sw);
         }
 
         // Convenience when examining the generated code.
@@ -86,7 +88,7 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
             sw.println("// " + resource.toExternalForm());
 
         // Start class
-        sw.println("new " + withTemplateTypeName + "() {");
+        sw.println("new " + templateResourceTypeName + "() {");
         sw.indent();
 
         // Add the get name method
@@ -98,7 +100,7 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
         // Process it
         TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
             templateContent,
-            typeOracle.findType(withTemplateTypeName));
+            typeOracle.findType(templateResourceTypeName));
 
         // Compile the resulting HTML template String
         compileTemplateString(sw, templateParserResult.getProcessedTemplate(), context);
@@ -133,6 +135,7 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
         sw.println("public String getRenderFunction() {return null;}");
         sw.println("public String[] getStaticRenderFunctions() {return null;}");
         sw.println("public String[] getTemplateComputedProperties() {return null;}");
+        sw.println("public String[] getTemplateMethods() {return null;}");
         sw.println(
             "public java.util.Map<String, com.google.gwt.resources.client.CssResource> getTemplateStyles() {return null;}");
         sw.outdent();
@@ -235,7 +238,8 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
             generateTemplateExpressionMethod(sw, expression);
         }
 
-        generateGetTemplateExpressions(sw, templateParserResult);
+        generateGetTemplateComputedProperties(sw, templateParserResult);
+        generateGetTemplateMethods(sw, templateParserResult);
     }
 
     /**
@@ -279,26 +283,47 @@ public final class ComponentWithTemplateResourceGenerator extends AbstractResour
     }
 
     /**
-     * Generate the method to get the list of template expressions
+     * Generate the method to get the list of computed properties from the template
      * @param sw The source writer
      * @param templateParserResult Result from the parsing of the HTML Template
      */
-    private void generateGetTemplateExpressions(SourceWriter sw,
+    private void generateGetTemplateComputedProperties(SourceWriter sw,
         TemplateParserResult templateParserResult)
     {
         sw.println("public String[] getTemplateComputedProperties() {");
         sw.indent();
-
-        String expressionIds = templateParserResult
-            .getExpressions()
-            .stream()
-            .filter(expression -> expression.getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
-            .map(expression -> "\"" + expression.getId() + "\"")
-            .collect(Collectors.joining(", "));
-
-        sw.println("return new String[] { " + expressionIds + " };");
+        sw.println("return new String[] { " + getExpressionsIdsOfKind(templateParserResult,
+            COMPUTED_PROPERTY) + " };");
         sw.outdent();
         sw.println("}");
+    }
+
+    /**
+     * Generate the method to get the list of methods from the template
+     * @param sw The source writer
+     * @param templateParserResult Result from the parsing of the HTML Template
+     */
+    private void generateGetTemplateMethods(SourceWriter sw,
+        TemplateParserResult templateParserResult)
+    {
+        sw.println("public String[] getTemplateMethods() {");
+        sw.indent();
+        sw.println("return new String[] { "
+            + getExpressionsIdsOfKind(templateParserResult, METHOD)
+            + " };");
+        sw.outdent();
+        sw.println("}");
+    }
+
+    private String getExpressionsIdsOfKind(TemplateParserResult templateParserResult,
+        TemplateExpressionKind kind)
+    {
+        return templateParserResult
+            .getExpressions()
+            .stream()
+            .filter(expression -> expression.getKind() == kind)
+            .map(expression -> "\"" + expression.getId() + "\"")
+            .collect(Collectors.joining(", "));
     }
 
     /**

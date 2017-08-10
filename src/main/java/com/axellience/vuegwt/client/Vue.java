@@ -104,8 +104,8 @@ public abstract class Vue extends JsObject
         VueComponentOptions<T> componentOptions)
     {
         VueJsConstructor<T> extendedVueJsConstructor = extend(componentOptions);
-        VueGWTTools.extendVueConstructorWithJavaComponent(extendedVueJsConstructor,
-            componentOptions.getComponentWithTemplate());
+        VueGWTTools.extendVueConstructorWithJavaPrototype(extendedVueJsConstructor,
+            componentOptions.getComponentJavaPrototype());
 
         return extendedVueJsConstructor;
     }

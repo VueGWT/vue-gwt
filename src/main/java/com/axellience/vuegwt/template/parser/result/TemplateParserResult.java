@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.axellience.vuegwt.client.component.template.ComponentWithTemplate.EXPRESSION_PREFIX;
+import static com.axellience.vuegwt.client.component.template.TemplateResource.EXPRESSION_PREFIX;
 
 /**
  * Result of a template parsing.

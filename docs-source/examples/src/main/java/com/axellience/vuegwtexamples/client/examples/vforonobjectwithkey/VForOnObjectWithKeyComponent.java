@@ -1,7 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.vforonobjectwithkey;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -11,12 +10,11 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component
-public class VForOnObjectWithKeyComponent extends VueComponent implements HasCreated
+public class VForOnObjectWithKeyComponent extends VueComponent
 {
     @JsProperty JsObject<Object> myObject;
 
-    @Override
-    public void created()
+    public VForOnObjectWithKeyComponent()
     {
         this.myObject = new JsObject<>();
         this.myObject.set("myString", "Hello World");

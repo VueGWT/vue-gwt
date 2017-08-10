@@ -1,7 +1,8 @@
 package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.jsr69.component.ComponentWithTemplateGenerator;
-import com.axellience.vuegwt.jsr69.component.TemplateBundleGenerator;
+import com.axellience.vuegwt.jsr69.component.template.TemplateBundleGenerator;
+import com.axellience.vuegwt.jsr69.component.template.TemplateResourceGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
 import com.axellience.vuegwt.jsr69.component.factory.VueComponentFactoryGenerator;
@@ -79,6 +80,8 @@ public class VueGwtProcessor extends AbstractProcessor
         Set<? extends Element> componentElements =
             roundEnv.getElementsAnnotatedWith(Component.class);
 
+        TemplateResourceGenerator templateResourceGenerator =
+            new TemplateResourceGenerator(processingEnv);
         ComponentWithTemplateGenerator componentWithTemplateGenerator =
             new ComponentWithTemplateGenerator(processingEnv);
         TemplateBundleGenerator templateBundleGenerator =
@@ -88,6 +91,7 @@ public class VueGwtProcessor extends AbstractProcessor
 
         for (TypeElement componentType : ElementFilter.typesIn(componentElements))
         {
+            templateResourceGenerator.generate(componentType);
             vueFactoryGenerator.generate(componentType);
             templateBundleGenerator.generate(componentType);
             componentWithTemplateGenerator.generate(componentType);

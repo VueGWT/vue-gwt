@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.template.parser.context;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
+import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.variable.VariableInfo;
@@ -34,8 +34,8 @@ public class TemplateParserContext
     private Node currentNode;
 
     /**
-     * Build the context based on a given {@link ComponentWithTemplate} Class.
-     * @param componentWithTemplateClass The {@link ComponentWithTemplate} we are parsing the
+     * Build the context based on a given {@link TemplateResource} Class.
+     * @param componentWithTemplateClass The {@link TemplateResource} we are parsing the
      * template of
      */
     public TemplateParserContext(JClassType componentWithTemplateClass)
@@ -53,7 +53,7 @@ public class TemplateParserContext
     }
 
     /**
-     * Process the {@link ComponentWithTemplate} class to extract all the fields that will be
+     * Process the {@link TemplateResource} class to extract all the fields that will be
      * visible in the template.
      * It is called recursively to find parent fields in case of inheritance.
      * @param vueComponentClass The class to process

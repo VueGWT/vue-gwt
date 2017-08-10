@@ -56,14 +56,13 @@
 			return result;
 		};
 	};
-	tools.extendVueConstructorWithJavaComponent = function (extendedVueConstructor, componentWithTemplate) {
+	tools.extendVueConstructorWithJavaPrototype = function (extendedVueConstructor, componentJavaPrototype) {
 		const vueProto = extendedVueConstructor.prototype;
-		const componentWithTemplateProto = Object.getPrototypeOf(componentWithTemplate);
 
 		// Copy from the ComponentWithTemplate prototype
-		for (let protoProp in componentWithTemplateProto) {
+		for (let protoProp in componentJavaPrototype) {
 			if (!vueProto.hasOwnProperty(protoProp)) {
-				vueProto[protoProp] = componentWithTemplateProto[protoProp];
+				vueProto[protoProp] = componentJavaPrototype[protoProp];
 			}
 		}
 	};

@@ -1,7 +1,7 @@
-package com.axellience.vuegwt.jsr69.component;
+package com.axellience.vuegwt.jsr69.component.template;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
+import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.google.gwt.resources.client.ClientBundle;
 import com.squareup.javapoet.TypeName;
@@ -31,7 +31,7 @@ public class TemplateBundleGenerator
         GenerationUtil.generateGwtBundle(componentTypeElement,
             componentTemplateBundleName(componentTypeElement),
             COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME,
-            TypeName.get(ComponentWithTemplate.class),
+            TypeName.get(TemplateResource.class),
             "html",
             filer);
     }

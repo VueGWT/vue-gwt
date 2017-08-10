@@ -3,39 +3,46 @@ package com.axellience.vuegwt.jsr69.component.factory;
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
-import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsAsyncProvider;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
+import com.axellience.vuegwt.jsr69.GenerationNameUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
+import com.axellience.vuegwt.jsr69.component.annotations.VueCustomizeOptions;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.inject.Inject;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
+import javax.tools.Diagnostic.Kind;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.client.tools.VueGWTTools.componentToTagName;
 import static com.axellience.vuegwt.client.tools.VueGWTTools.directiveToTagName;
-import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentFactoryName;
-import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentWithTemplateName;
-import static com.axellience.vuegwt.jsr69.GenerationNameUtil.directiveOptionsName;
-import static com.axellience.vuegwt.jsr69.GenerationNameUtil.providerOf;
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.*;
+import static com.axellience.vuegwt.jsr69.GenerationUtil.hasAnnotation;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getComponentLocalComponents;
+import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.resolveVariableTypeName;
+import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getSuperComponentType;
 
 /**
  * Generate {@link VueFactory} from the user {@link VueComponent} classes annotated by {@link
@@ -45,12 +52,14 @@ import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getC
 public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGenerator
 {
     private final Elements elements;
+    private final Types types;
 
     public VueComponentFactoryGenerator(ProcessingEnvironment processingEnv)
     {
         super(processingEnv);
 
         elements = processingEnv.getElementUtils();
+        types = processingEnv.getTypeUtils();
     }
 
     @Override
@@ -71,14 +80,14 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             componentWithTemplateName(component));
 
         // Extend the parent Component
-        ClassName superFactoryType = getSuperFactoryType(component);
-        if (superFactoryType != null)
+        Optional<ClassName> superFactoryType = getSuperFactoryType(component);
+        if (superFactoryType.isPresent())
         {
-            initBuilder.addParameter(superFactoryType, "superFactory");
+            initBuilder.addParameter(superFactoryType.get(), "superFactory");
             initBuilder.addStatement(
                 "jsConstructor = superFactory.getJsConstructor().extendJavaComponent($L)",
                 "componentOptions");
-            initParametersCall.add(CodeBlock.of("$T.get()", superFactoryType));
+            initParametersCall.add(CodeBlock.of("$T.get()", superFactoryType.get()));
         }
         else
         {
@@ -91,6 +100,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         registerProvider(component, initBuilder, initParametersCall);
         registerLocalComponents(component, initBuilder, initParametersCall);
         registerLocalDirectives(componentAnnotation, initBuilder);
+        processCustomizeOptionsMethods(component, initBuilder, initParametersCall);
 
         MethodSpec initMethod = initBuilder.build();
         vueFactoryClassBuilder.addMethod(initMethod);
@@ -99,28 +109,27 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
     }
 
     /**
-     * Register the {@link ComponentWithTemplate} provider.
+     * Register the {@link VueComponent} dependencies provider.
      * <br>
-     * For each instance of our VueComponent, we will create a Java instance using this provider.
+     * For each instance of our VueComponent, we will create a Java instance of dependencies using
+     * this provider.
      * <br>
-     * We then use that instance to get the values of our Java properties whether they are injected
-     * or created inline in the Java component.
+     * We then use that instance to get the values of our Java properties if they are injected.
      * @param component
      * @param initBuilder
      */
     private void registerProvider(TypeElement component, MethodSpec.Builder initBuilder,
         List<CodeBlock> staticInitParameters)
     {
-        ClassName componentWithTemplate = componentWithTemplateName(component);
+        ClassName componentDependencies = componentInjectedDependenciesName(component);
 
-        initBuilder.addParameter(providerOf(componentWithTemplate),
-            "componentWithTemplateProvider");
-        staticInitParameters.add(CodeBlock.of("() -> new $T()", componentWithTemplate));
+        initBuilder.addParameter(providerOf(componentDependencies),
+            "componentDependenciesProvider");
+        staticInitParameters.add(CodeBlock.of("() -> new $T()", componentDependencies));
 
         initBuilder.addStatement(
-            "jsConstructor.getOptions().addProvider($T.class, componentWithTemplateProvider)",
+            "jsConstructor.getOptions().addProvider($T.class, componentDependenciesProvider)",
             component);
-
     }
 
     /**
@@ -200,6 +209,79 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         }
     }
 
+    private void processCustomizeOptionsMethods(TypeElement component,
+        MethodSpec.Builder initBuilder, List<CodeBlock> staticInitParameters)
+    {
+        List<ExecutableElement> customizeOptionsMethods = ElementFilter
+            .methodsIn(component.getEnclosedElements())
+            .stream()
+            .filter(method -> hasAnnotation(method, VueCustomizeOptions.class))
+            .peek(this::validateCustomizeOptionsMethod)
+            .collect(Collectors.toList());
+
+        customizeOptionsMethods.forEach(customizeOptionsMethod -> this.processCustomizeOptionsMethod(
+            customizeOptionsMethod,
+            initBuilder,
+            component,
+            staticInitParameters));
+    }
+
+    private void processCustomizeOptionsMethod(ExecutableElement customizeOptionsMethod,
+        MethodSpec.Builder initBuilder, TypeElement component, List<CodeBlock> staticInitParameters)
+    {
+        // Check if has at least one parameter to inject
+        String methodName = customizeOptionsMethod.getSimpleName().toString();
+
+        List<String> parameters = new LinkedList<>();
+        parameters.add("jsConstructor.getOptions()");
+
+        if (customizeOptionsMethod.getParameters().size() > 1)
+        {
+            for (int i = 1; i < customizeOptionsMethod.getParameters().size(); i++)
+            {
+                VariableElement parameter = customizeOptionsMethod.getParameters().get(i);
+
+                String parameterName = methodName + "_" + parameter.getSimpleName().toString();
+                parameters.add(parameterName);
+                initBuilder.addParameter(resolveVariableTypeName(parameter, messager), parameterName);
+                staticInitParameters.add(CodeBlock.of("null"));
+            }
+        }
+
+        initBuilder.addStatement("$T.$L($L)",
+            component.asType(),
+            methodName,
+            String.join(", ", parameters));
+    }
+
+    private void validateCustomizeOptionsMethod(ExecutableElement customizeOptionsMethod)
+    {
+        if (customizeOptionsMethod.getParameters().isEmpty())
+        {
+            messager.printMessage(Kind.ERROR,
+                getCustomizeOptionsErrorPrefix(customizeOptionsMethod)
+                    + " should have one parameter of type VueComponentOptions");
+            return;
+        }
+
+        VariableElement parameter = customizeOptionsMethod.getParameters().get(0);
+        if (!types.isAssignable(parameter.asType(),
+            elements.getTypeElement(VueComponentOptions.class.getCanonicalName()).asType()))
+        {
+            messager.printMessage(Kind.ERROR,
+                getCustomizeOptionsErrorPrefix(customizeOptionsMethod)
+                    + " VueComponentOptions should be your first parameter");
+        }
+    }
+
+    private String getCustomizeOptionsErrorPrefix(ExecutableElement customizeOptionsMethod)
+    {
+        return "Customize options method "
+            + customizeOptionsMethod.toString()
+            + " in component "
+            + customizeOptionsMethod.getEnclosingElement().getSimpleName().toString();
+    }
+
     private void addGetDirectivesStatement(MethodSpec.Builder injectDependenciesBuilder)
     {
         injectDependenciesBuilder.addStatement(
@@ -208,12 +290,8 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             VueDirectiveOptions.class);
     }
 
-    private ClassName getSuperFactoryType(TypeElement component)
+    private Optional<ClassName> getSuperFactoryType(TypeElement component)
     {
-        TypeMirror superType = component.getSuperclass();
-        if (!TypeName.get(VueComponent.class).equals(TypeName.get(superType)))
-            return componentFactoryName(superType);
-
-        return null;
+        return getSuperComponentType(component).map(GenerationNameUtil::componentFactoryName);
     }
 }

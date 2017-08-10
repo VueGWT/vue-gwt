@@ -1,10 +1,12 @@
 package com.axellience.vuegwt.client;
 
+import com.axellience.vuegwt.client.component.ComponentJavaConstructor;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.jsnative.html.HTMLDocument;
 import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsRunnable;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.resources.VueGwtResources;
 import com.axellience.vuegwt.client.resources.VueLibResources;
 import com.axellience.vuegwt.client.tools.JsTools;
@@ -159,6 +161,25 @@ public class VueGWT
         String qualifiedName)
     {
         return (VueJsConstructor<T>) getFactory(qualifiedName).getJsConstructor();
+    }
+
+    /**
+     * Return the Java Constructor of our VueComponent Java Class.
+     * This Constructor can be used to get the prototype of our Java Class and get the
+     * VueComponent methods from it.
+     * @param vueComponentClass The {@link VueComponent} we want the constructor of
+     * @return The Java constructor of our {@link VueComponent}
+     */
+    @JsIgnore
+    public static ComponentJavaConstructor getJavaConstructor(
+        Class<? extends VueComponent> vueComponentClass)
+    {
+        JsObject VueGWT = ((JsObject) JsTools.getWindow().get("VueGWT"));
+        JsObject javaComponentConstructors = (JsObject) VueGWT.get("javaComponentConstructors");
+
+        return (ComponentJavaConstructor) javaComponentConstructors.get(vueComponentClass
+            .getCanonicalName()
+            .replaceAll("\\.", "_"));
     }
 
     /**

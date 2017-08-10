@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.template.parser;
 
-import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
+import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.template.parser.exceptions.TemplateExpressionException;
 import com.axellience.vuegwt.template.parser.result.TemplateExpression;
@@ -68,7 +68,7 @@ public class TemplateParser
      * Parse a given HTML template and return the a result object containing the expressions, styles
      * and a transformed HTML.
      * @param htmlTemplate The HTML template to process, as a String
-     * @param componentWithTemplateClass The {@link ComponentWithTemplate} class of the component we
+     * @param componentWithTemplateClass The {@link TemplateResource} class of the component we
      * are processing
      * @return A {@link TemplateParserResult} containing the processed template, expressions and styles
      */

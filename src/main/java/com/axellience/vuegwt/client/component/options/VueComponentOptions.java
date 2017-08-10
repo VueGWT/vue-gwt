@@ -1,12 +1,12 @@
 package com.axellience.vuegwt.client.component.options;
 
-import com.axellience.vuegwt.client.component.HasCustomizeOptions;
+import com.axellience.vuegwt.client.component.ComponentJavaPrototype;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.options.computed.ComputedOptions;
 import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
-import com.axellience.vuegwt.client.component.template.ComponentWithTemplate;
+import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JSON;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
@@ -36,22 +36,35 @@ import java.util.Map.Entry;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class VueComponentOptions<T extends VueComponent> extends JsObject
 {
-    private ComponentWithTemplate<T> componentWithTemplate;
-    private Map<String, Provider<?>> componentWithTemplateProviders;
+    private ComponentJavaPrototype<T> componentJavaPrototype;
+    private TemplateResource<T> templateResource;
+    private Map<String, Provider<?>> dependenciesProvider;
     private JsObject dataFields;
 
     /**
-     * Set the {@link ComponentWithTemplate} on this {@link VueComponentOptions}.
-     * This instance will be used to retrieve the java methods of our {@link VueComponent}.
-     * @param componentWithTemplate An instance of the {@link ComponentWithTemplate} class for this
+     * Set the Java Prototype on this {@link VueComponentOptions}.
+     * This prototype will be used to retrieve the java methods of our {@link VueComponent}.
+     * @param javaPrototype An instance of the {@link TemplateResource} class for this
      * Component
      */
     @JsOverlay
-    public final void setComponentWithTemplate(ComponentWithTemplate<T> componentWithTemplate)
+    public final void setComponentJavaPrototype(ComponentJavaPrototype<T> javaPrototype)
     {
-        this.componentWithTemplate = componentWithTemplate;
+        this.componentJavaPrototype = javaPrototype;
+    }
 
-        if (componentWithTemplate.getRenderFunction() != null)
+    /**
+     * Set the {@link TemplateResource} on this {@link VueComponentOptions}.
+     * This instance will be used to retrieve the java methods of our {@link VueComponent}.
+     * @param templateResource An instance of the {@link TemplateResource} class for this
+     * Component
+     */
+    @JsOverlay
+    public final void setTemplateResource(TemplateResource<T> templateResource)
+    {
+        this.templateResource = templateResource;
+
+        if (templateResource.getRenderFunction() != null)
         {
             this.injectStyles();
             this.initExpressions();
@@ -60,12 +73,12 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     }
 
     /**
-     * Find styles in the {@link ComponentWithTemplate} and ensure they are injected.
+     * Find styles in the {@link TemplateResource} and ensure they are injected.
      */
     @JsOverlay
     private void injectStyles()
     {
-        for (CssResource style : componentWithTemplate.getTemplateStyles().values())
+        for (CssResource style : templateResource.getTemplateStyles().values())
         {
             style.ensureInjected();
         }
@@ -77,9 +90,14 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     private void initExpressions()
     {
-        for (String expressionId : componentWithTemplate.getTemplateComputedProperties())
+        for (String computedId : templateResource.getTemplateComputedProperties())
         {
-            addJavaComputed(expressionId, expressionId, ComputedKind.GETTER);
+            addComputedOptions(computedId, JsTools.get(templateResource, computedId));
+        }
+
+        for (String methodId : templateResource.getTemplateMethods())
+        {
+            addMethod(methodId, JsTools.get(templateResource, methodId));
         }
     }
 
@@ -89,10 +107,10 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     private void initRenderFunctions()
     {
-        this.set("render", JsTools.createFunction(componentWithTemplate.getRenderFunction()));
+        this.set("render", JsTools.createFunction(templateResource.getRenderFunction()));
 
         JsArray<Object> staticRenderFns = new JsArray<>();
-        for (String staticRenderFunction : componentWithTemplate.getStaticRenderFunctions())
+        for (String staticRenderFunction : templateResource.getStaticRenderFunctions())
         {
             staticRenderFns.push(JsTools.createFunction(staticRenderFunction));
         }
@@ -143,19 +161,17 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     private void addStylesToData(JsObject data)
     {
-        if (componentWithTemplate.getTemplateStyles() == null)
+        if (templateResource.getTemplateStyles() == null)
             return;
 
-        for (Entry<String, CssResource> style : componentWithTemplate
-            .getTemplateStyles()
-            .entrySet())
+        for (Entry<String, CssResource> style : templateResource.getTemplateStyles().entrySet())
             data.set(style.getKey(), style.getValue());
     }
 
     /**
      * Add a computed property to this ComponentOptions.
      * If the computed has both a getter and a setter, this will be called twice, once for each.
-     * @param javaMethodName Name of the method in the {@link ComponentWithTemplate}
+     * @param javaMethodName Name of the method in the {@link TemplateResource}
      * @param computedPropertyName Name of the computed property in the Template and the
      * ComponentOptions
      * @param kind Kind of the computed method (getter or setter)
@@ -180,7 +196,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
 
     /**
      * Add a watch property to this Component Definition
-     * @param javaMethodName Name of the method in the {@link ComponentWithTemplate}
+     * @param javaMethodName Name of the method in the {@link TemplateResource}
      * @param watchedPropertyName Name of the property name to watch in the data model
      * @param isDeep Is the watcher deep (will watch child properties)
      */
@@ -207,7 +223,18 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     public final void addRootJavaMethod(String hookName)
     {
-        set(hookName, getJavaComponentMethod(hookName));
+        set(hookName, hookName);
+    }
+
+    /**
+     * Add the given lifecycle hook to the {@link VueComponentOptions}.
+     * @param hookName Name of the hook to add
+     * @param javaMethodName Name of the java method for the hook
+     */
+    @JsOverlay
+    public final void addRootJavaMethod(String hookName, String javaMethodName)
+    {
+        set(hookName, getJavaComponentMethod(javaMethodName));
     }
 
     /**
@@ -232,7 +259,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
 
     /**
      * Add a custom prop validator to validate a property
-     * @param javaMethodName Name of the method in the {@link ComponentWithTemplate}
+     * @param javaMethodName Name of the method in the {@link TemplateResource}
      * @param propertyName The name of the property to validate
      */
     @JsOverlay
@@ -243,24 +270,24 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     }
 
     /**
-     * Get the given java method from the {@link ComponentWithTemplate}.
+     * Get the given java method from the {@link TemplateResource}.
      * @param javaMethodName Name of the Java method to retrieve
      * @return The JS function that represent our Java method.
      */
     @JsOverlay
     private Object getJavaComponentMethod(String javaMethodName)
     {
-        return JsTools.get(componentWithTemplate, javaMethodName);
+        return componentJavaPrototype.get(javaMethodName);
     }
 
     /**
-     * Return the {@link ComponentWithTemplate} instance.
-     * @return The instance of {@link ComponentWithTemplate} we use to get the methods from
+     * Return the prototype for our Component Java object. We can use it to get methods from.
+     * @return The prototype of our Component Java object
      */
     @JsOverlay
-    public final ComponentWithTemplate<T> getComponentWithTemplate()
+    public final ComponentJavaPrototype<T> getComponentJavaPrototype()
     {
-        return componentWithTemplate;
+        return componentJavaPrototype;
     }
 
     @JsOverlay
@@ -270,17 +297,9 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     }
 
     @JsOverlay
-    public final void addProvider(Class<T> component, Provider<?> componentWithTemplateProvider)
+    public final void addProvider(Class<T> component, Provider<?> dependenciesProvider)
     {
-        // Customize options with the provided ComponentWithTemplate
-        // This allows for example to declare route in a component with VueRouter
-        ComponentWithTemplate componentWithTemplate =
-            (ComponentWithTemplate) componentWithTemplateProvider.get();
-
-        if (componentWithTemplate instanceof HasCustomizeOptions)
-            ((HasCustomizeOptions) componentWithTemplate).customizeOptions(this);
-
-        getProviders().put(component.getCanonicalName(), componentWithTemplateProvider);
+        getProviders().put(component.getCanonicalName(), dependenciesProvider);
     }
 
     @JsOverlay
@@ -292,10 +311,10 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     public final Map<String, Provider<?>> getProviders()
     {
-        if (this.componentWithTemplateProviders == null)
-            this.componentWithTemplateProviders = new HashMap<>();
+        if (this.dependenciesProvider == null)
+            this.dependenciesProvider = new HashMap<>();
 
-        return componentWithTemplateProviders;
+        return dependenciesProvider;
     }
 
     /* ---------------------------------------------

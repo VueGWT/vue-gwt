@@ -41,8 +41,8 @@ public class VueJsConstructor<T extends VueComponent> extends JsFunction
     {
         componentOptions.addAllProviders(getOptions().getProviders());
         VueJsConstructor<K> extendedVueJsConstructor = extend(componentOptions);
-        VueGWTTools.extendVueConstructorWithJavaComponent(extendedVueJsConstructor,
-            componentOptions.getComponentWithTemplate());
+        VueGWTTools.extendVueConstructorWithJavaPrototype(extendedVueJsConstructor,
+            componentOptions.getComponentJavaPrototype());
 
         return extendedVueJsConstructor;
     }

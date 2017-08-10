@@ -16,6 +16,8 @@ import com.squareup.javapoet.TypeSpec.Builder;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -23,6 +25,7 @@ import javax.tools.JavaFileObject;
 import java.beans.Introspector;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 
 /**
  * @author Adrien Baron
@@ -38,8 +41,11 @@ public class GenerationUtil
         return processingEnv.getTypeUtils().isAssignable(type, interfaceType);
     }
 
-    public static String getComputedPropertyName(Computed computed, String methodName)
+    public static String getComputedPropertyName(ExecutableElement method)
     {
+        Computed computed = method.getAnnotation(Computed.class);
+        String methodName = method.getSimpleName().toString();
+
         if (!"".equals(computed.propertyName()))
             return computed.propertyName();
 
@@ -101,5 +107,19 @@ public class GenerationUtil
             .build());
 
         GenerationUtil.toJavaFile(filer, bundleClassBuilder, bundleClassName, sourceType);
+    }
+
+    public static boolean hasAnnotation(Element element,
+        Class<? extends Annotation> annotationClass)
+    {
+        return element.getAnnotation(annotationClass) != null;
+    }
+
+    public static AnnotationSpec getUnusableByJSAnnotation()
+    {
+        return AnnotationSpec
+            .builder(SuppressWarnings.class)
+            .addMember("value", "$S", "unusable-by-js")
+            .build();
     }
 }

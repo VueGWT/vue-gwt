@@ -12,8 +12,10 @@ import javax.lang.model.type.TypeMirror;
  */
 public class GenerationNameUtil
 {
-    public static String COMPONENT_WITH_TEMPLATE_SUFFIX = "WithTemplate";
+    private static String COMPONENT_WITH_TEMPLATE_SUFFIX = "WithTemplate";
+    private static String COMPONENT_INJECTED_DEPENDENCIES_SUFFIX = "InjectedDependencies";
 
+    public static String COMPONENT_TEMPLATE_RESOURCE_SUFFIX = "TemplateResource";
     private static String COMPONENT_TEMPLATE_BUNDLE_SUFFIX = "TemplateBundle";
     public static String COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME = "template";
 
@@ -29,6 +31,11 @@ public class GenerationNameUtil
         return nameWithSuffix(component, COMPONENT_WITH_TEMPLATE_SUFFIX);
     }
 
+    public static ClassName componentInjectedDependenciesName(TypeElement component)
+    {
+        return nameWithSuffix(component, COMPONENT_INJECTED_DEPENDENCIES_SUFFIX);
+    }
+
     public static ClassName componentFactoryName(TypeElement component)
     {
         return nameWithSuffix(component, COMPONENT_FACTORY_SUFFIX);
@@ -42,6 +49,16 @@ public class GenerationNameUtil
     public static ClassName componentFactoryName(Class<?> component)
     {
         return nameWithSuffix(component, COMPONENT_FACTORY_SUFFIX);
+    }
+
+    public static ClassName componentFactoryName(ClassName component)
+    {
+        return nameWithSuffix(component, COMPONENT_FACTORY_SUFFIX);
+    }
+
+    public static ClassName componentTemplateResourceName(TypeElement component)
+    {
+        return nameWithSuffix(component, COMPONENT_TEMPLATE_RESOURCE_SUFFIX);
     }
 
     public static ClassName componentTemplateBundleName(TypeElement component)
@@ -87,6 +104,11 @@ public class GenerationNameUtil
     public static ClassName nameWithSuffix(Class<?> type, String suffix)
     {
         return nameWithSuffix(type.getCanonicalName(), suffix);
+    }
+
+    public static ClassName nameWithSuffix(ClassName className, String suffix)
+    {
+        return nameWithSuffix(className.reflectionName(), suffix);
     }
 
     public static ClassName nameWithSuffix(String typeQualifiedName, String suffix)
