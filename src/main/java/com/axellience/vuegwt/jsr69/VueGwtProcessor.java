@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.jsr69;
 
-import com.axellience.vuegwt.jsr69.component.ComponentWithTemplateGenerator;
+import com.axellience.vuegwt.jsr69.component.ComponentJsTypeGenerator;
 import com.axellience.vuegwt.jsr69.component.template.TemplateBundleGenerator;
 import com.axellience.vuegwt.jsr69.component.template.TemplateResourceGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
@@ -82,8 +82,8 @@ public class VueGwtProcessor extends AbstractProcessor
 
         TemplateResourceGenerator templateResourceGenerator =
             new TemplateResourceGenerator(processingEnv);
-        ComponentWithTemplateGenerator componentWithTemplateGenerator =
-            new ComponentWithTemplateGenerator(processingEnv);
+        ComponentJsTypeGenerator componentJsTypeGenerator =
+            new ComponentJsTypeGenerator(processingEnv);
         TemplateBundleGenerator templateBundleGenerator =
             new TemplateBundleGenerator(processingEnv);
         VueComponentFactoryGenerator vueFactoryGenerator =
@@ -94,7 +94,7 @@ public class VueGwtProcessor extends AbstractProcessor
             templateResourceGenerator.generate(componentType);
             vueFactoryGenerator.generate(componentType);
             templateBundleGenerator.generate(componentType);
-            componentWithTemplateGenerator.generate(componentType);
+            componentJsTypeGenerator.generate(componentType);
         }
     }
 

@@ -70,7 +70,7 @@ import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.isFi
  * to initialize our {@link VueJsConstructor}.
  * @author Adrien Baron
  */
-public class ComponentWithTemplateGenerator
+public class ComponentJsTypeGenerator
 {
     private final ProcessingEnvironment processingEnv;
     private final Filer filer;
@@ -93,7 +93,7 @@ public class ComponentWithTemplateGenerator
         HOOKS_MAP.put("destroyed", HasDestroyed.class);
     }
 
-    public ComponentWithTemplateGenerator(ProcessingEnvironment processingEnvironment)
+    public ComponentJsTypeGenerator(ProcessingEnvironment processingEnvironment)
     {
         processingEnv = processingEnvironment;
         filer = processingEnvironment.getFiler();
@@ -103,10 +103,10 @@ public class ComponentWithTemplateGenerator
     public void generate(TypeElement component)
     {
         // Template resource abstract class
-        ClassName componentWithSuffixClassName = componentWithTemplateName(component);
+        ClassName componentWithSuffixClassName = componentJsTypeName(component);
 
-        Builder componentWithTemplateBuilder =
-            getComponentWithTemplateBuilder(component, componentWithSuffixClassName);
+        Builder componentJsTypeBuilder =
+            getComponentJsTypeBuilder(component, componentWithSuffixClassName);
 
         // Initialize Options getter builder
         MethodSpec.Builder optionsBuilder = getOptionsMethodBuilder(component);
@@ -114,27 +114,27 @@ public class ComponentWithTemplateGenerator
         ComponentInjectedDependenciesBuilder dependenciesBuilder =
             new ComponentInjectedDependenciesBuilder(processingEnv, component);
 
-        processConstructor(component, componentWithTemplateBuilder);
+        processConstructor(component, componentJsTypeBuilder);
         processData(component, optionsBuilder);
         processProps(component, optionsBuilder);
-        processComputed(component, optionsBuilder, componentWithTemplateBuilder);
-        processWatchers(component, optionsBuilder, componentWithTemplateBuilder);
-        processPropValidators(component, optionsBuilder, componentWithTemplateBuilder);
-        processTemplateVisibleMethods(component, componentWithTemplateBuilder);
+        processComputed(component, optionsBuilder, componentJsTypeBuilder);
+        processWatchers(component, optionsBuilder, componentJsTypeBuilder);
+        processPropValidators(component, optionsBuilder, componentJsTypeBuilder);
+        processTemplateVisibleMethods(component, componentJsTypeBuilder);
         processHooks(component, optionsBuilder);
-        processRenderFunction(component, optionsBuilder, componentWithTemplateBuilder);
+        processRenderFunction(component, optionsBuilder, componentJsTypeBuilder);
         createCreatedHook(component,
             optionsBuilder,
-            componentWithTemplateBuilder,
+            componentJsTypeBuilder,
             dependenciesBuilder);
 
         // Finish building Options getter
         optionsBuilder.addStatement("return options");
-        componentWithTemplateBuilder.addMethod(optionsBuilder.build());
+        componentJsTypeBuilder.addMethod(optionsBuilder.build());
 
         // And generate our Java Class
         GenerationUtil.toJavaFile(filer,
-            componentWithTemplateBuilder,
+            componentJsTypeBuilder,
             componentWithSuffixClassName);
     }
 
@@ -143,9 +143,9 @@ public class ComponentWithTemplateGenerator
      * This proxy will be exposed to JS and can be therefore used to initialize our
      * {@link VueComponent} instances.
      * @param component The {@link VueComponent} we are generating for
-     * @param componentWithTemplateBuilder Builder for the TemplateResource class
+     * @param componentJsTypeBuilder Builder for the TemplateResource class
      */
-    private void processConstructor(TypeElement component, Builder componentWithTemplateBuilder)
+    private void processConstructor(TypeElement component, Builder componentJsTypeBuilder)
     {
         List<ExecutableElement> constructors = ElementFilter
             .constructorsIn(component.getEnclosedElements())
@@ -178,35 +178,35 @@ public class ComponentWithTemplateGenerator
             proxyMethodBuilder.addStatement("super($L)", methodCallParameters);
         }
 
-        componentWithTemplateBuilder.addMethod(proxyMethodBuilder.build());
+        componentJsTypeBuilder.addMethod(proxyMethodBuilder.build());
     }
 
     /**
      * Create and return the builder for the {@link TemplateResource} of our {@link
      * VueComponent}.
      * @param component The {@link VueComponent} we are generating for
-     * @param withTemplateClassName The name of the generated {@link TemplateResource} class
+     * @param jsTypeClassName The name of the generated {@link TemplateResource} class
      * @return A Builder to build the class
      */
-    private Builder getComponentWithTemplateBuilder(TypeElement component,
-        ClassName withTemplateClassName)
+    private Builder getComponentJsTypeBuilder(TypeElement component,
+        ClassName jsTypeClassName)
     {
-        Builder componentWithTemplateBuilder = TypeSpec
-            .classBuilder(withTemplateClassName)
+        Builder componentJsTypeBuilder = TypeSpec
+            .classBuilder(jsTypeClassName)
             .addModifiers(Modifier.PUBLIC)
             .superclass(TypeName.get(component.asType()));
 
         // Add @JsType annotation. This ensure this class is included.
         // As we use a class reference to use our Components, this class would be removed by GWT
         // tree shaking.
-        componentWithTemplateBuilder.addAnnotation(AnnotationSpec
+        componentJsTypeBuilder.addAnnotation(AnnotationSpec
             .builder(JsType.class)
             .addMember("namespace", "\"VueGWT.javaComponentConstructors\"")
             .addMember("name", "$S", component.getQualifiedName().toString().replaceAll("\\.", "_"))
             .build());
 
         // Add a block that registers the VueFactory for the VueComponent
-        componentWithTemplateBuilder.addStaticBlock(CodeBlock
+        componentJsTypeBuilder.addStaticBlock(CodeBlock
             .builder()
             .addStatement("$T.onReady(() -> $T.register($S, () -> $T.get()))",
                 VueGWT.class,
@@ -215,7 +215,7 @@ public class ComponentWithTemplateGenerator
                 componentFactoryName(component))
             .build());
 
-        return componentWithTemplateBuilder;
+        return componentJsTypeBuilder;
     }
 
     /**
@@ -319,7 +319,7 @@ public class ComponentWithTemplateGenerator
      * {@link VueComponentOptions}
      */
     private void processComputed(TypeElement component, MethodSpec.Builder optionsBuilder,
-        Builder componentWithTemplateBuilder)
+        Builder componentJsTypeBuilder)
     {
         getMethodsWithAnnotation(component, Computed.class).forEach(method -> {
             String methodName = method.getSimpleName().toString();
@@ -335,7 +335,7 @@ public class ComponentWithTemplateGenerator
                 ComputedKind.class,
                 kind);
 
-            componentWithTemplateBuilder.addMethod(createProxyJsTypeMethod(method));
+            componentJsTypeBuilder.addMethod(createProxyJsTypeMethod(method));
         });
     }
 
@@ -346,7 +346,7 @@ public class ComponentWithTemplateGenerator
      * {@link VueComponentOptions}
      */
     private void processWatchers(TypeElement component, MethodSpec.Builder optionsBuilder,
-        Builder componentWithTemplateBuilder)
+        Builder componentJsTypeBuilder)
     {
         getMethodsWithAnnotation(component, Watch.class).forEach(method -> {
             Watch watch = method.getAnnotation(Watch.class);
@@ -356,7 +356,7 @@ public class ComponentWithTemplateGenerator
                 watch.propertyName(),
                 watch.isDeep());
 
-            componentWithTemplateBuilder.addMethod(createProxyJsTypeMethod(method));
+            componentJsTypeBuilder.addMethod(createProxyJsTypeMethod(method));
         });
     }
 
@@ -367,7 +367,7 @@ public class ComponentWithTemplateGenerator
      * {@link VueComponentOptions}
      */
     private void processPropValidators(TypeElement component, MethodSpec.Builder optionsBuilder,
-        Builder componentWithTemplateBuilder)
+        Builder componentJsTypeBuilder)
     {
         getMethodsWithAnnotation(component, PropValidator.class).forEach(method -> {
             PropValidator propValidator = method.getAnnotation(PropValidator.class);
@@ -377,7 +377,7 @@ public class ComponentWithTemplateGenerator
                 method.getSimpleName().toString(),
                 propertyName);
 
-            componentWithTemplateBuilder.addMethod(createProxyJsTypeMethod(method));
+            componentJsTypeBuilder.addMethod(createProxyJsTypeMethod(method));
         });
     }
 
@@ -402,15 +402,15 @@ public class ComponentWithTemplateGenerator
      * @param component {@link VueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
-     * @param componentWithTemplateBuilder Builder for the TemplateResource class
+     * @param componentJsTypeBuilder Builder for the TemplateResource class
      */
     private void processRenderFunction(TypeElement component, MethodSpec.Builder optionsBuilder,
-        Builder componentWithTemplateBuilder)
+        Builder componentJsTypeBuilder)
     {
         if (!hasInterface(processingEnv, component.asType(), HasRender.class))
             return;
 
-        componentWithTemplateBuilder.addMethod(MethodSpec
+        componentJsTypeBuilder.addMethod(MethodSpec
             .methodBuilder("vuegwt$render")
             .returns(VNode.class)
             .addParameter(CreateElementFunction.class, "createElementFunction")
@@ -429,12 +429,12 @@ public class ComponentWithTemplateGenerator
      * @param component {@link VueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
-     * @param componentWithTemplateBuilder Builder for the TemplateResource class
+     * @param componentJsTypeBuilder Builder for the TemplateResource class
      * @param dependenciesBuilder Builder for our component dependencies, needed here to inject the
      * dependencies in the instance
      */
     private void createCreatedHook(TypeElement component, MethodSpec.Builder optionsBuilder,
-        Builder componentWithTemplateBuilder,
+        Builder componentJsTypeBuilder,
         ComponentInjectedDependenciesBuilder dependenciesBuilder)
     {
         MethodSpec.Builder createdMethodBuilder =
@@ -443,7 +443,7 @@ public class ComponentWithTemplateGenerator
         injectDependencies(component, dependenciesBuilder, createdMethodBuilder);
         callConstructor(component, dependenciesBuilder, createdMethodBuilder);
 
-        componentWithTemplateBuilder.addMethod(createdMethodBuilder.build());
+        componentJsTypeBuilder.addMethod(createdMethodBuilder.build());
 
         // Register the hook
         optionsBuilder.addStatement("options.addRootJavaMethod($S, $S)",
@@ -515,12 +515,12 @@ public class ComponentWithTemplateGenerator
     }
 
     private void processTemplateVisibleMethods(TypeElement component,
-        Builder componentWithTemplateBuilder)
+        Builder componentJsTypeBuilder)
     {
         getTemplateVisibleMethods(component)
             .stream()
             .map(this::createProxyJsTypeMethod)
-            .forEach(componentWithTemplateBuilder::addMethod);
+            .forEach(componentJsTypeBuilder::addMethod);
     }
 
     /**

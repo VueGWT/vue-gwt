@@ -59,7 +59,7 @@
 	tools.extendVueConstructorWithJavaPrototype = function (extendedVueConstructor, componentJavaPrototype) {
 		const vueProto = extendedVueConstructor.prototype;
 
-		// Copy from the ComponentWithTemplate prototype
+		// Copy from the Java Component prototype
 		for (let protoProp in componentJavaPrototype) {
 			if (!vueProto.hasOwnProperty(protoProp)) {
 				vueProto[protoProp] = componentJavaPrototype[protoProp];

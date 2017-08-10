@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class TemplateParserContext
 {
-    private final JClassType componentWithTemplateClass;
+    private final JClassType componentJsTypeClass;
     private final ContextLayer rootContext;
     private final Deque<ContextLayer> contextLayers = new ArrayDeque<>();
 
@@ -35,19 +35,19 @@ public class TemplateParserContext
 
     /**
      * Build the context based on a given {@link TemplateResource} Class.
-     * @param componentWithTemplateClass The {@link TemplateResource} we are parsing the
-     * template of
+     * @param componentJsTypeClass The generated JsType class of the {@link VueComponent} we are
+     * parsing the template of
      */
-    public TemplateParserContext(JClassType componentWithTemplateClass)
+    public TemplateParserContext(JClassType componentJsTypeClass)
     {
-        this.componentWithTemplateClass = componentWithTemplateClass;
+        this.componentJsTypeClass = componentJsTypeClass;
 
         this.addImport(NativeEvent.class.getCanonicalName());
         this.addImport(JsArray.class.getCanonicalName());
 
         this.rootContext = new ContextLayer();
         this.rootContext.addVariable(String.class, "_uid");
-        registerFieldsInContext(componentWithTemplateClass);
+        registerFieldsInContext(componentJsTypeClass);
 
         this.contextLayers.add(this.rootContext);
     }
@@ -188,8 +188,8 @@ public class TemplateParserContext
      * Used for debugging.
      * @return The currently process VueComponent class
      */
-    public JClassType getComponentWithTemplateClass()
+    public JClassType getComponentJsTypeClass()
     {
-        return componentWithTemplateClass;
+        return componentJsTypeClass;
     }
 }

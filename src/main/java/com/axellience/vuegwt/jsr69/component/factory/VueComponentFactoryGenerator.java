@@ -77,7 +77,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         initBuilder.addStatement("$T<$T> componentOptions = $T.getOptions()",
             VueComponentOptions.class,
             component.asType(),
-            componentWithTemplateName(component));
+            componentJsTypeName(component));
 
         // Extend the parent Component
         Optional<ClassName> superFactoryType = getSuperFactoryType(component);
