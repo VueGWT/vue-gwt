@@ -85,7 +85,8 @@ public abstract class AbstractVueComponentFactoryGenerator
      * Create the method that init the wrapped {@link VueJsConstructor}
      * @param component The Component we generate for
      * @param vueFactoryClassBuilder The builder of the VueFactory we are generating
-     * @return The list of parameters call to pass when call the created init method
+     * @return The list of parameters call to pass when call the created init method from the static
+     * get method (when the Factory is not injected)
      */
     protected abstract List<CodeBlock> createInitMethod(TypeElement component,
         Builder vueFactoryClassBuilder);
@@ -107,7 +108,8 @@ public abstract class AbstractVueComponentFactoryGenerator
      * Factory retrieved using this method do NOT support injection.
      * @param vueFactoryClassName The type name of our generated {@link VueFactory}
      * @param vueFactoryBuilder The builder to create our {@link VueFactory} class
-     * @param staticInitParameters Parameters from the init method, null if we shouldn't call it
+     * @param staticInitParameters Parameters from the init method when called on static
+     * initialization (when the factory is not injected)
      */
     private void createStaticGetMethod(ClassName vueFactoryClassName, Builder vueFactoryBuilder,
         List<CodeBlock> staticInitParameters)
@@ -115,12 +117,12 @@ public abstract class AbstractVueComponentFactoryGenerator
         MethodSpec.Builder getBuilder = MethodSpec
             .methodBuilder("get")
             .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-            .returns(vueFactoryClassName)
-            .beginControlFlow("if ($L == null)", INSTANCE_PROP)
-            .addStatement("$L = new $T()", INSTANCE_PROP, vueFactoryClassName);
+            .returns(vueFactoryClassName);
 
+        getBuilder.beginControlFlow("if ($L == null)", INSTANCE_PROP);
+
+        getBuilder.addStatement("$L = new $T()", INSTANCE_PROP, vueFactoryClassName);
         getBuilder.addCode("$L.init(", INSTANCE_PROP);
-
         boolean isFirst = true;
         for (CodeBlock staticInitParameter : staticInitParameters)
         {
@@ -131,8 +133,9 @@ public abstract class AbstractVueComponentFactoryGenerator
             isFirst = false;
         }
         getBuilder.addCode(");");
+        getBuilder.endControlFlow();
 
-        getBuilder.endControlFlow().addStatement("return $L", INSTANCE_PROP);
+        getBuilder.addStatement("return $L", INSTANCE_PROP);
 
         vueFactoryBuilder.addMethod(getBuilder.build());
     }

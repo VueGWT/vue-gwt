@@ -15,6 +15,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -41,8 +42,8 @@ import static com.axellience.vuegwt.client.tools.VueGWTTools.directiveToTagName;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.*;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasAnnotation;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getComponentLocalComponents;
-import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.resolveVariableTypeName;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getSuperComponentType;
+import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.resolveVariableTypeName;
 
 /**
  * Generate {@link VueFactory} from the user {@link VueComponent} classes annotated by {@link
@@ -80,7 +81,9 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             componentJsTypeName(component));
 
         // Extend the parent Component
-        Optional<ClassName> superFactoryType = getSuperFactoryType(component);
+        Optional<ClassName> superFactoryType =
+            getSuperComponentType(component).map(GenerationNameUtil::componentFactoryName);
+        
         if (superFactoryType.isPresent())
         {
             initBuilder.addParameter(superFactoryType.get(), "superFactory");
@@ -209,6 +212,23 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         }
     }
 
+    private void addGetDirectivesStatement(MethodSpec.Builder injectDependenciesBuilder)
+    {
+        injectDependenciesBuilder.addStatement(
+            "$T<$T> directives = jsConstructor.getOptionsDirectives()",
+            JsObject.class,
+            VueDirectiveOptions.class);
+    }
+
+    /**
+     * Process all the methods annotated with {@link VueCustomizeOptions}. These methods should be
+     * called when the {@link VueFactory} is created. If they have more parameters than the {@link
+     * VueComponentOptions} those parameters should be injected.
+     * @param component The {@link VueComponent} we generate for
+     * @param initBuilder The builder for our {@link VueFactory} init method
+     * @param staticInitParameters The list of static parameters to pass when calling the init
+     * method from a static context
+     */
     private void processCustomizeOptionsMethods(TypeElement component,
         MethodSpec.Builder initBuilder, List<CodeBlock> staticInitParameters)
     {
@@ -226,6 +246,16 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             staticInitParameters));
     }
 
+    /**
+     * Process a specific method annotated with {@link VueCustomizeOptions}. This method should be
+     * called when the {@link VueFactory} is created. If it has more parameters than the {@link
+     * VueComponentOptions} those parameters should be injected.
+     * @param customizeOptionsMethod The method we are generating for
+     * @param initBuilder The builder for our {@link VueFactory} init method
+     * @param component The {@link VueComponent} we generate for
+     * @param staticInitParameters The list of static parameters to pass when calling the init
+     * method from a static context
+     */
     private void processCustomizeOptionsMethod(ExecutableElement customizeOptionsMethod,
         MethodSpec.Builder initBuilder, TypeElement component, List<CodeBlock> staticInitParameters)
     {
@@ -243,7 +273,8 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
 
                 String parameterName = methodName + "_" + parameter.getSimpleName().toString();
                 parameters.add(parameterName);
-                initBuilder.addParameter(resolveVariableTypeName(parameter, messager), parameterName);
+                initBuilder.addParameter(resolveVariableTypeName(parameter, messager),
+                    parameterName);
                 staticInitParameters.add(CodeBlock.of("null"));
             }
         }
@@ -254,44 +285,59 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             String.join(", ", parameters));
     }
 
+    /**
+     * Validate that the {@link VueCustomizeOptions} method is declared correctly.
+     * @param customizeOptionsMethod The method to validate
+     */
     private void validateCustomizeOptionsMethod(ExecutableElement customizeOptionsMethod)
     {
-        if (customizeOptionsMethod.getParameters().isEmpty())
+        // Check that the method is static
+        if (!customizeOptionsMethod.getModifiers().contains(Modifier.STATIC))
         {
-            messager.printMessage(Kind.ERROR,
-                getCustomizeOptionsErrorPrefix(customizeOptionsMethod)
-                    + " should have one parameter of type VueComponentOptions");
+            printCustomizeOptionsError("The method should be static.", customizeOptionsMethod);
             return;
         }
 
-        VariableElement parameter = customizeOptionsMethod.getParameters().get(0);
-        if (!types.isAssignable(parameter.asType(),
-            elements.getTypeElement(VueComponentOptions.class.getCanonicalName()).asType()))
+        // Check that the method is not private
+        if (customizeOptionsMethod.getModifiers().contains(Modifier.PRIVATE))
         {
-            messager.printMessage(Kind.ERROR,
-                getCustomizeOptionsErrorPrefix(customizeOptionsMethod)
-                    + " VueComponentOptions should be your first parameter");
+            printCustomizeOptionsError(
+                "The method cannot be private, please make it at least package-protected.",
+                customizeOptionsMethod);
+            return;
+        }
+
+        // Check we have at least one parameter
+        if (customizeOptionsMethod.getParameters().isEmpty())
+        {
+            printCustomizeOptionsError(
+                "The method should have at least one parameter of type VueComponentOptions.",
+                customizeOptionsMethod);
+            return;
+        }
+
+        // Check first parameter type
+        VariableElement parameter = customizeOptionsMethod.getParameters().get(0);
+        TypeName parameterType = TypeName.get(parameter.asType());
+        if (parameterType instanceof ParameterizedTypeName)
+            parameterType = ((ParameterizedTypeName) parameterType).rawType;
+
+        if (!parameterType.equals(ClassName.get(VueComponentOptions.class)))
+        {
+            printCustomizeOptionsError("The method first parameter of type VueComponentOptions.",
+                customizeOptionsMethod);
         }
     }
 
-    private String getCustomizeOptionsErrorPrefix(ExecutableElement customizeOptionsMethod)
+    private void printCustomizeOptionsError(String message,
+        ExecutableElement customizeOptionsMethod)
     {
-        return "Customize options method "
-            + customizeOptionsMethod.toString()
-            + " in component "
-            + customizeOptionsMethod.getEnclosingElement().getSimpleName().toString();
-    }
-
-    private void addGetDirectivesStatement(MethodSpec.Builder injectDependenciesBuilder)
-    {
-        injectDependenciesBuilder.addStatement(
-            "$T<$T> directives = jsConstructor.getOptionsDirectives()",
-            JsObject.class,
-            VueDirectiveOptions.class);
-    }
-
-    private Optional<ClassName> getSuperFactoryType(TypeElement component)
-    {
-        return getSuperComponentType(component).map(GenerationNameUtil::componentFactoryName);
+        messager.printMessage(Kind.ERROR,
+            "On method "
+                + customizeOptionsMethod.getSimpleName()
+                + " annotated with @VueCustomizeOptions in component "
+                + customizeOptionsMethod.getEnclosingElement().getSimpleName()
+                + ": "
+                + message);
     }
 }
