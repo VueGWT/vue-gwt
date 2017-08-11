@@ -101,11 +101,10 @@ public class Todo {
 }
 
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent extends VueComponent {
     @JsProperty todo;
     
-    @Override
-    public void created() {
+    public MyComponent() {
         todo = new Todo();
         todo.setText("Bob"); // Won't update the Vue :(
     }
@@ -151,11 +150,10 @@ public class Todo {
 
 // The text property will be observable in your Component
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent extends VueComponent {
     @JsProperty todo;
     
-    @Override
-    public void created() {
+    public VueComponent() {
         todo = new Todo();
         todo.setText("Bob"); // Will update the Vue! 
     }
@@ -174,11 +172,10 @@ public class Todo {
 }
 
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent extends VueComponent {
     @JsProperty todo;
     
-    @Override
-    public void created() {
+    public VueComponent() {
         Todo myTodo = new Todo(); // We store in a local variable
         myTodo.setText("Bob"); // We set the value, this define the property
         
@@ -200,11 +197,10 @@ For example:
 
 ```java
 @Component
-public class DemoComponent extends VueComponent implements HasCreated {
+public class DemoComponent extends VueComponent {
     @JsProperty Todo todo;
     
-    @Override
-    public void created() {
+    public DemoComponent() {
         this.todo = new Todo();
         
         if (this.$data.get("todo") == this.todo) {
@@ -238,7 +234,7 @@ public class DemoComponent extends VueComponent implements HasMounted {
 }
 ```
 
-There are also other hooks which will be called at different stages of the instance's lifecycle, for example [`created`](https://vuejs.org/v2/api/#created), [`updated`](https://vuejs.org/v2/api/#updated), and [`destroyed`](https://vuejs.org/v2/api/#destroyed).
+There are also other hooks which will be called at different stages of the instance's lifecycle, for example [`created`](https://vuejs.org/v2/api/#created) (your Java Constructor), [`updated`](https://vuejs.org/v2/api/#updated), and [`destroyed`](https://vuejs.org/v2/api/#destroyed).
 You may have been wondering where the concept of "controllers" lives in the Vue world and the answer is: there are no controllers.
 Your custom logic for a component would be split among these lifecycle hooks.
 

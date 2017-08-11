@@ -294,15 +294,14 @@ The proper answer to these use cases are:
 
 ```java
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent extends VueComponent {
     @Prop
     @JsProperty
     public String initialCounter;
     
     @JsProperty String counter;
     
-    @Override
-    public void created() {
+    public MyComponent() {
         this.counter = this.initialCounter;
     }
 }
@@ -779,9 +778,8 @@ To achieve this you have to assign a reference ID to the child component using `
 
 ```java
 @Component(components = UserProfileComponent.class)
-public class ParentComponent extends VueComponent implements HasCreated {
-    @Override
-    public void created() {
+public class ParentComponent extends VueComponent {
+    public ParentComponent() {
         UserProfileComponent userProfileComponent = this.$refs.get("profile");
     }
 }
@@ -830,13 +828,12 @@ Bellow is an example recursive component:
 
 ```java
 @Component(name = "recursive")
-public class RecursiveComponent extends VueComponent implements HasCreated {
+public class RecursiveComponent extends VueComponent {
     @Prop
     @JsProperty
     Integer counter;
 
-    @Override
-    public void created() {
+    public RecursiveComponent() {
         if (this.counter == null)
             this.counter = 0;
     }

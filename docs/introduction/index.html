@@ -945,16 +945,21 @@ For example, the <code>v-for</code> directive can be used for displaying a list 
 }
 </code></pre>
 <p>We will then create a list of <code>Todo</code> in a <code>SimpleTodoListComponent</code>.</p>
-<p>Vue.js support some <a href="../essential/the-vue-instance.html#lifecycle-hooks">lifecycle hooks</a> that will be called at different moments of the life our our Component.
-You will notice that we don&apos;t use a constructor for our initialization logic but the <code>created</code> method by implementing the <code>HasCreated</code> interface.</p>
-<p>Your initialization logic must be defined in this <code>created</code> method.
-Using a Java constructor will result in an explicit error on the annotation processor.</p>
+<p>You will notice that we added a Java Constructor to our Component.
+This Constructor will be called on each created instance of your Component.</p>
+<p class="warning-panel">
+When you want to create a new instance of your Component in your app, doing: <code>new MyComponent()</code> won&apos;t work.
+<br>
+This is because we also need to create a Vue.js instance of your Component, and your Java Constructor won&apos;t do that for you.
+<br>
+Use: <code>VueGWT.createInstance(MyComponent.class)</code> instead.
+</p>
+
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleTodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleTodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> List&lt;Todo&gt; todos = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">SimpleTodoListComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Java&quot;</span>));
         <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Vue GWT&quot;</span>));
         <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Build something awesome&quot;</span>));
@@ -1095,11 +1100,10 @@ We should be able to pass data from the parent scope into child components.</p>
 <p>We create a list of <code>Todos</code> like before.
 Let&apos;s call it <code>TodoListComponent</code>:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {TodoComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> List&lt;Todo&gt; todos = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">TodoListComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Java&quot;</span>));
         <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Learn Vue GWT&quot;</span>));
         <span class="hljs-keyword">this</span>.todos.add(<span class="hljs-keyword">new</span> Todo(<span class="hljs-string">&quot;Build something awesome&quot;</span>));
@@ -1199,7 +1203,7 @@ You won&apos;t need to pass the class of your <code>VueComponent</code> to the <
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.3","depth":1,"next":{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},"previous":{"title":"Project Setup","level":"1.2","depth":1,"path":"project-setup.md","ref":"project-setup.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/README.md","mtime":"2017-08-07T16:20:35.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-07T16:22:07.984Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.3","depth":1,"next":{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},"previous":{"title":"Project Setup","level":"1.2","depth":1,"path":"project-setup.md","ref":"project-setup.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/README.md","mtime":"2017-08-11T10:33:36.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-11T12:09:51.444Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

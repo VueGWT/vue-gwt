@@ -808,7 +808,7 @@ In some cases, they may also appear as a native HTML element extended with the s
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <p>To register a global component, you can use <code>Vue.component(tagName, MyComponent.class)</code>. For example:</p>
-<pre><code class="lang-java">Vue.component(<span class="hljs-string">&apos;my-component&apos;</span>, MyComponent.class);
+<pre><code class="lang-java">Vue.component(<span class="hljs-string">&quot;my-component&quot;</span>, MyComponent.class);
 </code></pre>
 <p class="info-panel">
     Note that Vue does not enforce the <a href="http://www.w3.org/TR/custom-elements/#concepts" target="_blank">W3C Rules</a> for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.
@@ -827,7 +827,7 @@ Here&apos;s the full example:</p>
 }
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-comment">// Somewhere in your App</span>
-Vue.component(<span class="hljs-string">&apos;my-component&apos;</span>, MyComponent.class);
+Vue.component(<span class="hljs-string">&quot;my-component&quot;</span>, MyComponent.class);
 Vue.attach(<span class="hljs-string">&quot;#rootComponent&quot;</span>, RootComponent.class);
 </code></pre>
 <p>Which will render:</p>
@@ -989,15 +989,14 @@ If you do, Vue will warn you in the console.</p>
 <li>Define a local data property that uses the prop&apos;s initial value as its initial value:</li>
 </ol>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     <span class="hljs-keyword">public</span> String initialCounter;
 
     <span class="hljs-meta">@JsProperty</span> String counter;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">MyComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.counter = <span class="hljs-keyword">this</span>.initialCounter;
     }
 }
@@ -1340,9 +1339,8 @@ To achieve this you have to assign a reference ID to the child component using <
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = UserProfileComponent.class)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ParentComponent</span><span class="hljs-params">()</span> </span>{
         UserProfileComponent userProfileComponent = <span class="hljs-keyword">this</span>.$refs.get(<span class="hljs-string">&quot;profile&quot;</span>);
     }
 }
@@ -1372,13 +1370,12 @@ However, they can only do so with the <code>name</code> option:</p>
 <p>A component like the above will result in a &quot;max stack size exceeded&quot; error, so make sure recursive invocation is conditional (i.e. uses a <code>v-if</code> that will eventually be <code>false</code>).</p>
 <p>Bellow is an example recursive component:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(name = <span class="hljs-string">&quot;recursive&quot;</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RecursiveComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RecursiveComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     Integer counter;
 
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RecursiveComponent</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.counter == <span class="hljs-keyword">null</span>)
             <span class="hljs-keyword">this</span>.counter = <span class="hljs-number">0</span>;
     }
@@ -1475,7 +1472,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-08-07T16:01:38.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-07T16:22:07.984Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-08-11T10:22:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-11T12:09:51.444Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -225,19 +225,23 @@ public class Todo
 
 We will then create a list of `Todo` in a `SimpleTodoListComponent`.
 
-Vue.js support some [lifecycle hooks](../essential/the-vue-instance.md#lifecycle-hooks) that will be called at different moments of the life our our Component.
-You will notice that we don't use a constructor for our initialization logic but the `created` method by implementing the `HasCreated` interface.
+You will notice that we added a Java Constructor to our Component.
+This Constructor will be called on each created instance of your Component.
 
-Your initialization logic must be defined in this `created` method.
-Using a Java constructor will result in an explicit error on the annotation processor.
+<p class="warning-panel">
+When you want to create a new instance of your Component in your app, doing: <code>new MyComponent()</code> won't work.
+<br/>
+This is because we also need to create a Vue.js instance of your Component, and your Java Constructor won't do that for you.
+<br/>
+Use: <code>VueGWT.createInstance(MyComponent.class)</code> instead.
+</p>
 
 ```java
 @Component
-public class SimpleTodoListComponent extends VueComponent implements HasCreated {
+public class SimpleTodoListComponent extends VueComponent {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
-    @Override
-    public void created() {
+    public SimpleTodoListComponent() {
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));
@@ -440,11 +444,10 @@ Let's call it `TodoListComponent`:
 
 ```java
 @Component(components = {TodoComponent.class})
-public class TodoListComponent extends VueComponent implements HasCreated {
+public class TodoListComponent extends VueComponent {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
-    @Override
-    public void created() {
+    public TodoListComponent() {
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));

@@ -200,11 +200,10 @@ It is often a good idea to bind to a style object directly so that the template 
 ```
 ```java
 @Component
-public class StylishComponent extends VueComponent implements HasCreated {
+public class StylishComponent extends VueComponent {
     @JsProperty JsObject<String> styleObject = new JsObject<>();
 
-    @Override
-    public void created() {
+    public StylishComponent() {
         this.styleObject.set("color", "red");
         this.styleObject.set("fontSize", "20px");
     }
