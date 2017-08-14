@@ -433,8 +433,15 @@ public class ComponentJsTypeGenerator
     private void createCreatedHook(TypeElement component, MethodSpec.Builder optionsBuilder,
         Builder componentJsTypeBuilder, ComponentInjectedDependenciesBuilder dependenciesBuilder)
     {
+        componentJsTypeBuilder.addField(boolean.class, "hasRunCreated", Modifier.PRIVATE);
+
         MethodSpec.Builder createdMethodBuilder =
             MethodSpec.methodBuilder("vuegwt$created").addModifiers(Modifier.PUBLIC);
+
+        // Avoid infinite recursion in case calling the Java constructor calls Vue.js constructor
+        // This can happen when extending an existing JS component
+        createdMethodBuilder.addStatement("if (hasRunCreated) return");
+        createdMethodBuilder.addStatement("hasRunCreated = true");
 
         injectDependencies(component, dependenciesBuilder, createdMethodBuilder);
         callConstructor(component, dependenciesBuilder, createdMethodBuilder);
