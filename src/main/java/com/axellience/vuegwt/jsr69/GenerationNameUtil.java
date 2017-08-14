@@ -12,10 +12,9 @@ import javax.lang.model.type.TypeMirror;
  */
 public class GenerationNameUtil
 {
-    private static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
+    public static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
     private static String COMPONENT_INJECTED_DEPENDENCIES_SUFFIX = "InjectedDependencies";
 
-    public static String COMPONENT_TEMPLATE_RESOURCE_SUFFIX = "TemplateResource";
     private static String COMPONENT_TEMPLATE_BUNDLE_SUFFIX = "TemplateBundle";
     public static String COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME = "template";
 
@@ -54,11 +53,6 @@ public class GenerationNameUtil
     public static ClassName componentFactoryName(ClassName component)
     {
         return nameWithSuffix(component, COMPONENT_FACTORY_SUFFIX);
-    }
-
-    public static ClassName componentTemplateResourceName(TypeElement component)
-    {
-        return nameWithSuffix(component, COMPONENT_TEMPLATE_RESOURCE_SUFFIX);
     }
 
     public static ClassName componentTemplateBundleName(TypeElement component)

@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
+import com.google.gwt.core.ext.typeinfo.HasAnnotations;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ClientBundle.Source;
@@ -110,6 +111,12 @@ public class GenerationUtil
     }
 
     public static boolean hasAnnotation(Element element,
+        Class<? extends Annotation> annotationClass)
+    {
+        return element.getAnnotation(annotationClass) != null;
+    }
+
+    public static boolean hasAnnotation(HasAnnotations element,
         Class<? extends Annotation> annotationClass)
     {
         return element.getAnnotation(annotationClass) != null;

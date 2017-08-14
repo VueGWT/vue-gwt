@@ -20,9 +20,29 @@ public interface TemplateResource<T extends VueComponent> extends ResourceProtot
 {
     String EXPRESSION_PREFIX = "exp$";
 
-    String getRenderFunction();
-    String[] getStaticRenderFunctions();
-    String[] getTemplateComputedProperties();
-    String[] getTemplateMethods();
-    Map<String, CssResource> getTemplateStyles();
+    default String getRenderFunction()
+    {
+        return "";
+    }
+    default String[] getStaticRenderFunctions()
+    {
+        return null;
+    }
+    default String[] getTemplateComputedProperties()
+    {
+        return null;
+    }
+    default String[] getTemplateMethods()
+    {
+        return null;
+    }
+    default Map<String, CssResource> getTemplateStyles()
+    {
+        return null;
+    }
+    @Override
+    default String getName()
+    {
+        return "";
+    }
 }

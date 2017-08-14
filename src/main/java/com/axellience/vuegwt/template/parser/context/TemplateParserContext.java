@@ -3,6 +3,7 @@ package com.axellience.vuegwt.template.parser.context;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
+import com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil;
 import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.variable.VariableInfo;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -57,8 +58,23 @@ public class TemplateParserContext
      */
     private void registerFieldsAndMethodsInContext(JClassType templateResourceClass)
     {
-        Arrays.stream(templateResourceClass.getFields()).forEach(this.rootContext::addVariable);
-        Arrays.stream(templateResourceClass.getMethods()).forEach(this.rootContext::addMethod);
+        // Stop recursion when getting to VueComponent class
+        if (templateResourceClass == null || templateResourceClass
+            .getQualifiedSourceName()
+            .equals(VueComponent.class.getCanonicalName()))
+            return;
+
+        Arrays
+            .stream(templateResourceClass.getFields())
+            .filter(ComponentGenerationUtil::isFieldVisibleInJS)
+            .forEach(rootContext::addVariable);
+
+        Arrays
+            .stream(templateResourceClass.getMethods())
+            .filter(ComponentGenerationUtil::isMethodVisibleInTemplate)
+            .forEach(rootContext::addMethod);
+
+        registerFieldsAndMethodsInContext(templateResourceClass.getSuperclass());
     }
 
     /**

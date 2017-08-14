@@ -7,6 +7,8 @@ import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwt.jsr69.component.annotations.PropValidator;
 import com.axellience.vuegwt.jsr69.component.annotations.Watch;
+import com.google.gwt.core.ext.typeinfo.JField;
+import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -15,7 +17,6 @@ import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -23,7 +24,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import java.util.LinkedList;
@@ -109,22 +109,18 @@ public class ComponentGenerationUtil
     }
 
     /**
-     * Return all the methods from a given {@link VueComponent} that are visible in the template.
-     * @param component The type of the {@link VueComponent} to get methods from
-     * @return The list of methods that are visible to the template
+     * Check if a given method is usable in the template
+     * @param method The method we are checking
+     * @return true if visible, false otherwise
      */
-    public static List<ExecutableElement> getTemplateVisibleMethods(TypeElement component)
+    public static boolean isMethodVisibleInTemplate(JMethod method)
     {
-        return ElementFilter
-            .methodsIn(component.getEnclosedElements())
-            .stream()
-            .filter(method -> method.getAnnotation(Computed.class) == null)
-            .filter(method -> method.getAnnotation(Watch.class) == null)
-            .filter(method -> method.getAnnotation(PropValidator.class) == null)
-            .filter(method -> !method.getModifiers().contains(Modifier.STATIC))
-            .filter(method -> !method.getModifiers().contains(Modifier.ABSTRACT))
-            .filter(method -> !method.getModifiers().contains(Modifier.PRIVATE))
-            .collect(Collectors.toList());
+        return !hasAnnotation(method, Computed.class)
+            && !hasAnnotation(method, Watch.class)
+            && !hasAnnotation(method, PropValidator.class)
+            && !method.isStatic()
+            && !method.isPrivate()
+            && !method.isAbstract();
     }
 
     /**
@@ -139,6 +135,19 @@ public class ComponentGenerationUtil
         return (hasAnnotation(field.getEnclosingElement(), JsType.class) && field
             .getModifiers()
             .contains(Modifier.PUBLIC)) || hasAnnotation(field, JsProperty.class);
+    }
+
+    /**
+     * Return weather a given field is visible in JS (JsInterop).
+     * It will be the case if it's public and it's class has the {@link JsType} annotation, or
+     * if it has the {@link JsProperty} annotation.
+     * @param field The field to check
+     * @return true if it is visible (JsInterop), false otherwise
+     */
+    public static boolean isFieldVisibleInJS(JField field)
+    {
+        return (hasAnnotation(field.getEnclosingType(), JsType.class) && field.isPublic())
+            || hasAnnotation(field, JsProperty.class);
     }
 
     /**

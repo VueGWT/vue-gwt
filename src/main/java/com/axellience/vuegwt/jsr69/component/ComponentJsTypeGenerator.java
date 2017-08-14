@@ -15,6 +15,7 @@ import com.axellience.vuegwt.client.component.hooks.HasMounted;
 import com.axellience.vuegwt.client.component.hooks.HasUpdated;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
+import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vnode.VNode;
@@ -49,16 +50,18 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.*;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasAnnotation;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasInterface;
-import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getTemplateVisibleMethods;
+import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getSuperComponentType;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.hasTemplate;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.isFieldVisibleInJS;
 
@@ -120,7 +123,6 @@ public class ComponentJsTypeGenerator
         processComputed(component, optionsBuilder, componentJsTypeBuilder);
         processWatchers(component, optionsBuilder, componentJsTypeBuilder);
         processPropValidators(component, optionsBuilder, componentJsTypeBuilder);
-        processTemplateVisibleMethods(component, componentJsTypeBuilder);
         processHooks(component, optionsBuilder);
         processRenderFunction(component, optionsBuilder, componentJsTypeBuilder);
         createCreatedHook(component, optionsBuilder, componentJsTypeBuilder, dependenciesBuilder);
@@ -131,6 +133,43 @@ public class ComponentJsTypeGenerator
 
         // And generate our Java Class
         GenerationUtil.toJavaFile(filer, componentJsTypeBuilder, componentWithSuffixClassName);
+    }
+
+    /**
+     * Create and return the builder for the JsType of our {@link VueComponent}.
+     * @param component The {@link VueComponent} we are generating for
+     * @param jsTypeClassName The name of the generated JsType class
+     * @return A Builder to build the class
+     */
+    private Builder getComponentJsTypeBuilder(TypeElement component, ClassName jsTypeClassName)
+    {
+        Builder componentJsTypeBuilder = TypeSpec
+            .classBuilder(jsTypeClassName)
+            .addModifiers(Modifier.PUBLIC)
+            .superclass(TypeName.get(component.asType()))
+            .addSuperinterface(ParameterizedTypeName.get(ClassName.get(TemplateResource.class),
+                ClassName.get(component.asType())));
+
+        // Add @JsType annotation. This ensure this class is included.
+        // As we use a class reference to use our Components, this class would be removed by GWT
+        // tree shaking.
+        componentJsTypeBuilder.addAnnotation(AnnotationSpec
+            .builder(JsType.class)
+            .addMember("namespace", "\"VueGWT.javaComponentConstructors\"")
+            .addMember("name", "$S", component.getQualifiedName().toString().replaceAll("\\.", "_"))
+            .build());
+
+        // Add a block that registers the VueFactory for the VueComponent
+        componentJsTypeBuilder.addStaticBlock(CodeBlock
+            .builder()
+            .addStatement("$T.onReady(() -> $T.register($S, () -> $T.get()))",
+                VueGWT.class,
+                VueGWT.class,
+                component.getQualifiedName(),
+                componentFactoryName(component))
+            .build());
+
+        return componentJsTypeBuilder;
     }
 
     /**
@@ -174,41 +213,6 @@ public class ComponentJsTypeGenerator
         }
 
         componentJsTypeBuilder.addMethod(proxyMethodBuilder.build());
-    }
-
-    /**
-     * Create and return the builder for the JsType of our {@link VueComponent}.
-     * @param component The {@link VueComponent} we are generating for
-     * @param jsTypeClassName The name of the generated JsType class
-     * @return A Builder to build the class
-     */
-    private Builder getComponentJsTypeBuilder(TypeElement component, ClassName jsTypeClassName)
-    {
-        Builder componentJsTypeBuilder = TypeSpec
-            .classBuilder(jsTypeClassName)
-            .addModifiers(Modifier.PUBLIC)
-            .superclass(TypeName.get(component.asType()));
-
-        // Add @JsType annotation. This ensure this class is included.
-        // As we use a class reference to use our Components, this class would be removed by GWT
-        // tree shaking.
-        componentJsTypeBuilder.addAnnotation(AnnotationSpec
-            .builder(JsType.class)
-            .addMember("namespace", "\"VueGWT.javaComponentConstructors\"")
-            .addMember("name", "$S", component.getQualifiedName().toString().replaceAll("\\.", "_"))
-            .build());
-
-        // Add a block that registers the VueFactory for the VueComponent
-        componentJsTypeBuilder.addStaticBlock(CodeBlock
-            .builder()
-            .addStatement("$T.onReady(() -> $T.register($S, () -> $T.get()))",
-                VueGWT.class,
-                VueGWT.class,
-                component.getQualifiedName(),
-                componentFactoryName(component))
-            .build());
-
-        return componentJsTypeBuilder;
     }
 
     /**
@@ -313,6 +317,7 @@ public class ComponentJsTypeGenerator
      * @param component {@link VueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
+     * @param componentJsTypeBuilder Builder for the JsType class
      */
     private void processComputed(TypeElement component, MethodSpec.Builder optionsBuilder,
         Builder componentJsTypeBuilder)
@@ -333,6 +338,42 @@ public class ComponentJsTypeGenerator
 
             componentJsTypeBuilder.addMethod(createProxyJsTypeMethod(method));
         });
+
+        addFieldsForComputedMethod(component, componentJsTypeBuilder, new HashSet<>());
+    }
+
+    /**
+     * Add fields for computed methods so they are visible in the template
+     * @param component {@link VueComponent} to process
+     * @param componentJsTypeBuilder Builder for the JsType class
+     * @param alreadyDone Already processed computed properties (in case there is a getter and a
+     * setter, avoid creating the field twice).
+     */
+    private void addFieldsForComputedMethod(TypeElement component, Builder componentJsTypeBuilder,
+        Set<String> alreadyDone)
+    {
+        getMethodsWithAnnotation(component, Computed.class).forEach(method -> {
+            String propertyName = GenerationUtil.getComputedPropertyName(method);
+
+            if (alreadyDone.contains(propertyName))
+                return;
+
+            TypeMirror propertyType;
+            if ("void".equals(method.getReturnType().toString()))
+                propertyType = method.getParameters().get(0).asType();
+            else
+                propertyType = method.getReturnType();
+
+            componentJsTypeBuilder.addField(TypeName.get(propertyType),
+                propertyName,
+                Modifier.PUBLIC);
+            alreadyDone.add(propertyName);
+        });
+
+        getSuperComponentType(component).ifPresent(superComponent -> addFieldsForComputedMethod(
+            superComponent,
+            componentJsTypeBuilder,
+            alreadyDone));
     }
 
     /**
@@ -546,20 +587,6 @@ public class ComponentJsTypeGenerator
         createdMethodBuilder.addStatement("$T.call(javaConstructor, this$L)",
             JsTools.class,
             callParameters);
-    }
-
-    /**
-     * Generate JsInterop proxies for all the methods that are visible in the template.
-     * @param component {@link VueComponent} to process
-     * @param componentJsTypeBuilder Builder for our JsType class
-     */
-    private void processTemplateVisibleMethods(TypeElement component,
-        Builder componentJsTypeBuilder)
-    {
-        getTemplateVisibleMethods(component)
-            .stream()
-            .map(this::createProxyJsTypeMethod)
-            .forEach(componentJsTypeBuilder::addMethod);
     }
 
     /**
