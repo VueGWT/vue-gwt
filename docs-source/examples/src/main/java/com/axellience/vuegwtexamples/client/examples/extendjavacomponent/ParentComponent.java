@@ -9,7 +9,7 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component
-public class ParentComponent extends VueComponent
+public abstract class ParentComponent extends VueComponent
 {
     @JsProperty String parentMessage = "This is a message from the parent";
 

@@ -1,12 +1,12 @@
 package com.axellience.vuegwt.jsr69;
 
 import com.axellience.vuegwt.jsr69.component.ComponentJsTypeGenerator;
-import com.axellience.vuegwt.jsr69.component.template.TemplateBundleGenerator;
-import com.axellience.vuegwt.jsr69.component.template.TemplateResourceGenerator;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
 import com.axellience.vuegwt.jsr69.component.factory.VueComponentFactoryGenerator;
 import com.axellience.vuegwt.jsr69.component.factory.VueJsComponentFactoryGenerator;
+import com.axellience.vuegwt.jsr69.component.template.TemplateBundleGenerator;
+import com.axellience.vuegwt.jsr69.component.template.TemplateResourceGenerator;
 import com.axellience.vuegwt.jsr69.directive.VueDirectiveOptionsGenerator;
 import com.axellience.vuegwt.jsr69.directive.annotations.Directive;
 import com.axellience.vuegwt.jsr69.style.StyleProviderGenerator;
@@ -22,6 +22,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import java.util.Set;
+
+import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.hasTemplate;
 
 @SupportedAnnotationTypes({
     "com.axellience.vuegwt.jsr69.component.annotations.Component",
@@ -91,9 +93,12 @@ public class VueGwtProcessor extends AbstractProcessor
 
         for (TypeElement componentType : ElementFilter.typesIn(componentElements))
         {
-            templateResourceGenerator.generate(componentType);
+            if (hasTemplate(processingEnv, componentType))
+            {
+                templateBundleGenerator.generate(componentType);
+                templateResourceGenerator.generate(componentType);
+            }
             vueFactoryGenerator.generate(componentType);
-            templateBundleGenerator.generate(componentType);
             componentJsTypeGenerator.generate(componentType);
         }
     }

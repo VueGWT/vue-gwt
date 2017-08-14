@@ -63,13 +63,9 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     public final void setTemplateResource(TemplateResource<T> templateResource)
     {
         this.templateResource = templateResource;
-
-        if (templateResource.getRenderFunction() != null)
-        {
-            this.injectStyles();
-            this.initExpressions();
-            this.initRenderFunctions();
-        }
+        this.injectStyles();
+        this.initExpressions();
+        this.initRenderFunctions();
     }
 
     /**
@@ -161,7 +157,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     private void addStylesToData(JsObject data)
     {
-        if (templateResource.getTemplateStyles() == null)
+        if (templateResource == null || templateResource.getTemplateStyles() == null)
             return;
 
         for (Entry<String, CssResource> style : templateResource.getTemplateStyles().entrySet())

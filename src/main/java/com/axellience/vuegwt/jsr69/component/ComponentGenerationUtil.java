@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.jsr69.component;
 
+import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
@@ -13,6 +14,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -32,6 +34,7 @@ import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentFactoryName;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasAnnotation;
+import static com.axellience.vuegwt.jsr69.GenerationUtil.hasInterface;
 
 /**
  * Utilities methods to manipulate the {@link Component} annotation
@@ -153,5 +156,25 @@ public class ComponentGenerationUtil
             return Optional.empty();
 
         return Optional.of((TypeElement) ((DeclaredType) component.getSuperclass()).asElement());
+    }
+
+    /**
+     * Check if the given Component has a Template.
+     * It doesn't have a template if the class is abstract, if it implements render function
+     * or if it has the flag "hasTemplate" to false on the component annotation.
+     * @param component The component to check
+     * @return true if has a template, false otherwise
+     */
+    public static boolean hasTemplate(ProcessingEnvironment processingEnvironment,
+        TypeElement component)
+    {
+        Component annotation = component.getAnnotation(Component.class);
+        if (!annotation.hasTemplate())
+            return false;
+
+        if (component.getModifiers().contains(Modifier.ABSTRACT))
+            return false;
+
+        return !hasInterface(processingEnvironment, component.asType(), HasRender.class);
     }
 }

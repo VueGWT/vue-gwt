@@ -37,4 +37,11 @@ public @interface Component
      * @return This list of {@link VueDirective} to register on this Component
      */
     Class<? extends VueDirective>[] directives() default {};
+
+    /**
+     * A flag to set that the component doesn't have a template.
+     * If the component is abstract, or implement HasRender then it's consider false by default.
+     * @return true if has a html template, false otherwise
+     */
+    boolean hasTemplate() default true;
 }

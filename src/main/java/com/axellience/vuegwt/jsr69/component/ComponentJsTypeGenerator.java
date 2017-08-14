@@ -60,6 +60,7 @@ import static com.axellience.vuegwt.jsr69.GenerationNameUtil.*;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasAnnotation;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasInterface;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getTemplateVisibleMethods;
+import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.hasTemplate;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.isFieldVisibleInJS;
 
 /**
@@ -123,19 +124,14 @@ public class ComponentJsTypeGenerator
         processTemplateVisibleMethods(component, componentJsTypeBuilder);
         processHooks(component, optionsBuilder);
         processRenderFunction(component, optionsBuilder, componentJsTypeBuilder);
-        createCreatedHook(component,
-            optionsBuilder,
-            componentJsTypeBuilder,
-            dependenciesBuilder);
+        createCreatedHook(component, optionsBuilder, componentJsTypeBuilder, dependenciesBuilder);
 
         // Finish building Options getter
         optionsBuilder.addStatement("return options");
         componentJsTypeBuilder.addMethod(optionsBuilder.build());
 
         // And generate our Java Class
-        GenerationUtil.toJavaFile(filer,
-            componentJsTypeBuilder,
-            componentWithSuffixClassName);
+        GenerationUtil.toJavaFile(filer, componentJsTypeBuilder, componentWithSuffixClassName);
     }
 
     /**
@@ -188,8 +184,7 @@ public class ComponentJsTypeGenerator
      * @param jsTypeClassName The name of the generated {@link TemplateResource} class
      * @return A Builder to build the class
      */
-    private Builder getComponentJsTypeBuilder(TypeElement component,
-        ClassName jsTypeClassName)
+    private Builder getComponentJsTypeBuilder(TypeElement component, ClassName jsTypeClassName)
     {
         Builder componentJsTypeBuilder = TypeSpec
             .classBuilder(jsTypeClassName)
@@ -246,9 +241,12 @@ public class ComponentJsTypeGenerator
             VueGWT.class,
             component);
 
-        optionsMethodBuilder.addStatement("options.setTemplateResource($T.INSTANCE.$L())",
-            componentTemplateBundleName(component),
-            COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME);
+        if (hasTemplate(processingEnv, component))
+        {
+            optionsMethodBuilder.addStatement("options.setTemplateResource($T.INSTANCE.$L())",
+                componentTemplateBundleName(component),
+                COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME);
+        }
 
         return optionsMethodBuilder;
     }
@@ -412,6 +410,7 @@ public class ComponentJsTypeGenerator
 
         componentJsTypeBuilder.addMethod(MethodSpec
             .methodBuilder("vuegwt$render")
+            .addModifiers(Modifier.PUBLIC)
             .returns(VNode.class)
             .addParameter(CreateElementFunction.class, "createElementFunction")
             .addStatement("return super.render(new $T(createElementFunction))", VNodeBuilder.class)
@@ -434,8 +433,7 @@ public class ComponentJsTypeGenerator
      * dependencies in the instance
      */
     private void createCreatedHook(TypeElement component, MethodSpec.Builder optionsBuilder,
-        Builder componentJsTypeBuilder,
-        ComponentInjectedDependenciesBuilder dependenciesBuilder)
+        Builder componentJsTypeBuilder, ComponentInjectedDependenciesBuilder dependenciesBuilder)
     {
         MethodSpec.Builder createdMethodBuilder =
             MethodSpec.methodBuilder("vuegwt$created").addModifiers(Modifier.PUBLIC);
