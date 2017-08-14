@@ -455,7 +455,8 @@ public class TemplateParser
                 {
                     throw new TemplateExpressionException("Couldn't find the method \""
                         + methodName
-                        + "\" in the context. Make sure it is at least package protected in your Component.",
+                        + "\" in the Component."
+                        + "\nMake sure it is not private or try rerunning your Annotation processor.",
                         expression.toString(),
                         context);
                 }
@@ -541,7 +542,7 @@ public class TemplateParser
         else
         {
             throw new TemplateExpressionException(
-                "\"$event\" should always be casted to it's intended type.",
+                "\"$event\" should always be casted to it's intended type. Example: @click=\"doSomething((NativeEvent) $event)\".",
                 expression.toString(),
                 context);
         }
@@ -570,7 +571,7 @@ public class TemplateParser
         {
             throw new TemplateExpressionException("Couldn't find variable \""
                 + name
-                + "\" in the Component. Make sure you didn't forget the @JsProperty annotation or try rerunning your Annotation processor.",
+                + "\" in the Component.\nMake sure you didn't forget the @JsProperty annotation or try rerunning your Annotation processor.",
                 expression.toString(),
                 context);
         }

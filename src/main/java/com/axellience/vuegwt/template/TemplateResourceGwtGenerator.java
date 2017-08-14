@@ -21,6 +21,7 @@ import com.axellience.vuegwt.template.compiler.VueTemplateCompiler;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompilerException;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompilerResult;
 import com.axellience.vuegwt.template.parser.TemplateParser;
+import com.axellience.vuegwt.template.parser.exceptions.TemplateParserException;
 import com.axellience.vuegwt.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.template.parser.result.TemplateParserResult;
 import com.google.gwt.core.ext.Generator;
@@ -83,24 +84,44 @@ public final class TemplateResourceGwtGenerator extends AbstractResourceGenerato
             return generateEmptyTemplateResource(method, templateResourceTypeName, sw);
         }
 
-        // Convenience when examining the generated code.
-        if (!AbstractResourceGenerator.STRIP_COMMENTS)
-            sw.println("// " + resource.toExternalForm());
+        try
+        {
+            // Get template content from HTML file
+            String templateContent = Util.readURLAsString(resource);
 
+            // Process it
+            TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
+                templateContent,
+                typeOracle.findType(templateResourceTypeName));
+
+            // Convenience when examining the generated code.
+            if (!AbstractResourceGenerator.STRIP_COMMENTS)
+                sw.println("// " + resource.toExternalForm());
+
+            createTemplateResourceImpl(context,
+                method,
+                sw,
+                templateResourceTypeName,
+                templateParserResult);
+        }
+        catch (TemplateParserException e)
+        {
+            logger.log(TreeLogger.ERROR, e.getMessage());
+        }
+
+        return sw.toString();
+    }
+
+    private void createTemplateResourceImpl(ResourceContext context, JMethod method,
+        SourceWriter sw, String templateResourceTypeName, TemplateParserResult templateParserResult)
+    throws UnableToCompleteException
+    {
         // Start class
         sw.println("new " + templateResourceTypeName + "() {");
         sw.indent();
 
         // Add the get name method
         generateGetName(method, sw);
-
-        // Get template content from HTML file
-        String templateContent = Util.readURLAsString(resource);
-
-        // Process it
-        TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
-            templateContent,
-            typeOracle.findType(templateResourceTypeName));
 
         // Compile the resulting HTML template String
         compileTemplateString(sw, templateParserResult.getProcessedTemplate(), context);
@@ -114,8 +135,6 @@ public final class TemplateResourceGwtGenerator extends AbstractResourceGenerato
         // End class
         sw.outdent();
         sw.println("}");
-
-        return sw.toString();
     }
 
     /**

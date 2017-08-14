@@ -17,6 +17,6 @@ public class TemplateExpressionException extends TemplateParserException
     public TemplateExpressionException(String message, String expression,
         TemplateParserContext context, Throwable cause)
     {
-        super(message + "\nIn expression: " + expression, context, cause);
+        super(message + "\n\nIn expression: " + expression, context, cause);
     }
 }

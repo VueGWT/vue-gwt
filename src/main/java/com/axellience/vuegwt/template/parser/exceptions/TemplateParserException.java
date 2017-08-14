@@ -15,8 +15,14 @@ public abstract class TemplateParserException extends RuntimeException
 
     public TemplateParserException(String message, TemplateParserContext context, Throwable cause)
     {
-        super("\nError: " + message + "\nIn Component: " + context
+        super("\n\n======================= Error in: \""
+            + context
             .getComponentJsTypeClass()
-            .getName() + "\nWhile processing Node: " + context.getCurrentNode().toString(), cause);
+            .getName()
+            + ".html\" =======================\n\n"
+            + message
+            + "\n\nWhile processing Node: "
+            + context.getCurrentNode().toString()
+            + "\n\n==============================================\n", cause);
     }
 }
