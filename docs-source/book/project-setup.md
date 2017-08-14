@@ -151,7 +151,7 @@ You must add Vue GWT dependency in your module `.gwt.xml` file:
 In your application `EntryPoint` class, add this on top of the `onModuleLoad()` method:
 
 ```java
-VueGWT.initWithVueLib();
+VueGWT.init();
 ```
 
 This will inject Vue.js in your app, and init Vue GWT.
@@ -159,7 +159,7 @@ This will inject Vue.js in your app, and init Vue GWT.
 If you already have Vue.js included and you don't Vue GWT to inject it for you, you can call this instead:
 
 ```java
-VueGWT.init();
+VueGWT.initWithoutVueLib();
 ```
 
 Congratulation, you are good to go! **[Let's start using Vue GWT](introduction/README.md)**

@@ -43,7 +43,7 @@ public class VueGWT
      * Also inject Vue.js library.
      */
     @JsIgnore
-    public static void initWithVueLib()
+    public static void init()
     {
         if (!isVueLibInjected())
         {
@@ -56,7 +56,7 @@ public class VueGWT
         }
 
         // Init VueGWT
-        VueGWT.init();
+        VueGWT.initWithoutVueLib();
     }
 
     /**
@@ -64,11 +64,11 @@ public class VueGWT
      * Requires Vue to be defined in Window.
      */
     @JsIgnore
-    public static void init()
+    public static void initWithoutVueLib()
     {
         if (!isVueLibInjected())
             throw new RuntimeException(
-                "Couldn't find Vue.js on init. Either include it in your index.html or call VueGWT.initWithVueLib() instead.");
+                "Couldn't find Vue.js on init. Either include it Vue.js in your index.html or call VueGWT.init() instead of initWithoutVueLib.");
 
         HTMLDocument document = HTMLDocument.get();
 
