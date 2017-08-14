@@ -7,8 +7,6 @@ import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.variable.VariableInfo;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.dom.client.NativeEvent;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
 import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
@@ -35,49 +33,36 @@ public class TemplateParserContext
 
     /**
      * Build the context based on a given {@link TemplateResource} Class.
-     * @param componentJsTypeClass The generated JsType class of the {@link VueComponent} we are
-     * parsing the template of
+     * @param templateResourceClass The generated {@link TemplateResource} class of the {@link
+     * VueComponent} we are processing
      */
-    public TemplateParserContext(JClassType componentJsTypeClass)
+    public TemplateParserContext(JClassType templateResourceClass)
     {
-        this.componentJsTypeClass = componentJsTypeClass;
+        this.componentJsTypeClass = templateResourceClass;
 
         this.addImport(NativeEvent.class.getCanonicalName());
         this.addImport(JsArray.class.getCanonicalName());
 
         this.rootContext = new ContextLayer();
         this.rootContext.addVariable(String.class, "_uid");
-        registerFieldsInContext(componentJsTypeClass);
+        registerFieldsAndMethodsInContext(templateResourceClass);
 
         this.contextLayers.add(this.rootContext);
     }
 
     /**
-     * Process the {@link TemplateResource} class to extract all the fields that will be
-     * visible in the template.
-     * It is called recursively to find parent fields in case of inheritance.
-     * @param vueComponentClass The class to process
+     * Process the {@link TemplateResource} class to register all the fields and methods visible in
+     * the context.
+     * @param templateResourceClass The class to process
      */
-    private void registerFieldsInContext(JClassType vueComponentClass)
+    private void registerFieldsAndMethodsInContext(JClassType templateResourceClass)
     {
-        if (vueComponentClass == null || vueComponentClass
-            .getQualifiedSourceName()
-            .equals(VueComponent.class.getCanonicalName()))
-            return;
-
-        // Add all visible fields to the context
-        boolean hasJsType = vueComponentClass.getAnnotation(JsType.class) != null;
-        Arrays
-            .stream(vueComponentClass.getFields())
-            .filter(jField -> (hasJsType && jField.isPublic())
-                || jField.getAnnotation(JsProperty.class) != null)
-            .forEach(this.rootContext::addVariable);
-
-        registerFieldsInContext(vueComponentClass.getSuperclass());
+        Arrays.stream(templateResourceClass.getFields()).forEach(this.rootContext::addVariable);
+        Arrays.stream(templateResourceClass.getMethods()).forEach(this.rootContext::addMethod);
     }
 
     /**
-     * Add a variable to the root context
+     * Add a variable to the root context.
      * @param type The type of the variable to add
      * @param name The name of the variable to add
      */
@@ -128,6 +113,22 @@ public class TemplateParserContext
         }
 
         return null;
+    }
+
+    /**
+     * Search if the method with the given name exist in the context stack.
+     * This will allow to catch basic error at the parser level, also this allow us to know
+     * when a method is used in a template expression and use a method call instead of a computed
+     * property.
+     * We only look in the the root context, because methods can't be declared on the fly in the
+     * template, so they can only exist in the root context.
+     * This doesn't check that parameters from the call match, we leave this to the Java compiler.
+     * @param name The name of the method to look for
+     * @return True if it exists, false otherwise
+     */
+    public boolean hasMethod(String name)
+    {
+        return rootContext.hasMethod(name);
     }
 
     /**

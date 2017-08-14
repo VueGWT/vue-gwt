@@ -1,12 +1,12 @@
 package com.axellience.vuegwt.template.parser.result;
 
+import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 import com.axellience.vuegwt.template.parser.variable.VariableInfo;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.axellience.vuegwt.client.component.template.TemplateResource.EXPRESSION_PREFIX;
 
@@ -52,12 +52,12 @@ public class TemplateParserResult
      * string to put in the template instead.
      */
     public TemplateExpression addExpression(String expression, String expressionType,
-        Set<VariableInfo> parameters)
+        List<VariableInfo> parameters, TemplateExpressionKind kind)
     {
         String id = EXPRESSION_PREFIX + this.expressions.size();
 
         TemplateExpression templateExpression =
-            new TemplateExpression(id, expression.trim(), expressionType, parameters);
+            new TemplateExpression(id, expression.trim(), expressionType, parameters, kind);
 
         this.expressions.add(templateExpression);
         return templateExpression;

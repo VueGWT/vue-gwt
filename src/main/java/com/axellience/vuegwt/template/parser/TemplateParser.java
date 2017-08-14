@@ -1,6 +1,8 @@
 package com.axellience.vuegwt.template.parser;
 
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
+import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.template.parser.exceptions.TemplateExpressionException;
 import com.axellience.vuegwt.template.parser.result.TemplateExpression;
@@ -11,6 +13,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import jodd.json.JsonException;
@@ -26,6 +29,7 @@ import org.jsoup.parser.Parser;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,19 +72,19 @@ public class TemplateParser
      * Parse a given HTML template and return the a result object containing the expressions, styles
      * and a transformed HTML.
      * @param htmlTemplate The HTML template to process, as a String
-     * @param componentJsTypeClass The JsType generated class of the {@link VueComponent} we
-     * are processing
+     * @param templateResourceClass The generated {@link TemplateResource} class of the {@link
+     * VueComponent} we are processing
      * @return A {@link TemplateParserResult} containing the processed template, expressions and styles
      */
     public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
-        JClassType componentJsTypeClass)
+        JClassType templateResourceClass)
     {
         result = new TemplateParserResult();
         Parser parser = Parser.htmlParser();
         parser.settings(new ParseSettings(true, true)); // tag, attribute preserve case
         Document doc = parser.parseInput(htmlTemplate, "");
 
-        context = new TemplateParserContext(componentJsTypeClass);
+        context = new TemplateParserContext(templateResourceClass);
         processImports(doc);
         processNode(doc);
 
@@ -208,31 +212,37 @@ public class TemplateParser
             if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
                 continue;
 
-            currentExpressionReturnType = "Object";
-            if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0)
-            {
-                currentExpressionReturnType = "void";
-            }
-
-            if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
-            {
-                currentExpressionReturnType = "boolean";
-            }
-
-            if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName))
-                && isJSONObject(attribute.getValue()))
-            {
-                currentExpressionReturnType = "boolean";
-            }
-
-            if ((":style".equals(attributeName) || "v-bind:style".equals(attributeName))
-                && isJSONObject(attribute.getValue()))
-            {
-                currentExpressionReturnType = "String";
-            }
-
+            currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
             attribute.setValue(processExpression(attribute.getValue()));
         }
+    }
+
+    /**
+     * Guess the type of the expression based on where it is used.
+     * The guessed type can be overridden by adding a Cast to the desired type at the
+     * beginning of the expression.
+     * @param attribute The attribute the expression is in
+     * @return
+     */
+    private String getExpressionReturnTypeForAttribute(Attribute attribute)
+    {
+        String attributeName = attribute.getKey().toLowerCase();
+
+        if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0)
+            return "void";
+
+        if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
+            return "boolean";
+
+        if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName))
+            && isJSONObject(attribute.getValue()))
+            return "boolean";
+
+        if ((":style".equals(attributeName) || "v-bind:style".equals(attributeName))
+            && isJSONObject(attribute.getValue()))
+            return "String";
+
+        return "Object";
     }
 
     /**
@@ -367,11 +377,11 @@ public class TemplateParser
         }
 
         // First, resolve all the casts
-        resolveCasts(expression);
+        resolveCastsUsingImports(expression);
 
         // Find the parameters used by the expression
-        Set<VariableInfo> expressionParameters = new HashSet<>();
-        processNameExpressions(expression, expressionParameters);
+        List<VariableInfo> expressionParameters = new LinkedList<>();
+        findExpressionParameters(expression, expressionParameters);
 
         // Update the expression as it might have been changed
         expressionString = expression.toString();
@@ -383,10 +393,85 @@ public class TemplateParser
             currentExpressionReturnType = castExpr.getType().toString();
         }
 
+        TemplateExpressionKind expressionKind =
+            getExpressionKind(expression, currentExpressionReturnType, expressionParameters);
+
         // Add the resulting expression to our template expressions
         return result.addExpression(expressionString,
             currentExpressionReturnType,
-            expressionParameters);
+            expressionParameters,
+            expressionKind);
+    }
+
+    /**
+     * Return the kind of our expression. Depending on how it used, and what the expression needs
+     * we can either declare it as a Vue.js Computed property (with cache), or a Vue.js method
+     * (without cache).
+     * @param expression The expression to check
+     * @param returnType The Java return type of the expression
+     * @param expressionParameters The parameters needed for the expression (loop variables)
+     * @return The {@link TemplateExpressionKind} of the expression.
+     */
+    private TemplateExpressionKind getExpressionKind(Expression expression, String returnType,
+        List<VariableInfo> expressionParameters)
+    {
+        // If our expression returns void (used in a v-on) or depends on some parameters, then it's a method call.
+        if (returnType.equals("void") || !expressionParameters.isEmpty())
+            return TemplateExpressionKind.METHOD;
+
+        // Check if we use any methods from the component, if so, expression is a method call.
+        if (doesExpressionUsesComponentMethod(expression))
+        {
+            return TemplateExpressionKind.METHOD;
+        }
+
+        // Our expression can be a Computed Property!
+        return TemplateExpressionKind.COMPUTED_PROPERTY;
+    }
+
+    /**
+     * Check the expression to for component method calls.
+     * This will check that the methods used in the template exist in the Component.
+     * It returns true if we use one of the component method in the template.
+     * It throws an exception if we use a method that is not declared in our Component.
+     * This will not check for the type or number of parameters, we leave that to the Java Compiler.
+     * @param expression The expression to check
+     * @return True if we use at least one of the Component methods in the expression.
+     */
+    private boolean doesExpressionUsesComponentMethod(Expression expression)
+    {
+        boolean useMethod = false;
+        if (expression instanceof MethodCallExpr)
+        {
+            MethodCallExpr methodCall = ((MethodCallExpr) expression);
+            if (!methodCall.getScope().isPresent())
+            {
+                String methodName = methodCall.getName().getIdentifier();
+                if (context.hasMethod(methodName))
+                {
+                    useMethod = true;
+                }
+                else
+                {
+                    throw new TemplateExpressionException("Couldn't find the method \""
+                        + methodName
+                        + "\" in the context. Make sure it is at least package protected in your Component.",
+                        expression.toString(),
+                        context);
+                }
+            }
+        }
+
+        for (com.github.javaparser.ast.Node node : expression.getChildNodes())
+        {
+            if (!(node instanceof Expression))
+                continue;
+
+            Expression childExpr = (Expression) node;
+            useMethod = doesExpressionUsesComponentMethod(childExpr) || useMethod;
+        }
+
+        return useMethod;
     }
 
     /**
@@ -394,7 +479,7 @@ public class TemplateParser
      * This will replace the Class with the full qualified name using the template imports.
      * @param expression A Java expression from the Template
      */
-    private void resolveCasts(Expression expression)
+    private void resolveCastsUsingImports(Expression expression)
     {
         // Resolve Cast types based on imports
         if (expression instanceof CastExpr)
@@ -403,21 +488,22 @@ public class TemplateParser
             castExpr.setType(getCastType(castExpr));
         }
 
+        // Recurse downward in the expression
         expression
             .getChildNodes()
             .stream()
             .filter(Expression.class::isInstance)
             .map(Expression.class::cast)
-            .forEach(this::resolveCasts);
+            .forEach(this::resolveCastsUsingImports);
     }
 
     /**
-     * Process all the name expressions in our Expression.
-     * This will find all the parameters this expression depends on.
+     * Find all the parameters this expression depends on.
      * This is either the local variables (from a v-for loop) or the $event variable.
      * @param expression An expression from the Template
+     * @param parameters The parameters this expression depends on
      */
-    private void processNameExpressions(Expression expression, Set<VariableInfo> parameters)
+    private void findExpressionParameters(Expression expression, List<VariableInfo> parameters)
     {
         if (expression instanceof NameExpr)
         {
@@ -433,17 +519,17 @@ public class TemplateParser
             .stream()
             .filter(Expression.class::isInstance)
             .map(Expression.class::cast)
-            .forEach(exp -> processNameExpressions(exp, parameters));
+            .forEach(exp -> findExpressionParameters(exp, parameters));
     }
 
     /**
      * Process the $event variable passed on v-on. This variable must have a valid cast in front.
      * @param expression The currently processed expression
      * @param nameExpr The variable we are processing
-     * @param parameters A set of parameters for the current expression
+     * @param parameters The parameters this expression depends on
      */
     private void processEventParameter(Expression expression, NameExpr nameExpr,
-        Set<VariableInfo> parameters)
+        List<VariableInfo> parameters)
     {
         if (nameExpr.getParentNode().isPresent() && nameExpr
             .getParentNode()
@@ -455,7 +541,7 @@ public class TemplateParser
         else
         {
             throw new TemplateExpressionException(
-                "$event should always be casted to it's intended type.",
+                "\"$event\" should always be casted to it's intended type.",
                 expression.toString(),
                 context);
         }
@@ -466,10 +552,10 @@ public class TemplateParser
      * If it does, and it's a local variable (from a v-for) we add it to our parameters
      * @param expression The currently processed expression
      * @param nameExpr The variable we are processing
-     * @param parameters A set of parameters for the current expression
+     * @param parameters The parameters this expression depends on
      */
     private void processNameExpression(Expression expression, NameExpr nameExpr,
-        Set<VariableInfo> parameters)
+        List<VariableInfo> parameters)
     {
         String name = nameExpr.getNameAsString();
         if (context.hasImport(name))
@@ -482,9 +568,9 @@ public class TemplateParser
         VariableInfo variableInfo = context.findVariable(name);
         if (variableInfo == null)
         {
-            throw new TemplateExpressionException("Couldn't find variable "
+            throw new TemplateExpressionException("Couldn't find variable \""
                 + name
-                + " in the Component. Make sure you didn't forget the @JsProperty annotation.",
+                + "\" in the Component. Make sure you didn't forget the @JsProperty annotation or try rerunning your Annotation processor.",
                 expression.toString(),
                 context);
         }

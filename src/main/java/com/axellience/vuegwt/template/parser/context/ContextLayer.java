@@ -3,9 +3,12 @@ package com.axellience.vuegwt.template.parser.context;
 import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.variable.VariableInfo;
 import com.google.gwt.core.ext.typeinfo.JField;
+import com.google.gwt.core.ext.typeinfo.JMethod;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A context layer holding local variables for a v-for.
@@ -14,6 +17,7 @@ import java.util.Map;
 public class ContextLayer
 {
     private final Map<String, VariableInfo> variables = new HashMap<>();
+    private final Set<String> methods = new HashSet<>();
 
     private <T extends VariableInfo> T addVariable(T variableInfo)
     {
@@ -44,5 +48,15 @@ public class ContextLayer
     VariableInfo getVariableInfo(String name)
     {
         return variables.get(name);
+    }
+
+    void addMethod(JMethod method)
+    {
+        this.methods.add(method.getName());
+    }
+
+    boolean hasMethod(String methodName)
+    {
+        return this.methods.contains(methodName);
     }
 }

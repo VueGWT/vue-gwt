@@ -19,29 +19,28 @@ public class TemplateExpression
 {
     private final String id;
     private final String body;
+    private final TemplateExpressionKind kind;
     private final String type;
     private final List<VariableInfo> parameters = new LinkedList<>();
 
     public TemplateExpression(String id, String body, String type,
-        Collection<VariableInfo> parameters)
+        Collection<VariableInfo> parameters, TemplateExpressionKind kind)
     {
         this.id = id;
         this.type = type;
         this.body = body;
+        this.kind = kind;
         this.parameters.addAll(parameters);
     }
 
     /**
-     * If the expression type is void (v-on), or have parameters it is represented as a method.
-     * Otherwise we can represent it has a computed properties.
-     * @return The kind of representation depending on its return type and parameters
+     * The kind of the expression, can be either a {@link TemplateExpressionKind#COMPUTED_PROPERTY}
+     * (cached) or a {@link TemplateExpressionKind#METHOD} (not cached).
+     * @return The kind for this expression
      */
     public TemplateExpressionKind getKind()
     {
-        if ("void".equals(type) || !parameters.isEmpty())
-            return TemplateExpressionKind.METHOD;
-
-        return TemplateExpressionKind.COMPUTED_PROPERTY;
+        return kind;
     }
 
     /**
