@@ -61,6 +61,7 @@ import java.util.stream.Stream;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.*;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasAnnotation;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasInterface;
+import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getSuperComponentCount;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getSuperComponentType;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.hasTemplate;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.isFieldVisibleInJS;
@@ -430,15 +431,16 @@ public class ComponentJsTypeGenerator
     private void createCreatedHook(TypeElement component, MethodSpec.Builder optionsBuilder,
         Builder componentJsTypeBuilder, ComponentInjectedDependenciesBuilder dependenciesBuilder)
     {
-        componentJsTypeBuilder.addField(boolean.class, "hasRunCreated", Modifier.PRIVATE);
+        String hasRunCreatedFlagName = "vuegwt$hrc_" + getSuperComponentCount(component);
+        componentJsTypeBuilder.addField(boolean.class, hasRunCreatedFlagName, Modifier.PUBLIC);
 
         MethodSpec.Builder createdMethodBuilder =
             MethodSpec.methodBuilder("vuegwt$created").addModifiers(Modifier.PUBLIC);
 
         // Avoid infinite recursion in case calling the Java constructor calls Vue.js constructor
         // This can happen when extending an existing JS component
-        createdMethodBuilder.addStatement("if (hasRunCreated) return");
-        createdMethodBuilder.addStatement("hasRunCreated = true");
+        createdMethodBuilder.addStatement("if ($L) return", hasRunCreatedFlagName);
+        createdMethodBuilder.addStatement("$L = true", hasRunCreatedFlagName);
 
         injectDependencies(component, dependenciesBuilder, createdMethodBuilder);
         callConstructor(component, createdMethodBuilder);

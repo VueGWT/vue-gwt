@@ -168,6 +168,18 @@ public class ComponentGenerationUtil
     }
 
     /**
+     * Return the number of super component in the chain of parents
+     * @param component The {@link VueComponent} to count the super type of
+     * @return The number of super components
+     */
+    public static int getSuperComponentCount(TypeElement component)
+    {
+        return getSuperComponentType(component)
+            .map(superComponent -> getSuperComponentCount(superComponent) + 1)
+            .orElse(0);
+    }
+
+    /**
      * Check if the given Component has a Template.
      * It doesn't have a template if the class is abstract, if it implements render function
      * or if it has the flag "hasTemplate" to false on the component annotation.
