@@ -122,12 +122,13 @@ However, it is often a better idea to use a computed property rather than an imp
 
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent {
+public class JohnSnowComponent extends VueComponent implements HasCreated {
     @JsProperty String firstName;
     @JsProperty String lastName;
     @JsProperty String fullName;
 
-    public JohnSnowComponent() {
+    @Override
+    public void created() {
         this.firstName = "John";
         this.lastName = "Snow";
         this.fullName = "John Snow";

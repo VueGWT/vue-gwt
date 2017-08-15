@@ -778,8 +778,9 @@ To achieve this you have to assign a reference ID to the child component using `
 
 ```java
 @Component(components = UserProfileComponent.class)
-public class ParentComponent extends VueComponent {
-    public ParentComponent() {
+public class ParentComponent extends VueComponent implements HasCreated {
+    @Override
+    public void created() {
         UserProfileComponent userProfileComponent = this.$refs.get("profile");
     }
 }
@@ -828,12 +829,13 @@ Bellow is an example recursive component:
 
 ```java
 @Component(name = "recursive")
-public class RecursiveComponent extends VueComponent {
+public class RecursiveComponent extends VueComponent implements HasCreated {
     @Prop
     @JsProperty
     Integer counter;
 
-    public RecursiveComponent() {
+    @Override
+    public void created() {
         if (this.counter == null)
             this.counter = 0;
     }

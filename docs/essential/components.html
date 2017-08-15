@@ -1339,8 +1339,9 @@ To achieve this you have to assign a reference ID to the child component using <
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = UserProfileComponent.class)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ParentComponent</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         UserProfileComponent userProfileComponent = <span class="hljs-keyword">this</span>.$refs.get(<span class="hljs-string">&quot;profile&quot;</span>);
     }
 }
@@ -1370,12 +1371,13 @@ However, they can only do so with the <code>name</code> option:</p>
 <p>A component like the above will result in a &quot;max stack size exceeded&quot; error, so make sure recursive invocation is conditional (i.e. uses a <code>v-if</code> that will eventually be <code>false</code>).</p>
 <p>Bellow is an example recursive component:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(name = <span class="hljs-string">&quot;recursive&quot;</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RecursiveComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RecursiveComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     Integer counter;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RecursiveComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.counter == <span class="hljs-keyword">null</span>)
             <span class="hljs-keyword">this</span>.counter = <span class="hljs-number">0</span>;
     }
@@ -1472,7 +1474,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-08-11T10:22:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-11T12:09:51.444Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-08-15T17:02:56.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-15T17:10:17.329Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

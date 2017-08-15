@@ -225,23 +225,19 @@ public class Todo
 
 We will then create a list of `Todo` in a `SimpleTodoListComponent`.
 
-You will notice that we added a Java Constructor to our Component.
-This Constructor will be called on each created instance of your Component.
-
-<p class="warning-panel">
-When you want to create a new instance of your Component in your app, doing: <code>new MyComponent()</code> won't work.
-<br/>
-This is because we also need to create a Vue.js instance of your Component, and your Java Constructor won't do that for you.
-<br/>
-Use: <code>VueGWT.createInstance(MyComponent.class)</code> instead.
-</p>
+You will notice that we added a `created` method to our Component by implementing the `HasCreated` interface.
+This method will be called on each created instance of your Component.
+This is where you should put your initialization logic.
+You can see it as your Component constructor.
+If you try to use a Java Constructor instead, the annotation processor will throw an explicit error.
 
 ```java
 @Component
-public class SimpleTodoListComponent extends VueComponent {
+public class SimpleTodoListComponent extends VueComponent implements HasCreated {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
-    public SimpleTodoListComponent() {
+    @Override
+    public void created() {
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));
@@ -444,10 +440,11 @@ Let's call it `TodoListComponent`:
 
 ```java
 @Component(components = {TodoComponent.class})
-public class TodoListComponent extends VueComponent {
+public class TodoListComponent extends VueComponent implements HasCreated {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
-    public TodoListComponent() {
+    @Override
+    public void created() {
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));

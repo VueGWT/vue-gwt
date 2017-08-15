@@ -1,6 +1,7 @@
 package com.axellience.vuegwtexamples.client.examples.vforwithindex;
 
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -10,12 +11,13 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component
-public class VForWithIndexComponent extends VueComponent
+public class VForWithIndexComponent extends VueComponent implements HasCreated
 {
     @JsProperty String parentMessage = "Message from parent";
     @JsProperty JsArray<Todo> todos = new JsArray<>();
 
-    public VForWithIndexComponent()
+    @Override
+    public void created()
     {
         this.todos.push(new Todo("Learn Java"));
         this.todos.push(new Todo("Learn Vue GWT"));

@@ -22,10 +22,11 @@ The `v-for` directive requires a special syntax in the form of `Type item in ite
 
 ```java
 @Component
-public class SimpleTodoListComponent extends VueComponent {
+public class SimpleTodoListComponent extends VueComponent implements HasCreated {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
-    public SimpleTodoListComponent() {
+    @Override
+    public void created() {
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));
@@ -55,11 +56,12 @@ Inside `v-for` blocks we have full access to parent scope properties.
 
 ```java
 @Component
-public class VForWithIndexComponent extends VueComponent {
+public class VForWithIndexComponent extends VueComponent implements HasCreated {
     @JsProperty String parentMessage = "Message from parent";
     @JsProperty List<Todo> todos = new LinkedList<>();
 
-    public VForWithIndexComponent() {
+    @Override
+    public void created() {
         this.todos.add(new Todo("Learn Java"));
         this.todos.add(new Todo("Learn Vue GWT"));
         this.todos.add(new Todo("Build something awesome"));
@@ -112,10 +114,11 @@ This tells Vue GWT that you are iterating on an `Object` and not an regular Coll
 
 ```java
 @Component
-public class VForOnObjectComponent extends VueComponent {
+public class VForOnObjectComponent extends VueComponent implements HasCreated {
     @JsProperty JsObject<Object> myObject = new JsObject<>();
 
-    public VForOnObjectComponent() {
+    @Override
+    public void created() {
         this.myObject.set("myString", "Hello World");
         this.myObject.set("myInt", 12);
         this.myObject.set("myTodo", new Todo("I'm a Todo"));
