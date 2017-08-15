@@ -37,7 +37,6 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
-import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Filer;
@@ -118,7 +117,6 @@ public class ComponentJsTypeGenerator
         ComponentInjectedDependenciesBuilder dependenciesBuilder =
             new ComponentInjectedDependenciesBuilder(processingEnv, component);
 
-        processConstructor(component, componentJsTypeBuilder);
         processData(component, optionsBuilder);
         processProps(component, optionsBuilder);
         processComputed(component, optionsBuilder, componentJsTypeBuilder);
@@ -171,52 +169,6 @@ public class ComponentJsTypeGenerator
             .build());
 
         return componentJsTypeBuilder;
-    }
-
-    /**
-     * Generate a {@link JsMethod} proxy for the {@link VueComponent} constructor.
-     * This proxy will be exposed to JS and can be therefore used to initialize our
-     * {@link VueComponent} instances.
-     * @param component The {@link VueComponent} we are generating for
-     * @param componentJsTypeBuilder Builder for the JsType class
-     */
-    private void processConstructor(TypeElement component, Builder componentJsTypeBuilder)
-    {
-        List<ExecutableElement> constructors = ElementFilter
-            .constructorsIn(component.getEnclosedElements())
-            .stream()
-            .filter(method -> !method.getModifiers().contains(Modifier.PRIVATE))
-            .collect(Collectors.toList());
-
-        if (constructors.size() > 1)
-        {
-            messager.printMessage(Kind.ERROR,
-                component.getSimpleName().toString()
-                    + " has "
-                    + constructors.size()
-                    + " non private constructors. VueComponents can have 0 or 1 non private constructors");
-            return;
-        }
-
-        ExecutableElement originalConstructor = constructors.isEmpty() ? null : constructors.get(0);
-
-        MethodSpec.Builder proxyMethodBuilder =
-            MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
-
-        if (originalConstructor != null)
-        {
-            if (!originalConstructor.getParameters().isEmpty())
-            {
-                messager.printMessage(Kind.ERROR,
-                    "In"
-                        + component.getSimpleName().toString()
-                        + ", constructor with parameters are not yet supported. If you need injection, please inject in a method or on fields instead.");
-            }
-
-            proxyMethodBuilder.addStatement("super()");
-        }
-
-        componentJsTypeBuilder.addMethod(proxyMethodBuilder.build());
     }
 
     /**

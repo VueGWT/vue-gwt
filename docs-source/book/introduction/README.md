@@ -229,7 +229,6 @@ You will notice that we added a `created` method to our Component by implementin
 This method will be called on each created instance of your Component.
 This is where you should put your initialization logic.
 You can see it as your Component constructor.
-If you try to use a Java Constructor instead, the annotation processor will throw an explicit error.
 
 ```java
 @Component

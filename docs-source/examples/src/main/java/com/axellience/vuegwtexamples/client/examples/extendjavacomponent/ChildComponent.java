@@ -1,5 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.extendjavacomponent;
 
+import com.axellience.vuegwt.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import jsinterop.annotations.JsProperty;
@@ -8,11 +9,12 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component
-public class ChildComponent extends ParentComponent
+public class ChildComponent extends ParentComponent implements HasCreated
 {
     @JsProperty int childValue;
 
-    public ChildComponent()
+    @Override
+    public void created()
     {
         this.childValue = 10;
     }
