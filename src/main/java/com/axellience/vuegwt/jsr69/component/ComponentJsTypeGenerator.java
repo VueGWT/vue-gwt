@@ -204,12 +204,15 @@ public class ComponentJsTypeGenerator
 
         if (originalConstructor != null)
         {
-            originalConstructor
-                .getParameters()
-                .forEach(parameter -> proxyMethodBuilder.addParameter(TypeName.get(parameter.asType()),
-                    parameter.getSimpleName().toString()));
-            String methodCallParameters = getSuperMethodCallParameters(originalConstructor);
-            proxyMethodBuilder.addStatement("super($L)", methodCallParameters);
+            if (!originalConstructor.getParameters().isEmpty())
+            {
+                messager.printMessage(Kind.ERROR,
+                    "In"
+                        + component.getSimpleName().toString()
+                        + ", constructor with parameters are not yet supported. If you need injection, please inject in a method or on fields instead.");
+            }
+
+            proxyMethodBuilder.addStatement("super()");
         }
 
         componentJsTypeBuilder.addMethod(proxyMethodBuilder.build());
@@ -485,7 +488,7 @@ public class ComponentJsTypeGenerator
         createdMethodBuilder.addStatement("hasRunCreated = true");
 
         injectDependencies(component, dependenciesBuilder, createdMethodBuilder);
-        callConstructor(component, dependenciesBuilder, createdMethodBuilder);
+        callConstructor(component, createdMethodBuilder);
 
         componentJsTypeBuilder.addMethod(createdMethodBuilder.build());
 
@@ -562,31 +565,15 @@ public class ComponentJsTypeGenerator
     /**
      * Call our {@link VueComponent} constructor. Pass injected parameters if needed.
      * @param component {@link VueComponent} to process
-     * @param dependenciesBuilder Builder for our component dependencies, needed here to inject the
-     * dependencies in the instance
      * @param createdMethodBuilder Builder for our Create method
      */
-    private void callConstructor(TypeElement component,
-        ComponentInjectedDependenciesBuilder dependenciesBuilder,
-        MethodSpec.Builder createdMethodBuilder)
+    private void callConstructor(TypeElement component, MethodSpec.Builder createdMethodBuilder)
     {
         createdMethodBuilder.addStatement("Object javaConstructor = $T.getJavaConstructor($T.class)",
             VueGWT.class,
             component);
 
-        List<String> injectedParameters = dependenciesBuilder.getInjectedConstructorParameters();
-        String callParameters = "";
-        if (!injectedParameters.isEmpty())
-        {
-            callParameters = ", " + injectedParameters
-                .stream()
-                .map(param -> "dependencies." + param)
-                .collect(Collectors.joining(", "));
-        }
-
-        createdMethodBuilder.addStatement("$T.call(javaConstructor, this$L)",
-            JsTools.class,
-            callParameters);
+        createdMethodBuilder.addStatement("$T.call(javaConstructor, this)", JsTools.class);
     }
 
     /**

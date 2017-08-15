@@ -1,9 +1,7 @@
 package com.axellience.vuegwt.jsr69.component;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
-import com.axellience.vuegwt.template.TemplateResourceGwtGenerator;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -33,11 +31,7 @@ import static com.axellience.vuegwt.jsr69.GenerationNameUtil.componentInjectedDe
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.resolveVariableTypeName;
 
 /**
- * Build the {@link TemplateResource} for a given {@link VueComponent}.
- * This resource will contain all the fields and methods accessible from the template.
- * It will serve as base for the {@link TemplateResourceGwtGenerator}.
- * The GWT resource generator will parse the HTML and add methods for the template expressions and
- * the render method to our generated resource.
+ * Build a class used to inject dependencies of a given {@link VueComponent}.
  * @author Adrien Baron
  */
 public class ComponentInjectedDependenciesBuilder
@@ -46,7 +40,6 @@ public class ComponentInjectedDependenciesBuilder
     private final Builder componentInjectedDependenciesBuilder;
 
     private final List<String> injectedFieldsName = new LinkedList<>();
-    private final List<String> injectedConstructorParameters = new LinkedList<>();
     private final Map<String, List<String>> injectedParametersByMethod = new HashMap<>();
 
     public ComponentInjectedDependenciesBuilder(ProcessingEnvironment processingEnvironment,
@@ -61,7 +54,6 @@ public class ComponentInjectedDependenciesBuilder
             TypeSpec.classBuilder(componentInjectedDependenciesName).addModifiers(Modifier.PUBLIC);
 
         processInjectedFields(component);
-        processInjectedConstructor(component);
         processInjectedMethods(component);
 
         // Generate the file
@@ -105,33 +97,6 @@ public class ComponentInjectedDependenciesBuilder
             .collect(Collectors.toList());
 
         injectedMethods.forEach(this::processInjectedMethod);
-    }
-
-    /**
-     * Process all the injected constructor from our Component.
-     * @param component The {@link VueComponent} we are processing
-     */
-    private void processInjectedConstructor(TypeElement component)
-    {
-        List<ExecutableElement> injectedConstructors = ElementFilter
-            .constructorsIn(component.getEnclosedElements())
-            .stream()
-            .filter(this::hasInjectAnnotation)
-            .peek(this::validateMethod)
-            .collect(Collectors.toList());
-
-        if (injectedConstructors.isEmpty())
-            return;
-
-        if (injectedConstructors.size() > 1)
-        {
-            messager.printMessage(Kind.ERROR,
-                "In " + component + " you can have only one injected constructor.");
-            return;
-        }
-
-        ExecutableElement injectedConstructor = injectedConstructors.get(0);
-        processInjectedMethod(injectedConstructor, injectedConstructorParameters);
     }
 
     /**
@@ -233,17 +198,6 @@ public class ComponentInjectedDependenciesBuilder
     }
 
     /**
-     * Return true if the component instance has injected dependencies
-     * @return true if the component instance has injected dependencies, false otherwise
-     */
-    public boolean hasDependencies()
-    {
-        return !injectedFieldsName.isEmpty()
-            || !injectedConstructorParameters.isEmpty()
-            || !injectedParametersByMethod.isEmpty();
-    }
-
-    /**
      * Check if the given element has an Inject annotation. Either the one from Google Gin, or the
      * javax one. We don't want to depend on Gin, so we check the google one based on qualifiedName
      * @param element The element we want to check
@@ -262,6 +216,16 @@ public class ComponentInjectedDependenciesBuilder
         return false;
     }
 
+    /**
+     * Return true if the component instance has injected dependencies
+     * @return true if the component instance has injected dependencies, false otherwise
+     */
+    public boolean hasDependencies()
+    {
+        return !injectedFieldsName.isEmpty()
+            || !injectedParametersByMethod.isEmpty();
+    }
+
     public List<String> getInjectedFieldsName()
     {
         return injectedFieldsName;
@@ -270,10 +234,5 @@ public class ComponentInjectedDependenciesBuilder
     public Map<String, List<String>> getInjectedParametersByMethod()
     {
         return injectedParametersByMethod;
-    }
-
-    public List<String> getInjectedConstructorParameters()
-    {
-        return injectedConstructorParameters;
     }
 }
