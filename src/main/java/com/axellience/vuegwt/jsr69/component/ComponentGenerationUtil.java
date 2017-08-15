@@ -171,6 +171,7 @@ public class ComponentGenerationUtil
      * Check if the given Component has a Template.
      * It doesn't have a template if the class is abstract, if it implements render function
      * or if it has the flag "hasTemplate" to false on the component annotation.
+     * @param processingEnvironment Environment of the Annotation processor
      * @param component The component to check
      * @return true if has a template, false otherwise
      */

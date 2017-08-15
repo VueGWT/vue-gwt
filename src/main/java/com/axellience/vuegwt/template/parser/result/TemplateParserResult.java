@@ -48,6 +48,7 @@ public class TemplateParserResult
      * @param expressionType The type of the expression, determined depending on the context it is
      * used in.
      * @param parameters The parameters this expression depends on (can be empty)
+     * @param kind Kind of the expression, either a Computed Property or a Method
      * @return The {@link TemplateExpression} for this Java expression, will be used to get the
      * string to put in the template instead.
      */
