@@ -62,6 +62,8 @@ public class JsTools
 
     public static native String getFunctionBody(Object jsFunction);
 
+    public static native boolean isUndefined(Object value);
+
     @JsIgnore
     public static <T> T get(Object o, int index)
     {

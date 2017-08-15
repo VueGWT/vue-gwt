@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static com.axellience.vuegwt.client.tools.JsTools.isUndefined;
+
 /**
  * Java representation of VueComponentOptions
  * Class extending this one are generated using the Annotation processor for each VueComponent
@@ -124,7 +126,12 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
         if (dataFields == null)
             dataFields = new JsObject();
 
-        dataFields.set(fieldName, null);
+        // Get the default field value from the prototype if any
+        Object defaultValue = componentJavaPrototype.get(fieldName);
+        if (!isUndefined(defaultValue))
+            dataFields.set(fieldName, defaultValue);
+        else
+            dataFields.set(fieldName, null);
     }
 
     /**

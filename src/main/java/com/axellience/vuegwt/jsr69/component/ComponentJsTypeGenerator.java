@@ -9,6 +9,7 @@ import com.axellience.vuegwt.client.component.hooks.HasBeforeCreate;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeDestroy;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeMount;
 import com.axellience.vuegwt.client.component.hooks.HasBeforeUpdate;
+import com.axellience.vuegwt.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.client.component.hooks.HasDeactivated;
 import com.axellience.vuegwt.client.component.hooks.HasDestroyed;
 import com.axellience.vuegwt.client.component.hooks.HasMounted;
@@ -489,6 +490,11 @@ public class ComponentJsTypeGenerator
 
         injectDependencies(component, dependenciesBuilder, createdMethodBuilder);
         callConstructor(component, createdMethodBuilder);
+
+        if (hasInterface(processingEnv, component.asType(), HasCreated.class))
+        {
+            createdMethodBuilder.addStatement("super.created()");
+        }
 
         componentJsTypeBuilder.addMethod(createdMethodBuilder.build());
 

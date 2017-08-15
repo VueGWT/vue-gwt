@@ -73,5 +73,8 @@
 	};
 	jsTools.debugger = function () {
 		debugger;
-	}
+	};
+	jsTools.isUndefined = function (value) {
+		return value === undefined;
+	};
 })(window);
