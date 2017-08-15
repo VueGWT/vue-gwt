@@ -19,8 +19,8 @@ Try to limit to a single level of inheritence, and use it only when necessary.
 Let's say we have the following Component:
 
 ```java
-@Component(hasTemplate = false)
-public class ParentComponent extends VueComponent {
+@Component
+public abstract class ParentComponent extends VueComponent {
     @JsProperty String parentMessage = "This is a message from the parent";
 
     public int parentMultiplyBy2(int value) {
@@ -35,23 +35,19 @@ public class ParentComponent extends VueComponent {
 ```
 
 It's just a regular Vue GWT component.
-Only remarkable thing is it doesn't have a template (`hasTemplate` is passed to `@Component` to `false`).
-
-<p class="info-panel">
-You may want to declare the Class as <code>abstract</code> but it's not possible as we need an instance of it to get the methods.
-</p>
+Only remarkable thing is it is abstract, which tells Vue GWT that it doesn't have a template.
 
 ### The Child Component
 
-Let's extend our Parent Component.
+Let's extend our `ParentComponent`.
 For this we just have to use classic Java inheritance.
 
 ```java
 @Component
-public class ChildJavaComponent extends ParentJsComponent {
+public class ChildJavaComponent extends ParentJsComponent implements HasCreated {
     @JsProperty int childValue;
 
-    public ChildJavaComponent() {
+    public void created() {
         this.childValue = 10;
     }
 

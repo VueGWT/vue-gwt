@@ -1,5 +1,7 @@
 # Class and Style Bindings
 
+!INCLUDE "../dependencies.md"
+
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/class-and-style.html) and has been adapted for Vue GWT.*
 
 A common need for data binding is manipulating an element's class list and its inline styles.

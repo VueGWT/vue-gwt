@@ -31,7 +31,7 @@ Let's try see how to instantiate it in Java:
 VueJsConstructor vueJsConstructor = (VueJsConstructor) JsTools.getWindow().get("FullJsComponent");
 // We can then manipulate it exactly like
 // our VueJsConstructor generated from our Java Components
-VueComponent myFullJsComponent = vueConstructor.instantiate();
+VueComponent myFullJsComponent = vueJsConstructor.instantiate();
 myFullJsComponent.$mount("#fullJsComponent");
 ```
 

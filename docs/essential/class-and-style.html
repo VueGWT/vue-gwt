@@ -744,6 +744,52 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="class-and-style-bindings">Class and Style Bindings</h1>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+    var basePath = "/";
+    if (window.location.hostname === "axellience.github.io")
+        basePath = "/vue-gwt/";
+
+    var script = document.createElement("script");
+    script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
+    document.head.appendChild(script);
+</script>
+<script>
+    window.FullJsComponent = Vue.extend({
+        template: "<div>I Come In Peace From the JS World.</div>"
+    });
+    window.FullJsWithMethodsComponent = Vue.extend({
+        template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
+        data: function () {
+            return {
+                value: 10
+            }
+        },
+        methods: {
+            multiplyBy2: function (value) {
+                return value * 2;
+            }
+        }
+    });
+    window.ParentJsComponent = Vue.extend({
+        data: function () {
+            return {
+                parentMessage: "This is a message from the Parent"
+            };
+        },
+        methods: {
+            parentMultiplyBy2: function (value) {
+                return value * 2;
+            }
+        },
+        computed: {
+            parentComputed: function () {
+                return "Computed Message | " + this.parentMessage;
+            }
+        }
+    });
+</script>
+
 <p><em>This page comes from the <a href="https://vuejs.org/v2/guide/class-and-style.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
 <p>A common need for data binding is manipulating an element&apos;s class list and its inline styles.
 Since they are both attributes, we can use <code>v-bind</code> to handle them: we just need to calculate a final string with our expressions.
@@ -937,7 +983,7 @@ If you actually want to pass a String you have to add escaped quotes around your
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Class and Style Bindings","level":"2.4","depth":1,"next":{"title":"Conditional Rendering","level":"2.5","depth":1,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"previous":{"title":"Computed Properties and Watchers","level":"2.3","depth":1,"path":"essential/computed-and-watchers.md","ref":"essential/computed-and-watchers.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/class-and-style.md","mtime":"2017-08-11T12:32:59.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-15T17:35:44.750Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Class and Style Bindings","level":"2.4","depth":1,"next":{"title":"Conditional Rendering","level":"2.5","depth":1,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"previous":{"title":"Computed Properties and Watchers","level":"2.3","depth":1,"path":"essential/computed-and-watchers.md","ref":"essential/computed-and-watchers.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/class-and-style.md","mtime":"2017-08-15T18:02:58.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-15T19:13:18.015Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

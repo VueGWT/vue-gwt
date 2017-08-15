@@ -254,8 +254,7 @@ public class AnchoredHeadingComponent extends VueComponent implements HasRender 
     }
 
     private String getChildrenTextContent(JsArray<VNode> children) {
-        return children.map(child ->
-        {
+        return children.map(child -> {
             if (child.getChildren() != null && child.getChildren().length > 0)
                 return getChildrenTextContent(child.getChildren());
             return child.getText();
@@ -426,4 +425,5 @@ Vue.js support [Functional Components](https://vuejs.org/v2/guide/render-functio
 
 ## Template Compilation
 
+Vue GWT uses Vue.js template compiler at Java compile time to compile your HTML template in JavaScript render functions.
 If you are curious about how Vue.js compile templates you can [check the template compiler on their documentation](https://vuejs.org/v2/guide/render-function.html#Template-Compilation).

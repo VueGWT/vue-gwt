@@ -20,9 +20,6 @@ Here is the list of unsupported features:
     * Would be pretty hard to achieve because of Java single inheritance and type checking in templates.
 * [State Management](https://vuejs.org/v2/guide/state-management.html)
     * Would require JsInterop for Vuex.
-* [Unit Testing](https://vuejs.org/v2/guide/unit-testing.html)
-    * JS Unit testing should work if you load compiled GWT app in a JS environment and expose the JS Components (not tested).
-    * Java Unit testing should also work if you don't use JsArray/JsObject in your `VueComponent`.
 * [Server Side Rendering](https://vuejs.org/v2/guide/ssr.html)
     * Vue GWT components compiled and loaded in a Vue.js app should work server side (but not tested).
     * Full Vue GWT app would probably not work server side or would require lots of work.
