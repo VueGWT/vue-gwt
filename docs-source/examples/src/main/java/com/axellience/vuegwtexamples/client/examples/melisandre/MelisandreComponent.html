@@ -4,13 +4,13 @@
     <div v-bind:class="myStyle.red()">
         For the night is dark and full of terrors.
     </div>
-    <div v-bind:class="[myStyle.red(), myStyle.bold()]">
+    <div v-bind:class="array(myStyle.red(), myStyle.bold())">
         For the night is dark, full of terrors and bold.
     </div>
     <div v-bind:class='isRed ? myStyle.red() : ""'>
         For the night is dark, full of terrors and might or not be red.
     </div>
-    <div v-bind:class='["isRed ? myStyle.red() : \"\"", myStyle.bold()]'>
+    <div v-bind:class='array(isRed ? myStyle.red() : "", myStyle.bold())'>
         For the night is dark, full of terrors, might or not be red and always BOLD.
     </div>
 </div>

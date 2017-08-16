@@ -462,6 +462,19 @@
     
         <li class="chapter " data-level="3.4.2" data-path="../js-interop/">
             
+                <a href="../js-interop/#map">
+            
+                    
+                    map
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4.3" data-path="../js-interop/">
+            
                 <a href="../js-interop/#js-array">
             
                     
@@ -473,7 +486,20 @@
             
         </li>
     
-        <li class="chapter " data-level="3.4.3" data-path="../js-interop/">
+        <li class="chapter " data-level="3.4.4" data-path="../js-interop/">
+            
+                <a href="../js-interop/#array">
+            
+                    
+                    array
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4.5" data-path="../js-interop/">
             
                 <a href="../js-interop/#js-tools">
             
@@ -797,24 +823,21 @@ However, meddling with string concatenation is annoying and error-prone.
 For this reason, Vue provides special enhancements when <code>v-bind</code> is used with <code>class</code> and <code>style</code>.
 In addition to strings, the expressions can also evaluate to objects or arrays.</p>
 <h2 id="binding-html-classes">Binding HTML Classes</h2>
-<h3 id="json-syntax">JSON Syntax</h3>
-<p>We can pass JSON to <code>v-bind:class</code> to dynamically toggle classes:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;{ active: isActive }&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<h3 id="map-syntax"><code>map</code> Syntax</h3>
+<p>Vue.js supports passing JS object literals in the template.
+As Vue GWT expressions must be Java, you can use the <a href="../js-interop/#map"><code>map</code> builder</a>.</p>
+<p>We can pass the result from <code>map</code> to <code>v-bind:class</code> to dynamically toggle classes:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;map(&quot;active&quot;, isActive)&apos;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <p>The above syntax means the presence of the <code>active</code> class will be determined by the <a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" target="_blank">truthiness</a> of the data property <code>isActive</code>.</p>
-<p>If your expression is not just a literal (it contains a space) you <strong>MUST</strong> put it between quotes.
-For example:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;{ active: &apos;count &gt; 5&apos; }&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<p>You can have multiple classes toggled by having more fields in the map.
+For this you must use <code>e</code> to surround each key/value entry.</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;map( e(&quot;active&quot;, isActive), e(&quot;text-danger&quot;, hasError) )&apos;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<p>This is a specificity from Vue GWT.
-It&apos;s because those expressions are parsed as very loose JSON.
-We are using the <a href="http://jodd.org/doc/json/json-parser.html" target="_blank">jodd JSON parser</a> in it&apos;s loose mode.
-It&apos;s pretty forgiving, but still won&apos;t accept values with spaces without quotes.</p>
-<p>You can have multiple classes toggled by having more fields in the object.
-In addition, the <code>v-bind:class</code> directive can also co-exist with the plain <code>class</code> attribute.
+<p>In addition, the <code>v-bind:class</code> directive can also co-exist with the plain <code>class</code> attribute.
 So given the following template:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;static&quot;</span>
-     <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;{ active: isActive, &apos;text-danger&apos;: hasError }&quot;</span>&gt;</span>
+     <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;map( e(&quot;active&quot;, isActive), e(&quot;text-danger&quot;, hasError) )&apos;</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <p>And the following data:</p>
@@ -826,16 +849,14 @@ So given the following template:</p>
 </code></pre>
 <p>When <code>isActive</code> or <code>hasError</code> changes, the class list will be updated accordingly.
 For example, if <code>hasError</code> becomes <code>true</code>, the class list will become <code>&quot;static active text-danger&quot;</code>.</p>
-<p>You can also pass a <code>JsObject</code> Object with keys/values:</p>
+<p>You can also pass a <a href="../js-interop/#js-object"><code>JsObject</code></a> Object with keys/values:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;classObject&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-keyword">this</span>.classObject = <span class="hljs-keyword">new</span> JsObject();
-<span class="hljs-keyword">this</span>.classObject.set(<span class="hljs-string">&quot;active&quot;</span>, <span class="hljs-keyword">true</span>);
-<span class="hljs-keyword">this</span>.classObject.set(<span class="hljs-string">&quot;text-danger&quot;</span>, <span class="hljs-keyword">true</span>);
+<pre><code class="lang-java"><span class="hljs-keyword">this</span>.classObject = JsObject.map( e(<span class="hljs-string">&quot;active&quot;</span>, <span class="hljs-keyword">true</span>), e(<span class="hljs-string">&quot;text-danger&quot;</span>, <span class="hljs-keyword">true</span>) );
 </code></pre>
 <p>A <code>JsObject</code> is a special Java class that will be represented as a native JS Object in the browser.
 You can see it as a Map (key/values).</p>
-<p>This will render the same result. We can also bind to a <a href="computed-and-watchers.html">computed property</a> that returns a JsObject.
+<p>This will render the same result. We can also bind to a <a href="computed-and-watchers.html">computed property</a> that returns a <code>JsObject</code>.
 This is a common and powerful pattern:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;classObject&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
@@ -846,16 +867,16 @@ This is a common and powerful pattern:</p>
 
     <span class="hljs-meta">@Computed</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> JsObject <span class="hljs-title">getClassObject</span><span class="hljs-params">()</span> </span>{
-        JsObject classObject = <span class="hljs-keyword">new</span> JsObject();
-        classObject.set(<span class="hljs-string">&quot;active&quot;</span>, <span class="hljs-keyword">this</span>.isActive &amp;&amp; <span class="hljs-keyword">this</span>.error == <span class="hljs-keyword">null</span>);
-        classObject.set(<span class="hljs-string">&quot;text-danger&quot;</span>, <span class="hljs-keyword">this</span>.error != <span class="hljs-keyword">null</span> &amp;&amp; <span class="hljs-keyword">this</span>.error.getType() == ErrorType.FATAL);
-        <span class="hljs-keyword">return</span> classObject;
+        <span class="hljs-keyword">return</span> JsObject.map(
+            e(<span class="hljs-string">&quot;active&quot;</span>, <span class="hljs-keyword">this</span>.isActive &amp;&amp; <span class="hljs-keyword">this</span>.error == <span class="hljs-keyword">null</span>),
+            e(<span class="hljs-string">&quot;text-danger&quot;</span>, <span class="hljs-keyword">this</span>.error != <span class="hljs-keyword">null</span> &amp;&amp; <span class="hljs-keyword">this</span>.error.getType() == ErrorType.FATAL)
+        );
     }
 }
 </code></pre>
 <h3 id="array-syntax">Array Syntax</h3>
 <p>We can pass an array to <code>v-bind:class</code> to apply a list of classes:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;[activeClass, errorClass]&quot;</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;array(activeClass, errorClass)&quot;</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-keyword">this</span>.activeClass = <span class="hljs-string">&quot;active&quot;</span>;
 <span class="hljs-keyword">this</span>.errorClass = <span class="hljs-string">&quot;text-danger&quot;</span>;
@@ -864,15 +885,12 @@ This is a common and powerful pattern:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;active text-danger&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <p>If you would like to also toggle a class in the list conditionally, you can do it with a ternary expression:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;[&quot;isActive ? activeClass : \&quot;\&quot;&quot;, errorClass]&apos;</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;array(isActive ? activeClass : &quot;&quot;, errorClass)&apos;</span>&gt;</span>
 </code></pre>
 <p>This will always apply <code>errorClass</code>, but will only apply <code>activeClass</code> when <code>isActive</code> is <code>true</code>.</p>
-<p>Notice that in this case we have to put the expression between quotes.
-This is for the same reason as with expression in JSON.
-We use <a href="http://jodd.org/doc/json/json-parser.html" target="_blank">jodd JSON parser</a> to parse Array expressions too.</p>
 <p>However, this can be a bit verbose if you have multiple conditional classes.
-That&apos;s why it&apos;s also possible to use the object syntax inside array syntax:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;[{ active: isActive }, errorClass]&quot;</span>&gt;</span>
+That&apos;s why it&apos;s also possible to use the <code>map</code> syntax inside <code>array</code> syntax:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;array(map(&quot;active&quot;, isActive), errorClass)&apos;</span>&gt;</span>
 </code></pre>
 <h3 id="gwt-styles">GWT Styles</h3>
 <p>You should also check how to use <a href="../gwt-integration/styles.html">GWT GSS Styles</a> in your app.</p>
@@ -889,15 +907,20 @@ Existing classes on this element will not be overwritten.</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;foo bar baz boo&quot;</span>&gt;</span>Hi<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
 </code></pre>
 <p>The same is true for class bindings:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">my-component</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;{ active: isActive }&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-component</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">my-component</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;map(&quot;active&quot;, isActive)&apos;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-component</span>&gt;</span>
 </code></pre>
 <p>When <code>isActive</code> is truthy, the rendered HTML will be:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;foo bar active&quot;</span>&gt;</span>Hi<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
 </code></pre>
 <h2 id="binding-inline-styles">Binding Inline Styles</h2>
 <h3 id="object-syntax">Object Syntax</h3>
-<p>The object syntax for <code>v-bind:style</code> is pretty straightforward - it looks almost like CSS, except it&apos;s a JavaScript object. You can use either camelCase or kebab-case (use quotes with kebab-case) for the CSS property names:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:style</span>=<span class="hljs-string">&apos;{color: activeColor, fontSize: &quot;fontSize + \&quot;px\&quot;&quot; }&apos;</span>&gt;</span>
+<p>Vue.js supports Object syntax for <code>v-bind:style</code>.
+As Vue GWT template expressions must be java, we don&apos;t support the JS object literal syntax.
+Instead, you can use the map() function.
+It will return a JS Object understandable by Vue.js.
+Beware, in Java, string literals must use double quotes (&quot;).</p>
+<p>For the CSS property names you can use either camelCase or kebab-case (use quotes with kebab-case):</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:style</span>=<span class="hljs-string">&apos;map(e(&quot;color&quot;, activeColor), e(&quot;fontSize&quot;, fontSize + &quot;px&quot;))&apos;</span>&gt;</span>
     Here is some red big text.
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
@@ -914,18 +937,17 @@ Existing classes on this element will not be overwritten.</p>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StylishComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
-    <span class="hljs-meta">@JsProperty</span> JsObject&lt;String&gt; styleObject = <span class="hljs-keyword">new</span> JsObject&lt;&gt;();
+    <span class="hljs-meta">@JsProperty</span> JsObject&lt;String&gt; styleObject;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">StylishComponent</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">this</span>.styleObject.set(<span class="hljs-string">&quot;color&quot;</span>, <span class="hljs-string">&quot;red&quot;</span>);
-        <span class="hljs-keyword">this</span>.styleObject.set(<span class="hljs-string">&quot;fontSize&quot;</span>, <span class="hljs-string">&quot;20px&quot;</span>);
+        <span class="hljs-keyword">this</span>.styleObject = map(e(<span class="hljs-string">&quot;color&quot;</span>, <span class="hljs-string">&quot;red&quot;</span>), e(<span class="hljs-string">&quot;fontSize&quot;</span>, <span class="hljs-string">&quot;20px&quot;</span>));
     }
 }
 </code></pre>
 <p>Again, the object syntax is often used in conjunction with computed properties that return objects.</p>
 <h3 id="array-syntax">Array Syntax</h3>
 <p>The array syntax for <code>v-bind:style</code> allows you to apply multiple style objects to the same element:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:style</span>=<span class="hljs-string">&quot;[baseStyles, overridingStyles]&quot;</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:style</span>=<span class="hljs-string">&quot;array(baseStyles, overridingStyles)&quot;</span>&gt;</span>
 </code></pre>
 <h3 id="auto-prefixing">Auto-prefixing</h3>
 <p>When you use a CSS property that requires <a href="https://developer.mozilla.org/en-US/docs/Glossary/Vendor_Prefix" target="_blank">vendor prefixes</a> in <code>v-bind:style</code>, for example <code>transform</code>, Vue will automatically detect and add appropriate prefixes to the applied styles.</p>
@@ -934,7 +956,7 @@ Existing classes on this element will not be overwritten.</p>
 <p>2.3.0+</p>
 </blockquote>
 <p>Starting in 2.3 you can provide an array of multiple (prefixed) values to a style property, for example:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:style</span>=<span class="hljs-string">&apos;{ display: [&quot;\&quot;-webkit-box\&quot;&quot;, &quot;\&quot;-ms-flexbox\&quot;&quot;, &quot;\&quot;flex\&quot;&quot;] }&apos;</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:style</span>=<span class="hljs-string">&apos;map(&quot;display&quot;, array(&quot;-webkit-box&quot;, &quot;-ms-flexbox&quot;, &quot;flex&quot;))&apos;</span>&gt;</span>
 </code></pre>
 <p>This will only render the last value in the array which the browser supports.
 In this example, it will render <code>display: flex</code> for browsers that support the unprefixed version of flexbox.</p>
@@ -983,7 +1005,7 @@ If you actually want to pass a String you have to add escaped quotes around your
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Class and Style Bindings","level":"2.4","depth":1,"next":{"title":"Conditional Rendering","level":"2.5","depth":1,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"previous":{"title":"Computed Properties and Watchers","level":"2.3","depth":1,"path":"essential/computed-and-watchers.md","ref":"essential/computed-and-watchers.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/class-and-style.md","mtime":"2017-08-15T18:02:58.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-15T19:13:18.015Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Class and Style Bindings","level":"2.4","depth":1,"next":{"title":"Conditional Rendering","level":"2.5","depth":1,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"previous":{"title":"Computed Properties and Watchers","level":"2.3","depth":1,"path":"essential/computed-and-watchers.md","ref":"essential/computed-and-watchers.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/class-and-style.md","mtime":"2017-08-16T11:37:38.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-16T11:40:09.544Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

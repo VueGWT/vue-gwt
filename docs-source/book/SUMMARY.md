@@ -30,7 +30,9 @@
 * [User Panels](gwt-integration/user-panels.md)
 * [JsInterop](js-interop/README.md)
     * [JsObject](js-interop/README.md#js-object)
+    * [map](js-interop/README.md#map)
     * [JsArray](js-interop/README.md#js-array)
+    * [array](js-interop/README.md#array)
     * [JsTools](js-interop/README.md#js-tools)
 
 ## Advanced Topics

@@ -462,6 +462,19 @@
     
         <li class="chapter " data-level="3.4.2" data-path="../js-interop/">
             
+                <a href="../js-interop/#map">
+            
+                    
+                    map
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4.3" data-path="../js-interop/">
+            
                 <a href="../js-interop/#js-array">
             
                     
@@ -473,7 +486,20 @@
             
         </li>
     
-        <li class="chapter " data-level="3.4.3" data-path="../js-interop/">
+        <li class="chapter " data-level="3.4.4" data-path="../js-interop/">
+            
+                <a href="../js-interop/#array">
+            
+                    
+                    array
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4.5" data-path="../js-interop/">
             
                 <a href="../js-interop/#js-tools">
             
@@ -838,8 +864,8 @@ We also add a <code>name</code> attribute to give our style a name in the templa
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <h2 id="adding-more-than-one-css-class">Adding More Than One CSS Class</h2>
-<p>You can add more than one CSS Class to your Components by using the Array syntax:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;[myStyle.red(), myStyle.bold()]&quot;</span>&gt;</span>
+<p>You can add more than one CSS Class to your Components by using the <a href="../js-interop/#array"><code>array</code> builder</a>:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;array(myStyle.red(), myStyle.bold())&quot;</span>&gt;</span>
     For the night is dark, full of terrors and bold.
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
@@ -857,16 +883,11 @@ First we add a boolean in our <code>MelisandreComponent</code>:</p>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <h2 id="conditional-styling-with-several-css-class">Conditional Styling With Several CSS Class</h2>
-<p>You can combine both the Array and the ternary syntax:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;[&quot;isRed ? myStyle.red() : \&quot;\&quot;&quot;, myStyle.bold()]&apos;</span>&gt;</span>
+<p>You can combine both the <code>array</code> and the ternary syntax:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;array(isRed ? myStyle.red() : &quot;&quot;, myStyle.bold())&apos;</span>&gt;</span>
     For the night is dark, full of terrors, might or not be red and always BOLD.
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<p>Notice that in this case we have to put the expression between quotes.
-This is for the same reason as with expression in JSON.
-We use <a href="http://jodd.org/doc/json/json-parser.html" target="_blank">jodd JSON parser</a> to parse Array expressions.
-It accepts literals without quotes, but sadly not expressions.
-If you make a mistake (forget the quotes), it will break at compile time with an explicit error.</p>
 <h2 id="here-is-our-finished-melisandrecomponent">Here is our finished <code>MelisandreComponent</code></h2>
 <div class="example-container" data-name="melisandreComponent">
     <span id="melisandreComponent"></span>
@@ -918,7 +939,7 @@ If you make a mistake (forget the quotes), it will break at compile time with an
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Styles","level":"3.1","depth":1,"next":{"title":"Client Bundles (Images)","level":"3.2","depth":1,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},"previous":{"title":"Dynamic Components","level":"2.9.5","depth":2,"anchor":"#dynamic-components","path":"essential/components.md","ref":"essential/components.md#dynamic-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/styles.md","mtime":"2017-08-15T17:41:24.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-15T19:13:18.015Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Styles","level":"3.1","depth":1,"next":{"title":"Client Bundles (Images)","level":"3.2","depth":1,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},"previous":{"title":"Dynamic Components","level":"2.9.5","depth":2,"anchor":"#dynamic-components","path":"essential/components.md","ref":"essential/components.md#dynamic-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/styles.md","mtime":"2017-08-16T11:19:51.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-16T11:40:09.544Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

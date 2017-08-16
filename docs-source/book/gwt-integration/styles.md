@@ -73,10 +73,10 @@ We can then simply use Vue `v-bind` directive to bind our style.
 
 ## Adding More Than One CSS Class
 
-You can add more than one CSS Class to your Components by using the Array syntax:
+You can add more than one CSS Class to your Components by using the [`array` builder](../js-interop/README.md#array):
 
 ```html
-<div v-bind:class="[myStyle.red(), myStyle.bold()]">
+<div v-bind:class="array(myStyle.red(), myStyle.bold())">
     For the night is dark, full of terrors and bold.
 </div>
 ```
@@ -103,19 +103,13 @@ Then we simply use a ternary expression (be careful with the quotes):
 
 ## Conditional Styling With Several CSS Class
 
-You can combine both the Array and the ternary syntax:
+You can combine both the `array` and the ternary syntax:
  
 ```html
-<div v-bind:class='["isRed ? myStyle.red() : \"\"", myStyle.bold()]'>
+<div v-bind:class='array(isRed ? myStyle.red() : "", myStyle.bold())'>
     For the night is dark, full of terrors, might or not be red and always BOLD.
 </div>
 ```
-
-Notice that in this case we have to put the expression between quotes.
-This is for the same reason as with expression in JSON.
-We use [jodd JSON parser](http://jodd.org/doc/json/json-parser.html) to parse Array expressions.
-It accepts literals without quotes, but sadly not expressions.
-If you make a mistake (forget the quotes), it will break at compile time with an explicit error.
 
 ## Here is our finished `MelisandreComponent`
 

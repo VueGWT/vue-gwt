@@ -44,6 +44,42 @@ Object myValue = myObject.get("myProperty");
 JsArray<String> myPropertyNames = JsObject.getOwnPropertyNames(myObject);
 ```
 
+### `map` static builder method {#map}
+
+It's possible to create a `JsObject` inline very easily using the static `map` method.
+
+```java
+// Equivalent to {key1: value1, key2: value2, key3: value3}
+JsObject myObject = JsObject.map( e("key1", value1), e("key2", value2), e("key3", value3))
+```
+
+You also nest the calls to get `JsObject` in `JsObject`:
+
+```java
+// Equivalent to {parentKey1: parentValue1, parentKey2: {childKey1: childValue1, childKey2: childValue2}}
+JsObject myObject = map(
+    e("parentKey1", parentValue1),
+    e("parentKey2", map( e("childKey1", childValue1), e("childKey2", childValue2) ))
+);
+```
+
+If you only one key/value pair in your `JsObject` you don't need to wrap it in `e()`:
+```java
+JsObject myObject = map("key", value);
+```
+
+You can use `map` in templates as it is statically imported for you:
+```html
+<a :class='map( e("red": hasError), e("blue": isOk) )'/>
+```
+
+You can also mix `map` with [`array`](#array):
+
+```java
+// Equivalent to {arrayValue: ["hello", "world"]}
+JsObject myObject = map("arrayValue", array("hello", "world"));
+```
+
 ## `JsArray<T>` {#js-array}
 
 Represent a JavaScript Native Array in the Java world.
@@ -65,11 +101,33 @@ When your program run this will be executed:
 var myArray = [];
 ```
 
-You can also create an Array inline:
+### `array` static builder method {#array}
+
+It's possible to create a `JsArray` inline very easily using the static `array` method.
+
 ```java
-JsArray<Integer> myArray = JsArray.of(1, 2, 3, 4, 5);
+// Equivalent to ["hello", "world"]
+JsArray<String> myArray = JsArray.array("hello", "world");
 ```
 
+You also nest the calls to get `JsArray` in `JsArray`:
+
+```java
+// Equivalent to ["parentValue1", ["childArrayValue1", "childArrayValue2]]
+JsArray myArray = array("parentValue1", array("childArrayValue1", "childArrayValue2"));
+```
+
+You can use `array` in templates as it is statically imported for you:
+```html
+<a :class='array(firstClass, secondClass)'/>
+```
+
+You can also mix `array` with [`map`](#map):
+
+```java
+// Equivalent to ["hello", {world: true}]
+JsArray myArray = array("hello", map("world", true));
+```
 
 ### What Can I Do with My JsArray?
 

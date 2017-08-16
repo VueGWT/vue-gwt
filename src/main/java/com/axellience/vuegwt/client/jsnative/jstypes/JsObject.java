@@ -13,9 +13,9 @@ import jsinterop.annotations.JsType;
 public class JsObject<T>
 {
     @JsOverlay
-    public static JsObject of(String key, Object value)
+    public static <T> JsObject<T> of(String key, T value)
     {
-        return new JsObject().set(key, value);
+        return new JsObject<T>().set(key, value);
     }
 
     @JsOverlay
@@ -27,6 +27,12 @@ public class JsObject<T>
             jsObject.set(entry.getKey(), entry.getValue());
 
         return jsObject;
+    }
+
+    @JsOverlay
+    public static <T> JsObject<T> map(String key, T value)
+    {
+        return of(key, value);
     }
 
     @JsOverlay

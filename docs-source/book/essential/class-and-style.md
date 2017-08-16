@@ -12,35 +12,32 @@ In addition to strings, the expressions can also evaluate to objects or arrays.
 
 ## Binding HTML Classes
 
-### JSON Syntax
+### `map` Syntax
 
-We can pass JSON to `v-bind:class` to dynamically toggle classes:
+Vue.js supports passing JS object literals in the template.
+As Vue GWT expressions must be Java, you can use the [`map` builder](../js-interop/README.md#map).
+
+We can pass the result from `map` to `v-bind:class` to dynamically toggle classes:
 
 ```html
-<div v-bind:class="{ active: isActive }"></div>
+<div v-bind:class='map("active", isActive)'></div>
 ```
 
 The above syntax means the presence of the `active` class will be determined by the [truthiness](https://developer.mozilla.org/en-US/docs/Glossary/Truthy) of the data property `isActive`.
 
-If your expression is not just a literal (it contains a space) you **MUST** put it between quotes.
-For example:
+You can have multiple classes toggled by having more fields in the map.
+For this you must use `e` to surround each key/value entry.
 
 ```html
-<div v-bind:class="{ active: 'count > 5' }"></div>
+<div v-bind:class='map( e("active", isActive), e("text-danger", hasError) )'></div>
 ```
 
-This is a specificity from Vue GWT.
-It's because those expressions are parsed as very loose JSON.
-We are using the [jodd JSON parser](http://jodd.org/doc/json/json-parser.html) in it's loose mode.
-It's pretty forgiving, but still won't accept values with spaces without quotes.
-
-You can have multiple classes toggled by having more fields in the object.
 In addition, the `v-bind:class` directive can also co-exist with the plain `class` attribute.
 So given the following template:
 
 ```html
 <div class="static"
-     v-bind:class="{ active: isActive, 'text-danger': hasError }">
+     v-bind:class='map( e("active", isActive), e("text-danger", hasError) )'>
 </div>
 ```
 
@@ -60,22 +57,20 @@ It will render:
 When `isActive` or `hasError` changes, the class list will be updated accordingly.
 For example, if `hasError` becomes `true`, the class list will become `"static active text-danger"`.
 
-You can also pass a `JsObject` Object with keys/values:
+You can also pass a [`JsObject`](../js-interop/README.md#js-object) Object with keys/values:
 
 ```html
 <div v-bind:class="classObject"></div>
 ```
 
 ```java
-this.classObject = new JsObject();
-this.classObject.set("active", true);
-this.classObject.set("text-danger", true);
+this.classObject = JsObject.map( e("active", true), e("text-danger", true) );
 ```
 
 A `JsObject` is a special Java class that will be represented as a native JS Object in the browser.
 You can see it as a Map (key/values).
 
-This will render the same result. We can also bind to a [computed property](computed-and-watchers.md) that returns a JsObject.
+This will render the same result. We can also bind to a [computed property](computed-and-watchers.md) that returns a `JsObject`.
 This is a common and powerful pattern:
 
 ```html
@@ -89,10 +84,10 @@ public class StylishComponent extends VueComponent {
 
     @Computed
     public JsObject getClassObject() {
-        JsObject classObject = new JsObject();
-        classObject.set("active", this.isActive && this.error == null);
-        classObject.set("text-danger", this.error != null && this.error.getType() == ErrorType.FATAL);
-        return classObject;
+        return JsObject.map(
+            e("active", this.isActive && this.error == null),
+            e("text-danger", this.error != null && this.error.getType() == ErrorType.FATAL)
+        );
     }
 }
 ```
@@ -102,7 +97,7 @@ public class StylishComponent extends VueComponent {
 We can pass an array to `v-bind:class` to apply a list of classes:
 
 ```html
-<div v-bind:class="[activeClass, errorClass]">
+<div v-bind:class="array(activeClass, errorClass)">
 ```
 ```java
 this.activeClass = "active";
@@ -118,20 +113,16 @@ Which will render:
 If you would like to also toggle a class in the list conditionally, you can do it with a ternary expression:
 
 ```html
-<div v-bind:class='["isActive ? activeClass : \"\"", errorClass]'>
+<div v-bind:class='array(isActive ? activeClass : "", errorClass)'>
 ```
 
 This will always apply `errorClass`, but will only apply `activeClass` when `isActive` is `true`.
 
-Notice that in this case we have to put the expression between quotes.
-This is for the same reason as with expression in JSON.
-We use [jodd JSON parser](http://jodd.org/doc/json/json-parser.html) to parse Array expressions too.
-
 However, this can be a bit verbose if you have multiple conditional classes.
-That's why it's also possible to use the object syntax inside array syntax:
+That's why it's also possible to use the `map` syntax inside `array` syntax:
 
 ```html
-<div v-bind:class="[{ active: isActive }, errorClass]">
+<div v-bind:class='array(map("active", isActive), errorClass)'>
 ```
 
 ### GWT Styles
@@ -164,7 +155,7 @@ The rendered HTML will be:
 The same is true for class bindings:
 
 ```html
-<my-component v-bind:class="{ active: isActive }"></my-component>
+<my-component v-bind:class='map("active", isActive)'></my-component>
 ```
 
 When `isActive` is truthy, the rendered HTML will be:
@@ -177,10 +168,16 @@ When `isActive` is truthy, the rendered HTML will be:
 
 ### Object Syntax
 
-The object syntax for `v-bind:style` is pretty straightforward - it looks almost like CSS, except it's a JavaScript object. You can use either camelCase or kebab-case (use quotes with kebab-case) for the CSS property names:
+Vue.js supports Object syntax for `v-bind:style`.
+As Vue GWT template expressions must be java, we don't support the JS object literal syntax.
+Instead, you can use the map() function.
+It will return a JS Object understandable by Vue.js.
+Beware, in Java, string literals must use double quotes (").
+
+For the CSS property names you can use either camelCase or kebab-case (use quotes with kebab-case):
 
 ```html
-<div v-bind:style='{color: activeColor, fontSize: "fontSize + \"px\"" }'>
+<div v-bind:style='map(e("color", activeColor), e("fontSize", fontSize + "px"))'>
     Here is some red big text.
 </div>
 ```
@@ -203,11 +200,10 @@ It is often a good idea to bind to a style object directly so that the template 
 ```java
 @Component
 public class StylishComponent extends VueComponent {
-    @JsProperty JsObject<String> styleObject = new JsObject<>();
+    @JsProperty JsObject<String> styleObject;
 
     public StylishComponent() {
-        this.styleObject.set("color", "red");
-        this.styleObject.set("fontSize", "20px");
+        this.styleObject = map(e("color", "red"), e("fontSize", "20px"));
     }
 }
 ```
@@ -219,7 +215,7 @@ Again, the object syntax is often used in conjunction with computed properties t
 The array syntax for `v-bind:style` allows you to apply multiple style objects to the same element:
 
 ```html
-<div v-bind:style="[baseStyles, overridingStyles]">
+<div v-bind:style="array(baseStyles, overridingStyles)">
 ```
 
 ### Auto-prefixing
@@ -233,7 +229,7 @@ When you use a CSS property that requires [vendor prefixes](https://developer.mo
 Starting in 2.3 you can provide an array of multiple (prefixed) values to a style property, for example:
 
 ```html
-<div v-bind:style='{ display: ["\"-webkit-box\"", "\"-ms-flexbox\"", "\"flex\""] }'>
+<div v-bind:style='map("display", array("-webkit-box", "-ms-flexbox", "flex"))'>
 ```
 
 This will only render the last value in the array which the browser supports.

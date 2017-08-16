@@ -462,6 +462,19 @@
     
         <li class="chapter " data-level="3.4.2" data-path="./">
             
+                <a href="./#map">
+            
+                    
+                    map
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4.3" data-path="./">
+            
                 <a href="./#js-array">
             
                     
@@ -473,7 +486,20 @@
             
         </li>
     
-        <li class="chapter " data-level="3.4.3" data-path="./">
+        <li class="chapter " data-level="3.4.4" data-path="./">
+            
+                <a href="./#array">
+            
+                    
+                    array
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4.5" data-path="./">
             
                 <a href="./#js-tools">
             
@@ -771,6 +797,28 @@ Otherwise it won&apos;t be possible to pass for example <code>JsObject&lt;Todo&g
 <h3 id="getting-the-list-of-properties-keys">Getting the list of Properties (keys)</h3>
 <pre><code class="lang-java">JsArray&lt;String&gt; myPropertyNames = JsObject.getOwnPropertyNames(myObject);
 </code></pre>
+<h3 id="map"><code>map</code> static builder method </h3>
+<p>It&apos;s possible to create a <code>JsObject</code> inline very easily using the static <code>map</code> method.</p>
+<pre><code class="lang-java"><span class="hljs-comment">// Equivalent to {key1: value1, key2: value2, key3: value3}</span>
+JsObject myObject = JsObject.map( e(<span class="hljs-string">&quot;key1&quot;</span>, value1), e(<span class="hljs-string">&quot;key2&quot;</span>, value2), e(<span class="hljs-string">&quot;key3&quot;</span>, value3))
+</code></pre>
+<p>You also nest the calls to get <code>JsObject</code> in <code>JsObject</code>:</p>
+<pre><code class="lang-java"><span class="hljs-comment">// Equivalent to {parentKey1: parentValue1, parentKey2: {childKey1: childValue1, childKey2: childValue2}}</span>
+JsObject myObject = map(
+    e(<span class="hljs-string">&quot;parentKey1&quot;</span>, parentValue1),
+    e(<span class="hljs-string">&quot;parentKey2&quot;</span>, map( e(<span class="hljs-string">&quot;childKey1&quot;</span>, childValue1), e(<span class="hljs-string">&quot;childKey2&quot;</span>, childValue2) ))
+);
+</code></pre>
+<p>If you only one key/value pair in your <code>JsObject</code> you don&apos;t need to wrap it in <code>e()</code>:</p>
+<pre><code class="lang-java">JsObject myObject = map(<span class="hljs-string">&quot;key&quot;</span>, value);
+</code></pre>
+<p>You can use <code>map</code> in templates as it is statically imported for you:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">:class</span>=<span class="hljs-string">&apos;map( e(&quot;red&quot;: hasError), e(&quot;blue&quot;: isOk) )&apos;</span>/&gt;</span>
+</code></pre>
+<p>You can also mix <code>map</code> with <a href="#array"><code>array</code></a>:</p>
+<pre><code class="lang-java"><span class="hljs-comment">// Equivalent to {arrayValue: [&quot;hello&quot;, &quot;world&quot;]}</span>
+JsObject myObject = map(<span class="hljs-string">&quot;arrayValue&quot;</span>, array(<span class="hljs-string">&quot;hello&quot;</span>, <span class="hljs-string">&quot;world&quot;</span>));
+</code></pre>
 <h2 id="js-array"><code>JsArray&lt;T&gt;</code> </h2>
 <p>Represent a JavaScript Native Array in the Java world.</p>
 <p>Because we are in the Java world, it is parametrized and can only contain elements of the given type.</p>
@@ -783,8 +831,21 @@ Just keep that in mind if you get an instance of <code>JsArray</code> from an ex
 <p>When your program run this will be executed:</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> myArray = [];
 </code></pre>
-<p>You can also create an Array inline:</p>
-<pre><code class="lang-java">JsArray&lt;Integer&gt; myArray = JsArray.of(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>);
+<h3 id="array"><code>array</code> static builder method </h3>
+<p>It&apos;s possible to create a <code>JsArray</code> inline very easily using the static <code>array</code> method.</p>
+<pre><code class="lang-java"><span class="hljs-comment">// Equivalent to [&quot;hello&quot;, &quot;world&quot;]</span>
+JsArray&lt;String&gt; myArray = JsArray.array(<span class="hljs-string">&quot;hello&quot;</span>, <span class="hljs-string">&quot;world&quot;</span>);
+</code></pre>
+<p>You also nest the calls to get <code>JsArray</code> in <code>JsArray</code>:</p>
+<pre><code class="lang-java"><span class="hljs-comment">// Equivalent to [&quot;parentValue1&quot;, [&quot;childArrayValue1&quot;, &quot;childArrayValue2]]</span>
+JsArray myArray = array(<span class="hljs-string">&quot;parentValue1&quot;</span>, array(<span class="hljs-string">&quot;childArrayValue1&quot;</span>, <span class="hljs-string">&quot;childArrayValue2&quot;</span>));
+</code></pre>
+<p>You can use <code>array</code> in templates as it is statically imported for you:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">:class</span>=<span class="hljs-string">&apos;array(firstClass, secondClass)&apos;</span>/&gt;</span>
+</code></pre>
+<p>You can also mix <code>array</code> with <a href="#map"><code>map</code></a>:</p>
+<pre><code class="lang-java"><span class="hljs-comment">// Equivalent to [&quot;hello&quot;, {world: true}]</span>
+JsArray myArray = array(<span class="hljs-string">&quot;hello&quot;</span>, map(<span class="hljs-string">&quot;world&quot;</span>, <span class="hljs-keyword">true</span>));
 </code></pre>
 <h3 id="what-can-i-do-with-my-jsarray">What Can I Do with My JsArray?</h3>
 <h4 id="accessingchanging">Accessing/Changing</h4>
@@ -917,7 +978,7 @@ But it can come handy when debugging.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"JsInterop","level":"3.4","depth":1,"next":{"title":"JsObject","level":"3.4.1","depth":2,"anchor":"#js-object","path":"js-interop/README.md","ref":"js-interop/README.md#js-object","articles":[]},"previous":{"title":"User Panels","level":"3.3","depth":1,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"js-interop/README.md","mtime":"2017-07-18T09:32:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-15T19:13:18.015Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"JsInterop","level":"3.4","depth":1,"next":{"title":"JsObject","level":"3.4.1","depth":2,"anchor":"#js-object","path":"js-interop/README.md","ref":"js-interop/README.md#js-object","articles":[]},"previous":{"title":"User Panels","level":"3.3","depth":1,"path":"gwt-integration/user-panels.md","ref":"gwt-integration/user-panels.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"js-interop/README.md","mtime":"2017-08-16T11:30:29.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-16T11:40:09.544Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
