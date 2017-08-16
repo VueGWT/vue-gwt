@@ -30,23 +30,8 @@ public abstract class Vue extends JsObject
     /**
      * Create a {@link Vue} instance and mount it on a DOM element.
      * @param element CSS selector for the element to attach in
-     * @param vueFactory The factory of the Component to create
-     * @param <T> {@link Vue} we want to attach
-     * @return The created and attached instance of our Component
-     */
-    @JsOverlay
-    public static <T extends VueComponent> T attach(String element, VueFactory<T> vueFactory)
-    {
-        T vueInstance = vueFactory.create();
-        vueInstance.$mount(element);
-        return vueInstance;
-    }
-
-    /**
-     * Create a {@link Vue} instance and mount it on a DOM element.
-     * @param element CSS selector for the element to attach in
      * @param vueComponentClass The Class of the Component to create
-     * @param <T> {@link Vue} we want to attach
+     * @param <T> {@link VueComponent} we want to attach
      * @return The created and attached instance of our Component
      */
     @JsOverlay
@@ -59,9 +44,39 @@ public abstract class Vue extends JsObject
 
     /**
      * Create a {@link Vue} instance and mount it on a DOM element.
+     * @param element CSS selector for the element to attach in
+     * @param vueFactory The factory of the Component to create
+     * @param <T> {@link VueComponent} we want to attach
+     * @return The created and attached instance of our Component
+     */
+    @JsOverlay
+    public static <T extends VueComponent> T attach(String element, VueFactory<T> vueFactory)
+    {
+        T vueInstance = vueFactory.create();
+        vueInstance.$mount(element);
+        return vueInstance;
+    }
+
+    /**
+     * Create a {@link Vue} instance and mount it on a DOM element.
+     * @param element DOM Element we want to attach our component in
+     * @param vueComponentClass The Class of the Component to create
+     * @param <T> {@link VueComponent} we want to attach
+     * @return The created and attached instance of our Component
+     */
+    @JsOverlay
+    public static <T extends VueComponent> T attach(Element element, Class<T> vueComponentClass)
+    {
+        T vueInstance = createInstance(vueComponentClass);
+        vueInstance.$mount(element);
+        return vueInstance;
+    }
+
+    /**
+     * Create a {@link Vue} instance and mount it on a DOM element.
      * @param element DOM Element we want to attach our component in
      * @param vueFactory The factory of the Component to create
-     * @param <T> {@link Vue} we want to attach
+     * @param <T> {@link VueComponent} we want to attach
      * @return The created and attached instance of our Component
      */
     @JsOverlay
@@ -73,18 +88,27 @@ public abstract class Vue extends JsObject
     }
 
     /**
-     * Create a {@link Vue} instance and mount it on a DOM element.
-     * @param element DOM Element we want to attach our component in
-     * @param vueComponentClass The Class of the Component to create
-     * @param <T> {@link Vue} we want to attach
-     * @return The created and attached instance of our Component
+     * Register a {@link VueComponent} globally
+     * @param id Id for our component in the templates
+     * @param vueComponentClass The Class of the {@link VueComponent} to create
+     * @param <T> {@link VueComponent} we want to attach
      */
     @JsOverlay
-    public static <T extends VueComponent> T attach(Element element, Class<T> vueComponentClass)
+    public static <T extends VueComponent> void component(String id, Class<T> vueComponentClass)
     {
-        T vueInstance = createInstance(vueComponentClass);
-        vueInstance.$mount(element);
-        return vueInstance;
+        component(id, VueGWT.getFactory(vueComponentClass));
+    }
+
+    /**
+     * Register a {@link VueComponent} globally
+     * @param id Id for our component in the templates
+     * @param vueFactory The factory of the Component to create
+     * @param <T> {@link VueComponent} we want to attach
+     */
+    @JsOverlay
+    public static <T extends VueComponent> void component(String id, VueFactory<T> vueFactory)
+    {
+        component(id, vueFactory.getJsConstructor());
     }
 
     @JsOverlay
@@ -108,12 +132,6 @@ public abstract class Vue extends JsObject
             componentOptions.getComponentJavaPrototype());
 
         return extendedVueJsConstructor;
-    }
-
-    @JsOverlay
-    public static <T extends VueComponent> void component(String id, VueFactory<T> vueFactory)
-    {
-        component(id, vueFactory.getJsConstructor());
     }
 
     // @formatter:off
