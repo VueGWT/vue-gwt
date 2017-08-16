@@ -16,8 +16,6 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import jodd.json.JsonParser;
-import jodd.json.JsonSerializer;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -47,9 +45,6 @@ public class TemplateParser
     private static Pattern VUE_ATTR_PATTERN = Pattern.compile("^(v-|:|@).*");
     private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
-    private final JsonParser jsonParser;
-    private final JsonSerializer jsonSerializer;
-
     private TemplateParserContext context;
     private TemplateParserResult result;
 
@@ -57,11 +52,6 @@ public class TemplateParser
 
     public TemplateParser()
     {
-        this.jsonParser = new JsonParser();
-        this.jsonParser.looseMode(true);
-
-        this.jsonSerializer = new JsonSerializer();
-        this.jsonSerializer.deep(true);
     }
 
     /**
