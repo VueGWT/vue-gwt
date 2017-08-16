@@ -376,8 +376,8 @@ public class TemplateParser
                 parseException);
         }
 
-        // First, resolve all the casts
         resolveCastsUsingImports(expression);
+        resolveStaticMethodsUsingImports(expression);
 
         // Find the parameters used by the expression
         List<VariableInfo> expressionParameters = new LinkedList<>();
@@ -451,7 +451,7 @@ public class TemplateParser
                 {
                     useMethod = true;
                 }
-                else
+                else if (!context.hasStaticMethod(methodName))
                 {
                     throw new TemplateExpressionException("Couldn't find the method \""
                         + methodName
@@ -473,6 +473,31 @@ public class TemplateParser
         }
 
         return useMethod;
+    }
+
+    /**
+     * Resolve static method calls using static imports
+     * @param expression The expression to resolve
+     */
+    private void resolveStaticMethodsUsingImports(Expression expression)
+    {
+        if (expression instanceof MethodCallExpr)
+        {
+            MethodCallExpr methodCall = ((MethodCallExpr) expression);
+            String methodName = methodCall.getName().getIdentifier();
+            if (!methodCall.getScope().isPresent() && context.hasStaticMethod(methodName))
+            {
+                methodCall.setName(context.getFullyQualifiedNameForMethodName(methodName));
+            }
+        }
+
+        // Recurse downward in the expression
+        expression
+            .getChildNodes()
+            .stream()
+            .filter(Expression.class::isInstance)
+            .map(Expression.class::cast)
+            .forEach(this::resolveStaticMethodsUsingImports);
     }
 
     /**

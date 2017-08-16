@@ -3,6 +3,7 @@ package com.axellience.vuegwt.template.parser.context;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
+import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil;
 import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.variable.VariableInfo;
@@ -28,7 +29,10 @@ public class TemplateParserContext
     private final ContextLayer rootContext;
     private final Deque<ContextLayer> contextLayers = new ArrayDeque<>();
 
+    // For import
     private Map<String, String> classNameToFullyQualifiedName = new HashMap<>();
+    // For static imports
+    private Map<String, String> methodNameToFullyQualifiedName = new HashMap<>();
 
     private Node currentNode;
 
@@ -43,6 +47,9 @@ public class TemplateParserContext
 
         this.addImport(NativeEvent.class.getCanonicalName());
         this.addImport(JsArray.class.getCanonicalName());
+        this.addStaticImport(JsObject.class.getCanonicalName() + ".map");
+        this.addStaticImport(JsObject.class.getCanonicalName() + ".e");
+        this.addStaticImport(JsArray.class.getCanonicalName() + ".array");
 
         this.rootContext = new ContextLayer();
         this.rootContext.addVariable(String.class, "_uid");
@@ -180,6 +187,43 @@ public class TemplateParserContext
     public boolean hasImport(String className)
     {
         return classNameToFullyQualifiedName.containsKey(className);
+    }
+
+    /**
+     * Add a Java Static Import to the context.
+     * @param fullyQualifiedName The fully qualified name of the method to import
+     */
+    public void addStaticImport(String fullyQualifiedName)
+    {
+        String[] importSplit = fullyQualifiedName.split("\\.");
+        String methodName = importSplit[importSplit.length - 1];
+
+        methodNameToFullyQualifiedName.put(methodName, fullyQualifiedName);
+    }
+
+    /**
+     * Return the fully qualified name for a given method. Only works if the method has been
+     * statically imported.
+     * @param methodName The name of the method to get the fully qualified name of
+     * @return The fully qualified name, or the method name if it's unknown
+     */
+    public String getFullyQualifiedNameForMethodName(String methodName)
+    {
+        if (!methodNameToFullyQualifiedName.containsKey(methodName))
+            return methodName;
+
+        return methodNameToFullyQualifiedName.get(methodName);
+    }
+
+    /**
+     * Return true if we have a static import for the given methodName
+     * @param methodName The methodName we want to check
+     * @return True if we have an import, false otherwise
+     */
+    public boolean hasStaticMethod(String methodName)
+    {
+        return methodNameToFullyQualifiedName.containsKey(methodName)
+            || methodNameToFullyQualifiedName.containsValue(methodName);
     }
 
     /**
