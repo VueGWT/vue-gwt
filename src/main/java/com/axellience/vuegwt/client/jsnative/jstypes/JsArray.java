@@ -31,7 +31,7 @@ public class JsArray<T>
 
     @JsOverlay
     @SafeVarargs
-    public static <T> JsArray<T> of(T... array)
+    public static <T> JsArray<T> array(T... array)
     {
         JsArray<T> result = new JsArray<>();
         for (T item : array)

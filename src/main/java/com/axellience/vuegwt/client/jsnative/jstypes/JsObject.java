@@ -19,6 +19,23 @@ public class JsObject<T>
     }
 
     @JsOverlay
+    @SafeVarargs
+    public static <T> JsObject<T> map(JsObjectEntry<T>... entries)
+    {
+        JsObject<T> jsObject = new JsObject<>();
+        for (JsObjectEntry<T> entry : entries)
+            jsObject.set(entry.getKey(), entry.getValue());
+
+        return jsObject;
+    }
+
+    @JsOverlay
+    public static <T> JsObjectEntry<T> e(String key, T value)
+    {
+        return new JsObjectEntry<>(key, value);
+    }
+
+    @JsOverlay
     public final T get(String propertyName)
     {
         @SuppressWarnings("unchecked") T result = (T) JsTools.getObjectProperty(this, propertyName);
@@ -82,7 +99,30 @@ public class JsObject<T>
     }
 
     public native boolean hasOwnProperty(String propertyName);
+
     public static native JsObject getPrototypeOf(Object object);
 
     public static native JsArray<String> getOwnPropertyNames(Object object);
+
+    public static class JsObjectEntry<T>
+    {
+        private String key;
+        private T value;
+
+        JsObjectEntry(String key, T value)
+        {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String getKey()
+        {
+            return key;
+        }
+
+        public T getValue()
+        {
+            return value;
+        }
+    }
 }
