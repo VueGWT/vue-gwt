@@ -16,7 +16,6 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import jodd.json.JsonException;
 import jodd.json.JsonParser;
 import jodd.json.JsonSerializer;
 import org.jsoup.nodes.Attribute;
@@ -27,15 +26,12 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.ParseSettings;
 import org.jsoup.parser.Parser;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -184,7 +180,7 @@ public class TemplateParser
 
             currentExpressionReturnType = "String";
             String expressionString = elementText.substring(start + 2, end - 2).trim();
-            String processedExpression = processExpression(expressionString);
+            String processedExpression = processJavaExpression(expressionString).toTemplateString();
             newText.append("{{ ").append(processedExpression).append(" }}");
             lastEnd = end;
         }
@@ -213,7 +209,7 @@ public class TemplateParser
                 continue;
 
             currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
-            attribute.setValue(processExpression(attribute.getValue()));
+            attribute.setValue(processJavaExpression(attribute.getValue()).toTemplateString());
         }
     }
 
@@ -234,97 +230,7 @@ public class TemplateParser
         if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
             return "boolean";
 
-        if ((":class".equals(attributeName) || "v-bind:class".equals(attributeName))
-            && isJSONObject(attribute.getValue()))
-            return "boolean";
-
-        if ((":style".equals(attributeName) || "v-bind:style".equals(attributeName))
-            && isJSONObject(attribute.getValue()))
-            return "String";
-
         return "Object";
-    }
-
-    /**
-     * Process a template expression.
-     * The expression can either be a JSON object, a JSON array or a Java expression.
-     * @param expressionString The expression as it is in the HTML template
-     * @return A processed expression, should be placed in the HTML in place of the original
-     * expression
-     */
-    private String processExpression(String expressionString)
-    {
-        if ("".equals(expressionString))
-            return "";
-
-        if (isJSONArray(expressionString) || isJSONObject(expressionString))
-        {
-            try
-            {
-                // Try to parse the expression as JSON Object or Array
-                Object mapOrList = jsonParser.parse(expressionString);
-                return processMapOrList(mapOrList);
-            }
-            catch (JsonException e)
-            {
-                throw new TemplateExpressionException("Error while parsing JSON expression",
-                    expressionString,
-                    context,
-                    e);
-            }
-        }
-
-        return processJavaExpression(expressionString).toTemplateString();
-    }
-
-    /**
-     * JSON object is parsed either as a map (for {}) or an List (for []).
-     * @param mapOrList The map or list to process
-     * @return A processed expression, should be placed in place of the original one
-     */
-    private String processMapOrList(Object mapOrList)
-    {
-        if (mapOrList instanceof List)
-        {
-            return processArrayExpression((List) mapOrList);
-        }
-        else if (mapOrList instanceof Map)
-        {
-            return processMapExpression((Map<String, Object>) mapOrList);
-        }
-
-        return processJavaExpression(mapOrList.toString()).toTemplateString();
-    }
-
-    /**
-     * Process an array expression.
-     * @param listOfExpression The list of expressions to process.
-     * @return A processed JSON array, should be placed in place of the original one
-     */
-    private String processArrayExpression(List<Object> listOfExpression)
-    {
-        listOfExpression = listOfExpression
-            .stream()
-            .map(exp -> markValue(this.processMapOrList(exp)))
-            .collect(Collectors.toList());
-
-        return unquoteMarkedValues(jsonSerializer.serialize(listOfExpression));
-    }
-
-    /**
-     * Process all the keys in a given JSON object.
-     * @param map the JSON object to process
-     * @return A processed JSON object, should be placed in place of the original one
-     */
-    private String processMapExpression(Map<String, Object> map)
-    {
-        Map<String, String> resultMap = new HashMap<>();
-        for (String key : map.keySet())
-        {
-            resultMap.put(key, markValue(processMapOrList(map.get(key))));
-        }
-
-        return unquoteMarkedValues(jsonSerializer.serialize(resultMap));
     }
 
     /**
@@ -404,6 +310,54 @@ public class TemplateParser
     }
 
     /**
+     * Resolve all the Cast in the expression.
+     * This will replace the Class with the full qualified name using the template imports.
+     * @param expression A Java expression from the Template
+     */
+    private void resolveCastsUsingImports(Expression expression)
+    {
+        // Resolve Cast types based on imports
+        if (expression instanceof CastExpr)
+        {
+            CastExpr castExpr = ((CastExpr) expression);
+            castExpr.setType(getCastType(castExpr));
+        }
+
+        // Recurse downward in the expression
+        expression
+            .getChildNodes()
+            .stream()
+            .filter(Expression.class::isInstance)
+            .map(Expression.class::cast)
+            .forEach(this::resolveCastsUsingImports);
+    }
+
+    /**
+     * Resolve static method calls using static imports
+     * @param expression The expression to resolve
+     */
+    private void resolveStaticMethodsUsingImports(Expression expression)
+    {
+        if (expression instanceof MethodCallExpr)
+        {
+            MethodCallExpr methodCall = ((MethodCallExpr) expression);
+            String methodName = methodCall.getName().getIdentifier();
+            if (!methodCall.getScope().isPresent() && context.hasStaticMethod(methodName))
+            {
+                methodCall.setName(context.getFullyQualifiedNameForMethodName(methodName));
+            }
+        }
+
+        // Recurse downward in the expression
+        expression
+            .getChildNodes()
+            .stream()
+            .filter(Expression.class::isInstance)
+            .map(Expression.class::cast)
+            .forEach(this::resolveStaticMethodsUsingImports);
+    }
+
+    /**
      * Return the kind of our expression. Depending on how it used, and what the expression needs
      * we can either declare it as a Vue.js Computed property (with cache), or a Vue.js method
      * (without cache).
@@ -473,54 +427,6 @@ public class TemplateParser
         }
 
         return useMethod;
-    }
-
-    /**
-     * Resolve static method calls using static imports
-     * @param expression The expression to resolve
-     */
-    private void resolveStaticMethodsUsingImports(Expression expression)
-    {
-        if (expression instanceof MethodCallExpr)
-        {
-            MethodCallExpr methodCall = ((MethodCallExpr) expression);
-            String methodName = methodCall.getName().getIdentifier();
-            if (!methodCall.getScope().isPresent() && context.hasStaticMethod(methodName))
-            {
-                methodCall.setName(context.getFullyQualifiedNameForMethodName(methodName));
-            }
-        }
-
-        // Recurse downward in the expression
-        expression
-            .getChildNodes()
-            .stream()
-            .filter(Expression.class::isInstance)
-            .map(Expression.class::cast)
-            .forEach(this::resolveStaticMethodsUsingImports);
-    }
-
-    /**
-     * Resolve all the Cast in the expression.
-     * This will replace the Class with the full qualified name using the template imports.
-     * @param expression A Java expression from the Template
-     */
-    private void resolveCastsUsingImports(Expression expression)
-    {
-        // Resolve Cast types based on imports
-        if (expression instanceof CastExpr)
-        {
-            CastExpr castExpr = ((CastExpr) expression);
-            castExpr.setType(getCastType(castExpr));
-        }
-
-        // Recurse downward in the expression
-        expression
-            .getChildNodes()
-            .stream()
-            .filter(Expression.class::isInstance)
-            .map(Expression.class::cast)
-            .forEach(this::resolveCastsUsingImports);
     }
 
     /**
@@ -610,27 +516,5 @@ public class TemplateParser
     private String getCastType(CastExpr castExpr)
     {
         return context.getFullyQualifiedNameForClassName(castExpr.getType().toString());
-    }
-
-    private String markValue(String value)
-    {
-        return "<<$VUE_GWT_VALUE " + value + " $VUE_GWT_VALUE>>";
-    }
-
-    private String unquoteMarkedValues(String expression)
-    {
-        return expression
-            .replaceAll("\"<<\\$VUE_GWT_VALUE ", "")
-            .replaceAll(" \\$VUE_GWT_VALUE>>\"", "");
-    }
-
-    private boolean isJSONObject(String value)
-    {
-        return value.trim().startsWith("{");
-    }
-
-    private boolean isJSONArray(String value)
-    {
-        return value.trim().startsWith("[");
     }
 }
