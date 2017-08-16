@@ -170,7 +170,7 @@ public class TemplateParser
 
             currentExpressionReturnType = "String";
             String expressionString = elementText.substring(start + 2, end - 2).trim();
-            String processedExpression = processJavaExpression(expressionString).toTemplateString();
+            String processedExpression = processExpression(expressionString);
             newText.append("{{ ").append(processedExpression).append(" }}");
             lastEnd = end;
         }
@@ -199,7 +199,7 @@ public class TemplateParser
                 continue;
 
             currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
-            attribute.setValue(processJavaExpression(attribute.getValue()).toTemplateString());
+            attribute.setValue(processExpression(attribute.getValue()));
         }
     }
 
@@ -242,12 +242,37 @@ public class TemplateParser
         // Process in expression if it's java
         if (vForDef.isInExpressionJava())
         {
-            TemplateExpression templateExpression = this.processJavaExpression(inExpression);
-            inExpression = templateExpression.toTemplateString();
+            inExpression = this.processExpression(inExpression);
         }
 
         // And return the newly built definition
         return vForDef.getVariableDefinition() + " in " + inExpression;
+    }
+
+    /**
+     * Process a given template expression
+     * @param expressionString Should be either empty or a valid Java expression
+     * @return The processed expression
+     */
+    private String processExpression(String expressionString)
+    {
+        String trimmedExpression = expressionString.trim();
+        if (trimmedExpression.isEmpty())
+            return "";
+
+        if (trimmedExpression.startsWith("{"))
+            throw new TemplateExpressionException(
+                "Object literal syntax are not supported yet in Vue GWT, please use map(e(\"key1\", myValue), e(\"key2\", myValue2 > 5)...) instead.\nThe object returned by map() is a regular Javascript Object (JsObject) with the given key/values.",
+                expressionString,
+                context);
+
+        if (trimmedExpression.startsWith("["))
+            throw new TemplateExpressionException(
+                "Array literal syntax are not supported yet in Vue GWT, please use array(myValue, myValue2 > 5...) instead.\nThe object returned by array() is a regular Javascript Array (JsArray) with the given values.",
+                expressionString,
+                context);
+
+        return processJavaExpression(expressionString).toTemplateString();
     }
 
     /**
