@@ -33,10 +33,7 @@ public class JsArray<T>
     @SafeVarargs
     public static <T> JsArray<T> array(T... array)
     {
-        JsArray<T> result = new JsArray<>();
-        for (T item : array)
-            result.push(item);
-        return result;
+        return new JsArray<T>().concat(array);
     }
 
     @JsOverlay
@@ -55,6 +52,12 @@ public class JsArray<T>
     public static <T> JsArray<T> from(JsArray<T> jsArray)
     {
         return jsArray;
+    }
+
+    @JsOverlay
+    public static <T> JsArray<T> from(T[] array)
+    {
+        return array(array);
     }
 
     @JsOverlay
@@ -86,6 +89,9 @@ public class JsArray<T>
 
     @JsMethod
     public native JsArray<T> concat(JsArray<T> array);
+
+    @JsMethod
+    public native JsArray<T> concat(T[] array);
 
     @JsMethod
     public native int indexOf(T item);
