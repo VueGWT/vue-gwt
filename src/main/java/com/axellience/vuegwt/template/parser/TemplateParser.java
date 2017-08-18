@@ -15,6 +15,8 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithType;
+import com.github.javaparser.ast.type.Type;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
@@ -297,7 +299,7 @@ public class TemplateParser
                 parseException);
         }
 
-        resolveCastsUsingImports(expression);
+        resolveTypesUsingImports(expression);
         resolveStaticMethodsUsingImports(expression);
 
         // Find the parameters used by the expression
@@ -325,17 +327,16 @@ public class TemplateParser
     }
 
     /**
-     * Resolve all the Cast in the expression.
+     * Resolve all the types in the expression.
      * This will replace the Class with the full qualified name using the template imports.
      * @param expression A Java expression from the Template
      */
-    private void resolveCastsUsingImports(Expression expression)
+    private void resolveTypesUsingImports(Expression expression)
     {
-        // Resolve Cast types based on imports
-        if (expression instanceof CastExpr)
+        if (expression instanceof NodeWithType)
         {
-            CastExpr castExpr = ((CastExpr) expression);
-            castExpr.setType(getCastType(castExpr));
+            NodeWithType nodeWithType = ((NodeWithType) expression);
+            nodeWithType.setType(getQualifiedName(nodeWithType.getType()));
         }
 
         // Recurse downward in the expression
@@ -344,7 +345,7 @@ public class TemplateParser
             .stream()
             .filter(Expression.class::isInstance)
             .map(Expression.class::cast)
-            .forEach(this::resolveCastsUsingImports);
+            .forEach(this::resolveTypesUsingImports);
     }
 
     /**
@@ -528,8 +529,8 @@ public class TemplateParser
         }
     }
 
-    private String getCastType(CastExpr castExpr)
+    private String getQualifiedName(Type type)
     {
-        return context.getFullyQualifiedNameForClassName(castExpr.getType().toString());
+        return context.getFullyQualifiedNameForClassName(type.toString());
     }
 }
