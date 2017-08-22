@@ -4,16 +4,7 @@ import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.component.ComponentJavaConstructor;
 import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.hooks.HasActivated;
-import com.axellience.vuegwt.client.component.hooks.HasBeforeCreate;
-import com.axellience.vuegwt.client.component.hooks.HasBeforeDestroy;
-import com.axellience.vuegwt.client.component.hooks.HasBeforeMount;
-import com.axellience.vuegwt.client.component.hooks.HasBeforeUpdate;
 import com.axellience.vuegwt.client.component.hooks.HasCreated;
-import com.axellience.vuegwt.client.component.hooks.HasDeactivated;
-import com.axellience.vuegwt.client.component.hooks.HasDestroyed;
-import com.axellience.vuegwt.client.component.hooks.HasMounted;
-import com.axellience.vuegwt.client.component.hooks.HasUpdated;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.template.TemplateResource;
@@ -26,6 +17,7 @@ import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
+import com.axellience.vuegwt.jsr69.component.annotations.HookMethod;
 import com.axellience.vuegwt.jsr69.component.annotations.Prop;
 import com.axellience.vuegwt.jsr69.component.annotations.PropValidator;
 import com.axellience.vuegwt.jsr69.component.annotations.Watch;
@@ -45,14 +37,14 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,10 +53,7 @@ import java.util.stream.Stream;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.*;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasAnnotation;
 import static com.axellience.vuegwt.jsr69.GenerationUtil.hasInterface;
-import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getSuperComponentCount;
-import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getSuperComponentType;
-import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.hasTemplate;
-import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.isFieldVisibleInJS;
+import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.*;
 
 /**
  * Generate a JsType wrapper for the user Java {@link VueComponent}.
@@ -79,29 +68,14 @@ public class ComponentJsTypeGenerator
     private final ProcessingEnvironment processingEnv;
     private final Filer filer;
     private final Messager messager;
-
-    private static Map<String, Class> HOOKS_MAP = new HashMap<>();
-
-    static
-    {
-        // Init the map of lifecycle hooks for fast type type check
-        // The "created" hook is not here because it is always generated
-        HOOKS_MAP.put("beforeCreate", HasBeforeCreate.class);
-        HOOKS_MAP.put("beforeMount", HasBeforeMount.class);
-        HOOKS_MAP.put("mounted", HasMounted.class);
-        HOOKS_MAP.put("beforeUpdate", HasBeforeUpdate.class);
-        HOOKS_MAP.put("updated", HasUpdated.class);
-        HOOKS_MAP.put("activated", HasActivated.class);
-        HOOKS_MAP.put("deactivated", HasDeactivated.class);
-        HOOKS_MAP.put("beforeDestroy", HasBeforeDestroy.class);
-        HOOKS_MAP.put("destroyed", HasDestroyed.class);
-    }
+    private final Elements elements;
 
     public ComponentJsTypeGenerator(ProcessingEnvironment processingEnvironment)
     {
         processingEnv = processingEnvironment;
         filer = processingEnvironment.getFiler();
         messager = processingEnvironment.getMessager();
+        elements = processingEnvironment.getElementUtils();
     }
 
     public void generate(TypeElement component)
@@ -383,12 +357,44 @@ public class ComponentJsTypeGenerator
      */
     private void processHooks(TypeElement component, MethodSpec.Builder optionsBuilder)
     {
+        Set<ExecutableElement> hookMethodsFromInterfaces = getHookMethodsFromInterfaces(component);
+
         ElementFilter
             .methodsIn(component.getEnclosedElements())
             .stream()
-            .filter(method -> isHookMethod(component, method))
+            .filter(method -> isHookMethod(component, method, hookMethodsFromInterfaces))
             .forEach(method -> optionsBuilder.addStatement("options.addRootJavaMethod($S)",
                 method.getSimpleName().toString()));
+    }
+
+    /**
+     * Return all hook methods from the implemented interfaces
+     * @param component The Component
+     * @return Hook methods that must be overridden in the Component
+     */
+    private Set<ExecutableElement> getHookMethodsFromInterfaces(TypeElement component)
+    {
+        return component
+            .getInterfaces()
+            .stream()
+            .map(DeclaredType.class::cast)
+            .map(DeclaredType::asElement)
+            .map(TypeElement.class::cast)
+            .flatMap(typeElement -> ElementFilter
+                .methodsIn(typeElement.getEnclosedElements())
+                .stream())
+            .filter(method -> hasAnnotation(method, HookMethod.class))
+            .peek(this::validateHookMethod)
+            .collect(Collectors.toSet());
+    }
+
+    private void validateHookMethod(ExecutableElement hookMethod)
+    {
+        if (!isMethodVisibleInJS(hookMethod))
+            messager.printMessage(Kind.ERROR,
+                "Method "
+                    + hookMethod.getSimpleName()
+                    + " annotated with HookMethod should also have @JsMethod property.");
     }
 
     /**
@@ -585,15 +591,25 @@ public class ComponentJsTypeGenerator
      * Return true of the given method is a proxy method
      * @param component {@link VueComponent} this method belongs to
      * @param method The java method to check
+     * @param hookMethodsFromInterfaces All the hook methods in the implement interfaces
      * @return True if this method is a hook method, false otherwise
      */
-    private boolean isHookMethod(TypeElement component, ExecutableElement method)
+    private boolean isHookMethod(TypeElement component, ExecutableElement method,
+        Set<ExecutableElement> hookMethodsFromInterfaces)
     {
-        String methodJavaName = method.getSimpleName().toString();
+        if (hasAnnotation(method, HookMethod.class))
+        {
+            validateHookMethod(method);
+            return true;
+        }
 
-        return HOOKS_MAP.containsKey(methodJavaName) && hasInterface(processingEnv,
-            component.asType(),
-            HOOKS_MAP.get(methodJavaName));
+        for (ExecutableElement hookMethodsFromInterface : hookMethodsFromInterfaces)
+        {
+            if (elements.overrides(method, hookMethodsFromInterface, component))
+                return true;
+        }
+
+        return false;
     }
 
     private Stream<ExecutableElement> getMethodsWithAnnotation(TypeElement component,

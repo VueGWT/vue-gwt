@@ -12,11 +12,13 @@ import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -135,6 +137,21 @@ public class ComponentGenerationUtil
         return (hasAnnotation(field.getEnclosingElement(), JsType.class) && field
             .getModifiers()
             .contains(Modifier.PUBLIC)) || hasAnnotation(field, JsProperty.class);
+    }
+
+    /**
+     * Return weather a given method is visible in JS (JsInterop).
+     * It will be the case if it's public and it's class/interface has the {@link JsType}
+     * annotation, or
+     * if it has the {@link JsMethod} annotation.
+     * @param method The method to check
+     * @return true if it is visible (JsInterop), false otherwise
+     */
+    public static boolean isMethodVisibleInJS(ExecutableElement method)
+    {
+        return (hasAnnotation(method.getEnclosingElement(), JsType.class) && method
+            .getModifiers()
+            .contains(Modifier.PUBLIC)) || hasAnnotation(method, JsMethod.class);
     }
 
     /**

@@ -1,12 +1,14 @@
 package com.axellience.vuegwt.client.component.hooks;
 
-import jsinterop.annotations.JsType;
+import com.axellience.vuegwt.jsr69.component.annotations.HookMethod;
+import jsinterop.annotations.JsMethod;
 
 /**
  * @author Adrien Baron
  */
-@JsType(isNative = true)
 public interface HasMounted
 {
+    @HookMethod
+    @JsMethod
     void mounted();
 }
