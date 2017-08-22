@@ -22,6 +22,9 @@ public class JsTools
     @JsMethod(namespace = "console")
     public static native void log(Object object);
 
+    @JsIgnore
+    public static Object UNDEFINED = getWindow().get("undefined");
+
     public static native void debugger();
 
     public static native JsObject getWindow();
