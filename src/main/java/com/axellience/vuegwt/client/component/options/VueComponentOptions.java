@@ -226,7 +226,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     public final void addRootJavaMethod(String hookName)
     {
-        set(hookName, hookName);
+        addRootJavaMethod(hookName, hookName);
     }
 
     /**
