@@ -70,7 +70,7 @@ JsObject myObject = map("key", value);
 
 You can use `map` in templates as it is statically imported for you:
 ```html
-<a :class='map( e("red": hasError), e("blue": isOk) )'/>
+<a :class='map( e("red", hasError), e("blue", isOk) )'/>
 ```
 
 You can also mix `map` with [`array`](#array):
