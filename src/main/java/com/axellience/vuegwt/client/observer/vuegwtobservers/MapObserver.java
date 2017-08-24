@@ -35,6 +35,8 @@ public class MapObserver extends VueGWTObserver
     private void observeMap(Map map)
     {
         VueObserver observer = VueGWTObserverManager.getVueObserver(map);
+        observer.observeArray(JsArray.from(map));
+
         AfterMethodCall<Map> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
 

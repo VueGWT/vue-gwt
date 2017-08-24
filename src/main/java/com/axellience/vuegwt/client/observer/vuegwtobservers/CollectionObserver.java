@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.observer.vuegwtobservers;
 
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.observer.VueGWTObserver;
 import com.axellience.vuegwt.client.observer.VueGWTObserverManager;
 import com.axellience.vuegwt.client.observer.VueObserver;
@@ -42,6 +43,8 @@ public class CollectionObserver extends VueGWTObserver
     private void observeList(List list)
     {
         VueObserver observer = VueGWTObserverManager.getVueObserver(list);
+        observer.observeArray(JsArray.from(list));
+
         AfterMethodCall<List> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
 
@@ -66,6 +69,8 @@ public class CollectionObserver extends VueGWTObserver
     private void observeSet(Set set)
     {
         VueObserver observer = VueGWTObserverManager.getVueObserver(set);
+        observer.observeArray(JsArray.from(set));
+
         AfterMethodCall<Set> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
 
