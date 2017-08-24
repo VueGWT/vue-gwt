@@ -21,6 +21,11 @@ public class VueObserver
     public native void observeArray(Object[] array);
 
     @JsOverlay
+    public final void observe(Object toObserve) {
+        observeArray(JsArray.array(toObserve));
+    }
+
+    @JsOverlay
     public final void notifyDep() {
         this.dep.notifySelf();
     }

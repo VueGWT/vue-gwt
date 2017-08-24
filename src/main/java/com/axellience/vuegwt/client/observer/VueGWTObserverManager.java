@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.client.observer;
 
+import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.CollectionObserver;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.MapObserver;
@@ -33,9 +34,9 @@ public class VueGWTObserverManager
      * @param observer A {@link VueGWTObserver} that will be called for every object to potentially
      * observe.
      */
-    private static void registerVueGWTObserver(VueGWTObserver observer)
+    public static void registerVueGWTObserver(VueGWTObserver observer)
     {
-        observers.add(observer);
+        observers.add(0, observer);
     }
 
     /**
@@ -49,6 +50,17 @@ public class VueGWTObserverManager
     {
         return (VueObserver) ((JsObject) object).get("__ob__");
     }
+
+    public static void observe(Object object)
+    {
+        observeArray(JsArray.array(object));
+    }
+
+    @JsMethod(namespace = "VueGWT.observerManager")
+    public static native void observeArray(JsArray objects);
+
+    @JsMethod(namespace = "VueGWT.observerManager")
+    public static native void walk(Object object);
 
     /**
      * Will be called from JS by the Vue observer.

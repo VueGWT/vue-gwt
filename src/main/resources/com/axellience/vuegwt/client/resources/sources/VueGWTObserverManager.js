@@ -16,6 +16,8 @@
 	observerManager.customizeVueObserver = function (ob) {
 		const obProto = Object.getPrototypeOf(ob);
 		const vueWalk = obProto.walk;
+		observerManager.observeArray = obProto.observeArray;
+		observerManager.walk = obProto.walk;
 		obProto.walk = function () {
 			const obj = arguments[0];
 			if (observerManager.observeJavaObject(obj))
