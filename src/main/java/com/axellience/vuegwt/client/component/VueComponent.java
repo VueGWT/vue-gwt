@@ -52,9 +52,9 @@ public abstract class VueComponent extends JsObject
 
     // @formatter:off
     // Data
-    public native WatcherRegistration $watch(String toWatch, OnValueChange onValueChange);
-    public native WatcherRegistration $watch(ChangeTrigger changeTrigger,
-        OnValueChange onValueChange);
+    public native <T> WatcherRegistration $watch(String toWatch, OnValueChange<T> onValueChange);
+    public native <T> WatcherRegistration $watch(ChangeTrigger changeTrigger,
+        OnValueChange<T> onValueChange);
 
     public native <T> T $set(Object object, String key, T value);
     public native boolean $set(Object object, String key, boolean value);

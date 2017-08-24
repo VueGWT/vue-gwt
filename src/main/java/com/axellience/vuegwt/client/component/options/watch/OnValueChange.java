@@ -7,7 +7,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface OnValueChange
+public interface OnValueChange<T>
 {
-    void exec(Object newValue, Object oldValue);
+    void exec(T newValue, T oldValue);
 }
