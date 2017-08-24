@@ -106,7 +106,10 @@ public class ComponentJsTypeGenerator
         componentJsTypeBuilder.addMethod(optionsBuilder.build());
 
         // And generate our Java Class
-        GenerationUtil.toJavaFile(filer, componentJsTypeBuilder, componentWithSuffixClassName);
+        GenerationUtil.toJavaFile(filer,
+            componentJsTypeBuilder,
+            componentWithSuffixClassName,
+            component);
     }
 
     /**

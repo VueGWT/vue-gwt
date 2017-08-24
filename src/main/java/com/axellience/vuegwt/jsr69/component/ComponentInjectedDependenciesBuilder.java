@@ -59,7 +59,8 @@ public class ComponentInjectedDependenciesBuilder
         // Generate the file
         GenerationUtil.toJavaFile(processingEnvironment.getFiler(),
             componentInjectedDependenciesBuilder,
-            componentInjectedDependenciesName(component));
+            componentInjectedDependenciesName(component),
+            component);
     }
 
     /**
@@ -222,8 +223,7 @@ public class ComponentInjectedDependenciesBuilder
      */
     public boolean hasDependencies()
     {
-        return !injectedFieldsName.isEmpty()
-            || !injectedParametersByMethod.isEmpty();
+        return !injectedFieldsName.isEmpty() || !injectedParametersByMethod.isEmpty();
     }
 
     public List<String> getInjectedFieldsName()
