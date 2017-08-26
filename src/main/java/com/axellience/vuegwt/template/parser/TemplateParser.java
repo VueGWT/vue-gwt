@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.axellience.vuegwt.template.parser.TemplateParserUtils.isWrappedPrimitiveType;
+
 /**
  * Parse an HTML Vue GWT template.
  * <br>
@@ -300,11 +302,9 @@ public class TemplateParser
         if (context.hasMethod(methodName))
             return true;
 
-        // Just a variable
-        if (context.findVariable(expressionString) != null)
-            return true;
-
-        return false;
+        // Just a variable, and not a wrapped primitive type
+        VariableInfo variableInfo = context.findVariable(expressionString);
+        return variableInfo != null && !isWrappedPrimitiveType(variableInfo.getType());
     }
 
     /**

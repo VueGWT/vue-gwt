@@ -1100,7 +1100,7 @@ This is where Vue&apos;s custom event system comes in.</p>
 </p>
 
 <p>Here&apos;s an example:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;increment()&quot;</span>&gt;</span>{{ counter }}<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;increment&quot;</span>&gt;</span>{{ counter }}<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
@@ -1115,8 +1115,8 @@ This is where Vue&apos;s custom event system comes in.</p>
 </code></pre>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{{ total }}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal()&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal()&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {ButtonCounterComponent.class})
@@ -1135,10 +1135,53 @@ This is where Vue&apos;s custom event system comes in.</p>
 
 <p>In this example, it&apos;s important to note that the child component is still completely decoupled from what happens outside of it.
 All it does is report information about its own activity, just in case a parent component might care.</p>
+<h4 id="passing-a-value-in-events">Passing a Value In Events</h4>
+<p>You can pass a value with your event.
+This value will be passed to the method that catch the event in the parent.</p>
+<p>For example, let&apos;s change our counter component to pass the value of it&apos;s counter.</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.counter++;
+        <span class="hljs-comment">// Pass the current value of the counter with the event.</span>
+        <span class="hljs-keyword">this</span>.$emit(<span class="hljs-string">&quot;increment&quot;</span>, <span class="hljs-keyword">this</span>.counter);
+    }
+}
+</code></pre>
+<p>We can now get this value in the parent:</p>
+<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- Nothing changes in the template, we still pass the name of the method that handle the event --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{{ total }}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {ButtonCounterComponent.class})
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterWithEventComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> total = <span class="hljs-number">0</span>;
+
+    <span class="hljs-comment">// But we can now get the value of the event as parameter</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">incrementTotal</span><span class="hljs-params">(<span class="hljs-keyword">int</span> childCounterValue)</span> </span>{
+        <span class="hljs-keyword">this</span>.total += childCounterValue;
+    }
+}
+</code></pre>
+<p>You don&apos;t have to catch the event value in the parent.
+If the parent method doesn&apos;t have the parameter, it will work without problems.</p>
+<p>You can also alter the event value in your template before the method from your parent component is called.
+In that case, you must cast $event to it&apos;s type, so that Vue GWT knows what type to expect.</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{{ total }}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal(((int) $event) * 2)&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button-counter</span> <span class="hljs-attr">v-on:increment</span>=<span class="hljs-string">&quot;incrementTotal(((int) $event) + 4)&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">button-counter</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
 <h4 id="binding-native-events-to-components">Binding Native Events to Components</h4>
 <p>There may be times when you want to listen for a native event on the root element of a component.
 In these cases, you can use the <code>.native</code> modifier for <code>v-on</code>. For example:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">my-component</span> <span class="hljs-attr">v-on:click.native</span>=<span class="hljs-string">&quot;doTheThing()&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-component</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">my-component</span> <span class="hljs-attr">v-on:click.native</span>=<span class="hljs-string">&quot;doTheThing&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-component</span>&gt;</span>
 </code></pre>
 <h3 id="sync-modifier"><code>.sync</code> Modifier</h3>
 <blockquote>
@@ -1350,8 +1393,8 @@ It&apos;s OK for one-off components to be tightly coupled, but reusable componen
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">my-component</span>
   <span class="hljs-attr">:foo</span>=<span class="hljs-string">&quot;baz&quot;</span>
   <span class="hljs-attr">:bar</span>=<span class="hljs-string">&quot;qux&quot;</span>
-  @<span class="hljs-attr">event-a</span>=<span class="hljs-string">&quot;doThis()&quot;</span>
-  @<span class="hljs-attr">event-b</span>=<span class="hljs-string">&quot;doThat()&quot;</span>
+  @<span class="hljs-attr">event-a</span>=<span class="hljs-string">&quot;doThis&quot;</span>
+  @<span class="hljs-attr">event-b</span>=<span class="hljs-string">&quot;doThat&quot;</span>
 &gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">&quot;icon&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;...&quot;</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">&quot;main-text&quot;</span>&gt;</span>Hello!<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
@@ -1500,7 +1543,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-08-15T17:45:18.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-22T08:36:26.593Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-08-26T17:09:06.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-08-26T17:11:51.990Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

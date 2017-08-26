@@ -406,7 +406,7 @@ In addition, a parent component can listen to the events emitted from a child co
 Here's an example:
 
 ```html
-<button v-on:click="increment()">{{ counter }}</button>
+<button v-on:click="increment">{{ counter }}</button>
 ```
 
 ```java
@@ -425,8 +425,8 @@ public class ButtonCounterComponent extends VueComponent {
 ```html
 <div>
     <p>{{ total }}</p>
-    <button-counter v-on:increment="incrementTotal()"></button-counter>
-    <button-counter v-on:increment="incrementTotal()"></button-counter>
+    <button-counter v-on:increment="incrementTotal"></button-counter>
+    <button-counter v-on:increment="incrementTotal"></button-counter>
 </div>
 ```
 
@@ -450,13 +450,70 @@ public class CounterWithEventComponent extends VueComponent {
 In this example, it's important to note that the child component is still completely decoupled from what happens outside of it.
 All it does is report information about its own activity, just in case a parent component might care.
 
+#### Passing a Value In Events
+
+You can pass a value with your event.
+This value will be passed to the method that catch the event in the parent.
+
+For example, let's change our counter component to pass the value of it's counter.
+
+```java
+@Component
+public class ButtonCounterComponent extends VueComponent {
+    @JsProperty int counter = 0;
+
+    public void increment() {
+        this.counter++;
+        // Pass the current value of the counter with the event.
+        this.$emit("increment", this.counter);
+    }
+}
+```
+
+We can now get this value in the parent:
+
+```html
+<!-- Nothing changes in the template, we still pass the name of the method that handle the event -->
+<div>
+    <p>{{ total }}</p>
+    <button-counter v-on:increment="incrementTotal"></button-counter>
+    <button-counter v-on:increment="incrementTotal"></button-counter>
+</div>
+```
+
+```java
+@Component(components = {ButtonCounterComponent.class})
+public class CounterWithEventComponent extends VueComponent {
+    @JsProperty int total = 0;
+
+    // But we can now get the value of the event as parameter
+    public void incrementTotal(int childCounterValue) {
+        this.total += childCounterValue;
+    }
+}
+```
+
+You don't have to catch the event value in the parent.
+If the parent method doesn't have the parameter, it will work without problems.
+
+You can also alter the event value in your template before the method from your parent component is called.
+In that case, you must cast $event to it's type, so that Vue GWT knows what type to expect.
+
+```html
+<div>
+    <p>{{ total }}</p>
+    <button-counter v-on:increment="incrementTotal(((int) $event) * 2)"></button-counter>
+    <button-counter v-on:increment="incrementTotal(((int) $event) + 4)"></button-counter>
+</div>
+```
+
 #### Binding Native Events to Components
 
 There may be times when you want to listen for a native event on the root element of a component.
 In these cases, you can use the `.native` modifier for `v-on`. For example:
 
 ```html
-<my-component v-on:click.native="doTheThing()"></my-component>
+<my-component v-on:click.native="doTheThing"></my-component>
 ```
 
 ### `.sync` Modifier
@@ -757,8 +814,8 @@ With the dedicated shorthand syntaxes for `v-bind` and `v-on`, the intents can b
 <my-component
   :foo="baz"
   :bar="qux"
-  @event-a="doThis()"
-  @event-b="doThat()"
+  @event-a="doThis"
+  @event-b="doThat"
 >
   <img slot="icon" src="...">
   <p slot="main-text">Hello!</p>

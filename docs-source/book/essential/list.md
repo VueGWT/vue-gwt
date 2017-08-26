@@ -325,7 +325,7 @@ For example:
 
 ```html
 <div>
-    <span v-for="int n in evenNumbers">{{ n }} </span>
+    <span v-for="Integer n in evenNumbers">{{ n }} </span>
 </div>
 ```
 
@@ -352,7 +352,7 @@ In situations where computed properties are not feasible (e.g. inside nested `v-
 ```html
 ...
 <!-- The variable numbers comes from a v-for in the template -->
-<span v-for="int n in getEven(numbers)">{{ n }} </span>
+<span v-for="Integer n in getEven(numbers)">{{ n }} </span>
 ...
 ```
 

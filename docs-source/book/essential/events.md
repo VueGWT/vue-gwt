@@ -34,17 +34,12 @@ Result:
 ## Method Event Handlers
 
 The logic for many event handlers will be more complex though, so keeping your JavaScript in the value of the `v-on` attribute simply isn't feasible.
-That's why `v-on` can also accept a method call.
-
-<p class="info-panel">
-    Vue.js supports passing the method name (without the parenthesis), this doesn't work in Vue GWT.
-    Vue GWT always expect statements in a <code>v-on</code> to be valid Java.
-</p>
+That's why `v-on` can also accept the name of a method you’d like to call.
 
 For example:
 
 ```html
-<button v-on:click="greet()">Greet</button>
+<button v-on:click="greet">Greet</button>
 ```
 
 ```java
@@ -70,6 +65,33 @@ Try this in your browser console:
 ```js
 greetComponent.greet();
 ```
+
+## Methods in Inline Handlers
+
+Instead of binding directly to a method name, we can also use methods in an inline JavaScript statement:
+
+```html
+<div>
+  <button v-on:click='say("hi")'>Say hi</button>
+  <button v-on:click='say("what")'>Say what</button>
+</div>
+```
+```java
+@Component
+public class HiWhatComponent extends VueComponent {
+    public void say(String message) {
+        Window.alert(message);
+    }
+}
+```
+
+Result:
+
+{% raw %}
+<div class="example-container" data-name="hiWhatComponent">
+    <span id="hiWhatComponent"></span>
+</div>
+{% endraw %}
 
 ## Accessing the Event
 
@@ -105,7 +127,6 @@ It's already imported by default for convenience.
 You'll see further that `$event` can also be used when communicating between Components.
 In those case you might cast it to another type, like `Todo` for example.
 
-
 {% raw %}
 <div class="example-container" data-name="vOnWithDOMEventComponent">
     <span id="vOnWithDOMEventComponent"></span>
@@ -128,24 +149,24 @@ Recall that modifiers are directive postfixes denoted by a dot.
 
 ```html
 <!-- the click event's propagation will be stopped -->
-<a v-on:click.stop="doThis()"></a>
+<a v-on:click.stop="doThis"></a>
 
 <!-- the submit event will no longer reload the page -->
-<form v-on:submit.prevent="onSubmit()"></form>
+<form v-on:submit.prevent="onSubmit"></form>
 
 <!-- modifiers can be chained -->
-<a v-on:click.stop.prevent="doThat()"></a>
+<a v-on:click.stop.prevent="doThat"></a>
 
 <!-- just the modifier -->
 <form v-on:submit.prevent></form>
 
 <!-- use capture mode when adding the event listener -->
 <!-- i.e. an event targeting an inner element is handled here before being handled by that element -->
-<div v-on:click.capture="doThis()">...</div>
+<div v-on:click.capture="doThis">...</div>
 
 <!-- only trigger handler if event.target is the element itself -->
 <!-- i.e. not from a child element -->
-<div v-on:click.self="doThat()">...</div>
+<div v-on:click.self="doThat">...</div>
 ```
 
 <p class="info-panel">
@@ -157,7 +178,7 @@ Recall that modifiers are directive postfixes denoted by a dot.
 
 ```html
 <!-- the click event will be triggered at most once -->
-<a v-on:click.once="doThis()"></a>
+<a v-on:click.once="doThis"></a>
 ```
 
 Unlike the other modifiers, which are exclusive to native DOM events, the `.once` modifier can also be used on [component events](components.html#Using-v-on-with-Custom-Events).
@@ -169,17 +190,17 @@ When listening for keyboard events, we often need to check for common key codes.
 
 ```html
 <!-- only call vm.submit() when the keyCode is 13 -->
-<input v-on:keyup.13="submit()">
+<input v-on:keyup.13="submit">
 ```
 
 Remembering all the keyCodes is a hassle, so Vue provides aliases for the most commonly used keys:
 
 ```html
 <!-- same as above -->
-<input v-on:keyup.enter="submit()">
+<input v-on:keyup.enter="submit">
 
 <!-- also works for shorthand -->
-<input @keyup.enter="submit()">
+<input @keyup.enter="submit">
 ```
 
 Here's the full list of key modifier aliases:
@@ -224,10 +245,10 @@ For example:
 
 ```html
 <!-- Alt + C -->
-<input @keyup.alt.67="clear()">
+<input @keyup.alt.67="clear">
 
 <!-- Ctrl + Click -->
-<div @click.ctrl="doSomething()">Do something</div>
+<div @click.ctrl="doSomething">Do something</div>
 ```
 
 <p class="info-panel">

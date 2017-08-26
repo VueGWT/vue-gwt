@@ -154,10 +154,10 @@ Therefore, Vue.js provides special shorthands for two of the most often used dir
 
 ```html
 <!-- full syntax -->
-<a v-on:click="doSomething()"></a>
+<a v-on:click="doSomething"></a>
 
 <!-- shorthand -->
-<a @click="doSomething()"></a>
+<a @click="doSomething"></a>
 ```
 
 They may look a bit different from normal HTML, but `:` and `@` are valid chars for attribute names and all Vue.js supported browsers can parse it correctly.

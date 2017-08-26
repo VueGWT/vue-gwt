@@ -16,6 +16,7 @@ import com.axellience.vuegwtexamples.client.examples.extendjavacomponent.ChildCo
 import com.axellience.vuegwtexamples.client.examples.extendsjscomponent.ChildJavaComponent;
 import com.axellience.vuegwtexamples.client.examples.focus.FocusDirectiveComponent;
 import com.axellience.vuegwtexamples.client.examples.greet.GreetComponent;
+import com.axellience.vuegwtexamples.client.examples.hiwhat.HiWhatComponent;
 import com.axellience.vuegwtexamples.client.examples.instanciatejscomponent.FullJsWithMethodsComponentFactory;
 import com.axellience.vuegwtexamples.client.examples.kitten.KittenComponent;
 import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
@@ -78,6 +79,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("bindInlineStyleComponent", BindInlineStyleComponent.class);
         this.addExample("buttonPlusOneComponent", ButtonPlusOneComponent.class);
         this.addExample("greetComponent", GreetComponent.class);
+        this.addExample("hiWhatComponent", HiWhatComponent.class);
         this.addExample("vOnWithDOMEventComponent", VOnWithDOMEventComponent.class);
         this.addExample("todoTextComponent", TodoTextComponent.class);
         this.addExample("todoTextComputedComponent", TodoTextComputedComponent.class);

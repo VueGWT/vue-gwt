@@ -64,7 +64,7 @@ In those case you can use the following syntax:
 
 ```html
 <div>
-    <input :value="todo.getText()" @input="updateTodoText((NativeEvent) $event)"/>
+    <input :value="todo.getText()" @input="updateTodoText"/>
     Todo Text: {{ todo.getText() }}
 </div>
 ```
