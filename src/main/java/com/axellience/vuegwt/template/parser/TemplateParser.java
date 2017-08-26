@@ -26,9 +26,11 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.ParseSettings;
 import org.jsoup.parser.Parser;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,6 +49,7 @@ public class TemplateParser
     private static Pattern VUE_ATTR_PATTERN = Pattern.compile("^(v-|:|@).*");
     private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
+    private final Map<String, TemplateExpression> expressionCache = new HashMap<>();
     private TemplateParserContext context;
     private TemplateParserResult result;
 
@@ -312,6 +315,9 @@ public class TemplateParser
      */
     private TemplateExpression processJavaExpression(String expressionString)
     {
+        if (expressionCache.containsKey(expressionString))
+            return expressionCache.get(expressionString);
+
         Expression expression;
         try
         {
@@ -346,11 +352,14 @@ public class TemplateParser
         TemplateExpressionKind expressionKind =
             getExpressionKind(expression, currentExpressionReturnType, expressionParameters);
 
-        // Add the resulting expression to our template expressions
-        return result.addExpression(expressionString,
+        // Add the resulting expression to our result
+        TemplateExpression templateExpression = result.addExpression(expressionString,
             currentExpressionReturnType,
             expressionParameters,
             expressionKind);
+        // And cache it
+        expressionCache.put(expressionString, templateExpression);
+        return templateExpression;
     }
 
     /**
