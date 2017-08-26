@@ -258,23 +258,50 @@ public class TemplateParser
      */
     private String processExpression(String expressionString)
     {
-        String trimmedExpression = expressionString.trim();
-        if (trimmedExpression.isEmpty())
+        expressionString = expressionString.trim();
+        if (expressionString.isEmpty())
             return "";
 
-        if (trimmedExpression.startsWith("{"))
+        if (expressionString.startsWith("{"))
             throw new TemplateExpressionException(
                 "Object literal syntax are not supported yet in Vue GWT, please use map(e(\"key1\", myValue), e(\"key2\", myValue2 > 5)...) instead.\nThe object returned by map() is a regular Javascript Object (JsObject) with the given key/values.",
                 expressionString,
                 context);
 
-        if (trimmedExpression.startsWith("["))
+        if (expressionString.startsWith("["))
             throw new TemplateExpressionException(
                 "Array literal syntax are not supported yet in Vue GWT, please use array(myValue, myValue2 > 5...) instead.\nThe object returned by array() is a regular Javascript Array (JsArray) with the given values.",
                 expressionString,
                 context);
 
+        if (isSimpleVueJsExpression(expressionString))
+            return expressionString;
+
         return processJavaExpression(expressionString).toTemplateString();
+    }
+
+    /**
+     * In some case the expression is already a valid Vue.js expression that will work without
+     * any processing. In this case we just leave it in place.
+     * This avoid creating Computed properties/methods for simple expressions.
+     * @param expressionString The expression to check
+     * @return true if it's already a valid Vue.js expression, false otherwise
+     */
+    private boolean isSimpleVueJsExpression(String expressionString)
+    {
+        String methodName = expressionString;
+        if (expressionString.endsWith("()"))
+            methodName = expressionString.substring(0, expressionString.length() - 2);
+
+        // Just a method name/simple method call with no parameters
+        if (context.hasMethod(methodName))
+            return true;
+
+        // Just a variable
+        if (context.findVariable(expressionString) != null)
+            return true;
+
+        return false;
     }
 
     /**
