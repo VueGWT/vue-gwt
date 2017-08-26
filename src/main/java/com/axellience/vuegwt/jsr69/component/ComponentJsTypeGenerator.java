@@ -92,12 +92,18 @@ public class ComponentJsTypeGenerator
         ComponentInjectedDependenciesBuilder dependenciesBuilder =
             new ComponentInjectedDependenciesBuilder(processingEnv, component);
 
+        Set<ExecutableElement> hookMethodsFromInterfaces = getHookMethodsFromInterfaces(component);
+
         processData(component, optionsBuilder);
         processProps(component, optionsBuilder);
         processComputed(component, optionsBuilder, componentJsTypeBuilder);
         processWatchers(component, optionsBuilder, componentJsTypeBuilder);
         processPropValidators(component, optionsBuilder, componentJsTypeBuilder);
-        processHooks(component, optionsBuilder);
+        processHooks(component, optionsBuilder, hookMethodsFromInterfaces);
+        processTemplateMethods(component,
+            optionsBuilder,
+            componentJsTypeBuilder,
+            hookMethodsFromInterfaces);
         processRenderFunction(component, optionsBuilder, componentJsTypeBuilder);
         createCreatedHook(component, optionsBuilder, componentJsTypeBuilder, dependenciesBuilder);
 
@@ -208,9 +214,15 @@ public class ComponentJsTypeGenerator
         if (fieldsName.isEmpty())
             return;
 
-        fieldsName.forEach(fieldName -> optionsBuilder.addStatement("options.addDataField($S)",
-            fieldName));
-        optionsBuilder.addStatement("options.initData($L)", annotation.useFactory());
+        // Declare data fields
+        String fieldNamesParameters = fieldsName
+            .stream()
+            .map(fieldName -> "\"" + fieldName + "\"")
+            .collect(Collectors.joining(", "));
+
+        optionsBuilder.addStatement("options.initData($L, $L)",
+            annotation.useFactory(),
+            fieldNamesParameters);
     }
 
     /**
@@ -274,6 +286,41 @@ public class ComponentJsTypeGenerator
         });
 
         addFieldsForComputedMethod(component, componentJsTypeBuilder, new HashSet<>());
+    }
+
+    /**
+     * Process template methods for our {@link VueComponent} class. Make them visible to JS by
+     * wrapping them if necessary.
+     * @param component {@link VueComponent} to process
+     * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
+     * {@link VueComponentOptions}
+     * @param componentJsTypeBuilder Builder for the JsType class
+     * @param hookMethodsFromInterfaces Hook methods from the interface the {@link VueComponent}
+     * implements
+     */
+    private void processTemplateMethods(TypeElement component, MethodSpec.Builder optionsBuilder,
+        Builder componentJsTypeBuilder, Set<ExecutableElement> hookMethodsFromInterfaces)
+    {
+        List<ExecutableElement> templateMethods = ElementFilter
+            .methodsIn(component.getEnclosedElements())
+            .stream()
+            .filter(ComponentGenerationUtil::isMethodVisibleInTemplate)
+            .filter(method -> !isHookMethod(component, method, hookMethodsFromInterfaces))
+            .collect(Collectors.toList());
+
+        // Make methods visible in JS
+        templateMethods
+            .stream()
+            .filter(method -> !isMethodVisibleInJS(method))
+            .map(this::createProxyJsTypeMethod)
+            .forEach(componentJsTypeBuilder::addMethod);
+
+        // Declare methods in the component
+        String methodNamesParameters = templateMethods
+            .stream()
+            .map(method -> "\"" + method.getSimpleName() + "\"")
+            .collect(Collectors.joining(", "));
+        optionsBuilder.addStatement("options.addMethods($L)", methodNamesParameters);
     }
 
     /**
@@ -357,16 +404,17 @@ public class ComponentJsTypeGenerator
      * @param component {@link VueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
+     * @param hookMethodsFromInterfaces Hook methods from the interface the {@link VueComponent}
+     * implements
      */
-    private void processHooks(TypeElement component, MethodSpec.Builder optionsBuilder)
+    private void processHooks(TypeElement component, MethodSpec.Builder optionsBuilder,
+        Set<ExecutableElement> hookMethodsFromInterfaces)
     {
-        Set<ExecutableElement> hookMethodsFromInterfaces = getHookMethodsFromInterfaces(component);
-
         ElementFilter
             .methodsIn(component.getEnclosedElements())
             .stream()
             .filter(method -> isHookMethod(component, method, hookMethodsFromInterfaces))
-            .forEach(method -> optionsBuilder.addStatement("options.addRootJavaMethod($S)",
+            .forEach(method -> optionsBuilder.addStatement("options.addHookMethod($S)",
                 method.getSimpleName().toString()));
     }
 
@@ -422,7 +470,7 @@ public class ComponentJsTypeGenerator
             .build());
 
         // Register the render method
-        optionsBuilder.addStatement("options.addRootJavaMethod($S, $S)", "render", "vuegwt$render");
+        optionsBuilder.addStatement("options.addHookMethod($S, $S)", "render", "vuegwt$render");
     }
 
     /**
@@ -462,9 +510,7 @@ public class ComponentJsTypeGenerator
         componentJsTypeBuilder.addMethod(createdMethodBuilder.build());
 
         // Register the hook
-        optionsBuilder.addStatement("options.addRootJavaMethod($S, $S)",
-            "created",
-            "vuegwt$created");
+        optionsBuilder.addStatement("options.addHookMethod($S, $S)", "created", "vuegwt$created");
     }
 
     /**

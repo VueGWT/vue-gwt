@@ -115,6 +115,21 @@ public class ComponentGenerationUtil
      * @param method The method we are checking
      * @return true if visible, false otherwise
      */
+    public static boolean isMethodVisibleInTemplate(ExecutableElement method)
+    {
+        return !hasAnnotation(method, Computed.class)
+            && !hasAnnotation(method, Watch.class)
+            && !hasAnnotation(method, PropValidator.class)
+            && !method.getModifiers().contains(Modifier.STATIC)
+            && !method.getModifiers().contains(Modifier.PRIVATE)
+            && !method.getModifiers().contains(Modifier.ABSTRACT);
+    }
+
+    /**
+     * Check if a given method is usable in the template
+     * @param method The method we are checking
+     * @return true if visible, false otherwise
+     */
     public static boolean isMethodVisibleInTemplate(JMethod method)
     {
         return !hasAnnotation(method, Computed.class)

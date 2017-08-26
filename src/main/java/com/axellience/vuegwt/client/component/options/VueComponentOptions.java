@@ -91,11 +91,13 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
         for (String computedId : templateResource.getTemplateComputedProperties())
         {
             addComputedOptions(computedId, JsTools.get(templateResource, computedId));
+            JsTools.log(computedId + " -> " + JsTools.get(templateResource, computedId));
         }
 
         for (String methodId : templateResource.getTemplateMethods())
         {
             addMethod(methodId, JsTools.get(templateResource, methodId));
+            JsTools.log(methodId + " -> " + JsTools.get(templateResource, methodId));
         }
     }
 
@@ -116,31 +118,23 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     }
 
     /**
-     * Add a data field to the Component. Vue.js will observe all this fields when the Component
-     * will be bootstrapped.
-     * @param fieldName Name of the field
-     */
-    @JsOverlay
-    public final void addDataField(String fieldName)
-    {
-        if (dataFields == null)
-            dataFields = new JsObject();
-
-        // Get the default field value from the prototype if any
-        Object defaultValue = componentJavaPrototype.get(fieldName);
-        if (!isUndefined(defaultValue))
-            dataFields.set(fieldName, defaultValue);
-        else
-            dataFields.set(fieldName, null);
-    }
-
-    /**
      * Initialise the data structure, then set it to either a Factory or directly on the Component.
      * @param useFactory Boolean representing whether or not to use a Factory.
      */
     @JsOverlay
-    public final void initData(boolean useFactory)
+    public final void initData(boolean useFactory, String... fieldNames)
     {
+        dataFields = new JsObject();
+        for (String fieldName : fieldNames)
+        {
+            // Get the default field value from the prototype if any
+            Object defaultValue = componentJavaPrototype.get(fieldName);
+            if (!isUndefined(defaultValue))
+                dataFields.set(fieldName, defaultValue);
+            else
+                dataFields.set(fieldName, null);
+        }
+
         if (useFactory)
         {
             String dataFieldsJSON = JSON.stringify(dataFields);
@@ -219,14 +213,23 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
         addWatch(watchedPropertyName, watchDefinition);
     }
 
+    @JsOverlay
+    public final void addMethods(String... javaMethodNames)
+    {
+        for (String javaMethodName : javaMethodNames)
+        {
+            this.addMethod(javaMethodName, getJavaComponentMethod(javaMethodName));
+        }
+    }
+
     /**
      * Add the given lifecycle hook to the {@link VueComponentOptions}.
      * @param hookName Name of the hook to add
      */
     @JsOverlay
-    public final void addRootJavaMethod(String hookName)
+    public final void addHookMethod(String hookName)
     {
-        addRootJavaMethod(hookName, hookName);
+        addHookMethod(hookName, hookName);
     }
 
     /**
@@ -235,7 +238,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
      * @param javaMethodName Name of the java method for the hook
      */
     @JsOverlay
-    public final void addRootJavaMethod(String hookName, String javaMethodName)
+    public final void addHookMethod(String hookName, String javaMethodName)
     {
         set(hookName, getJavaComponentMethod(javaMethodName));
     }
