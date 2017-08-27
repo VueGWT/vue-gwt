@@ -91,13 +91,11 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
         for (String computedId : templateResource.getTemplateComputedProperties())
         {
             addComputedOptions(computedId, JsTools.get(templateResource, computedId));
-            JsTools.log(computedId + " -> " + JsTools.get(templateResource, computedId));
         }
 
         for (String methodId : templateResource.getTemplateMethods())
         {
             addMethod(methodId, JsTools.get(templateResource, methodId));
-            JsTools.log(methodId + " -> " + JsTools.get(templateResource, methodId));
         }
     }
 
