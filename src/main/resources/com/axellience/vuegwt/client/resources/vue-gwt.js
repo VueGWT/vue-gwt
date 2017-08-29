@@ -21,35 +21,32 @@
 		return javaArray;
 	};
 	tools.wrapMethodWithBefore = function (object, methodName, beforeMethodCall) {
-		const proto = Object.getPrototypeOf(object);
-		const originalFunc = proto[methodName];
+		const originalFunc = object[methodName];
 		if (originalFunc === null)
 			console.error("Attempting to wrap a non existing method", object, methodName);
 
-		proto[methodName] = function () {
+		object[methodName] = function () {
 			beforeMethodCall(object, methodName, arguments);
 			return originalFunc.apply(this, arguments);
 		};
 	};
 	tools.wrapMethodWithAfter = function (object, methodName, afterMethodCall) {
-		const proto = Object.getPrototypeOf(object);
-		const originalFunc = proto[methodName];
+		const originalFunc = object[methodName];
 		if (originalFunc === null)
 			console.error("Attempting to wrap a non existing method", object, methodName);
 
-		proto[methodName] = function () {
-			var result = originalFunc.apply(this, arguments);
+		object[methodName] = function () {
+			const result = originalFunc.apply(this, arguments);
 			afterMethodCall(object, methodName, result, arguments);
 			return result;
 		};
 	};
 	tools.wrapMethod = function (object, methodName, beforeMethodCall, afterMethodCall) {
-		const proto = Object.getPrototypeOf(object);
-		const originalFunc = proto[methodName];
+		const originalFunc = object[methodName];
 		if (originalFunc === null)
 			console.error("Attempting to wrap a non existing method", object, methodName);
 
-		proto[methodName] = function () {
+		object[methodName] = function () {
 			beforeMethodCall(object, methodName, arguments);
 			const result = originalFunc.apply(this, arguments);
 			afterMethodCall(object, methodName, result, arguments);
