@@ -35,8 +35,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.axellience.vuegwt.template.parser.TemplateParserUtils.isWrappedPrimitiveType;
-
 /**
  * Parse an HTML Vue GWT template.
  * <br>
@@ -279,7 +277,9 @@ public class TemplateParser
                 expressionString,
                 context);
 
-        if (isSimpleVueJsExpression(expressionString))
+        // We don't optimize String expression, as we want GWT to convert
+        // Java values to String for us (Enums, wrapped primitives...)
+        if (!"String".equals(currentExpressionReturnType) && isSimpleVueJsExpression(expressionString))
             return expressionString;
 
         return processJavaExpression(expressionString).toTemplateString();
@@ -304,7 +304,7 @@ public class TemplateParser
 
         // Just a variable, and not a wrapped primitive type
         VariableInfo variableInfo = context.findVariable(expressionString);
-        return variableInfo != null && !isWrappedPrimitiveType(variableInfo.getType());
+        return variableInfo != null;
     }
 
     /**
