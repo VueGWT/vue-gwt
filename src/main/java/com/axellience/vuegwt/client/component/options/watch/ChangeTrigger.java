@@ -8,7 +8,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface ChangeTrigger
+public interface ChangeTrigger<T>
 {
-    Object watchedValue();
+    T watchedValue();
 }

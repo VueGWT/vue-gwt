@@ -53,7 +53,7 @@ public abstract class VueComponent extends JsObject
     // @formatter:off
     // Data
     public native <T> WatcherRegistration $watch(String toWatch, OnValueChange<T> onValueChange);
-    public native <T> WatcherRegistration $watch(ChangeTrigger changeTrigger,
+    public native <T> WatcherRegistration $watch(ChangeTrigger<T> changeTrigger,
         OnValueChange<T> onValueChange);
 
     public native <T> T $set(Object object, String key, T value);
