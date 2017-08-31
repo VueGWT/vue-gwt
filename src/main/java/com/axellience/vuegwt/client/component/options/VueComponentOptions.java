@@ -88,11 +88,6 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     private void initExpressions()
     {
-        for (String computedId : templateResource.getTemplateComputedProperties())
-        {
-            addComputedOptions(computedId, JsTools.get(templateResource, computedId));
-        }
-
         for (String methodId : templateResource.getTemplateMethods())
         {
             addMethod(methodId, JsTools.get(templateResource, methodId));

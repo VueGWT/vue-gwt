@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.template.parser.result;
 
-import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 import com.axellience.vuegwt.template.parser.variable.VariableInfo;
 
 import java.util.Collection;
@@ -19,28 +18,16 @@ public class TemplateExpression
 {
     private final String id;
     private final String body;
-    private final TemplateExpressionKind kind;
     private final String type;
     private final List<VariableInfo> parameters = new LinkedList<>();
 
     public TemplateExpression(String id, String body, String type,
-        Collection<VariableInfo> parameters, TemplateExpressionKind kind)
+        Collection<VariableInfo> parameters)
     {
         this.id = id;
         this.type = type;
         this.body = body;
-        this.kind = kind;
         this.parameters.addAll(parameters);
-    }
-
-    /**
-     * The kind of the expression, can be either a {@link TemplateExpressionKind#COMPUTED_PROPERTY}
-     * (cached) or a {@link TemplateExpressionKind#METHOD} (not cached).
-     * @return The kind for this expression
-     */
-    public TemplateExpressionKind getKind()
-    {
-        return kind;
     }
 
     /**
@@ -87,9 +74,6 @@ public class TemplateExpression
      */
     public String toTemplateString()
     {
-        if (getKind() == TemplateExpressionKind.COMPUTED_PROPERTY)
-            return this.getId();
-
         String[] parametersName =
             this.parameters.stream().map(VariableInfo::getName).toArray(String[]::new);
 

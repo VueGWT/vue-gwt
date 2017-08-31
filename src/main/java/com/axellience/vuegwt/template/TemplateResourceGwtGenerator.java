@@ -16,7 +16,6 @@
 
 package com.axellience.vuegwt.template;
 
-import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 import com.axellience.vuegwt.jsr69.component.ComponentJsTypeGenerator;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompiler;
 import com.axellience.vuegwt.template.compiler.VueTemplateCompilerException;
@@ -46,8 +45,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import static com.axellience.vuegwt.client.component.template.TemplateExpressionKind.COMPUTED_PROPERTY;
-import static com.axellience.vuegwt.client.component.template.TemplateExpressionKind.METHOD;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.COMPONENT_JS_TYPE_SUFFIX;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.STYLE_BUNDLE_METHOD_NAME;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.styleBundleName;
@@ -248,7 +245,6 @@ public final class TemplateResourceGwtGenerator extends AbstractResourceGenerato
             generateTemplateExpressionMethod(sw, expression);
         }
 
-        generateGetTemplateComputedProperties(sw, templateParserResult);
         generateGetTemplateMethods(sw, templateParserResult);
     }
 
@@ -293,22 +289,6 @@ public final class TemplateResourceGwtGenerator extends AbstractResourceGenerato
     }
 
     /**
-     * Generate the method to get the list of computed properties from the template
-     * @param sw The source writer
-     * @param templateParserResult Result from the parsing of the HTML Template
-     */
-    private void generateGetTemplateComputedProperties(SourceWriter sw,
-        TemplateParserResult templateParserResult)
-    {
-        sw.println("public String[] getTemplateComputedProperties() {");
-        sw.indent();
-        sw.println("return new String[] { " + getExpressionsIdsOfKind(templateParserResult,
-            COMPUTED_PROPERTY) + " };");
-        sw.outdent();
-        sw.println("}");
-    }
-
-    /**
      * Generate the method to get the list of methods from the template
      * @param sw The source writer
      * @param templateParserResult Result from the parsing of the HTML Template
@@ -318,20 +298,16 @@ public final class TemplateResourceGwtGenerator extends AbstractResourceGenerato
     {
         sw.println("public String[] getTemplateMethods() {");
         sw.indent();
-        sw.println("return new String[] { "
-            + getExpressionsIdsOfKind(templateParserResult, METHOD)
-            + " };");
+        sw.println("return new String[] { " + getExpressionsIds(templateParserResult) + " };");
         sw.outdent();
         sw.println("}");
     }
 
-    private String getExpressionsIdsOfKind(TemplateParserResult templateParserResult,
-        TemplateExpressionKind kind)
+    private String getExpressionsIds(TemplateParserResult templateParserResult)
     {
         return templateParserResult
             .getExpressions()
             .stream()
-            .filter(expression -> expression.getKind() == kind)
             .map(expression -> "\"" + expression.getId() + "\"")
             .collect(Collectors.joining(", "));
     }

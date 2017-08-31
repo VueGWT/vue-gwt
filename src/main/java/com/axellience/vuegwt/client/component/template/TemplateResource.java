@@ -28,10 +28,6 @@ public interface TemplateResource<T extends VueComponent> extends ResourceProtot
     {
         return null;
     }
-    default String[] getTemplateComputedProperties()
-    {
-        return null;
-    }
     default String[] getTemplateMethods()
     {
         return null;

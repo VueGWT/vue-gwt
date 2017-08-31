@@ -47,6 +47,7 @@ public class TemplateParserContext
 
         this.addImport(NativeEvent.class.getCanonicalName());
         this.addImport(JsArray.class.getCanonicalName());
+        this.addImport(Math.class.getCanonicalName());
         this.addStaticImport(JsObject.class.getCanonicalName() + ".map");
         this.addStaticImport(JsObject.class.getCanonicalName() + ".e");
         this.addStaticImport(JsArray.class.getCanonicalName() + ".array");

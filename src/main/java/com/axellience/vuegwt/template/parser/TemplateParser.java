@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.template.parser;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.template.TemplateExpressionKind;
 import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.template.parser.exceptions.TemplateExpressionException;
@@ -276,7 +275,8 @@ public class TemplateParser
 
         // We don't optimize String expression, as we want GWT to convert
         // Java values to String for us (Enums, wrapped primitives...)
-        if (!"String".equals(currentExpressionReturnType) && isSimpleVueJsExpression(expressionString))
+        if (!"String".equals(currentExpressionReturnType) && isSimpleVueJsExpression(
+            expressionString))
             return expressionString;
 
         return processJavaExpression(expressionString).toTemplateString();
@@ -299,9 +299,8 @@ public class TemplateParser
         if (context.hasMethod(methodName))
             return true;
 
-        // Just a variable, and not a wrapped primitive type
-        VariableInfo variableInfo = context.findVariable(expressionString);
-        return variableInfo != null;
+        // Just a variable
+        return context.findVariable(expressionString) != null;
     }
 
     /**
@@ -329,6 +328,8 @@ public class TemplateParser
         resolveTypesUsingImports(expression);
         resolveStaticMethodsUsingImports(expression);
 
+        checkMethodNames(expression);
+
         // Find the parameters used by the expression
         List<VariableInfo> expressionParameters = new LinkedList<>();
         findExpressionParameters(expression, expressionParameters);
@@ -343,14 +344,10 @@ public class TemplateParser
             currentExpressionReturnType = castExpr.getType().toString();
         }
 
-        TemplateExpressionKind expressionKind =
-            getExpressionKind(expression, currentExpressionReturnType, expressionParameters);
-
         // Add the resulting expression to our result
         TemplateExpression templateExpression = result.addExpression(expressionString,
             currentExpressionReturnType,
-            expressionParameters,
-            expressionKind);
+            expressionParameters);
         return templateExpression;
     }
 
@@ -402,54 +399,21 @@ public class TemplateParser
     }
 
     /**
-     * Return the kind of our expression. Depending on how it used, and what the expression needs
-     * we can either declare it as a Vue.js Computed property (with cache), or a Vue.js method
-     * (without cache).
-     * @param expression The expression to check
-     * @param returnType The Java return type of the expression
-     * @param expressionParameters The parameters needed for the expression (loop variables)
-     * @return The {@link TemplateExpressionKind} of the expression.
-     */
-    private TemplateExpressionKind getExpressionKind(Expression expression, String returnType,
-        List<VariableInfo> expressionParameters)
-    {
-        // If our expression returns void (used in a v-on) or depends on some parameters, then it's a method call.
-        if (returnType.equals("void") || !expressionParameters.isEmpty())
-            return TemplateExpressionKind.METHOD;
-
-        // Check if we use any methods from the component, if so, expression is a method call.
-        if (doesExpressionUsesComponentMethod(expression))
-        {
-            return TemplateExpressionKind.METHOD;
-        }
-
-        // Our expression can be a Computed Property!
-        return TemplateExpressionKind.COMPUTED_PROPERTY;
-    }
-
-    /**
-     * Check the expression to for component method calls.
+     * Check the expression for component method calls.
      * This will check that the methods used in the template exist in the Component.
-     * It returns true if we use one of the component method in the template.
      * It throws an exception if we use a method that is not declared in our Component.
      * This will not check for the type or number of parameters, we leave that to the Java Compiler.
      * @param expression The expression to check
-     * @return True if we use at least one of the Component methods in the expression.
      */
-    private boolean doesExpressionUsesComponentMethod(Expression expression)
+    private void checkMethodNames(Expression expression)
     {
-        boolean useMethod = false;
         if (expression instanceof MethodCallExpr)
         {
             MethodCallExpr methodCall = ((MethodCallExpr) expression);
             if (!methodCall.getScope().isPresent())
             {
                 String methodName = methodCall.getName().getIdentifier();
-                if (context.hasMethod(methodName))
-                {
-                    useMethod = true;
-                }
-                else if (!context.hasStaticMethod(methodName))
+                if (!context.hasMethod(methodName) && !context.hasStaticMethod(methodName))
                 {
                     throw new TemplateExpressionException("Couldn't find the method \""
                         + methodName
@@ -467,10 +431,8 @@ public class TemplateParser
                 continue;
 
             Expression childExpr = (Expression) node;
-            useMethod = doesExpressionUsesComponentMethod(childExpr) || useMethod;
+            checkMethodNames(childExpr);
         }
-
-        return useMethod;
     }
 
     /**
