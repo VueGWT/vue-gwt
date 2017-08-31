@@ -23,6 +23,7 @@ import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
 import com.axellience.vuegwtexamples.client.examples.message.MessageComponent;
 import com.axellience.vuegwtexamples.client.examples.parent.ParentComponent;
+import com.axellience.vuegwtexamples.client.examples.propdefaultvalue.ParentPropDefaultValueComponent;
 import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
 import com.axellience.vuegwtexamples.client.examples.shareddatamodel.SharedDataModelComponent;
 import com.axellience.vuegwtexamples.client.examples.simplelink.SimpleLinkComponent;
@@ -94,6 +95,7 @@ public class VueGwtExamplesApp implements EntryPoint
         this.addExample("extendJavaComponent", ChildComponent.class);
         this.addExample("extendJsComponent", ChildJavaComponent.class);
         this.addExample("fullJsWithMethodsComponent", FullJsWithMethodsComponentFactory.get());
+        this.addExample("propDefaultValueComponent", ParentPropDefaultValueComponent.class);
     }
 
     private void addExample(String exampleId, Class<? extends VueComponent> exampleVueClass)
