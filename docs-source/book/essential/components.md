@@ -333,10 +333,34 @@ In Vue.js, it is possible for a component to specify requirements for the props 
 If a requirement is not met, Vue will emit warnings.
 This is especially useful when you are authoring a component that is intended to be used by others.
 
-Vue GWT can Vue.js to check the type based on the type of your Java property.
+Vue GWT can tell Vue.js to check the type based on the type of your Java property.
 If you want this behavior you can pass `checkType` to true to your `@Prop` annotation.
 
 When prop validation fails, Vue will produce a console warning (if using the development build).
+
+### Prop Default Value
+
+It is possible to set a default value for your Prop.
+This value will be set whenever the value has not been set by the parent.
+This mean whenever the Parent didn't add the property on the element in it's template.
+
+To set this default value, you must create a method that returns it and annotate it with `@PropDefault`:
+
+```java
+@Component
+public class PropDefaultValueComponent extends VueComponent {
+    @Prop
+    @JsProperty
+    String stringProp;
+
+    @PropDefault(propertyName = "stringProp")
+    String stringPropDefault() {
+        return "Hello World";
+    }
+}
+```
+
+Beware that in this method you don't have access to your Instance (`this`).
 
 ## Non-Prop Attributes
 
