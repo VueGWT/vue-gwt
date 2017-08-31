@@ -19,6 +19,7 @@ import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
 import com.axellience.vuegwt.jsr69.component.annotations.HookMethod;
 import com.axellience.vuegwt.jsr69.component.annotations.Prop;
+import com.axellience.vuegwt.jsr69.component.annotations.PropDefault;
 import com.axellience.vuegwt.jsr69.component.annotations.PropValidator;
 import com.axellience.vuegwt.jsr69.component.annotations.Watch;
 import com.squareup.javapoet.AnnotationSpec;
@@ -99,6 +100,7 @@ public class ComponentJsTypeGenerator
         processComputed(component, optionsBuilder, componentJsTypeBuilder);
         processWatchers(component, optionsBuilder, componentJsTypeBuilder);
         processPropValidators(component, optionsBuilder, componentJsTypeBuilder);
+        processPropDefaultValues(component, optionsBuilder, componentJsTypeBuilder);
         processHooks(component, optionsBuilder, hookMethodsFromInterfaces);
         processTemplateMethods(component,
             optionsBuilder,
@@ -392,6 +394,27 @@ public class ComponentJsTypeGenerator
 
             String propertyName = propValidator.propertyName();
             optionsBuilder.addStatement("options.addJavaPropValidator($S, $S)",
+                method.getSimpleName().toString(),
+                propertyName);
+
+            componentJsTypeBuilder.addMethod(createProxyJsTypeMethod(method));
+        });
+    }
+
+    /**
+     * Process prop default values from the Component Class.
+     * @param component {@link VueComponent} to process
+     * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
+     * {@link VueComponentOptions}
+     */
+    private void processPropDefaultValues(TypeElement component, MethodSpec.Builder optionsBuilder,
+        Builder componentJsTypeBuilder)
+    {
+        getMethodsWithAnnotation(component, PropDefault.class).forEach(method -> {
+            PropDefault propValidator = method.getAnnotation(PropDefault.class);
+
+            String propertyName = propValidator.propertyName();
+            optionsBuilder.addStatement("options.addJavaPropDefaultValue($S, $S)",
                 method.getSimpleName().toString(),
                 propertyName);
 

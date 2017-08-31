@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.client.component.options.props;
 
 import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 /**
@@ -13,4 +14,6 @@ public class PropOptions
     public Object type;
     public boolean required;
     public Object validator;
+    @JsProperty(name = "default")
+    public Object defaultValue;
 }

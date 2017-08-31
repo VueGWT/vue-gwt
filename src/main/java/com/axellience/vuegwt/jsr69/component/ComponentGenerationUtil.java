@@ -5,6 +5,7 @@ import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
+import com.axellience.vuegwt.jsr69.component.annotations.PropDefault;
 import com.axellience.vuegwt.jsr69.component.annotations.PropValidator;
 import com.axellience.vuegwt.jsr69.component.annotations.Watch;
 import com.google.gwt.core.ext.typeinfo.JField;
@@ -120,6 +121,7 @@ public class ComponentGenerationUtil
         return !hasAnnotation(method, Computed.class)
             && !hasAnnotation(method, Watch.class)
             && !hasAnnotation(method, PropValidator.class)
+            && !hasAnnotation(method, PropDefault.class)
             && !method.getModifiers().contains(Modifier.STATIC)
             && !method.getModifiers().contains(Modifier.PRIVATE)
             && !method.getModifiers().contains(Modifier.ABSTRACT);
@@ -135,6 +137,7 @@ public class ComponentGenerationUtil
         return !hasAnnotation(method, Computed.class)
             && !hasAnnotation(method, Watch.class)
             && !hasAnnotation(method, PropValidator.class)
+            && !hasAnnotation(method, PropDefault.class)
             && !method.isStatic()
             && !method.isPrivate()
             && !method.isAbstract();

@@ -274,6 +274,18 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     }
 
     /**
+     * Add a custom prop validator to validate a property
+     * @param javaMethodName Name of the method in the {@link TemplateResource}
+     * @param propertyName The name of the property to validate
+     */
+    @JsOverlay
+    public final void addJavaPropDefaultValue(String javaMethodName, String propertyName)
+    {
+        PropOptions propDefinition = (PropOptions) props.get(propertyName);
+        propDefinition.defaultValue = getJavaComponentMethod(javaMethodName);
+    }
+
+    /**
      * Get the given java method from the {@link TemplateResource}.
      * @param javaMethodName Name of the Java method to retrieve
      * @return The JS function that represent our Java method.
