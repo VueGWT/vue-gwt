@@ -79,6 +79,10 @@ public class VueGWTObserverManager
         if (object.getClass() == JavaScriptObject.class)
             return false;
 
+        // Don't observe Java classes
+        if (object instanceof Class)
+            return true;
+
         // Check if we have a custom Java observer
         for (VueGWTObserver observer : observers)
             if (observer.observe(object))
