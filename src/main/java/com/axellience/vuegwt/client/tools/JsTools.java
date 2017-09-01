@@ -64,6 +64,8 @@ public class JsTools
 
     public static native boolean isUndefined(Object value);
 
+    public static native boolean delete(Object object, String property);
+
     @JsIgnore
     public static <T> T get(Object o, int index)
     {
