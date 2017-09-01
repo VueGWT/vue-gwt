@@ -5,11 +5,10 @@ import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsRunnable;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.client.vue.VueConfig;
-import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.client.vue.VueFactory;
+import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.google.gwt.dom.client.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -23,7 +22,7 @@ import static com.axellience.vuegwt.client.VueGWT.createInstance;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public abstract class Vue extends JsObject
+public abstract class Vue
 {
     @JsProperty private static VueConfig config;
 
