@@ -74,6 +74,9 @@
 	jsTools.debugger = function () {
 		debugger;
 	};
+	jsTools.delete = function (object, property) {
+		return object[property];
+	};
 	jsTools.isUndefined = function (value) {
 		return value === undefined;
 	};

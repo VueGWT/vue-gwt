@@ -16,7 +16,6 @@ public class VueObserver
     @JsProperty
     private Dep dep;
 
-    public native void walk(Object o);
     public native void observeArray(JsArray array);
     public native void observeArray(Object[] array);
 

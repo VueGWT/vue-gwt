@@ -1,9 +1,9 @@
 package com.axellience.vuegwt.client.observer;
 
 import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.CollectionObserver;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.MapObserver;
+import com.axellience.vuegwt.client.tools.JsTools;
 import com.google.gwt.core.client.JavaScriptObject;
 import jsinterop.annotations.JsMethod;
 
@@ -40,29 +40,6 @@ public class VueGWTObserverManager
     }
 
     /**
-     * Return the Vue Observer for the given object.
-     * The object must be reactive (visible in a Vue Component) otherwise this method
-     * will return null.
-     * @param object The object we want to get the Vue Observer from
-     * @return The Vue Observer for this Object
-     */
-    public static VueObserver getVueObserver(Object object)
-    {
-        return (VueObserver) ((JsObject) object).get("__ob__");
-    }
-
-    public static void observe(Object object)
-    {
-        observeArray(JsArray.array(object));
-    }
-
-    @JsMethod(namespace = "VueGWT.observerManager")
-    public static native void observeArray(JsArray objects);
-
-    @JsMethod(namespace = "VueGWT.observerManager")
-    public static native void walk(Object object);
-
-    /**
      * Will be called from JS by the Vue observer.
      * This is called before Vue "walk" the properties of the Object to make them reactive.
      * If your object has it's own observation mechanism, or you don't want Vue to make your
@@ -91,6 +68,49 @@ public class VueGWTObserverManager
         makeStaticallyInitializedPropertiesReactive(object, object.getClass().getCanonicalName());
         return false;
     }
+
+    /**
+     * Return the Vue Observer for the given object.
+     * The object must be reactive (visible in a Vue Component) otherwise this method
+     * will return null.
+     * @param object The object we want to get the Vue Observer from
+     * @return The Vue Observer for this Object
+     */
+    public static VueObserver getVueObserver(Object object)
+    {
+        return (VueObserver) JsTools.get(object, "__ob__");
+    }
+
+    /**
+     * Observe the given Object using Vue.js observer.
+     * Will call {@link VueGWTObserverManager#observeJavaObject} to check if we have to make
+     * properties reactive.
+     * @param object The object to observe
+     */
+    public static void observe(Object object)
+    {
+        observeArray(JsArray.array(object));
+    }
+
+    /**
+     * Observe all the given objects. It won't automatically observe objects added/removed from the
+     * array.
+     * Will call {@link VueGWTObserverManager#observeJavaObject} on each object to check
+     * if we have to make its properties reactive.
+     * @param objects The list of object to observe
+     */
+    @JsMethod(namespace = "VueGWT.observerManager")
+    public static native void observeArray(JsArray objects);
+
+    /**
+     * Make all properties of the object reactive. It won't call
+     * {@link VueGWTObserverManager#observeJavaObject} and will call Vue.js native walk instead.
+     * You should only use this method if you are not propagating Vue.js observation but still
+     * want to make some objects reactive.
+     * @param object The object to make reactive
+     */
+    @JsMethod(namespace = "VueGWT.observerManager")
+    public static native void makeReactive(Object object);
 
     /**
      * Due to GWT optimizations, properties on java object defined like this are not observable in

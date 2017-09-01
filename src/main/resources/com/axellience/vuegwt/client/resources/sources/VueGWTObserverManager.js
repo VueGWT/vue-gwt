@@ -16,15 +16,16 @@
 	observerManager.customizeVueObserver = function (ob) {
 		const obProto = Object.getPrototypeOf(ob);
 		const vueWalk = obProto.walk;
-		observerManager.observeArray = obProto.observeArray;
-		observerManager.walk = obProto.walk;
-		obProto.walk = function () {
-			const obj = arguments[0];
-			if (observerManager.observeJavaObject(obj))
+		obProto.walk = function (obj) {
+			if (observerManager.observeJavaObject(obj)) {
 				return;
+			}
 
-			return vueWalk.apply(this, arguments);
+			vueWalk(obj);
 		};
+
+		observerManager.observeArray = obProto.observeArray;
+		observerManager.makeReactive = vueWalk;
 	};
 
 	/**
