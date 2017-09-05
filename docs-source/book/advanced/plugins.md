@@ -22,24 +22,17 @@ In the future we will probably have something to convert TypeScript definitions 
 
 ### Configuring Components
 
-Some plugins, like Vue Router will require you to pass options when declaring your Component.
+Some plugins, like Vue Router will require you to customize options when declaring your Component.
 
-For this you can simply override the `customizeOptions(VueComponentOptions componentOptions)` in your Component.
-
+For this, create a class that extends `CustomizeOptions` and override `customizeOptions(VueComponentOptions componentOptions)` in it.
 This method will be called once when translating your Java Component to `VueComponentOptions` to pass to Vue.js.
 You can simply set options on the given `componentOptions` parameter and they will be passed along to Vue.js.
 
+If you need, you can inject attributes in your `CustomizeOptions` class.
+
+To bind this class to your Component, simply pass it to the `customizeOptions` parameter of your `@Component` annotation.
+
 If you need, you can even add your own methods, data or any property from [ComponentOptions](https://github.com/vuejs/vue/blob/dev/types/options.d.ts).
-
-### Getting the `VueComponentOptions` for a Component
-
-Sometimes you need to access a `VueComponentOptions` for a given Component from somewhere else.
-For example in Vue Router you can set the Component for a given Route, and Vue Router except it to be a `VueComponentOptions`.
-
-For this you can create a new instance of it like a regular Java Object:
-```java
-MyComponentOptions myComponentOptions = new MyComponentOptions();
-```
 
 ### Escape Hatch
 
