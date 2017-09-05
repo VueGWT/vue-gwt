@@ -24,7 +24,7 @@ In the future we will probably have something to convert TypeScript definitions 
 
 Some plugins, like Vue Router will require you to customize options when declaring your Component.
 
-For this, create a class that extends `CustomizeOptions` and override `customizeOptions(VueComponentOptions componentOptions)` in it.
+For this, create a class that implements `CustomizeOptions` and override `customizeOptions(VueComponentOptions componentOptions)` in it.
 This method will be called once when translating your Java Component to `VueComponentOptions` to pass to Vue.js.
 You can simply set options on the given `componentOptions` parameter and they will be passed along to Vue.js.
 
