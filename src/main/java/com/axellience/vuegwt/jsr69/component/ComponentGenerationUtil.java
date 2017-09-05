@@ -2,6 +2,7 @@ package com.axellience.vuegwt.jsr69.component;
 
 import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwt.jsr69.component.annotations.Computed;
@@ -62,6 +63,37 @@ public class ComponentGenerationUtil
         try
         {
             Class<?>[] componentsClass = componentAnnotation.components();
+
+            return Stream
+                .of(componentsClass)
+                .map(Class::getCanonicalName)
+                .map(elementsUtil::getTypeElement)
+                .map(TypeElement::asType)
+                .collect(Collectors.toList());
+        }
+        catch (MirroredTypesException mte)
+        {
+            return new LinkedList<>(mte.getTypeMirrors());
+        }
+    }
+
+    /**
+     * Return the list of {@link CustomizeOptions} that will be used to customize the options
+     * before passing them down to Vue.js.
+     * When retrieving this list, it can produce a {@link MirroredTypesException}.
+     * The case is managed here and we always returns {@link TypeMirror} of the items.
+     * @param elementsUtil The Element utils provided by the annotation processor environement.
+     * @param component The {@link Component} annotation to process
+     * @return The list of TypeMirror of the {@link CustomizeOptions} the {@link Component} depends on
+     */
+    public static List<TypeMirror> getComponentCustomizeOptions(Elements elementsUtil,
+        TypeElement component)
+    {
+        Component componentAnnotation = component.getAnnotation(Component.class);
+
+        try
+        {
+            Class<?>[] componentsClass = componentAnnotation.customizeOptions();
 
             return Stream
                 .of(componentsClass)

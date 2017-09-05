@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.jsr69.component.annotations;
 
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.client.directive.VueDirective;
 
 import java.lang.annotation.Retention;
@@ -37,6 +38,14 @@ public @interface Component
      * @return This list of {@link VueDirective} to register on this Component
      */
     Class<? extends VueDirective>[] directives() default {};
+
+    /**
+     * Object responsible to customize the options of the Component.
+     * This can be used to register routes with Vue router, or more.
+     * They are injected if the component is injected.
+     * @return This list of {@link CustomizeOptions}
+     */
+    Class<? extends CustomizeOptions>[] customizeOptions() default {};
 
     /**
      * A flag to set that the component doesn't have a template.

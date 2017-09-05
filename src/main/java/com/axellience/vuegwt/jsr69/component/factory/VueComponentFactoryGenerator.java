@@ -2,6 +2,7 @@ package com.axellience.vuegwt.jsr69.component.factory;
 
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.component.VueComponent;
+import com.axellience.vuegwt.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
@@ -10,40 +11,32 @@ import com.axellience.vuegwt.client.vue.VueJsAsyncProvider;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.jsr69.GenerationNameUtil;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import com.axellience.vuegwt.jsr69.component.annotations.VueCustomizeOptions;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.inject.Inject;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic.Kind;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.client.tools.VueGWTTools.componentToTagName;
 import static com.axellience.vuegwt.client.tools.VueGWTTools.directiveToTagName;
 import static com.axellience.vuegwt.jsr69.GenerationNameUtil.*;
-import static com.axellience.vuegwt.jsr69.GenerationUtil.hasAnnotation;
+import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getComponentCustomizeOptions;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getComponentLocalComponents;
 import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.getSuperComponentType;
-import static com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil.resolveVariableTypeName;
 
 /**
  * Generate {@link VueFactory} from the user {@link VueComponent} classes annotated by {@link
@@ -79,11 +72,12 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             VueComponentOptions.class,
             component.asType(),
             componentJsTypeName(component));
+        processCustomizeOptions(component, initBuilder, initParametersCall);
 
         // Extend the parent Component
         Optional<ClassName> superFactoryType =
             getSuperComponentType(component).map(GenerationNameUtil::componentFactoryName);
-        
+
         if (superFactoryType.isPresent())
         {
             initBuilder.addParameter(superFactoryType.get(), "superFactory");
@@ -103,7 +97,6 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         registerProvider(component, initBuilder, initParametersCall);
         registerLocalComponents(component, initBuilder, initParametersCall);
         registerLocalDirectives(componentAnnotation, initBuilder);
-        processCustomizeOptionsMethods(component, initBuilder, initParametersCall);
 
         MethodSpec initMethod = initBuilder.build();
         vueFactoryClassBuilder.addMethod(initMethod);
@@ -221,123 +214,44 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
     }
 
     /**
-     * Process all the methods annotated with {@link VueCustomizeOptions}. These methods should be
-     * called when the {@link VueFactory} is created. If they have more parameters than the {@link
-     * VueComponentOptions} those parameters should be injected.
+     * Process all the {@link CustomizeOptions} from the {@link Component} annotation.
      * @param component The {@link VueComponent} we generate for
      * @param initBuilder The builder for our {@link VueFactory} init method
      * @param staticInitParameters The list of static parameters to pass when calling the init
      * method from a static context
      */
-    private void processCustomizeOptionsMethods(TypeElement component,
-        MethodSpec.Builder initBuilder, List<CodeBlock> staticInitParameters)
+    private void processCustomizeOptions(TypeElement component, MethodSpec.Builder initBuilder,
+        List<CodeBlock> staticInitParameters)
     {
-        List<ExecutableElement> customizeOptionsMethods = ElementFilter
-            .methodsIn(component.getEnclosedElements())
-            .stream()
-            .filter(method -> hasAnnotation(method, VueCustomizeOptions.class))
-            .peek(this::validateCustomizeOptionsMethod)
-            .collect(Collectors.toList());
-
-        customizeOptionsMethods.forEach(customizeOptionsMethod -> this.processCustomizeOptionsMethod(
-            customizeOptionsMethod,
+        getComponentCustomizeOptions(elements,
+            component).forEach(customizeOptions -> this.processCustomizeOptions(customizeOptions,
             initBuilder,
-            component,
             staticInitParameters));
     }
 
     /**
-     * Process a specific method annotated with {@link VueCustomizeOptions}. This method should be
-     * called when the {@link VueFactory} is created. If it has more parameters than the {@link
-     * VueComponentOptions} those parameters should be injected.
-     * @param customizeOptionsMethod The method we are generating for
+     * Process the {@link CustomizeOptions} from the {@link Component} annotation. An instance
+     * of this class should be created with our factory and used to customize our
+     * {@link VueComponentOptions} before passing them to Vue.
+     * @param customizeOptions The {@link CustomizeOptions} we are generating for
      * @param initBuilder The builder for our {@link VueFactory} init method
-     * @param component The {@link VueComponent} we generate for
      * @param staticInitParameters The list of static parameters to pass when calling the init
      * method from a static context
      */
-    private void processCustomizeOptionsMethod(ExecutableElement customizeOptionsMethod,
-        MethodSpec.Builder initBuilder, TypeElement component, List<CodeBlock> staticInitParameters)
+    private void processCustomizeOptions(TypeMirror customizeOptions,
+        MethodSpec.Builder initBuilder, List<CodeBlock> staticInitParameters)
     {
-        // Check if has at least one parameter to inject
-        String methodName = customizeOptionsMethod.getSimpleName().toString();
+        ClassName customizeOptionsClassName = ((ClassName) ClassName.get(customizeOptions));
+        char c[] = customizeOptionsClassName.simpleName().toCharArray();
+        c[0] = Character.toLowerCase(c[0]);
+        String parameterName = new String(c);
 
-        List<String> parameters = new LinkedList<>();
-        parameters.add("jsConstructor.getOptions()");
+        initBuilder.addParameter(customizeOptionsClassName, parameterName);
+        staticInitParameters.add(CodeBlock.of("new $T()", customizeOptionsClassName));
 
-        if (customizeOptionsMethod.getParameters().size() > 1)
-        {
-            for (int i = 1; i < customizeOptionsMethod.getParameters().size(); i++)
-            {
-                VariableElement parameter = customizeOptionsMethod.getParameters().get(i);
-
-                String parameterName = methodName + "_" + parameter.getSimpleName().toString();
-                parameters.add(parameterName);
-                initBuilder.addParameter(resolveVariableTypeName(parameter, messager),
-                    parameterName);
-                staticInitParameters.add(CodeBlock.of("null"));
-            }
-        }
-
-        initBuilder.addStatement("$T.$L($L)",
-            component.asType(),
-            methodName,
-            String.join(", ", parameters));
-    }
-
-    /**
-     * Validate that the {@link VueCustomizeOptions} method is declared correctly.
-     * @param customizeOptionsMethod The method to validate
-     */
-    private void validateCustomizeOptionsMethod(ExecutableElement customizeOptionsMethod)
-    {
-        // Check that the method is static
-        if (!customizeOptionsMethod.getModifiers().contains(Modifier.STATIC))
-        {
-            printCustomizeOptionsError("The method should be static.", customizeOptionsMethod);
-            return;
-        }
-
-        // Check that the method is not private
-        if (customizeOptionsMethod.getModifiers().contains(Modifier.PRIVATE))
-        {
-            printCustomizeOptionsError(
-                "The method cannot be private, please make it at least package-protected.",
-                customizeOptionsMethod);
-            return;
-        }
-
-        // Check we have at least one parameter
-        if (customizeOptionsMethod.getParameters().isEmpty())
-        {
-            printCustomizeOptionsError(
-                "The method should have at least one parameter of type VueComponentOptions.",
-                customizeOptionsMethod);
-            return;
-        }
-
-        // Check first parameter type
-        VariableElement parameter = customizeOptionsMethod.getParameters().get(0);
-        TypeName parameterType = TypeName.get(parameter.asType());
-        if (parameterType instanceof ParameterizedTypeName)
-            parameterType = ((ParameterizedTypeName) parameterType).rawType;
-
-        if (!parameterType.equals(ClassName.get(VueComponentOptions.class)))
-        {
-            printCustomizeOptionsError("The method first parameter of type VueComponentOptions.",
-                customizeOptionsMethod);
-        }
-    }
-
-    private void printCustomizeOptionsError(String message,
-        ExecutableElement customizeOptionsMethod)
-    {
-        messager.printMessage(Kind.ERROR,
-            "On method "
-                + customizeOptionsMethod.getSimpleName()
-                + " annotated with @VueCustomizeOptions in component "
-                + customizeOptionsMethod.getEnclosingElement().getSimpleName()
-                + ": "
-                + message);
+        initBuilder.addStatement("$L.$L($L)",
+            parameterName,
+            "customizeOptions",
+            "componentOptions");
     }
 }
