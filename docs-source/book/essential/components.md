@@ -294,14 +294,15 @@ The proper answer to these use cases are:
 
 ```java
 @Component
-public class MyComponent extends VueComponent {
+public class MyComponent extends VueComponent implements HasCreated {
     @Prop
     @JsProperty
     public String initialCounter;
     
     @JsProperty String counter;
     
-    public MyComponent() {
+    @Override
+    public void created() {
         this.counter = this.initialCounter;
     }
 }
@@ -438,6 +439,7 @@ Here's an example:
 public class ButtonCounterComponent extends VueComponent {
     @JsProperty int counter = 0;
 
+    @JsMethod
     public void increment() {
         this.counter++;
         // When incrementing, we fire an event.
@@ -459,6 +461,7 @@ public class ButtonCounterComponent extends VueComponent {
 public class CounterWithEventComponent extends VueComponent {
     @JsProperty int total = 0;
 
+    @JsMethod
     public void incrementTotal() {
         this.total++;
     }
@@ -486,6 +489,7 @@ For example, let's change our counter component to pass the value of it's counte
 public class ButtonCounterComponent extends VueComponent {
     @JsProperty int counter = 0;
 
+    @JsMethod
     public void increment() {
         this.counter++;
         // Pass the current value of the counter with the event.
@@ -511,6 +515,7 @@ public class CounterWithEventComponent extends VueComponent {
     @JsProperty int total = 0;
 
     // But we can now get the value of the event as parameter
+    @JsMethod
     public void incrementTotal(int childCounterValue) {
         this.total += childCounterValue;
     }

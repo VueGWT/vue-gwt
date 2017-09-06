@@ -23,6 +23,7 @@ Let's say we have the following Component:
 public abstract class ParentComponent extends VueComponent {
     @JsProperty String parentMessage = "This is a message from the parent";
 
+    @JsMethod
     public int parentMultiplyBy2(int value) {
         return value * 2;
     }

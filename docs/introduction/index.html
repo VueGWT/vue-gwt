@@ -838,13 +838,13 @@ This Component will simply display an html link.</p>
 }
 </code></pre>
 <h5 id="why-jsproperty">Why <code>@JsProperty</code>?</h5>
-<p>Only <code>JsInterop</code> attributes of our Class will be accessible in our template.</p>
+<p>Only <code>JsInterop</code> attributes and methods of our Class will be accessible in our template.</p>
 <p>Meaning either:</p>
 <ul>
-<li>Adding the <code>@JsType</code> annotation to our Class and setting attributes to <code>public</code></li>
-<li>Adding the <code>@JsProperty</code> annotation to each attribute and setting them to at least <code>protected</code>.</li>
+<li>Adding the <code>@JsType</code> annotation to our Class and setting attributes/methods to <code>public</code></li>
+<li>Adding the <code>@JsProperty</code>/<code>@JsMethod</code> annotation to each attribute/method and setting them to at least <code>package-protected</code>.</li>
 </ul>
-<p>In this documentation we chose to use the <code>@JsProperty</code> annotation on properties.</p>
+<p>In this documentation we chose to use the <code>@JsProperty</code>/<code>@JsMethod</code> annotation on properties/methods.</p>
 <h5 id="html-template">HTML Template</h5>
 <p>We will then create a template for our <code>SimpleLinkComponent</code>.
 It should have the same name as our Java Class file and be in the same package.
@@ -894,10 +894,7 @@ We can then use <a href="./#composing-with-components">Component composition</a>
         linkName: <span class="hljs-literal">null</span>
     },
     methods: {
-        created: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-            <span class="hljs-keyword">const</span> javaInstance = <span class="hljs-keyword">new</span> SimpleLinkComponent(); 
-            <span class="hljs-keyword">this</span>.linkName = javaInstance.linkName;
-        }
+        ...
     }
 }
 </code></pre>
@@ -1019,6 +1016,7 @@ But you can try removing all the <code>Todo</code> from the list in your browser
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExclamationComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> String message = <span class="hljs-string">&quot;Hello Vue GWT!&quot;</span>;
 
+    <span class="hljs-meta">@JsMethod</span> <span class="hljs-comment">// Notice the @JsMethod annotation to expose this method to our template</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addExclamationMark</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.message += <span class="hljs-string">&quot;!&quot;</span>;
     }
@@ -1225,7 +1223,7 @@ You won&apos;t need to pass the class of your <code>VueComponent</code> to the <
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.3","depth":1,"next":{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},"previous":{"title":"Project Setup","level":"1.2","depth":1,"path":"project-setup.md","ref":"project-setup.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/README.md","mtime":"2017-08-15T17:45:18.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-05T15:12:29.767Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.3","depth":1,"next":{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},"previous":{"title":"Project Setup","level":"1.2","depth":1,"path":"project-setup.md","ref":"project-setup.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"introduction/README.md","mtime":"2017-09-06T09:11:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-06T09:17:10.167Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

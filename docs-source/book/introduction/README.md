@@ -34,14 +34,14 @@ public class SimpleLinkComponent extends VueComponent {
 
 ##### Why `@JsProperty`?
 
-Only `JsInterop` attributes of our Class will be accessible in our template.
+Only `JsInterop` attributes and methods of our Class will be accessible in our template.
 
 Meaning either:
 
- * Adding the `@JsType` annotation to our Class and setting attributes to `public`
- * Adding the `@JsProperty` annotation to each attribute and setting them to at least `protected`.
+ * Adding the `@JsType` annotation to our Class and setting attributes/methods to `public`
+ * Adding the `@JsProperty`/`@JsMethod` annotation to each attribute/method and setting them to at least `package-protected`.
 
-In this documentation we chose to use the `@JsProperty` annotation on properties.
+In this documentation we chose to use the `@JsProperty`/`@JsMethod` annotation on properties/methods.
 
 ##### HTML Template
 
@@ -117,10 +117,7 @@ Behind the scene, our Java `VueComponent` Class is converted to the options that
         linkName: null
     },
     methods: {
-        created: function() {
-        	const javaInstance = new SimpleLinkComponent(); 
-            this.linkName = javaInstance.linkName;
-        }
+    	...
     }
 }
 ```
@@ -289,6 +286,7 @@ To let users interact with your app, we can use the `v-on` directive to attach e
 public class ExclamationComponent extends VueComponent {
     @JsProperty String message = "Hello Vue GWT!";
     
+    @JsMethod // Notice the @JsMethod annotation to expose this method to our template
     public void addExclamationMark() {
         this.message += "!";
     }
@@ -424,6 +422,7 @@ The `@Prop` annotation tells Vue GWT that our `todo` property will be passed fro
 Be careful, you still need to use the `@JsProperty` to tell VueGWT to not rename this property.
 
 ***TodoComponent.html***
+
 ```html
 <li>
     {{ todo.getText() }}

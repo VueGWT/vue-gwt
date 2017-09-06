@@ -1015,14 +1015,15 @@ If you do, Vue will warn you in the console.</p>
 <li>Define a local data property that uses the prop&apos;s initial value as its initial value:</li>
 </ol>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     <span class="hljs-keyword">public</span> String initialCounter;
 
     <span class="hljs-meta">@JsProperty</span> String counter;
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">MyComponent</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.counter = <span class="hljs-keyword">this</span>.initialCounter;
     }
 }
@@ -1124,6 +1125,7 @@ This is where Vue&apos;s custom event system comes in.</p>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>;
 
+    <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.counter++;
         <span class="hljs-comment">// When incrementing, we fire an event.</span>
@@ -1141,6 +1143,7 @@ This is where Vue&apos;s custom event system comes in.</p>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterWithEventComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> total = <span class="hljs-number">0</span>;
 
+    <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">incrementTotal</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.total++;
     }
@@ -1161,6 +1164,7 @@ This value will be passed to the method that catch the event in the parent.</p>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>;
 
+    <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.counter++;
         <span class="hljs-comment">// Pass the current value of the counter with the event.</span>
@@ -1181,6 +1185,7 @@ This value will be passed to the method that catch the event in the parent.</p>
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> total = <span class="hljs-number">0</span>;
 
     <span class="hljs-comment">// But we can now get the value of the event as parameter</span>
+    <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">incrementTotal</span><span class="hljs-params">(<span class="hljs-keyword">int</span> childCounterValue)</span> </span>{
         <span class="hljs-keyword">this</span>.total += childCounterValue;
     }
@@ -1561,7 +1566,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-08-31T15:27:11.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-05T15:12:29.767Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-09-06T08:59:02.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-06T09:17:10.167Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

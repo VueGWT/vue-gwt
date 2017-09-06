@@ -74,6 +74,7 @@ In those case you can use the following syntax:
 public class TodoTextComponent extends VueComponent {
     @JsProperty Todo todo = new Todo("Hello World!");
 
+    @JsMethod
     public void updateMessage(NativeEvent event) {
         this.todo.setText(JsTools.get(event.getEventTarget(), "value"));
     }

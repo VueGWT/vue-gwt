@@ -81,6 +81,7 @@ public class ReverseComponent extends VueComponent {
     @JsProperty String message = "Hello";
 
     // Note that there a no more @Computed annotation
+    @JsMethod
     public String getReversedMessage() {
         return new StringBuilder(message).reverse().toString();
     }

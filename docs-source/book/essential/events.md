@@ -45,6 +45,7 @@ For example:
 ```java
 @Component
 public class GreetComponent extends VueComponent {
+    @JsMethod
     public void greet() {
         Window.alert("Hello from GWT!");
     }
@@ -79,6 +80,7 @@ Instead of binding directly to a method name, we can also use methods in an inli
 ```java
 @Component
 public class HiWhatComponent extends VueComponent {
+    @JsMethod
     public void say(String message) {
         Window.alert(message);
     }
