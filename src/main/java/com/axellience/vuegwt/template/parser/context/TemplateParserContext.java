@@ -17,6 +17,8 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.axellience.vuegwt.jsr69.GenerationNameUtil.COMPONENT_JS_TYPE_SUFFIX;
+
 /**
  * Context of the parser.
  * This holds information about imports and variable that exist in the Component.
@@ -246,12 +248,14 @@ public class TemplateParserContext
     }
 
     /**
-     * Simple getter for the currently processed VueComponentClass.
+     * Simple getter for the currently processed {@link VueComponent} Template name.
      * Used for debugging.
-     * @return The currently process VueComponent class
+     * @return The currently process {@link VueComponent} Template name
      */
-    public JClassType getComponentJsTypeClass()
+    public String getTemplateName()
     {
-        return componentJsTypeClass;
+        String componentJsTypeName = componentJsTypeClass.getName();
+        return componentJsTypeName.substring(0,
+            componentJsTypeName.length() - COMPONENT_JS_TYPE_SUFFIX.length()) + ".html";
     }
 }

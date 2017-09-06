@@ -506,9 +506,9 @@ public class TemplateParser
         VariableInfo variableInfo = context.findVariable(name);
         if (variableInfo == null)
         {
-            throw new TemplateExpressionException("Couldn't find variable \""
+            throw new TemplateExpressionException("Couldn't find variable/method \""
                 + name
-                + "\" in the Component.\nMake sure you didn't forget the @JsProperty annotation or try rerunning your Annotation processor.",
+                + "\" in the Component.\nMake sure you didn't forget the @JsProperty/@JsMethod annotation or try rerunning your Annotation processor.",
                 expression.toString(),
                 context);
         }
