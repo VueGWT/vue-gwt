@@ -102,10 +102,7 @@ public class ComponentJsTypeGenerator
         processPropValidators(component, optionsBuilder, componentJsTypeBuilder);
         processPropDefaultValues(component, optionsBuilder, componentJsTypeBuilder);
         processHooks(component, optionsBuilder, hookMethodsFromInterfaces);
-        processTemplateMethods(component,
-            optionsBuilder,
-            componentJsTypeBuilder,
-            hookMethodsFromInterfaces);
+        processTemplateMethods(component, optionsBuilder, hookMethodsFromInterfaces);
         processRenderFunction(component, optionsBuilder, componentJsTypeBuilder);
         createCreatedHook(component, optionsBuilder, componentJsTypeBuilder, dependenciesBuilder);
 
@@ -291,17 +288,15 @@ public class ComponentJsTypeGenerator
     }
 
     /**
-     * Process template methods for our {@link VueComponent} class. Make them visible to JS by
-     * wrapping them if necessary.
+     * Process template methods for our {@link VueComponent} class.
      * @param component {@link VueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
-     * @param componentJsTypeBuilder Builder for the JsType class
      * @param hookMethodsFromInterfaces Hook methods from the interface the {@link VueComponent}
      * implements
      */
     private void processTemplateMethods(TypeElement component, MethodSpec.Builder optionsBuilder,
-        Builder componentJsTypeBuilder, Set<ExecutableElement> hookMethodsFromInterfaces)
+        Set<ExecutableElement> hookMethodsFromInterfaces)
     {
         List<ExecutableElement> templateMethods = ElementFilter
             .methodsIn(component.getEnclosedElements())
@@ -309,13 +304,6 @@ public class ComponentJsTypeGenerator
             .filter(ComponentGenerationUtil::isMethodVisibleInTemplate)
             .filter(method -> !isHookMethod(component, method, hookMethodsFromInterfaces))
             .collect(Collectors.toList());
-
-        // Make methods visible in JS
-        templateMethods
-            .stream()
-            .filter(method -> !isMethodVisibleInJS(method))
-            .map(this::createProxyJsTypeMethod)
-            .forEach(componentJsTypeBuilder::addMethod);
 
         // Declare methods in the component
         String methodNamesParameters = templateMethods

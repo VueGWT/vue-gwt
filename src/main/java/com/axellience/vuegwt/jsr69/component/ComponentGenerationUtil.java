@@ -150,13 +150,13 @@ public class ComponentGenerationUtil
      */
     public static boolean isMethodVisibleInTemplate(ExecutableElement method)
     {
-        return !hasAnnotation(method, Computed.class)
+        return isMethodVisibleInJS(method)
+            && !hasAnnotation(method, Computed.class)
             && !hasAnnotation(method, Watch.class)
             && !hasAnnotation(method, PropValidator.class)
             && !hasAnnotation(method, PropDefault.class)
             && !method.getModifiers().contains(Modifier.STATIC)
-            && !method.getModifiers().contains(Modifier.PRIVATE)
-            && !method.getModifiers().contains(Modifier.ABSTRACT);
+            && !method.getModifiers().contains(Modifier.PRIVATE);
     }
 
     /**
@@ -166,13 +166,13 @@ public class ComponentGenerationUtil
      */
     public static boolean isMethodVisibleInTemplate(JMethod method)
     {
-        return !hasAnnotation(method, Computed.class)
+        return isMethodVisibleInJS(method)
+            && !hasAnnotation(method, Computed.class)
             && !hasAnnotation(method, Watch.class)
             && !hasAnnotation(method, PropValidator.class)
             && !hasAnnotation(method, PropDefault.class)
             && !method.isStatic()
-            && !method.isPrivate()
-            && !method.isAbstract();
+            && !method.isPrivate();
     }
 
     /**
@@ -215,6 +215,20 @@ public class ComponentGenerationUtil
     {
         return (hasAnnotation(field.getEnclosingType(), JsType.class) && field.isPublic())
             || hasAnnotation(field, JsProperty.class);
+    }
+
+    /**
+     * Return weather a given method is visible in JS (JsInterop).
+     * It will be the case if it's public and it's class/interface has the {@link JsType}
+     * annotation, or
+     * if it has the {@link JsMethod} annotation.
+     * @param method The method to check
+     * @return true if it is visible (JsInterop), false otherwise
+     */
+    public static boolean isMethodVisibleInJS(JMethod method)
+    {
+        return (hasAnnotation(method.getEnclosingType(), JsType.class) && method.isPublic())
+            || hasAnnotation(method, JsMethod.class);
     }
 
     /**
