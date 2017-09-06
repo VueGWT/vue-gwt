@@ -113,6 +113,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     /**
      * Initialise the data structure, then set it to either a Factory or directly on the Component.
      * @param useFactory Boolean representing whether or not to use a Factory.
+     * @param fieldNames Name of the data fields in the object
      */
     @JsOverlay
     public final void initData(boolean useFactory, String... fieldNames)
