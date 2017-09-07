@@ -14,25 +14,25 @@ It let you write Vue.js components in Java.
 * Template expressions **type checking** at compile time
 * **HTML templates are compiled** during Java Compilation (only requires Vue.js runtime)
 * Use **regular Java Objects and Collections** in your templates
-* Support **most of Vue.js features**
+* Supports **most of Vue.js features**
 * Integrates with GWT Resources and Widgets
 
 ## Who is this for?
 
 * You want to code a **Vue app with type checking**, and take advantage of GWT optimizations. 
-* You have **GWT app**, and you want **easy to write views** with **2 way data binding**.
+* You have **GWT app**, and you want an **easy way to write views** with **2-way data binding**.
 * You have a **Vue app** and you need to **use a Java library in some Components**.
 
 ## What does it look like?
 
-You can start reading **[our documentation](https://axellience.github.io/vue-gwt/introduction/)** it contains live examples. 
+You can start by reading **[our documentation](https://axellience.github.io/vue-gwt/introduction/)** that contains live examples. 
 You can also checkout the **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)**.
 
 Curious about the implementation? See the sources in our public **[Github repository](https://github.com/Axellience/vue-gwt)**.
 
 ## Let's do this!
 
-When you are ready, you can get started with by **[setting it up on your project](https://axellience.github.io/vue-gwt/project-setup.html)**.
+When you are ready, you can start by **[setting it up on your project](https://axellience.github.io/vue-gwt/project-setup.html)**.
 
 >️ ℹ️ Vue GWT is in an **beta** state.
 It may still contain some bugs.
