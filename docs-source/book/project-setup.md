@@ -6,28 +6,14 @@ To add Vue GWT to your Maven project, simply add the following to your `pom.xml`
 
 ```xml
 <project>
-    <properties>
-        ...
-        <vue-gwt.version>0.1-SNAPSHOT</vue-gwt.version>
-    </properties>
-    
     <dependencies>
         ...
         <dependency>
             <groupId>com.axellience</groupId>
             <artifactId>vue-gwt</artifactId>
-            <version>${vue-gwt.version}</version>
+            <version>1.0-beta-1</version>
         </dependency>
     </dependencies>
-    
-    <!-- For now we only have SNAPSHOT releases, so you need to add the SonaType repository to get them -->
-    <repositories>
-        ...
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-    </repositories>
 </project>
 ```
 
@@ -59,7 +45,10 @@ First, in the `plugins` section of your Maven `pom.xml` add the following `plugi
 ```
 
 ### Eclipse
-If you use Eclipse, you need the following to your `pom.xml` to enable automatic annotation processing:
+If you use Eclipse first ensure you have the `m2e-apt` plugin installed:
+[https://marketplace.eclipse.org/content/m2e-apt](https://marketplace.eclipse.org/content/m2e-apt).
+ 
+Then you need to add the following to your `pom.xml` to store the settings of `m2e-apt`:
 
 ```xml
 <pluginManagement>

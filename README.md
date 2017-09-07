@@ -34,14 +34,13 @@ Curious about the implementation? See the sources in our public **[Github reposi
 
 When you are ready, you can get started with by **[setting it up on your project](https://axellience.github.io/vue-gwt/project-setup.html)**.
 
-> ⚠️ Vue GWT is in an **experimental** state.
-The syntax is not final and might change between versions.
-It may also contain bugs.
+>️ ℹ️ Vue GWT is in an **beta** state.
+It may still contain some bugs.
 
 > We are looking for feedback and contributions.
 If you use it on a small project, please [let us know how it goes](https://gitter.im/Axellience/vue-gwt).
 
-## Who Made This?
+## Who made this?
 
 <p align="center">
     Vue GWT is developed by the awesome people at<br/>
