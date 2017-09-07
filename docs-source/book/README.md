@@ -34,17 +34,16 @@ Curious about the implementation? See the sources in our public **[Github reposi
 
 When you are ready, you can get started with by **[setting it up on your project](./project-setup.md)**.
 
-<p class="warning-panel">
-    Vue GWT is in an <strong>experimental</strong> state.
-    The syntax is not final and might change between versions.
-    It may also contain bugs.<br/>
+<p class="info-panel">
+    Vue GWT is in an <strong>beta</strong> state.
+    It may still contain some bugs.<br/>
     We are looking for feedback and contributions.
     If you use it on a small project, please <a href="https://gitter.im/Axellience/vue-gwt" target="_blank">let us know how it goes</a>.
 </p>
 
-*This documentation was last updated for [Vue.js v2.4.2](https://github.com/vuejs/vue/releases/tag/v2.4.2) and Vue GWT 0.1-SNAPSHOT*
+*This documentation was last updated for [Vue.js v2.4.2](https://github.com/vuejs/vue/releases/tag/v2.4.2) and Vue GWT 1.0-beta-1*
 
-## Who Made This?
+## Who made this?
 
 <p align="center">
     Vue GWT is developed by the awesome people at<br/>
