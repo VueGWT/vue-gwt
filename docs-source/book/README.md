@@ -1,7 +1,7 @@
 # Vue GWT
 
 Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT](http://www.gwtproject.org/) 2.8 using [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
-It let you write Vue.js components in Java.
+It lets you write Vue.js components in Java.
 
 <p align="center">
 <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
@@ -14,7 +14,8 @@ It let you write Vue.js components in Java.
 * Template expressions **type checking** at compile time
 * **HTML templates are compiled** during Java Compilation (only requires Vue.js runtime)
 * Use **regular Java Objects and Collections** in your templates
-* Support **most of Vue.js features**
+* Supports **injection** in Components
+* Supports **most of Vue.js features**
 * Integrates with GWT Resources and Widgets
 
 ## Who is this for?
