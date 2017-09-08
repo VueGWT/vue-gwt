@@ -1,11 +1,15 @@
 # Vue GWT
 
-Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT](http://www.gwtproject.org/) 2.8 using [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
+<p align="center">
+    <img src="https://axellience.github.io/vue-gwt/resources/images/Vue-GWT-logo.png" alt="Vue GWT Logo" height="100"/>
+</p>
+
+Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtproject.org/) using [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
 It lets you write Vue.js components in Java.
 
 <p align="center">
-<img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
-<a href="https://gitter.im/Axellience/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
+    <a href="https://gitter.im/Axellience/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
 </p>
 
 ## Features
