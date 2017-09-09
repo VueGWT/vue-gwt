@@ -1,7 +1,9 @@
 # Vue GWT
 
 <p align="center">
-    <img src="https://axellience.github.io/vue-gwt/resources/images/Vue-GWT-logo.png" alt="Vue GWT Logo" height="100"/>
+    <a href="https://axellience.github.io/vue-gwt/">
+        <img src="https://axellience.github.io/vue-gwt/resources/images/Vue-GWT-logo.png" alt="Vue GWT Logo" style="max-height: 100px"/>
+    </a>
 </p>
 
 Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtproject.org/) using [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
