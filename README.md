@@ -2,7 +2,7 @@
 
 <p align="center">
     <a href="https://axellience.github.io/vue-gwt/">
-        <img src="https://axellience.github.io/vue-gwt/resources/images/Vue-GWT-logo.png" alt="Vue GWT Logo" style="max-height: 100px"/>
+        <img src="https://axellience.github.io/vue-gwt/resources/images/Vue-GWT-logo.png" alt="Vue GWT Logo" width="400"/>
     </a>
 </p>
 
