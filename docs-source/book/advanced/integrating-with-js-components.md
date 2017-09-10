@@ -147,7 +147,7 @@ You can then simply use it in your Java Component template:
 
 ### Extending a JS Component
 
-We can also [extend JS Components](extending-components.md#extending-js-component) (this is required for some Vue plugins for example).
+We can also [extend JS Components](../composition/extending-components.md#extending-js-component) (this is required for some Vue plugins for example).
 
 ## Using our Java Components in JS {#using-java-components-in-js}
 

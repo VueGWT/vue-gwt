@@ -8,7 +8,7 @@
     * [Handling User Input](introduction/README.md#handling-user-input)
     * [Composing with Components](introduction/README.md#composing-with-components)
 
-## Essential Topics
+## Essentials
 * [The Vue Instance](essential/the-vue-instance.md)
 * [Template Syntax](essential/template-syntax.md)
 * [Computed Properties and Watchers](essential/computed-and-watchers.md)
@@ -24,9 +24,24 @@
     * [Content Distribution with Slots](essential/components.md#content-distribution)
     * [Dynamic Components](essential/components.md#dynamic-components)
 
+## Transitions & Animation
+* [Enter/Leave & List Transitions](transitions/transitions.md)
+* [State Transitions](transitions/transitioning-state.md)
+
+## Reusability & Composition
+* [Extending Components](composition/extending-components.md)
+    * [Extending Java Components](composition/extending-components.md#extending-java-component)
+    * [Extending JS Components](composition/extending-components.md#extending-js-component)
+* [Custom Directives](composition/custom-directives.md)
+* [Render Function](composition/render-function.md)
+    * [Basics](composition/render-function.md#basics)
+    * [The `VNodeBuilder` Instance](composition/render-function.md#v-node-builder-instance)
+    * [Replacing Template Features with Plain Java](composition/render-function.md#replacing-template-feature-in-java)
+* [Plugins](composition/plugins.md)
+
 ## Integration with GWT
 * [Styles](gwt-integration/styles.md)
-* [Client Bundles (Images)](gwt-integration/client-bundles.md)
+* [Client Bundles](gwt-integration/client-bundles.md)
 * [User Panels](gwt-integration/user-panels.md)
 * [JsInterop](js-interop/README.md)
     * [JsObject](js-interop/README.md#js-object)
@@ -35,18 +50,14 @@
     * [array](js-interop/README.md#array)
     * [JsTools](js-interop/README.md#js-tools)
 
+## Tooling
+* [Unit Testing](tooling/unit-testing.md)
+
+## Scaling Up
+* [Routing](scaling-up/routing.md)
+
 ## Advanced Topics
 * [Integrating With JS Components](advanced/integrating-with-js-components.md)
     * [Using JS Components in Java](advanced/integrating-with-js-components.md#using-js-components-in-java)
     * [Using our Java Components in JS](advanced/integrating-with-js-components.md#using-java-components-in-js)
-* [Extending Components](advanced/extending-components.md)
-    * [Extending Java Components](advanced/extending-components.md#extending-java-component)
-    * [Extending JS Components](advanced/extending-components.md#extending-js-component)
-* [Render Function](advanced/render-function.md)
-    * [Basics](advanced/render-function.md#basics)
-    * [The `VNodeBuilder` Instance](advanced/render-function.md#v-node-builder-instance)
-    * [Replacing Template Features with Plain Java](advanced/render-function.md#replacing-template-feature-in-java)
-* [Custom Directives](advanced/custom-directives.md)
-* [Plugins](advanced/plugins.md)
-* [Routing](advanced/routing.md)
-* [And more!](advanced/and-more.md)
+* [Unsupported Features](advanced/unsupported-features.md)

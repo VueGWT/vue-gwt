@@ -90,7 +90,7 @@ And here is the traditional live example for proof 😉  :
 
 ## Extending an existing JS Component {#extending-js-component}
 
-Has you saw in [integrating with JS Components](integrating-with-js-components.md) that we can use JS Components in Vue GWT.
+Has you saw in [integrating with JS Components](../advanced/integrating-with-js-components.md) that we can use JS Components in Vue GWT.
 
 Well, we can also extends them!
 
