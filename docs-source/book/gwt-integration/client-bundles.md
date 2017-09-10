@@ -1,18 +1,17 @@
-# GWT Client Bundles (Images)
+# GWT Client Bundles
 
 !INCLUDE "../dependencies.md"
 
 Vue GWT also support GWT `ClientBundles`.
 
-Let see how this work with an example.
+Lets see how this work with an example.
 
 ***KittenClientBundle.java***
 
 First, we create a simple `ClientBundle` with an `ImageResource`:
 
 ```java
-public interface KittenClientBundle extends ClientBundle
-{
+public interface KittenClientBundle extends ClientBundle {
     KittenClientBundle INSTANCE = GWT.create(KittenClientBundle.class);
 
     @Source("kitten.jpg")
@@ -25,13 +24,16 @@ There is no need for any special annotations on it.
 ***KittenClientBundle.java***
 
 We then create a Component to use our `ClientBundle`.
-In this component we add a public field for our `KittenClientBundle`.
+In this component we add a computed property for our `KittenClientBundle`.
 This will expose the bundle to the Template.
 
 ```java
 @Component
 public class KittenComponent extends VueComponent {
-    @JsProperty KittenClientBundle myKittenBundle = KittenClientBundle.INSTANCE;
+    @Computed
+    public KittenClientBundle getMyKittenBundle() {
+        return KittenClientBundle.INSTANCE;
+    }
 }
 ```
 
@@ -43,12 +45,13 @@ We can then simply access our bundle instance from the template:
 <img v-bind:src="myKittenBundle.myKitten().getSafeUri().asString()"/>
 ```
 
-
 {% raw %}
 <div class="example-container" data-name="kittenComponent">
     <span id="kittenComponent"></span>
 </div>
 {% endraw %}
+
+You could also directly expose your ImageResource to the template, it's really up to you.
 
 ## Hey, Couldn't I Use This for Styles?
 
