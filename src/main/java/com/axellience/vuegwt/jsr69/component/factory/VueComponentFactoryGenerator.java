@@ -62,7 +62,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
     {
         MethodSpec.Builder initBuilder = MethodSpec
             .methodBuilder("init")
-            .addModifiers(Modifier.PRIVATE)
+            .addModifiers(Modifier.PROTECTED)
             .addAnnotation(Inject.class);
 
         List<CodeBlock> initParametersCall = new LinkedList<>();
