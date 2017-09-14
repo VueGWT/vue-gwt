@@ -18,6 +18,7 @@ import com.squareup.javapoet.TypeSpec.Builder;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -58,6 +59,12 @@ public abstract class AbstractVueComponentFactoryGenerator
         createProperties(vueFactoryClassName, vueFactoryBuilder);
         List<CodeBlock> staticInitParameters = createInitMethod(component, vueFactoryBuilder);
         createStaticGetMethod(vueFactoryClassName, vueFactoryBuilder, staticInitParameters);
+
+        vueFactoryBuilder.addMethod(MethodSpec
+            .constructorBuilder()
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Inject.class)
+            .build());
 
         // Build the ComponentOptions class
         GenerationUtil.toJavaFile(filer, vueFactoryBuilder, vueFactoryClassName, component);

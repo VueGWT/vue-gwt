@@ -5,6 +5,7 @@ import com.axellience.vuegwt.jsr69.GenerationUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -55,6 +56,12 @@ public class ComponentInjectedDependenciesBuilder
 
         processInjectedFields(component);
         processInjectedMethods(component);
+
+        componentInjectedDependenciesBuilder.addMethod(MethodSpec
+            .constructorBuilder()
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Inject.class)
+            .build());
 
         // Generate the file
         GenerationUtil.toJavaFile(processingEnvironment.getFiler(),
