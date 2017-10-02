@@ -88,6 +88,10 @@ Then you need to add the following to your `pom.xml` to store the settings of `m
 </pluginManagement>
 ```
 
+Once this is done, you need to enable annotation processing for your project in the `m2e-apt` project settings:
+
+![Enabling Annotation processing in Eclipse](https://axellience.github.io/vue-gwt/resources/images/eclise-enable-annotation-processing.jpg)
+
 ### IntelliJ IDEA
 By default IntelliJ doesn't support automatic annotation processing when the app is running.
 But don't worry, enabling it is easy!
