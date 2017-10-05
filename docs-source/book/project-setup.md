@@ -1,5 +1,7 @@
 # Setup on Your Project
 
+!INCLUDE "dependencies.md"
+
 ## ✅ Configure Maven
 
 To add Vue GWT to your Maven project, simply add the following to your `pom.xml`:

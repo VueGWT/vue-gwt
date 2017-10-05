@@ -936,48 +936,59 @@
                                 <h1 id="computed-properties-and-watchers">Computed Properties and Watchers</h1>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script>
-    var basePath = "/";
-    if (window.location.hostname === "axellience.github.io")
-        basePath = "/vue-gwt/";
+    (function() {
+        if (window.VueGwtExamplesService) {
+            window.VueGwtExamplesService.initExamples();
+            return;
+        }
 
-    var script = document.createElement("script");
-    script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
-    document.head.appendChild(script);
-</script>
-<script>
-    window.FullJsComponent = Vue.extend({
-        template: "<div>I Come In Peace From the JS World.</div>"
-    });
-    window.FullJsWithMethodsComponent = Vue.extend({
-        template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
-        data: function () {
-            return {
-                value: 10
-            }
-        },
-        methods: {
-            multiplyBy2: function (value) {
-                return value * 2;
-            }
+        var script = document.createElement("script");
+        script.src = "https://unpkg.com/vue/dist/vue.js";
+        script.onload = function () {
+            window.FullJsComponent = Vue.extend({
+                        template: "<div>I Come In Peace From the JS World.</div>"
+            });
+            window.FullJsWithMethodsComponent = Vue.extend({
+                template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
+                data: function () {
+                    return {
+                        value: 10
+                    }
+                },
+                methods: {
+                    multiplyBy2: function (value) {
+                        return value * 2;
+                    }
+                }
+            });
+            window.ParentJsComponent = Vue.extend({
+                data: function () {
+                    return {
+                        parentMessage: "This is a message from the Parent"
+                    };
+                },
+                methods: {
+                    parentMultiplyBy2: function (value) {
+                        return value * 2;
+                    }
+                },
+                computed: {
+                    parentComputed: function () {
+                        return "Computed Message | " + this.parentMessage;
+                    }
+                }
+            });
+
+            var basePath = "/";
+            if (window.location.hostname === "axellience.github.io")
+                basePath = "/vue-gwt/";
+
+            var script = document.createElement("script");
+            script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
+            document.head.appendChild(script);
         }
-    });
-    window.ParentJsComponent = Vue.extend({
-        data: function () {
-            return {
-                parentMessage: "This is a message from the Parent"
-            };
-        },
-        methods: {
-            parentMultiplyBy2: function (value) {
-                return value * 2;
-            }
-        },
-        computed: {
-            parentComputed: function () {
-                return "Computed Message | " + this.parentMessage;
-            }
-        }
-    });
+        document.head.appendChild(script);
+    })();
 </script>
 
 <p><em>This page comes from the <a href="https://vuejs.org/v2/guide/computed.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
@@ -1204,7 +1215,7 @@ This allow you to watch non <code>JsInterop</code> properties:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"2.3","depth":1,"next":{"title":"Class and Style Bindings","level":"2.4","depth":1,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"2.2","depth":1,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/computed-and-watchers.md","mtime":"2017-09-06T12:54:35.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-05T15:36:57.479Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Computed Properties and Watchers","level":"2.3","depth":1,"next":{"title":"Class and Style Bindings","level":"2.4","depth":1,"path":"essential/class-and-style.md","ref":"essential/class-and-style.md","articles":[]},"previous":{"title":"Template Syntax","level":"2.2","depth":1,"path":"essential/template-syntax.md","ref":"essential/template-syntax.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/computed-and-watchers.md","mtime":"2017-09-06T12:54:35.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-05T16:42:02.468Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
