@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Template Syntax · GitBook</title>
+        <title>Dependency Injection · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -63,10 +63,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="computed-and-watchers.html" />
+    <link rel="next" href="dependency-injection.html" />
     
     
-    <link rel="prev" href="the-vue-instance.html" />
+    <link rel="prev" href="components.html" />
     
 
     </head>
@@ -212,7 +212,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="2.2" data-path="template-syntax.html">
+        <li class="chapter " data-level="2.2" data-path="template-syntax.html">
             
                 <a href="template-syntax.html">
             
@@ -387,7 +387,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="dependency-injection.html">
+        <li class="chapter active" data-level="2.10" data-path="dependency-injection.html">
             
                 <a href="dependency-injection.html">
             
@@ -918,7 +918,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Template Syntax</a>
+        <a href=".." >Dependency Injection</a>
     </h1>
 </div>
 
@@ -933,109 +933,223 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="template-syntax">Template Syntax</h1>
-<p><em>This page comes from the <a href="https://vuejs.org/v2/guide/syntax.html" target="_blank">official Vue.js documentation</a> and has been adapted for Vue GWT.</em></p>
-<p>Vue.js uses an HTML-based template syntax that allows you to declaratively bind the rendered DOM to the underlying Vue instance&apos;s data.
-All Vue.js templates are valid HTML that can be parsed by spec-compliant browsers and HTML parsers.</p>
-<p>Under the hood, Vue compiles the templates into Virtual DOM render functions.
-Combined with the reactivity system, Vue is able to intelligently figure out the minimal amount of components to re-render and apply the minimal amount of DOM manipulations when the app state changes.</p>
-<h2 id="interpolations">Interpolations</h2>
-<h3 id="text">Text</h3>
-<p>The most basic form of data binding is text interpolation using the &quot;Mustache&quot; syntax (double curly braces):</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>Message: {{ msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
-</code></pre>
-<p>The mustache tag will be replaced with the value of the <code>msg</code> property on the corresponding data object.
-It will also be updated whenever the data object&apos;s <code>msg</code> property changes.</p>
-<p>You can also perform one-time interpolations that do not update on data change by using the <a href="https://vuejs.org/v2/api/#v-once" target="_blank">v-once directive</a>, but keep in mind this will also affect any binding on the same node:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-once</span>&gt;</span>This will never change: {{ msg }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
-</code></pre>
-<h3 id="raw-html">Raw HTML</h3>
-<p>The double mustaches interprets the data as plain text, not HTML.
-In order to output real HTML, you will need to use the <code>v-html</code> directive:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-html</span>=<span class="hljs-string">&quot;rawHtml&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<p>The contents of this <code>div</code> will be replaced with the value of the <code>rawHtml</code> property, interpreted as plain HTML - data bindings are ignored.
-Note that you cannot use <code>v-html</code> to compose template partials, because Vue is not a string-based templating engine.
-Instead, components are preferred as the fundamental unit for UI reuse and composition.</p>
-<p class="warning-panel">
-    Dynamically rendering arbitrary HTML on your website can be very dangerous because it can easily lead to <a href="https://en.wikipedia.org/wiki/Cross-site_scripting" target="_blank">XSS vulnerabilities</a>.
-    Only use HTML interpolation on trusted content and <strong>never</strong> on user-provided content.
-</p>
+                                <h1 id="dependency-injection">Dependency Injection</h1>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+    var basePath = "/";
+    if (window.location.hostname === "axellience.github.io")
+        basePath = "/vue-gwt/";
 
-<h3 id="attributes">Attributes</h3>
-<p>Mustaches cannot be used inside HTML attributes, instead use a <a href="https://vuejs.org/v2/api/#v-bind" target="_blank">v-bind directive</a>:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:id</span>=<span class="hljs-string">&quot;dynamicId&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<p>It also works for boolean attributes - the attribute will be removed if the condition evaluates to a falsy value:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-bind:disabled</span>=<span class="hljs-string">&quot;isButtonDisabled&quot;</span>&gt;</span>Button<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-</code></pre>
-<h3 id="using-java-expressions">Using Java Expressions</h3>
-<p>So far we&apos;ve only been binding to simple property keys in our templates.
-But Vue GWT actually supports the full power of Java expressions inside all data bindings:</p>
-<pre><code class="lang-html">{{ number + 1 }}
+    var script = document.createElement("script");
+    script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
+    document.head.appendChild(script);
+</script>
+<script>
+    window.FullJsComponent = Vue.extend({
+        template: "<div>I Come In Peace From the JS World.</div>"
+    });
+    window.FullJsWithMethodsComponent = Vue.extend({
+        template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
+        data: function () {
+            return {
+                value: 10
+            }
+        },
+        methods: {
+            multiplyBy2: function (value) {
+                return value * 2;
+            }
+        }
+    });
+    window.ParentJsComponent = Vue.extend({
+        data: function () {
+            return {
+                parentMessage: "This is a message from the Parent"
+            };
+        },
+        methods: {
+            parentMultiplyBy2: function (value) {
+                return value * 2;
+            }
+        },
+        computed: {
+            parentComputed: function () {
+                return "Computed Message | " + this.parentMessage;
+            }
+        }
+    });
+</script>
 
-{{ ok ? &quot;YES&quot; : &quot;NO&quot; }}
+<h2 id="why-dependency-injection">Why Dependency Injection? </h2>
+<p>When developing your App <em>you want to keep a maximum of business logic out of your Components</em>.
+For example you can create Services that can be reused across Components.</p>
+<p>But in Vue GWT you are not responsible for your Components instantiation.
+Apart from your application root, other Components are instantiated for you by Vue depending on your model.</p>
+<p>So how do you pass the instance of those Services to your Components?
+Sure you could have a static instance of those Services as a Singleton, but this is awful for testing.</p>
+<p>Luckily, <strong>Vue GWT supports Dependency Injection</strong>.
+An instance of your Services can be automatically provided when your Components are instantiated.
+You can also provide a mock yourself when you are <a href="../tooling/unit-testing.html">testing your Components</a>.</p>
+<h2 id="dagger-2">Setting up Dagger 2 </h2>
+<p>In GWT two solutions exist for Dependency Injection:</p>
+<ul>
+<li><a href="https://google.github.io/dagger/users-guide" target="_blank">Dagger 2</a></li>
+<li><a href="https://github.com/nishtahir/google-gin" target="_blank">GIN</a> <em>deprecated</em></li>
+</ul>
+<p>In this documentation we will explain Injection with Dagger 2 as GIN is deprecated.
+However Vue GWT also works with GIN.</p>
+<p>To setup Dagger 2 on your project you can follow this guide: <a href="http://www.g-widgets.com/2017/06/28/dependency-injection-in-gwt-using-dagger-2/" target="_blank">Dependency injection in GWT using Dagger 2</a>.</p>
+<p>The version of the Maven dependency in the guide is a little out of date.
+You can check for the latest version of Dagger GWT to use on the <a href="https://mvnrepository.com/artifact/com.google.dagger/dagger-gwt" target="_blank">Dagger GWT Maven repo</a>.</p>
+<h2 id="injecting-a-component">Injecting a Vue GWT Component </h2>
+<h3 id="declaring-the-component">Declaring the Component</h3>
+<p>Let&apos;s say we have a <code>GotQuotesService</code> that is able to provide us with a random quote from a famous TV Show.</p>
+<p>We want to use that service in a <code>GotQuotesComponent</code> that will display a random quote.
+We simply add <code>GotQuotesService</code> as an attribute of our Component with the <code>@Inject</code> annotation.</p>
+<p></p><p class="warning-panel">
+It&apos;s not possible to use injected constructor parameters as Java constructors are not supported in Vue GWT Components.</p>
+<p>
 
-{{ new StringBuilder(message).reverse().toString() }}
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GotQuotesComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+    <span class="hljs-meta">@JsProperty</span> GotQuote quote;
+    <span class="hljs-meta">@Inject</span> GotQuotesService gotQuotesService;
 
-<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:id</span>=<span class="hljs-string">&apos;&quot;list-&quot; + id&apos;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<p>These expressions will be evaluated as Java in the scope of your Component instance.
-One restriction is that each binding can only contain <strong>one single expression</strong>, so the following will <strong>NOT</strong> work:</p>
-<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- this is a statement, not an expression: --&gt;</span>
-{{ int a = 1 }}
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
+        changeQuote();
+    }
 
-<span class="hljs-comment">&lt;!-- flow control won&apos;t work either, use ternary expressions --&gt;</span>
-{{ if (ok) { return message } }}
+    <span class="hljs-meta">@JsMethod</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">changeQuote</span><span class="hljs-params">()</span> </span>{
+        quote = gotQuotesService.getRandomQuote();
+    }
+}
 </code></pre>
-<h2 id="directives">Directives</h2>
-<p>Directives are special attributes with the <code>v-</code> prefix.
-Directive attribute values are expected to be <strong>a single Java expression</strong> (with the exception for <code>v-for</code>, which will be discussed later).
-A directive&apos;s job is to reactively apply side effects to the DOM when the value of its expression changes.
-Let&apos;s review the example we saw in the introduction:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">&quot;seen&quot;</span>&gt;</span>Now you see me<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</p><p>We can then simply use <code>quote</code> in our <code>GotQuotesComponent</code> template:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">blockquote</span>&gt;</span>
+        {{ quote.getText() }}
+        <span class="hljs-tag">&lt;<span class="hljs-name">cite</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>{{ quote.getAuthor() }}<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span>, Season <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>{{ quote.getSeason() }}<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span>, Episode <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>{{ quote.getEpisode() }}<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">cite</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">blockquote</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;changeQuote&quot;</span>&gt;</span>Give me another!<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<p>Here, the <code>v-if</code> directive would remove/insert the <code>&lt;p&gt;</code> element based on the truthiness of the value of the expression <code>seen</code>.</p>
-<h3 id="arguments">Arguments</h3>
-<p>Some directives can take an &quot;argument&quot;, denoted by a colon after the directive name. For example, the <code>v-bind</code> directive is used to reactively update an HTML attribute:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">v-bind:href</span>=<span class="hljs-string">&quot;url&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
-</code></pre>
-<p>Here <code>href</code> is the argument, which tells the <code>v-bind</code> directive to bind the element&apos;s <code>href</code> attribute to the value of the expression <code>url</code>.</p>
-<p>Another example is the <code>v-on</code> directive, which listens to DOM events:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;doSomething()&quot;</span>&gt;</span>
-</code></pre>
-<p>Here the argument is the event name to listen to. We will talk about event handling in more detail too.</p>
-<h3 id="modifiers">Modifiers</h3>
-<p>Modifiers are special postfixes denoted by a dot, which indicate that a directive should be bound in some special way.
-For example, the <code>.prevent</code> modifier tells the <code>v-on</code> directive to call <code>event.preventDefault()</code> on the triggered event:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">v-on:submit.prevent</span>=<span class="hljs-string">&quot;onSubmit&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
-</code></pre>
-<p>We will see more use of modifiers later when we take a more thorough look at <code>v-on</code> and <code>v-model</code>.</p>
-<h2 id="filters">Filters</h2>
-<p><a href="https://vuejs.org/v2/guide/syntax.html#Filters" target="_blank">Filters</a> are not yet supported in Vue GWT.
-Please use Computed Properties instead for now.</p>
-<h2 id="shorthands">Shorthands</h2>
-<p>The <code>v-</code> prefix serves as a visual cue for identifying Vue-specific attributes in your templates.
-This is useful when you are using Vue.js to apply dynamic behavior to some existing markup, but can feel verbose for some frequently used directives.
-At the same time, the need for the <code>v-</code> prefix becomes less important when you are building an <a href="https://en.wikipedia.org/wiki/Single-page_application" target="_blank">SPA</a> where Vue.js manages every template.
-Therefore, Vue.js provides special shorthands for two of the most often used directives, <code>v-bind</code> and <code>v-on</code>:</p>
-<h3 id="v-bind-shorthand"><code>v-bind</code> Shorthand</h3>
-<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- full syntax --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">v-bind:href</span>=<span class="hljs-string">&quot;url&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+<p>To make this Component work we now must find a way to have it Injected.</p>
+<h3 id="instantiating-the-gotquotescomponent-with-injection">Instantiating the <code>GotQuotesComponent</code> with Injection</h3>
+<p>Every Vue GWT Component get an associated Factory generated for them by the Vue GWT annotation processor.
+This means that <code>GotQuotesComponent</code> have a generated <code>GotQuotesComponentFactory</code>.</p>
+<p>To bootstrap injection we need to inject <code>GotQuotesComponentFactory</code>.
+Every instance of our <code>GotQuotesComponent</code> created using the injected <code>GotQuotesComponentFactory</code> will then be correctly injected.</p>
+<p>To inject this factory we declare a Dagger 2 Component.</p>
+<p></p><p class="warning-panel">
+Dagger 2 have it&apos;s own <code>Component</code> annotation.
+So you must be careful to use the right one when declaring your Dagger 2 Component.</p>
+<p>
 
-<span class="hljs-comment">&lt;!-- shorthand --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">:href</span>=<span class="hljs-string">&quot;url&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span> <span class="hljs-comment">// &#x26A0;&#xFE0F; This is Dagger 2 @Component annotation, not the Vue GWT one.</span>
+<span class="hljs-meta">@Singleton</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">ExampleInjector</span> </span>{
+    <span class="hljs-function">GotQuotesComponentFactory <span class="hljs-title">gotQuoteComponentFactory</span><span class="hljs-params">()</span></span>;
+}
 </code></pre>
-<h3 id="v-on-shorthand"><code>v-on</code> Shorthand</h3>
-<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- full syntax --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;doSomething&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+</p><p></p><p class="info-panel">
+If <code>GotQuotesComponentFactory</code> doesn&apos;t exist, then check your annotation processor configuration in your IDE to make sure that it&apos;s running.</p>
+<p>
 
-<span class="hljs-comment">&lt;!-- shorthand --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">a</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;doSomething&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+
+</p><p>We can then create our Dagger Injector, get our <code>GotQuotesComponentFactory</code> and use it to create our injected <code>GotQuotesComponent</code>:</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VueGwtExamplesApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{ 
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-comment">// Create Dagger Injector</span>
+        ExampleInjector exampleInjector = DaggerExampleInjector.builder().build();
+        <span class="hljs-comment">// Get our Factory from the Injector</span>
+        GotQuotesComponentFactory factory = exampleInjector.gotQuoteComponentFactory();
+        <span class="hljs-comment">// Create our Component, it will be correctly injected</span>
+        GotQuotesComponent component = factory.create();
+        <span class="hljs-comment">// Mount (attach) our Component to an existing div</span>
+        component.$mount(<span class="hljs-string">&quot;#gotQuotesComponent&quot;</span>);
+    }
+}
 </code></pre>
-<p>They may look a bit different from normal HTML, but <code>:</code> and <code>@</code> are valid chars for attribute names and all Vue.js supported browsers can parse it correctly.
-In addition, they do not appear in the final rendered markup.
-The shorthand syntax is totally optional, but you will likely appreciate it when you learn more about its usage later.</p>
+<p>And here is the resulting live Component:</p>
+<div class="example-container" data-name="gotQuotesComponent">
+    <br>
+    <span id="gotQuotesComponent"></span>
+</div>
+
+
+<h2 id="injecting-children">Injecting Component&apos;s Children </h2>
+<p>We injected our root Component, that&apos;s great, but how about it&apos;s children?</p>
+<p>Here is the good news: if you inject your root Component, then the whole tree of locally declared Components will be injected &#x1F389;!</p>
+<p>For example if you have the following Components, you only need to inject <code>RootComponentFactory</code> and use it to create your <code>RootComponent</code>.
+All the Components used in the template and declared in <code>components</code> will be injected.</p>
+<h3 id="rootcomponent">RootComponent</h3>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {Child1Component.class, Child2Component.class})
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{}
+</code></pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- Create 10 instances of Child1Component --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">child1</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">&quot;i in 10&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">child1</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">child2</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">child2</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<h3 id="child1component">Child1Component</h3>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = GrandChild1Component.class)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Child1Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Inject</span> MyService myService;
+}
+</code></pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">grand-child1</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">grand-child1</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<h3 id="child2component">Child2Component</h3>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Child2Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Inject</span> MyService myService;
+    <span class="hljs-meta">@Inject</span> AnotherService anotherService;
+}
+</code></pre>
+<h3 id="grandchild1component">GrandChild1Component</h3>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GrandChild1Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Inject</span> AnotherService anotherService;
+}
+</code></pre>
+<h2 id="globally-registered-components">Globally Registered Components </h2>
+<p>It&apos;s also possible to inject Components that are declared globally.
+For this you only need to inject their factory and use it for the global registration.
+When used in the templates, the instances will automatically be injected.</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VueGwtExamplesApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{ 
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
+        ExampleInjector exampleInjector = DaggerExampleInjector.builder().build();
+        MyGlobalComponentFactory factory = exampleInjector.getMyGlobalComponentFactory();
+        VueGWT.register(<span class="hljs-string">&quot;my-global-component&quot;</span>, factory);
+    }
+}
+</code></pre>
+<h2 id="vue-gwt-router">Injecting Routes in Vue GWT Router </h2>
+<p>If you are using <a href="https://github.com/Axellience/vue-router-gwt" target="_blank">Vue GWT Router</a>, you can also inject your Routes.</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RoutesConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CustomizeOptions</span> </span>{
+    <span class="hljs-meta">@Inject</span> LoginComponentFactory loginComponentFactory;
+    <span class="hljs-meta">@Inject</span> HomeComponentFactory homeComponentFactory;
+    <span class="hljs-meta">@Inject</span> SettingsComponentFactory settingsComponentFactory;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">customizeOptions</span><span class="hljs-params">(VueComponentOptions vueComponentOptions)</span> </span>{
+        RouterOptions routerOptions = <span class="hljs-keyword">new</span> RouterOptions()
+            .setMode(RouterMode.HISTORY)
+            .addRoute(<span class="hljs-string">&quot;/login&quot;</span>, loginComponentFactory)
+            .addRoute(<span class="hljs-string">&quot;/home&quot;</span>, homeComponentFactory)
+            .addRoute(<span class="hljs-string">&quot;/settings&quot;</span>, homeComponentFactory);
+
+        vueComponentOptions.set(<span class="hljs-string">&quot;router&quot;</span>, <span class="hljs-keyword">new</span> VueRouter(routerOptions));
+    }
+}
+</code></pre>
 
                                 
                                 </section>
@@ -1063,12 +1177,12 @@ The shorthand syntax is totally optional, but you will likely appreciate it when
 
             
                 
-                <a href="the-vue-instance.html" class="navigation navigation-prev " aria-label="Previous page: The Vue Instance">
+                <a href="components.html#dynamic-components" class="navigation navigation-prev " aria-label="Previous page: Dynamic Components">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="computed-and-watchers.html" class="navigation navigation-next " aria-label="Next page: Computed Properties and Watchers">
+                <a href="dependency-injection.html#why-dependency-injection" class="navigation navigation-next " aria-label="Next page: Why Dependency Injection?">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1079,7 +1193,7 @@ The shorthand syntax is totally optional, but you will likely appreciate it when
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Template Syntax","level":"2.2","depth":1,"next":{"title":"Computed Properties and Watchers","level":"2.3","depth":1,"path":"essential/computed-and-watchers.md","ref":"essential/computed-and-watchers.md","articles":[]},"previous":{"title":"The Vue Instance","level":"2.1","depth":1,"path":"essential/the-vue-instance.md","ref":"essential/the-vue-instance.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/template-syntax.md","mtime":"2017-08-26T21:42:54.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-05T15:36:57.479Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Dependency Injection","level":"2.10","depth":1,"next":{"title":"Why Dependency Injection?","level":"2.10.1","depth":2,"anchor":"#why-dependency-injection","path":"essential/dependency-injection.md","ref":"essential/dependency-injection.md#why-dependency-injection","articles":[]},"previous":{"title":"Dynamic Components","level":"2.9.5","depth":2,"anchor":"#dynamic-components","path":"essential/components.md","ref":"essential/components.md#dynamic-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/dependency-injection.md","mtime":"2017-10-05T14:50:03.117Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-05T15:36:57.479Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

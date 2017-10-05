@@ -1,13 +1,13 @@
 package com.axellience.vuegwtexamples.client;
 
-import com.axellience.vuegwtexamples.client.examples.recursive.RecursiveComponentFactory;
-import com.axellience.vuegwtexamples.client.examples.tree.TreeComponentFactory;
-import com.google.gwt.inject.client.GinModules;
-import com.google.gwt.inject.client.Ginjector;
+import com.axellience.vuegwtexamples.client.examples.gotquotes.GotQuotesComponentFactory;
+import dagger.Component;
 
-@GinModules(ExampleGinModule.class)
-public interface ExampleInjector extends Ginjector
+import javax.inject.Singleton;
+
+@Component
+@Singleton
+public interface ExampleInjector
 {
-    RecursiveComponentFactory recursiveComponentFactory();
-    TreeComponentFactory treeComponentFactory();
+    GotQuotesComponentFactory gotQuoteComponentFactory();
 }
