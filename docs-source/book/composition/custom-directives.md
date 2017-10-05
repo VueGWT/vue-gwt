@@ -110,8 +110,7 @@ If your directive needs multiple values, you can also pass in a JSON object lite
 
 ```java
 @Override
-public void inserted(Element el, VueDirectiveBinding binding)
-{
+public void inserted(Element el, VueDirectiveBinding binding) {
     JsObject value = (JsObject) binding.value;
     value.get("color") // white
     value.get("text") // hello!

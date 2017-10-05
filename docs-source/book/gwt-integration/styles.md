@@ -22,8 +22,7 @@ This annotation will automatically generate a GWT Bundle for us.
 
 ```java
 @Style
-public interface MelisandreComponentStyle extends CssResource
-{
+public interface MelisandreComponentStyle extends CssResource {
     String red();
     String bold();
 }
