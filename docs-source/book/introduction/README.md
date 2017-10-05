@@ -206,8 +206,7 @@ For example, the `v-for` directive can be used for displaying a list of items.
 
 Let's assume we have a `Todo` POJO:
 ```java
-public class Todo
-{
+public class Todo {
     private String text;
 
     public Todo(String s) {

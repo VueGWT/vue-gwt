@@ -23,6 +23,13 @@
     * [Props](essential/components.md#props)
     * [Content Distribution with Slots](essential/components.md#content-distribution)
     * [Dynamic Components](essential/components.md#dynamic-components)
+* [Dependency Injection](essential/dependency-injection.md)
+    * [Why Dependency Injection?](essential/dependency-injection.md#why-dependency-injection)
+    * [Setting up Dagger 2](essential/dependency-injection.md#dagger-2)
+    * [Injecting a Vue GWT Component](essential/dependency-injection.md#injecting-a-component)
+    * [Injecting Component's Children](essential/dependency-injection.md#injecting-children)
+    * [Globally Registered Components](essential/dependency-injection.md#globally-registered-components)
+    * [Injecting Routes in Vue GWT Router](essential/dependency-injection.md#vue-gwt-router)
 
 ## Transitions & Animation
 * [Enter/Leave & List Transitions](transitions/transitions.md)

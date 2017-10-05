@@ -67,8 +67,7 @@ this.todo = new Todo();
 
 And your `Todo` class looks like this:
 ```java
-public class Todo
-{
+public class Todo {
     private String text;
 
     public Todo(String s) {
