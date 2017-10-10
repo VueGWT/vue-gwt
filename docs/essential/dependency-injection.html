@@ -1005,10 +1005,10 @@ You can also provide a mock yourself when you are <a href="../tooling/unit-testi
 <p>In GWT two solutions exist for Dependency Injection:</p>
 <ul>
 <li><a href="https://google.github.io/dagger/users-guide" target="_blank">Dagger 2</a></li>
-<li><a href="https://github.com/nishtahir/google-gin" target="_blank">GIN</a> <em>deprecated</em></li>
+<li><a href="https://github.com/nishtahir/google-gin" target="_blank">GIN</a></li>
 </ul>
-<p>In this documentation we will explain Injection with Dagger 2 as GIN is deprecated.
-However Vue GWT also works with GIN.</p>
+<p>In this documentation we will explain Injection with Dagger 2 as GIN is not actively developed anymore and not recommended for new projects.
+However if you are using GIN already, Vue GWT also works with it.</p>
 <p>To setup Dagger 2 on your project you can follow this guide: <a href="http://www.g-widgets.com/2017/06/28/dependency-injection-in-gwt-using-dagger-2/" target="_blank">Dependency injection in GWT using Dagger 2</a>.</p>
 <p>The version of the Maven dependency in the guide is a little out of date.
 You can check for the latest version of Dagger GWT to use on the <a href="https://mvnrepository.com/artifact/com.google.dagger/dagger-gwt" target="_blank">Dagger GWT Maven repo</a>.</p>
@@ -1051,12 +1051,12 @@ It&apos;s not possible to use injected constructor parameters as Java constructo
 <p>To make this Component work we now must find a way to have it Injected.</p>
 <h3 id="instantiating-the-gotquotescomponent-with-injection">Instantiating the <code>GotQuotesComponent</code> with Injection</h3>
 <p>Every Vue GWT Component get an associated Factory generated for them by the Vue GWT annotation processor.
-This means that <code>GotQuotesComponent</code> have a generated <code>GotQuotesComponentFactory</code>.</p>
+This means that <code>GotQuotesComponent</code> has a generated <code>GotQuotesComponentFactory</code>.</p>
 <p>To bootstrap injection we need to inject <code>GotQuotesComponentFactory</code>.
 Every instance of our <code>GotQuotesComponent</code> created using the injected <code>GotQuotesComponentFactory</code> will then be correctly injected.</p>
 <p>To inject this factory we declare a Dagger 2 Component.</p>
 <p></p><p class="warning-panel">
-Dagger 2 have it&apos;s own <code>Component</code> annotation.
+Dagger 2 has it&apos;s own <code>Component</code> annotation.
 So you must be careful to use the right one when declaring your Dagger 2 Component.</p>
 <p>
 
@@ -1204,7 +1204,7 @@ When used in the templates, the instances will automatically be injected.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Dependency Injection","level":"2.10","depth":1,"next":{"title":"Why Dependency Injection?","level":"2.10.1","depth":2,"anchor":"#why-dependency-injection","path":"essential/dependency-injection.md","ref":"essential/dependency-injection.md#why-dependency-injection","articles":[]},"previous":{"title":"Dynamic Components","level":"2.9.5","depth":2,"anchor":"#dynamic-components","path":"essential/components.md","ref":"essential/components.md#dynamic-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/dependency-injection.md","mtime":"2017-10-05T15:40:12.835Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-05T16:42:02.468Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Dependency Injection","level":"2.10","depth":1,"next":{"title":"Why Dependency Injection?","level":"2.10.1","depth":2,"anchor":"#why-dependency-injection","path":"essential/dependency-injection.md","ref":"essential/dependency-injection.md#why-dependency-injection","articles":[]},"previous":{"title":"Dynamic Components","level":"2.9.5","depth":2,"anchor":"#dynamic-components","path":"essential/components.md","ref":"essential/components.md#dynamic-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/dependency-injection.md","mtime":"2017-10-10T15:03:04.183Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-10T15:06:21.162Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
