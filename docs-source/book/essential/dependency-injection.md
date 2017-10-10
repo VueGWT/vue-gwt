@@ -22,10 +22,10 @@ You can also provide a mock yourself when you are [testing your Components](../t
 In GWT two solutions exist for Dependency Injection:
 
 * [Dagger 2](https://google.github.io/dagger/users-guide)
-* [GIN](https://github.com/nishtahir/google-gin) *deprecated*
+* [GIN](https://github.com/nishtahir/google-gin)
 
-In this documentation we will explain Injection with Dagger 2 as GIN is deprecated.
-However Vue GWT also works with GIN.
+In this documentation we will explain Injection with Dagger 2 as GIN is not actively developed anymore and not recommended for new projects.
+However if you are using GIN already, Vue GWT also works with it.
 
 To setup Dagger 2 on your project you can follow this guide: [Dependency injection in GWT using Dagger 2](http://www.g-widgets.com/2017/06/28/dependency-injection-in-gwt-using-dagger-2/).
 
@@ -82,7 +82,7 @@ To make this Component work we now must find a way to have it Injected.
 ### Instantiating the `GotQuotesComponent` with Injection
 
 Every Vue GWT Component get an associated Factory generated for them by the Vue GWT annotation processor.
-This means that `GotQuotesComponent` have a generated `GotQuotesComponentFactory`.
+This means that `GotQuotesComponent` has a generated `GotQuotesComponentFactory`.
 
 To bootstrap injection we need to inject `GotQuotesComponentFactory`.
 Every instance of our `GotQuotesComponent` created using the injected `GotQuotesComponentFactory` will then be correctly injected.
@@ -90,7 +90,7 @@ Every instance of our `GotQuotesComponent` created using the injected `GotQuotes
 To inject this factory we declare a Dagger 2 Component.
 
 <p class="warning-panel">
-Dagger 2 have it's own <code>Component</code> annotation.
+Dagger 2 has it's own <code>Component</code> annotation.
 So you must be careful to use the right one when declaring your Dagger 2 Component.
 <p>
 
