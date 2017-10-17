@@ -53,6 +53,8 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     public final void setComponentJavaPrototype(ComponentJavaPrototype<T> javaPrototype)
     {
         this.componentJavaPrototype = javaPrototype;
+        // This must be set for Components extending Native JS Components
+        this.componentJavaPrototype.set("options", this);
     }
 
     /**
