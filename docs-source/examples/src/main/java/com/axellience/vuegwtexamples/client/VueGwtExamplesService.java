@@ -10,6 +10,7 @@ import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineS
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
 import com.axellience.vuegwtexamples.client.examples.counterwithevent.CounterWithEventComponent;
+import com.axellience.vuegwtexamples.client.examples.errorboundary.ErrorBoundaryComponent;
 import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
 import com.axellience.vuegwtexamples.client.examples.extendjavacomponent.ChildComponent;
@@ -92,10 +93,11 @@ public class VueGwtExamplesService
         addExample("focusDirectiveComponent", FocusDirectiveComponent.class);
         addExample("renderAppComponent", RenderAppComponent.class);
         addExample("extendJavaComponent", ChildComponent.class);
-        addExample("extendJsComponent", ChildJavaComponent.class);
         addExample("fullJsWithMethodsComponent", FullJsWithMethodsComponentFactory.get());
         addExample("propDefaultValueComponent", ParentPropDefaultValueComponent.class);
         addExample("gotQuotesComponent", exampleInjector.gotQuoteComponentFactory());
+        addExample("errorBoundary", ErrorBoundaryComponent.class);
+        addExample("extendJsComponent", ChildJavaComponent.class);
     }
 
     private static void addExample(String exampleId, Class<? extends VueComponent> exampleVueClass)
