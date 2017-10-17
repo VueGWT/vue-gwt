@@ -217,16 +217,30 @@ Here's the full list of key modifier aliases:
 - `.left`
 - `.right`
 
-In Vue.js you can also [define custom key modifier aliases](https://vuejs.org/v2/api/#keyCodes) via the global `config.keyCodes` object:
+You can also [define custom key modifier aliases](https://vuejs.org/v2/api/#keyCodes) via the global `VueConfig`:
 
-```js
+```java
 // enable v-on:keyup.f1
-Vue.config.keyCodes.f1 = 112
+Vue.setConfig(new VueConfig().setKeyCode("f1", 112));
 ```
 
-This is not doable yet in Vue GWT.
+### Automatic Key Modifers
 
-## Modifier Keys
+> New in Vue.js 2.5.0
+
+You can also directly use any valid key names exposed via [`KeyboardEvent.key`](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values) as modifiers by converting them to kebab-case:
+
+```html
+<input @keyup.page-down="onPageDown">
+```
+
+In the above example, the handler will only be called if `$event.key === 'PageDown'`.
+
+<p class="info-panel">
+    A few keys (<code>.esc</code> and all arrow keys) have inconsistent <code>key</code> values in IE9, their built-in aliases should be preferred if you need to support IE9.
+</p>
+
+## System Modifier Keys
 
 > New in Vue.js 2.1.0
 
