@@ -9,7 +9,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Wrap a {@link VueComponent} instance in a GWT Panel
+ * Wraps a {@link VueComponent} instance in a GWT Widget.
  */
 public class VueGwtPanel<T extends VueComponent> extends Widget
 {
@@ -31,7 +31,12 @@ public class VueGwtPanel<T extends VueComponent> extends Widget
     {
         this(VueGWT.getFactory(vueClass));
     }
-    
+
+    /**
+     * Returns the instance of the vue component wrapped in this widget.
+     * 
+     * @return the component instance.
+     */
     public T vue()
     {
         return vueComponentInstance;
