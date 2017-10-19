@@ -11,23 +11,23 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Wraps a {@link VueComponent} instance in a GWT Widget.
  */
-public class VueGwtPanel<T extends VueComponent> extends Widget
+public class VueGwtWidget<T extends VueComponent> extends Widget
 {
     private final T vueComponentInstance;
 
-    public VueGwtPanel(VueFactory<T> vueFactory)
+    public VueGwtWidget(VueFactory<T> vueFactory)
     {
         this(vueFactory.getJsConstructor());
     }
 
-    public VueGwtPanel(VueJsConstructor<T> vueJsConstructor)
+    public VueGwtWidget(VueJsConstructor<T> vueJsConstructor)
     {
         super();
         setElement(Document.get().createDivElement());
         vueComponentInstance = vueJsConstructor.instantiate();
     }
 
-    public VueGwtPanel(Class<T> vueClass)
+    public VueGwtWidget(Class<T> vueClass)
     {
         this(VueGWT.getFactory(vueClass));
     }
