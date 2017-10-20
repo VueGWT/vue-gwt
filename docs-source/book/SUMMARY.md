@@ -49,7 +49,7 @@
 ## Integration with GWT
 * [Styles](gwt-integration/styles.md)
 * [Client Bundles](gwt-integration/client-bundles.md)
-* [User Panels](gwt-integration/user-panels.md)
+* [Vue GWT and Widgets](gwt-integration/widgets.md)
 * [JsInterop](js-interop/README.md)
     * [JsObject](js-interop/README.md#js-object)
     * [map](js-interop/README.md#map)

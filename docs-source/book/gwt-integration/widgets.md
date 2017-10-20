@@ -1,7 +1,7 @@
-# GWT User Panels
+# Vue GWT and Widgets
 
-For easy backward compatibility it's possible to wrap any Vue GWT Component in a gwt-user `Panel`.
-For this you need to use `VueGwtPanel`.
+For easy backward compatibility it's possible to wrap any Vue GWT Component in a GWT `Widget`.
+For this you need to use `VueGwtWidget`.
 
 ## Instantiating a DemoComponent
 
@@ -19,10 +19,10 @@ For example, let's instantiate a `DemoComponent` using this mechanism:
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
         // Create a VueGwtPanel, it's a regular GWT Widget and can be attached to any GWT Widget
-        VueGwtPanel<DemoComponent> vueGwtPanel = new VueGwtPanel<>(DemoComponent.class);
+        VueGwtWidget<DemoComponent> vueGwtWidget = new VueGwtWidget<>(DemoComponent.class);
         
         // Attach it to inside our DOM element
-        RootPanel.get("childComponentAttachPoint").add(vueGwtPanel);
+        RootPanel.get("childComponentAttachPoint").add(vueGwtWidget);
     }
 }
 ```
@@ -35,15 +35,15 @@ Let's say our `DemoComponent` has a method `increaseCounter()`.
 We can do:
 
 ```java
-VueGwtPanel<DemoComponent> vueGwtPanel = new VueGwtPanel<>(DemoComponent.class);
-RootPanel.get("childComponentAttachPoint").add(vueGwtPanel);
+VueGwtWidget<DemoComponent> vueGwtWidget = new VueGwtWidget<>(DemoComponent.class);
+RootPanel.get("childComponentAttachPoint").add(vueGwtWidget);
 
-vueGwtPanel.vue().increaseCounter();
+vueGwtWidget.vue().increaseCounter();
 ```
 
 ## Cleaning Up
-If you don't need your `VueGwtPanel` anymore, you can destroy it's Vue instance by calling:
+If you don't need your `VueGwtWidget` anymore, you can destroy it's Vue instance by calling:
 
 ```java
-vueGwtPanel.vue().$destroy();
+vueGwtWidget.vue().$destroy();
 ```
