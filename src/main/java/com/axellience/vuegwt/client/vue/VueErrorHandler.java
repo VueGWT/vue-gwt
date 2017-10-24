@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.client.vue;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
+import elemental2.core.JsObject;
 import jsinterop.annotations.JsFunction;
 
 /**

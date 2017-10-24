@@ -1,23 +1,23 @@
 package com.axellience.vuegwt.client.vnode;
 
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public final class VNodeDirective extends JsObject
+public final class VNodeDirective
 {
     @JsProperty protected String name;
     @JsProperty protected Object value;
     @JsProperty protected Object oldValue;
     @JsProperty protected Object expression;
     @JsProperty protected String arg;
-    @JsProperty protected JsObject modifiers;
+    @JsProperty protected JsPropertyMap modifiers;
 
     @JsOverlay
     public final String getName()
@@ -85,13 +85,13 @@ public final class VNodeDirective extends JsObject
     }
 
     @JsOverlay
-    public final JsObject getModifiers()
+    public final JsPropertyMap getModifiers()
     {
         return modifiers;
     }
 
     @JsOverlay
-    public final VNodeDirective setModifiers(JsObject modifiers)
+    public final VNodeDirective setModifiers(JsPropertyMap modifiers)
     {
         this.modifiers = modifiers;
         return this;
@@ -101,7 +101,7 @@ public final class VNodeDirective extends JsObject
     public final VNodeDirective modifier(String name, boolean modifier)
     {
         if (this.modifiers == null)
-            this.modifiers = new JsObject();
+            this.modifiers = JsPropertyMap.of();
 
         this.modifiers.set(name, modifier);
         return this;

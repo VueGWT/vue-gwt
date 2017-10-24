@@ -2,47 +2,47 @@ package com.axellience.vuegwt.client.tools;
 
 import com.axellience.vuegwt.client.component.ComponentJavaPrototype;
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.VueDirective;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.google.gwt.regexp.shared.RegExp;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
+import elemental2.core.Function;
+import jsinterop.annotations.JsFunction;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * This object provides utils methods for VueGWT internal processing
  * @author Adrien Baron
  */
-@JsType(namespace = "VueGWT", name = "tools")
 public class VueGWTTools
 {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
     private static RegExp componentEnd = RegExp.compile("Component$");
     private static RegExp directiveEnd = RegExp.compile("Directive$");
 
-    public static native <T extends VueComponent> T createInstanceForVueClass(
-        VueJsConstructor<T> vueClass);
+    public static <T> void wrapMethod(T object, String methodName, AfterMethodCall<T> afterMethodCall)
+    {
+        Function method = (Function) ((JsPropertyMap) object).get(methodName);
 
-    public static native <T extends VueComponent, K extends T> VueJsConstructor<K> extendVueClass(
-        VueJsConstructor<T> vueClassToExtend, VueComponentOptions<K> vueComponentOptions);
+        WrappingFunction wrappingFunction = args -> {
+            Object result = method.apply(object, args);
+            afterMethodCall.execute(object, methodName, result, args);
+            return result;
+        };
 
-    @JsMethod(name = "wrapMethodWithBefore")
-    public static native <T> String wrapMethod(T object, String methodName,
-        BeforeMethodCall<T> afterMethodCall);
+        ((JsPropertyMap) object).set(methodName, wrappingFunction);
+    }
 
-    @JsMethod(name = "wrapMethodWithAfter")
-    public static native <T> String wrapMethod(T object, String methodName,
-        AfterMethodCall<T> afterMethodCall);
-
-    public static native <T> String wrapMethod(T object, String methodName,
-        BeforeMethodCall<T> beforeMethodCall, AfterMethodCall<T> afterMethodCall);
-
-    public static native <T extends VueComponent> void extendVueConstructorWithJavaPrototype(
+    public static <T extends VueComponent> void extendVueConstructorWithJavaPrototype(
         VueJsConstructor<T> extendedVueJsConstructor,
-        ComponentJavaPrototype<T> componentJavaPrototype);
-
-    public static native <T> JsArray<T> javaArrayToJsArray(Object[] javaArray);
+        ComponentJavaPrototype<T> componentJavaPrototype)
+    {
+        JsPropertyMap vueProto =
+            (JsPropertyMap) ((JsPropertyMap) extendedVueJsConstructor).get("prototype");
+        componentJavaPrototype.forEach(protoProp -> {
+            if (!vueProto.has(protoProp))
+                vueProto.set(protoProp, componentJavaPrototype.get(protoProp));
+        });
+    }
 
     /**
      * Return the default name to register a component based on it's class name.
@@ -72,5 +72,12 @@ public class VueGWTTools
         directiveClassName = directiveEnd.replace(directiveClassName, "");
         // Convert from CamelCase to kebab-case
         return camelCasePattern.replace(directiveClassName, "$1-$2").toLowerCase();
+    }
+
+    @FunctionalInterface
+    @JsFunction
+    private interface WrappingFunction
+    {
+        Object call(Object... args);
     }
 }

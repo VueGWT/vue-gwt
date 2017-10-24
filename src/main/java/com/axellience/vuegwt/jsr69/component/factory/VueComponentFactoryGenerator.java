@@ -5,7 +5,6 @@ import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsAsyncProvider;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
@@ -16,6 +15,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
+import jsinterop.base.JsPropertyMap;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.inject.Inject;
@@ -146,7 +146,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
 
         injectDependenciesBuilder.addStatement(
             "$T<$T> components = jsConstructor.getOptionsComponents()",
-            JsObject.class,
+            JsPropertyMap.class,
             ParameterizedTypeName.get(VueJsAsyncProvider.class, VueJsConstructor.class));
 
         localComponents.forEach(localComponent -> {
@@ -209,7 +209,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
     {
         injectDependenciesBuilder.addStatement(
             "$T<$T> directives = jsConstructor.getOptionsDirectives()",
-            JsObject.class,
+            JsPropertyMap.class,
             VueDirectiveOptions.class);
     }
 

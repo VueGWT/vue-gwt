@@ -8,8 +8,6 @@ import com.axellience.vuegwt.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.client.component.template.TemplateResource;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
@@ -30,6 +28,8 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
+import elemental2.core.Array;
+import elemental2.core.Function;
 import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Filer;
@@ -180,7 +180,7 @@ public class ComponentJsTypeGenerator
         optionsMethodBuilder.addStatement(
             "options.setComponentJavaPrototype($T.getJavaConstructor($T.class).getPrototype())",
             VueGWT.class,
-            component);
+            componentJsTypeName(component));
 
         if (hasTemplate(processingEnv, component))
         {
@@ -595,11 +595,12 @@ public class ComponentJsTypeGenerator
      */
     private void callConstructor(TypeElement component, MethodSpec.Builder createdMethodBuilder)
     {
-        createdMethodBuilder.addStatement("Object javaConstructor = $T.getJavaConstructor($T.class)",
+        createdMethodBuilder.addStatement("$T javaConstructor = $T.getJavaConstructor($T.class)",
+            Function.class,
             VueGWT.class,
-            component);
+            componentJsTypeName(component));
 
-        createdMethodBuilder.addStatement("$T.call(javaConstructor, this)", JsTools.class);
+        createdMethodBuilder.addStatement("javaConstructor.apply(this)");
     }
 
     /**
@@ -708,7 +709,7 @@ public class ComponentJsTypeGenerator
         {
             return "String";
         }
-        else if (typeMirror.toString().startsWith(JsArray.class.getCanonicalName()))
+        else if (typeMirror.toString().startsWith(Array.class.getCanonicalName()))
         {
             return "Array";
         }

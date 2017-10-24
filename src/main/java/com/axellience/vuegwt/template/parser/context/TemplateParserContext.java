@@ -2,8 +2,7 @@ package com.axellience.vuegwt.template.parser.context;
 
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.template.TemplateResource;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
+import com.axellience.vuegwt.client.tools.JsUtils;
 import com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil;
 import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.variable.VariableInfo;
@@ -48,11 +47,11 @@ public class TemplateParserContext
         this.componentJsTypeClass = templateResourceClass;
 
         this.addImport(NativeEvent.class.getCanonicalName());
-        this.addImport(JsArray.class.getCanonicalName());
         this.addImport(Math.class.getCanonicalName());
-        this.addStaticImport(JsObject.class.getCanonicalName() + ".map");
-        this.addStaticImport(JsObject.class.getCanonicalName() + ".e");
-        this.addStaticImport(JsArray.class.getCanonicalName() + ".array");
+        this.addImport(JsUtils.class.getCanonicalName());
+        this.addStaticImport(JsUtils.class.getCanonicalName() + ".map");
+        this.addStaticImport(JsUtils.class.getCanonicalName() + ".e");
+        this.addStaticImport(JsUtils.class.getCanonicalName() + ".array");
 
         this.rootContext = new ContextLayer();
         this.rootContext.addVariable(String.class, "_uid");

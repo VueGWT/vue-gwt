@@ -4,15 +4,7 @@
       "type": "js",
       "name": "vue-gwt.js",
       "files": [
-        "VueGWTTools.js",
         "VueGWTObserverManager.js"
-      ]
-    },
-    {
-      "type": "js",
-      "name": "js-tools.js",
-      "files": [
-        "JsTools.js"
       ]
     }
   ]

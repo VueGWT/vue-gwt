@@ -6,16 +6,16 @@ import com.axellience.vuegwt.client.component.options.functions.OnNextTick;
 import com.axellience.vuegwt.client.component.options.watch.ChangeTrigger;
 import com.axellience.vuegwt.client.component.options.watch.OnValueChange;
 import com.axellience.vuegwt.client.component.options.watch.WatcherRegistration;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.google.gwt.dom.client.Element;
+import elemental2.core.Array;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * The Java representation of a Vue Component.
@@ -24,7 +24,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public abstract class VueComponent extends JsObject
+public abstract class VueComponent
 {
     /* ---------------------------------------------
 
@@ -32,20 +32,20 @@ public abstract class VueComponent extends JsObject
 
       ---------------------------------------------*/
 
-    @JsProperty private JsObject $data;
+    @JsProperty private JsPropertyMap $data;
     @JsProperty private Element $el;
     @JsProperty private VueComponentOptions $options;
     @JsProperty private VueComponent $parent;
     @JsProperty private VueComponent $root;
-    @JsProperty private JsArray<VueComponent> $children;
+    @JsProperty private Array<VueComponent> $children;
     @JsProperty private Object $refs;
-    @JsProperty private JsObject<JsArray<VNode>> $slots;
-    @JsProperty private JsObject<ScopedSlot> $scopedSlots;
+    @JsProperty private JsPropertyMap<Array<VNode>> $slots;
+    @JsProperty private JsPropertyMap<ScopedSlot> $scopedSlots;
     @JsProperty private boolean $isServer;
     @JsProperty private Object $ssrContext;
     @JsProperty private Object $props;
     @JsProperty private Object $vnode;
-    @JsProperty private JsObject<String> $attrs;
+    @JsProperty private JsPropertyMap<String> $attrs;
     @JsProperty private Object $listeners;
 
     @JsProperty public String _uid;
@@ -84,7 +84,7 @@ public abstract class VueComponent extends JsObject
     // @formatter:on
 
     @JsOverlay
-    public final JsObject $data()
+    public final JsPropertyMap $data()
     {
         return $data;
     }
@@ -114,7 +114,7 @@ public abstract class VueComponent extends JsObject
     }
 
     @JsOverlay
-    public final JsArray<VueComponent> $children()
+    public final Array<VueComponent> $children()
     {
         return $children;
     }
@@ -126,13 +126,13 @@ public abstract class VueComponent extends JsObject
     }
 
     @JsOverlay
-    public final JsObject<JsArray<VNode>> $slots()
+    public final JsPropertyMap<Array<VNode>> $slots()
     {
         return $slots;
     }
 
     @JsOverlay
-    public final JsObject<ScopedSlot> $scopedSlots()
+    public final JsPropertyMap<ScopedSlot> $scopedSlots()
     {
         return $scopedSlots;
     }
@@ -162,7 +162,7 @@ public abstract class VueComponent extends JsObject
     }
 
     @JsOverlay
-    public final JsObject<String> $attrs()
+    public final JsPropertyMap<String> $attrs()
     {
         return $attrs;
     }

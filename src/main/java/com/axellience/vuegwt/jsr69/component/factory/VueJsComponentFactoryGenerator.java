@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.jsr69.component.factory;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.tools.JsUtils;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
@@ -10,6 +10,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
+import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
@@ -61,11 +62,11 @@ public class VueJsComponentFactoryGenerator extends AbstractVueComponentFactoryG
             name = component.getSimpleName().toString();
 
         // Static init block
-        initBuilder.addStatement("jsConstructor = ($T) $T.getDeepValue($T.getWindow(), $S)",
+        initBuilder.addStatement("jsConstructor = ($T) $T.getDeepValue($T.window, $S)",
             ParameterizedTypeName.get(ClassName.get(VueJsConstructor.class),
                 ClassName.get(component.asType())),
-            JsTools.class,
-            JsTools.class,
+            JsUtils.class,
+            DomGlobal.class,
             namespace + name);
 
         vueFactoryBuilder.addMethod(initBuilder.build());

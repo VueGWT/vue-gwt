@@ -1,7 +1,7 @@
 package com.axellience.vuegwtexamples.client.examples.todotext;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.tools.JsUtils;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
 import com.google.gwt.dom.client.NativeEvent;
@@ -19,6 +19,6 @@ public class TodoTextComponent extends VueComponent
     @JsMethod
     public void updateTodoText(NativeEvent event)
     {
-        this.todo.setText(JsTools.get(event.getEventTarget(), "value"));
+        this.todo.setText(JsUtils.get(event.getEventTarget(), "value"));
     }
 }

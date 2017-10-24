@@ -37,8 +37,10 @@
 	</scm>
 
 	<properties>
-        <gwt.version>2.8.0</gwt.version>
-        <jsinterop.version>1.0.0</jsinterop.version>
+        <gwt.version>2.8.1</gwt.version>
+        <jsinterop.version>1.0.2</jsinterop.version>
+        <elemental2.version>1.0.0-beta-1</elemental2.version>
+        <jsinterop-base.version>1.0.0-beta-1</jsinterop-base.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -61,6 +63,26 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
+		<dependency>
+			<groupId>com.google.jsinterop</groupId>
+			<artifactId>jsinterop</artifactId>
+			<version>${jsinterop.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.jsinterop</groupId>
+			<artifactId>base</artifactId>
+			<version>${jsinterop-base.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.elemental2</groupId>
+			<artifactId>elemental2-core</artifactId>
+			<version>${elemental2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.elemental2</groupId>
+			<artifactId>elemental2-dom</artifactId>
+			<version>${elemental2.version}</version>
+		</dependency>
         <dependency>
             <groupId>com.squareup</groupId>
             <artifactId>javapoet</artifactId>

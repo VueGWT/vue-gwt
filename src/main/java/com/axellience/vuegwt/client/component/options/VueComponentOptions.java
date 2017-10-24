@@ -8,22 +8,23 @@ import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.client.jsnative.jstypes.JSON;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.tools.JsUtils;
 import com.google.gwt.resources.client.CssResource;
+import elemental2.core.Array;
+import elemental2.core.JsObject;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static com.axellience.vuegwt.client.tools.JsTools.isUndefined;
+import static elemental2.core.Global.JSON;
 
 /**
  * Java representation of VueComponentOptions
@@ -36,12 +37,12 @@ import static com.axellience.vuegwt.client.tools.JsTools.isUndefined;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class VueComponentOptions<T extends VueComponent> extends JsObject
+public class VueComponentOptions<T extends VueComponent> extends JsObject implements JsPropertyMap
 {
     private ComponentJavaPrototype<T> componentJavaPrototype;
     private TemplateResource<T> templateResource;
     private Map<String, Provider<?>> dependenciesProvider;
-    private JsObject dataFields;
+    private JsPropertyMap dataFields;
 
     /**
      * Set the Java Prototype on this {@link VueComponentOptions}.
@@ -92,7 +93,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     {
         for (String methodId : templateResource.getTemplateMethods())
         {
-            addMethod(methodId, JsTools.get(templateResource, methodId));
+            addMethod(methodId, JsUtils.get(templateResource, methodId));
         }
     }
 
@@ -102,12 +103,12 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     private void initRenderFunctions()
     {
-        this.set("render", JsTools.createFunction(templateResource.getRenderFunction()));
+        this.set("render", JsUtils.createFunction(templateResource.getRenderFunction()));
 
-        JsArray<Object> staticRenderFns = new JsArray<>();
+        Array<Object> staticRenderFns = new Array<>();
         for (String staticRenderFunction : templateResource.getStaticRenderFunctions())
         {
-            staticRenderFns.push(JsTools.createFunction(staticRenderFunction));
+            staticRenderFns.push(JsUtils.createFunction(staticRenderFunction));
         }
         this.setStaticRenderFns(staticRenderFns);
     }
@@ -120,12 +121,12 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     @JsOverlay
     public final void initData(boolean useFactory, String... fieldNames)
     {
-        dataFields = new JsObject();
+        dataFields = JsPropertyMap.of();
         for (String fieldName : fieldNames)
         {
             // Get the default field value from the prototype if any
             Object defaultValue = componentJavaPrototype.get(fieldName);
-            if (!isUndefined(defaultValue))
+            if (!Js.isTripleEqual(defaultValue, Js.undefined()))
                 dataFields.set(fieldName, defaultValue);
             else
                 dataFields.set(fieldName, null);
@@ -135,7 +136,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
         {
             String dataFieldsJSON = JSON.stringify(dataFields);
             this.setData((DataFactory) () -> {
-                JsObject data = JSON.parse(dataFieldsJSON);
+                JsPropertyMap data = (JsPropertyMap) JSON.parse(dataFieldsJSON);
                 addStylesToData(data);
                 return data;
             });
@@ -152,7 +153,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
      * @param data The data of the ComponentOptions
      */
     @JsOverlay
-    private void addStylesToData(JsObject data)
+    private void addStylesToData(JsPropertyMap data)
     {
         if (templateResource == null || templateResource.getTemplateStyles() == null)
             return;
@@ -203,7 +204,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
             return;
         }
 
-        JsObject watchDefinition = new JsObject();
+        JsPropertyMap watchDefinition = JsPropertyMap.of();
         watchDefinition.set("deep", true);
         watchDefinition.set("handler", getJavaComponentMethod(javaMethodName));
         addWatch(watchedPropertyName, watchDefinition);
@@ -253,8 +254,8 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
         PropOptions propDefinition = new PropOptions();
         propDefinition.required = required;
 
-        if (jsTypeName != null)
-            propDefinition.type = JsTools.getWindow().get(jsTypeName);
+        //if (jsTypeName != null)
+            //propDefinition.type = ((JsPropertyMap) Window).get(jsTypeName);
 
         addProp(propName, propDefinition);
     }
@@ -337,24 +338,24 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
 
       ---------------------------------------------*/
     @JsProperty private Object data;
-    @JsProperty private JsObject props;
+    @JsProperty private JsPropertyMap props;
 
-    @JsProperty private JsObject propsData;
-    @JsProperty private JsObject<ComputedOptions> computed;
-    @JsProperty private JsObject methods;
+    @JsProperty private JsPropertyMap propsData;
+    @JsProperty private JsPropertyMap<ComputedOptions> computed;
+    @JsProperty private JsPropertyMap methods;
 
-    @JsProperty private JsObject watch;
+    @JsProperty private JsPropertyMap watch;
     @JsProperty private Object el;
 
     @JsProperty private String template;
-    @JsProperty private JsObject<VueDirectiveOptions> directives;
+    @JsProperty private JsPropertyMap<VueDirectiveOptions> directives;
 
-    @JsProperty private JsObject<VueComponentOptions> components;
+    @JsProperty private JsPropertyMap<VueComponentOptions> components;
     @JsProperty private VueComponent parent;
 
     @JsProperty private String name;
 
-    @JsProperty private JsArray<Object> staticRenderFns;
+    @JsProperty private Array<Object> staticRenderFns;
 
     @JsOverlay
     public final Object getData()
@@ -370,13 +371,13 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     }
 
     @JsOverlay
-    public final JsObject getProps()
+    public final JsPropertyMap getProps()
     {
         return props;
     }
 
     @JsOverlay
-    public final VueComponentOptions setProps(JsObject props)
+    public final VueComponentOptions setProps(JsPropertyMap props)
     {
         this.props = props;
         return this;
@@ -386,33 +387,33 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     public final VueComponentOptions addProp(String name, PropOptions propOptions)
     {
         if (this.props == null)
-            this.props = new JsObject();
+            this.props = JsPropertyMap.of();
 
-        this.props.set(name, propOptions);
+        ((JsPropertyMap)this.props).set(name, propOptions);
         return this;
     }
 
     @JsOverlay
-    public final JsObject getPropsData()
+    public final JsPropertyMap getPropsData()
     {
         return propsData;
     }
 
     @JsOverlay
-    public final VueComponentOptions setPropsData(JsObject propsData)
+    public final VueComponentOptions setPropsData(JsPropertyMap propsData)
     {
         this.propsData = propsData;
         return this;
     }
 
     @JsOverlay
-    public final JsObject<ComputedOptions> getComputed()
+    public final JsPropertyMap<ComputedOptions> getComputed()
     {
         return computed;
     }
 
     @JsOverlay
-    public final VueComponentOptions setComputed(JsObject<ComputedOptions> computed)
+    public final VueComponentOptions setComputed(JsPropertyMap<ComputedOptions> computed)
     {
         this.computed = computed;
         return this;
@@ -422,7 +423,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     public final VueComponentOptions addComputedOptions(String name, ComputedOptions computed)
     {
         if (this.computed == null)
-            this.computed = new JsObject<>();
+            this.computed = (JsPropertyMap<ComputedOptions>) new JsObject();
 
         this.computed.set(name, computed);
         return this;
@@ -432,19 +433,19 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     public final ComputedOptions getComputedOptions(String name)
     {
         if (this.computed == null)
-            this.computed = new JsObject<>();
+            this.computed = (JsPropertyMap<ComputedOptions>) new JsObject();
 
         return this.computed.get(name);
     }
 
     @JsOverlay
-    public final JsObject getMethods()
+    public final JsPropertyMap getMethods()
     {
         return methods;
     }
 
     @JsOverlay
-    public final VueComponentOptions setMethods(JsObject methods)
+    public final VueComponentOptions setMethods(JsPropertyMap methods)
     {
         this.methods = methods;
         return this;
@@ -454,20 +455,20 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     public final VueComponentOptions addMethod(String name, Object method)
     {
         if (this.methods == null)
-            this.methods = new JsObject<>();
+            this.methods = JsPropertyMap.of();
 
         this.methods.set(name, method);
         return this;
     }
 
     @JsOverlay
-    public final JsObject getWatch()
+    public final JsPropertyMap getWatch()
     {
         return watch;
     }
 
     @JsOverlay
-    public final VueComponentOptions setWatch(JsObject watch)
+    public final VueComponentOptions setWatch(JsPropertyMap watch)
     {
         this.watch = watch;
         return this;
@@ -477,7 +478,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     public final VueComponentOptions addWatch(String name, Object watcher)
     {
         if (this.watch == null)
-            this.watch = new JsObject<>();
+            this.watch = JsPropertyMap.of();
 
         this.watch.set(name, watcher);
         return this;
@@ -509,39 +510,39 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject
     }
 
     @JsOverlay
-    public final JsArray<Object> getStaticRenderFns()
+    public final Array<Object> getStaticRenderFns()
     {
         return staticRenderFns;
     }
 
     @JsOverlay
-    public final VueComponentOptions setStaticRenderFns(JsArray<Object> staticRenderFns)
+    public final VueComponentOptions setStaticRenderFns(Array<Object> staticRenderFns)
     {
         this.staticRenderFns = staticRenderFns;
         return this;
     }
 
     @JsOverlay
-    public final JsObject<VueDirectiveOptions> getDirectives()
+    public final JsPropertyMap<VueDirectiveOptions> getDirectives()
     {
         return directives;
     }
 
     @JsOverlay
-    public final VueComponentOptions setDirectives(JsObject<VueDirectiveOptions> directives)
+    public final VueComponentOptions setDirectives(JsPropertyMap<VueDirectiveOptions> directives)
     {
         this.directives = directives;
         return this;
     }
 
     @JsOverlay
-    public final JsObject<VueComponentOptions> getComponents()
+    public final JsPropertyMap<VueComponentOptions> getComponents()
     {
         return components;
     }
 
     @JsOverlay
-    public final VueComponentOptions setComponents(JsObject<VueComponentOptions> components)
+    public final VueComponentOptions setComponents(JsPropertyMap<VueComponentOptions> components)
     {
         this.components = components;
         return this;

@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.client.vnode;
 
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -10,7 +9,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public final class VNodeComponentOptions extends JsObject
+public final class VNodeComponentOptions
 {
     @JsProperty protected Object propsData;
     @JsProperty protected Object listeners;

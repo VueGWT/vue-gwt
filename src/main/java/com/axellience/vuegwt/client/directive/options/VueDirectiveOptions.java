@@ -1,9 +1,9 @@
 package com.axellience.vuegwt.client.directive.options;
 
 import com.axellience.vuegwt.client.directive.VueDirective;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.tools.JsUtils;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Java representation of VueDirectiveOptions
@@ -16,7 +16,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType
-public abstract class VueDirectiveOptions extends JsObject
+public abstract class VueDirectiveOptions implements JsPropertyMap
 {
     /**
      * Will be set by class inheriting to an instance of the VueDirective class
@@ -45,12 +45,12 @@ public abstract class VueDirectiveOptions extends JsObject
      */
     private void copyHook(String hookFunctionName)
     {
-        JsObject hookFunction = JsTools.get(vuegwt$javaDirectiveInstance, hookFunctionName);
+        JsPropertyMap hookFunction = JsUtils.get(vuegwt$javaDirectiveInstance, hookFunctionName);
         if (hookFunction == null)
             return;
 
         // Filter empty function inherited from VueDirective
-        String body = JsTools.getFunctionBody(hookFunction);
+        String body = JsUtils.getFunctionBody(hookFunction);
         if ("".equals(body))
             return;
 

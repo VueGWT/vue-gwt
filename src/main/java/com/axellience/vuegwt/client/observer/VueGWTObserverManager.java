@@ -1,10 +1,10 @@
 package com.axellience.vuegwt.client.observer;
 
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.CollectionObserver;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.MapObserver;
-import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.tools.JsUtils;
 import com.google.gwt.core.client.JavaScriptObject;
+import elemental2.core.Array;
 import jsinterop.annotations.JsMethod;
 
 import java.util.LinkedList;
@@ -78,7 +78,7 @@ public class VueGWTObserverManager
      */
     public static VueObserver getVueObserver(Object object)
     {
-        return (VueObserver) JsTools.get(object, "__ob__");
+        return (VueObserver) JsUtils.get(object, "__ob__");
     }
 
     /**
@@ -89,7 +89,7 @@ public class VueGWTObserverManager
      */
     public static void observe(Object object)
     {
-        observeArray(JsArray.array(object));
+        observeArray(new Array(object));
     }
 
     /**
@@ -100,7 +100,7 @@ public class VueGWTObserverManager
      * @param objects The list of object to observe
      */
     @JsMethod(namespace = "VueGWT.observerManager")
-    public static native void observeArray(JsArray objects);
+    public static native void observeArray(Array objects);
 
     /**
      * Make all properties of the object reactive. It won't call

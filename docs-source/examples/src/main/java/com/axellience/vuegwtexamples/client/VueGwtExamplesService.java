@@ -3,7 +3,6 @@ package com.axellience.vuegwtexamples.client;
 import com.axellience.vuegwt.client.Vue;
 import com.axellience.vuegwt.client.VueGWT;
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.tools.JsTools;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
@@ -42,8 +41,10 @@ import com.axellience.vuegwtexamples.client.examples.vforwithindex.VForWithIndex
 import com.axellience.vuegwtexamples.client.examples.vforwithrange.VForWithRangeComponent;
 import com.axellience.vuegwtexamples.client.examples.vonwithdomevent.VOnWithDOMEventComponent;
 import com.google.gwt.dom.client.Document;
+import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
 
 @JsType(namespace = JsPackage.GLOBAL)
 public class VueGwtExamplesService
@@ -52,7 +53,8 @@ public class VueGwtExamplesService
     {
         if (Document.get().getElementById("fullJsComponent") != null)
         {
-            VueJsConstructor vueClass = (VueJsConstructor) JsTools.getWindow().get("FullJsComponent");
+            VueJsConstructor<VueComponent> vueClass =
+                (VueJsConstructor<VueComponent>) ((JsPropertyMap) DomGlobal.window).get("FullJsComponent");
             VueComponent myComponent = vueClass.instantiate();
             myComponent.$mount("#fullJsComponent");
         }
@@ -112,7 +114,7 @@ public class VueGwtExamplesService
         if (Document.get().getElementById(exampleId) != null)
         {
             VueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVueFactory);
-            JsTools.getWindow().set(exampleId, exampleInstance);
+            ((JsPropertyMap) DomGlobal.window).set(exampleId, exampleInstance);
         }
     }
 }
