@@ -1,17 +1,11 @@
 package com.axellience.vuegwt.client.tools;
 
 import elemental2.core.Array;
-import elemental2.core.Function;
-import elemental2.core.JsString;
-import elemental2.core.RegExp;
-import jsinterop.annotations.JsIgnore;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 import java.util.Collection;
 import java.util.Map;
-
-import static jsinterop.base.Js.cast;
 
 public class JsUtils
 {
@@ -59,44 +53,6 @@ public class JsUtils
     public static <T> Array<T> from(T[] array)
     {
         return Js.cast(array);
-    }
-
-    public static <T> T getDeepValue(Object object, String path)
-    {
-        JsPropertyMap objectMap = (JsPropertyMap) object;
-        String[] pathSplit = path.split("\\.");
-        for (String s : pathSplit)
-        {
-            objectMap = (JsPropertyMap) objectMap.get(s);
-        }
-        return (T) objectMap;
-    }
-
-    public static Object call(Object method, Object thisArg, Object... args)
-    {
-        return ((Function) method).apply(thisArg, args);
-    }
-
-    public static Object createFunction(String functionBody)
-    {
-        return new Function(functionBody);
-    }
-
-    public static String getFunctionBody(Object jsFunction)
-    {
-        JsString jsString = cast(jsFunction.toString());
-
-        // Get content between first { and last }
-        JsString m = cast(jsString.match(new RegExp("\\{([\\s\\S]*)\\}", "m"))[1]);
-        // Strip comments
-        return m.replace(new RegExp("^\\s*\\/\\/.*$", "mg"), "").trim();
-    }
-
-    @SuppressWarnings("unchecked")
-    @JsIgnore
-    public static <T> T get(Object o, String propertyName)
-    {
-        return (T) ((JsPropertyMap) o).get(propertyName);
     }
 
     public static class JsObjectEntry<T>

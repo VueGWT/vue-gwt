@@ -1,9 +1,13 @@
 package com.axellience.vuegwt.client.directive.options;
 
 import com.axellience.vuegwt.client.directive.VueDirective;
-import com.axellience.vuegwt.client.tools.JsUtils;
+import elemental2.core.Function;
+import elemental2.core.JsString;
+import elemental2.core.RegExp;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+
+import static jsinterop.base.Js.cast;
 
 /**
  * Java representation of VueDirectiveOptions
@@ -45,15 +49,26 @@ public abstract class VueDirectiveOptions implements JsPropertyMap
      */
     private void copyHook(String hookFunctionName)
     {
-        JsPropertyMap hookFunction = JsUtils.get(vuegwt$javaDirectiveInstance, hookFunctionName);
+        Function hookFunction =
+            (Function) ((JsPropertyMap) vuegwt$javaDirectiveInstance).get(hookFunctionName);
         if (hookFunction == null)
             return;
 
         // Filter empty function inherited from VueDirective
-        String body = JsUtils.getFunctionBody(hookFunction);
+        String body = getFunctionBody(hookFunction);
         if ("".equals(body))
             return;
 
         set(hookFunctionName, hookFunction);
+    }
+
+    private String getFunctionBody(Function jsFunction)
+    {
+        JsString jsString = cast(jsFunction.toString());
+
+        // Get content between first { and last }
+        JsString m = cast(jsString.match(new RegExp("\\{([\\s\\S]*)\\}", "m"))[1]);
+        // Strip comments
+        return m.replace(new RegExp("^\\s*\\/\\/.*$", "mg"), "").trim();
     }
 }

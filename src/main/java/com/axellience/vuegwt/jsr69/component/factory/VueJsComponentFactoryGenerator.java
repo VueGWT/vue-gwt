@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.jsr69.component.factory;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.tools.JsUtils;
+import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
@@ -65,7 +65,7 @@ public class VueJsComponentFactoryGenerator extends AbstractVueComponentFactoryG
         initBuilder.addStatement("jsConstructor = ($T) $T.getDeepValue($T.window, $S)",
             ParameterizedTypeName.get(ClassName.get(VueJsConstructor.class),
                 ClassName.get(component.asType())),
-            JsUtils.class,
+            VueGWTTools.class,
             DomGlobal.class,
             namespace + name);
 

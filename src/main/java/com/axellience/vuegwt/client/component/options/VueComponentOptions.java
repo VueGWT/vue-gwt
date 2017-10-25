@@ -8,9 +8,9 @@ import com.axellience.vuegwt.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.client.component.template.TemplateResource;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.client.tools.JsUtils;
 import com.google.gwt.resources.client.CssResource;
 import elemental2.core.Array;
+import elemental2.core.Function;
 import elemental2.core.JsObject;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -93,7 +93,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     {
         for (String methodId : templateResource.getTemplateMethods())
         {
-            addMethod(methodId, JsUtils.get(templateResource, methodId));
+            addMethod(methodId, templateResource.get(methodId));
         }
     }
 
@@ -103,12 +103,12 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     @JsOverlay
     private void initRenderFunctions()
     {
-        this.set("render", JsUtils.createFunction(templateResource.getRenderFunction()));
+        this.set("render", new Function(templateResource.getRenderFunction()));
 
         Array<Object> staticRenderFns = new Array<>();
         for (String staticRenderFunction : templateResource.getStaticRenderFunctions())
         {
-            staticRenderFns.push(JsUtils.createFunction(staticRenderFunction));
+            staticRenderFns.push(new Function(staticRenderFunction));
         }
         this.setStaticRenderFns(staticRenderFns);
     }
@@ -290,9 +290,9 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
      * @return The JS function that represent our Java method.
      */
     @JsOverlay
-    private Object getJavaComponentMethod(String javaMethodName)
+    private Function getJavaComponentMethod(String javaMethodName)
     {
-        return componentJavaPrototype.get(javaMethodName);
+        return (Function) componentJavaPrototype.get(javaMethodName);
     }
 
     /**
@@ -342,7 +342,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     @JsProperty private JsPropertyMap propsData;
     @JsProperty private JsPropertyMap<ComputedOptions> computed;
-    @JsProperty private JsPropertyMap methods;
+    @JsProperty private JsPropertyMap<Function> methods;
 
     @JsProperty private JsPropertyMap watch;
     @JsProperty private Object el;
@@ -439,7 +439,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     }
 
     @JsOverlay
-    public final JsPropertyMap getMethods()
+    public final JsPropertyMap<Function> getMethods()
     {
         return methods;
     }
@@ -452,10 +452,10 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     }
 
     @JsOverlay
-    public final VueComponentOptions addMethod(String name, Object method)
+    public final VueComponentOptions addMethod(String name, Function method)
     {
         if (this.methods == null)
-            this.methods = JsPropertyMap.of();
+            this.methods = (JsPropertyMap<Function>) new JsObject();
 
         this.methods.set(name, method);
         return this;

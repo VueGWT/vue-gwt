@@ -2,10 +2,10 @@ package com.axellience.vuegwt.client.observer;
 
 import com.axellience.vuegwt.client.observer.vuegwtobservers.CollectionObserver;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.MapObserver;
-import com.axellience.vuegwt.client.tools.JsUtils;
 import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.core.Array;
 import jsinterop.annotations.JsMethod;
+import jsinterop.base.JsPropertyMap;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -78,7 +78,7 @@ public class VueGWTObserverManager
      */
     public static VueObserver getVueObserver(Object object)
     {
-        return (VueObserver) JsUtils.get(object, "__ob__");
+        return (VueObserver) ((JsPropertyMap) object).get("__ob__");
     }
 
     /**

@@ -6,6 +6,8 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ResourcePrototype;
 import com.google.gwt.resources.ext.DefaultExtensions;
 import com.google.gwt.resources.ext.ResourceGeneratorType;
+import elemental2.core.Function;
+import jsinterop.base.JsPropertyMap;
 
 import java.util.Map;
 
@@ -16,7 +18,7 @@ import java.util.Map;
  */
 @DefaultExtensions(value = { ".html" })
 @ResourceGeneratorType(TemplateResourceGwtGenerator.class)
-public interface TemplateResource<T extends VueComponent> extends ResourcePrototype
+public interface TemplateResource<T extends VueComponent> extends ResourcePrototype, JsPropertyMap<Function>
 {
     String EXPRESSION_PREFIX = "exp$";
 

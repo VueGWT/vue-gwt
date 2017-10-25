@@ -178,7 +178,7 @@ public class ComponentJsTypeGenerator
             optionsMethodBuilder.addStatement("options.setName($S)", annotation.name());
 
         optionsMethodBuilder.addStatement(
-            "options.setComponentJavaPrototype($T.getJavaConstructor($T.class).getPrototype())",
+            "options.setComponentJavaPrototype($T.getJavaConstructor($T.class).prototype)",
             VueGWT.class,
             componentJsTypeName(component));
 
