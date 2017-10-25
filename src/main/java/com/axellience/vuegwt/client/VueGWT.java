@@ -2,15 +2,11 @@ package com.axellience.vuegwt.client;
 
 import com.axellience.vuegwt.client.component.ComponentJavaConstructor;
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.jsnative.html.HTMLDocument;
-import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
 import com.axellience.vuegwt.client.observer.VueGWTObserverManager;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.CollectionObserver;
 import com.axellience.vuegwt.client.observer.vuegwtobservers.MapObserver;
-import com.axellience.vuegwt.client.resources.VueLibResources;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsIgnore;
@@ -45,15 +41,7 @@ public class VueGWT
     @JsIgnore
     public static void init()
     {
-        if (!isVueLibInjected())
-        {
-            HTMLDocument document = HTMLDocument.get();
-
-            HTMLElement scriptElement = document.createElement("script");
-            VueLibResources resources = GWT.create(VueLibResources.class);
-            scriptElement.innerHTML = resources.vueScript().getText();
-            document.body.appendChild(scriptElement);
-        }
+        VueLibInjector.ensureInjected();
 
         // Init VueGWT
         VueGWT.initWithoutVueLib();
@@ -213,7 +201,7 @@ public class VueGWT
         onReadyCallbacks.push(callback);
     }
 
-    private static boolean isVueLibInjected()
+    public static boolean isVueLibInjected()
     {
         return ((JsPropertyMap) DomGlobal.window).get("Vue") != null;
     }
