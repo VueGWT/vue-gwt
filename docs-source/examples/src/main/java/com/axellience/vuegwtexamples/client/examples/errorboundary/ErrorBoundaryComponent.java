@@ -3,20 +3,22 @@ package com.axellience.vuegwtexamples.client.examples.errorboundary;
 import com.axellience.vuegwt.client.component.HasRender;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.hooks.HasErrorCaptured;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vnode.VNodeData;
 import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import jsinterop.annotations.JsProperty;
+import jsinterop.base.JsPropertyMap;
+
+import static com.axellience.vuegwt.client.tools.JsUtils.map;
 
 @Component
 public class ErrorBoundaryComponent extends VueComponent implements HasErrorCaptured, HasRender
 {
-    @JsProperty JsObject error;
+    @JsProperty JsPropertyMap error;
 
     @Override
-    public boolean errorCaptured(JsObject err, VueComponent vue, String info)
+    public boolean errorCaptured(JsPropertyMap err, VueComponent vue, String info)
     {
         this.error = err;
         return false;

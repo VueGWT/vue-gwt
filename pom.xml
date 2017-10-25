@@ -37,8 +37,10 @@
 	</scm>
 
 	<properties>
-        <gwt.version>2.8.0</gwt.version>
-        <jsinterop.version>1.0.0</jsinterop.version>
+        <gwt.version>2.8.1</gwt.version>
+        <jsinterop.version>1.0.2</jsinterop.version>
+        <elemental2.version>1.0.0-beta-1</elemental2.version>
+        <jsinterop-base.version>1.0.0-beta-1</jsinterop-base.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -61,6 +63,21 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
+		<dependency>
+			<groupId>com.google.jsinterop</groupId>
+			<artifactId>base</artifactId>
+			<version>${jsinterop-base.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.elemental2</groupId>
+			<artifactId>elemental2-core</artifactId>
+			<version>${elemental2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.elemental2</groupId>
+			<artifactId>elemental2-dom</artifactId>
+			<version>${elemental2.version}</version>
+		</dependency>
         <dependency>
             <groupId>com.squareup</groupId>
             <artifactId>javapoet</artifactId>
@@ -134,30 +151,6 @@
 					<!-- Disable annotation processing for ourselves.-->
 					<compilerArgument>-proc:none</compilerArgument>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>com.samaxes.maven</groupId>
-				<artifactId>minify-maven-plugin</artifactId>
-				<version>1.7.6</version>
-				<executions>
-					<execution>
-						<id>default-minify</id>
-						<configuration>
-							<charset>UTF-8</charset>
-							<webappSourceDir>src/main/resources/com/axellience/vuegwt/client/resources</webappSourceDir>
-							<jsSourceDir>sources</jsSourceDir>
-							<webappTargetDir>src/main/resources/com/axellience/vuegwt/client/resources</webappTargetDir>
-							<jsTargetDir>.</jsTargetDir>
-
-							<bundleConfiguration>src/main/resources/com/axellience/vuegwt/client/resources/bundle.config.json</bundleConfiguration>
-							<jsEngine>CLOSURE</jsEngine>
-						</configuration>
-						<goals>
-							<goal>minify</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

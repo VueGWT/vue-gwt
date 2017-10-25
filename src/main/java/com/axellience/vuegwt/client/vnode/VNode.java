@@ -1,8 +1,8 @@
 package com.axellience.vuegwt.client.vnode;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.google.gwt.dom.client.Element;
+import elemental2.core.Array;
+import elemental2.dom.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -16,7 +16,7 @@ public final class VNode
 {
     @JsProperty protected String tag;
     @JsProperty protected VNodeData data;
-    @JsProperty protected JsArray<VNode> children;
+    @JsProperty protected Array<VNode> children;
     @JsProperty protected String text;
     @JsProperty protected Element elm;
     @JsProperty protected String ns;
@@ -57,13 +57,13 @@ public final class VNode
     }
 
     @JsOverlay
-    public final JsArray<VNode> getChildren()
+    public final Array<VNode> getChildren()
     {
         return children;
     }
 
     @JsOverlay
-    public final VNode setChildren(JsArray<VNode> children)
+    public final VNode setChildren(Array<VNode> children)
     {
         this.children = children;
         return this;
@@ -73,7 +73,7 @@ public final class VNode
     public final VNode addChild(VNode child)
     {
         if (this.children == null)
-            this.children = new JsArray<>();
+            this.children = new Array<>();
 
         this.children.push(child);
         return this;

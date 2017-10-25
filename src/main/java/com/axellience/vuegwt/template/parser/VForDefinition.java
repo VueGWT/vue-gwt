@@ -239,7 +239,7 @@ public class VForDefinition
     public String getInExpression()
     {
         if (type == VForDefinitionType.ARRAY)
-            return "JsArray.from(" + inExpression + ")";
+            return "JsUtils.from(" + inExpression + ")";
 
         return inExpression;
     }

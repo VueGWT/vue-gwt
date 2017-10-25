@@ -2,10 +2,10 @@ package com.axellience.vuegwtexamples.client.examples.vforonobjectwithkeyandinde
 
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.hooks.HasCreated;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
 import com.axellience.vuegwt.jsr69.component.annotations.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
 import jsinterop.annotations.JsProperty;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * @author Adrien Baron
@@ -13,7 +13,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class VForOnObjectWithKeyAndIndexComponent extends VueComponent implements HasCreated
 {
-    @JsProperty JsObject<Object> myObject = new JsObject<>();
+    @JsProperty JsPropertyMap<Object> myObject = JsPropertyMap.of();
 
     @Override
     public void created()

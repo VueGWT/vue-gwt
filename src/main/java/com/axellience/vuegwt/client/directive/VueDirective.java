@@ -2,7 +2,7 @@ package com.axellience.vuegwt.client.directive;
 
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vnode.VNodeDirective;
-import com.google.gwt.dom.client.Element;
+import elemental2.dom.Element;
 import jsinterop.annotations.JsType;
 
 /**

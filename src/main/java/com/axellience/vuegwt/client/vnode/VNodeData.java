@@ -1,38 +1,39 @@
 package com.axellience.vuegwt.client.vnode;
 
 import com.axellience.vuegwt.client.component.options.functions.OnEvent;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
+import elemental2.core.Array;
+import elemental2.core.JsObject;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class VNodeData extends JsObject
+public class VNodeData
 {
     @JsProperty protected Object key;
     @JsProperty protected String slot;
-    @JsProperty protected JsObject<ScopedSlot> scopedSlots;
+    @JsProperty protected JsPropertyMap<ScopedSlot> scopedSlots;
     @JsProperty protected String ref;
     @JsProperty protected String tag;
     @JsProperty protected String staticClass;
     @JsProperty(name = "class") protected Object classProp;
-    @JsProperty protected JsObject staticStyle;
+    @JsProperty protected JsPropertyMap staticStyle;
     @JsProperty protected Object style;
-    @JsProperty protected JsObject props;
-    @JsProperty protected JsObject attrs;
-    @JsProperty protected JsObject domProps;
-    @JsProperty protected JsObject hook;
+    @JsProperty protected JsPropertyMap props;
+    @JsProperty protected JsPropertyMap attrs;
+    @JsProperty protected JsPropertyMap domProps;
+    @JsProperty protected JsPropertyMap hook;
     @JsProperty protected Object on;
     @JsProperty protected Object nativeOn;
     @JsProperty protected Object transition;
     @JsProperty protected boolean show;
     @JsProperty protected InlineTemplate inlineTemplate;
-    @JsProperty protected JsArray<VNodeDirective> directives;
+    @JsProperty protected Array<VNodeDirective> directives;
     @JsProperty protected boolean keepAlive;
 
     public VNodeData()
@@ -86,13 +87,13 @@ public class VNodeData extends JsObject
     }
 
     @JsOverlay
-    public final JsObject<ScopedSlot> getScopedSlots()
+    public final JsPropertyMap<ScopedSlot> getScopedSlots()
     {
         return scopedSlots;
     }
 
     @JsOverlay
-    public final VNodeData setScopedSlots(JsObject<ScopedSlot> scopedSlots)
+    public final VNodeData setScopedSlots(JsPropertyMap<ScopedSlot> scopedSlots)
     {
         this.scopedSlots = scopedSlots;
         return this;
@@ -102,7 +103,7 @@ public class VNodeData extends JsObject
     public final VNodeData scopedSlot(String name, ScopedSlot scopedSlot)
     {
         if (this.scopedSlots == null)
-            this.scopedSlots = new JsObject<>();
+            this.scopedSlots = (JsPropertyMap<ScopedSlot>) new JsObject();
 
         this.scopedSlots.set(name, scopedSlot);
         return this;
@@ -161,7 +162,7 @@ public class VNodeData extends JsObject
     }
 
     @JsOverlay
-    public final JsObject getStaticStyle()
+    public final JsPropertyMap getStaticStyle()
     {
         return staticStyle;
     }
@@ -170,14 +171,14 @@ public class VNodeData extends JsObject
     public final VNodeData addStaticStyle(String name, Object value)
     {
         if (this.staticStyle == null)
-            this.staticStyle = new JsObject();
+            this.staticStyle = JsPropertyMap.of();
 
         this.staticStyle.set(name, value);
         return this;
     }
 
     @JsOverlay
-    public final VNodeData setStaticStyle(JsObject staticStyle)
+    public final VNodeData setStaticStyle(JsPropertyMap staticStyle)
     {
         this.staticStyle = staticStyle;
         return this;
@@ -190,27 +191,27 @@ public class VNodeData extends JsObject
     }
 
     @JsOverlay
-    public final VNodeData setStyle(JsObject style)
+    public final VNodeData setStyle(JsPropertyMap style)
     {
         this.style = style;
         return this;
     }
 
     @JsOverlay
-    public final VNodeData setStyle(JsArray style)
+    public final VNodeData setStyle(Array style)
     {
         this.style = style;
         return this;
     }
 
     @JsOverlay
-    public final JsObject getProps()
+    public final JsPropertyMap getProps()
     {
         return props;
     }
 
     @JsOverlay
-    public final VNodeData setProps(JsObject props)
+    public final VNodeData setProps(JsPropertyMap props)
     {
         this.props = props;
         return this;
@@ -220,20 +221,20 @@ public class VNodeData extends JsObject
     public final VNodeData prop(String name, Object prop)
     {
         if (this.props == null)
-            this.props = new JsObject();
+            this.props = JsPropertyMap.of();
 
         this.props.set(name, prop);
         return this;
     }
 
     @JsOverlay
-    public final JsObject getAttrs()
+    public final JsPropertyMap getAttrs()
     {
         return attrs;
     }
 
     @JsOverlay
-    public final VNodeData setAttrs(JsObject attrs)
+    public final VNodeData setAttrs(JsPropertyMap attrs)
     {
         this.attrs = attrs;
         return this;
@@ -243,20 +244,20 @@ public class VNodeData extends JsObject
     public final VNodeData attr(String name, Object attr)
     {
         if (this.attrs == null)
-            this.attrs = new JsObject();
+            this.attrs = JsPropertyMap.of();
 
         this.attrs.set(name, attr);
         return this;
     }
 
     @JsOverlay
-    public final JsObject getDomProps()
+    public final JsPropertyMap getDomProps()
     {
         return domProps;
     }
 
     @JsOverlay
-    public final VNodeData setDomProps(JsObject domProps)
+    public final VNodeData setDomProps(JsPropertyMap domProps)
     {
         this.domProps = domProps;
         return this;
@@ -266,20 +267,20 @@ public class VNodeData extends JsObject
     public final VNodeData domProp(String name, Object domProp)
     {
         if (this.domProps == null)
-            this.domProps = new JsObject();
+            this.domProps = JsPropertyMap.of();
 
         this.domProps.set(name, domProp);
         return this;
     }
 
     @JsOverlay
-    public final JsObject getHook()
+    public final JsPropertyMap getHook()
     {
         return hook;
     }
 
     @JsOverlay
-    public final VNodeData setHook(JsObject hook)
+    public final VNodeData setHook(JsPropertyMap hook)
     {
         this.hook = hook;
         return this;
@@ -289,7 +290,7 @@ public class VNodeData extends JsObject
     public final VNodeData hook(String name, Object hook)
     {
         if (this.hook == null)
-            this.hook = new JsObject();
+            this.hook = JsPropertyMap.of();
 
         this.hook.set(name, hook);
         return this;
@@ -312,9 +313,9 @@ public class VNodeData extends JsObject
     public final VNodeData on(String name, OnEvent on)
     {
         if (this.on == null)
-            this.on = new JsObject<OnEvent>();
+            this.on = JsPropertyMap.of();
 
-        ((JsObject) this.on).set(name, on);
+        ((JsPropertyMap) this.on).set(name, on);
         return this;
     }
 
@@ -335,9 +336,9 @@ public class VNodeData extends JsObject
     public final VNodeData nativeOn(String name, OnEvent nativeOn)
     {
         if (this.nativeOn == null)
-            this.nativeOn = new JsObject<OnEvent>();
+            this.nativeOn = JsPropertyMap.of();
 
-        ((JsObject) this.nativeOn).set(name, nativeOn);
+        ((JsPropertyMap) this.nativeOn).set(name, nativeOn);
         return this;
     }
 
@@ -381,13 +382,13 @@ public class VNodeData extends JsObject
     }
 
     @JsOverlay
-    public final JsArray<VNodeDirective> getDirectives()
+    public final Array<VNodeDirective> getDirectives()
     {
         return directives;
     }
 
     @JsOverlay
-    public final VNodeData setDirectives(JsArray<VNodeDirective> directives)
+    public final VNodeData setDirectives(Array<VNodeDirective> directives)
     {
         this.directives = directives;
         return this;
@@ -397,7 +398,7 @@ public class VNodeData extends JsObject
     public final VNodeData addDirective(VNodeDirective directive)
     {
         if (this.directives == null)
-            this.directives = new JsArray<>();
+            this.directives = new Array<>();
 
         this.directives.push(directive);
         return this;

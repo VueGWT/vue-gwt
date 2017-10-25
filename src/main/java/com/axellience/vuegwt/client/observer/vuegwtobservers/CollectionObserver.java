@@ -1,12 +1,11 @@
 package com.axellience.vuegwt.client.observer.vuegwtobservers;
 
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.observer.VueGWTObserver;
 import com.axellience.vuegwt.client.observer.VueGWTObserverManager;
 import com.axellience.vuegwt.client.observer.VueObserver;
 import com.axellience.vuegwt.client.tools.AfterMethodCall;
+import elemental2.core.Array;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -42,8 +41,8 @@ public class CollectionObserver extends VueGWTObserver
 
     private void observeList(List list)
     {
-        VueObserver observer = VueGWTObserverManager.getVueObserver(list);
-        observer.observeArray(JsArray.from(list));
+        VueObserver observer = VueGWTObserverManager.get().getVueObserver(list);
+        observer.observeArray(new Array(list));
 
         AfterMethodCall<List> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
@@ -52,24 +51,20 @@ public class CollectionObserver extends VueGWTObserver
         wrapMethod(list, "remove", callObserver);
         wrapMethod(list, "removeAll", callObserver);
         wrapMethod(list, "retainAll", callObserver);
-        wrapMethod(list, "add", ((object, methodName, result, arguments) -> {
+        wrapMethod(list, "addAll", ((object, methodName, result, arguments) -> {
             observer.notifyDep();
             observer.observeArray(arguments);
         }));
-        wrapMethod(list, "addAll", ((object, methodName, result, arguments) -> {
+        wrapMethod(list, "add", ((object, methodName, result, arg) -> {
             observer.notifyDep();
-            observer.observeArray(((Collection) arguments[0]).toArray());
-        }));
-        wrapMethod(list, "add", ((object, methodName, result, arguments) -> {
-            observer.notifyDep();
-            observer.observeArray(new Object[] { arguments[1] });
+            observer.observeArray(new Object[] { arg });
         }));
     }
 
     private void observeSet(Set set)
     {
-        VueObserver observer = VueGWTObserverManager.getVueObserver(set);
-        observer.observeArray(JsArray.from(set));
+        VueObserver observer = VueGWTObserverManager.get().getVueObserver(set);
+        observer.observeArray(new Array(set));
 
         AfterMethodCall<Set> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
@@ -78,13 +73,13 @@ public class CollectionObserver extends VueGWTObserver
         wrapMethod(set, "remove", callObserver);
         wrapMethod(set, "removeAll", callObserver);
         wrapMethod(set, "retainAll", callObserver);
-        wrapMethod(set, "add", ((object, methodName, result, arguments) -> {
+        wrapMethod(set, "add", ((object, methodName, result, arg) -> {
             observer.notifyDep();
-            observer.observeArray(arguments);
+            observer.observeArray(arg);
         }));
         wrapMethod(set, "addAll", ((object, methodName, result, arguments) -> {
             observer.notifyDep();
-            observer.observeArray(((Collection) arguments[0]).toArray());
+            observer.observeArray(arguments);
         }));
     }
 }

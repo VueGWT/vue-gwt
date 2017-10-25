@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.tree;
 
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
+import elemental2.core.Array;
 
 /**
  * @author Adrien Baron
@@ -8,12 +8,12 @@ import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 public class Folder
 {
     private String name;
-    private final JsArray<Folder> content;
+    private final Array<Folder> content;
 
     public Folder(String name)
     {
         this.name = name;
-        this.content = new JsArray<>();
+        this.content = new Array<>();
     }
 
     public boolean hasContent()
@@ -31,7 +31,7 @@ public class Folder
         this.name = name;
     }
 
-    public JsArray<Folder> getContent()
+    public Array<Folder> getContent()
     {
         return content;
     }

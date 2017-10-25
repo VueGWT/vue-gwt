@@ -2,21 +2,18 @@ package com.axellience.vuegwt.client;
 
 import com.axellience.vuegwt.client.component.ComponentJavaConstructor;
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.jsnative.html.HTMLDocument;
-import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
-import com.axellience.vuegwt.client.jsnative.jsfunctions.JsRunnable;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsObject;
-import com.axellience.vuegwt.client.resources.VueGwtResources;
-import com.axellience.vuegwt.client.resources.VueLibResources;
-import com.axellience.vuegwt.client.tools.JsTools;
+import com.axellience.vuegwt.client.observer.VueGWTObserverManager;
+import com.axellience.vuegwt.client.observer.vuegwtobservers.CollectionObserver;
+import com.axellience.vuegwt.client.observer.vuegwtobservers.MapObserver;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsConstructorFn;
+import jsinterop.base.JsPropertyMap;
 
 import javax.inject.Provider;
 import java.util.HashMap;
@@ -31,8 +28,7 @@ import java.util.function.Supplier;
 public class VueGWT
 {
     private static boolean isReady = false;
-    private static JsArray<JsRunnable> onReadyCallbacks = new JsArray<>();
-    private static LinkedList<Runnable> onReadyCallbacksJava = new LinkedList<>();
+    private static LinkedList<Runnable> onReadyCallbacks = new LinkedList<>();
 
     private static final Map<String, VueFactory<? extends VueComponent>> factories =
         new HashMap<>();
@@ -45,15 +41,7 @@ public class VueGWT
     @JsIgnore
     public static void init()
     {
-        if (!isVueLibInjected())
-        {
-            HTMLDocument document = HTMLDocument.get();
-
-            HTMLElement scriptElement = document.createElement("script");
-            VueLibResources resources = GWT.create(VueLibResources.class);
-            scriptElement.innerHTML = resources.vueScript().getText();
-            document.body.appendChild(scriptElement);
-        }
+        VueLibInjector.ensureInjected();
 
         // Init VueGWT
         VueGWT.initWithoutVueLib();
@@ -70,23 +58,16 @@ public class VueGWT
             throw new RuntimeException(
                 "Couldn't find Vue.js on init. Either include it Vue.js in your index.html or call VueGWT.init() instead of initWithoutVueLib.");
 
-        HTMLDocument document = HTMLDocument.get();
-
-        HTMLElement scriptElement = document.createElement("script");
-        VueGwtResources resources = GWT.create(VueGwtResources.class);
-        scriptElement.innerHTML = resources.vueGWTScript().getText();
-        document.body.appendChild(scriptElement);
+        // Register custom observers for Collection and Maps
+        VueGWTObserverManager.get().registerVueGWTObserver(new CollectionObserver());
+        VueGWTObserverManager.get().registerVueGWTObserver(new MapObserver());
 
         isReady = true;
 
         // Call on ready callbacks
-        for (JsRunnable onReadyCbk : onReadyCallbacks.iterate())
+        for (Runnable onReadyCbk : onReadyCallbacks)
             onReadyCbk.run();
-        onReadyCallbacks.length = 0;
-
-        for (Runnable onReadyCbk : onReadyCallbacksJava)
-            onReadyCbk.run();
-        onReadyCallbacksJava.clear();
+        onReadyCallbacks.clear();
     }
 
     /**
@@ -171,15 +152,10 @@ public class VueGWT
      * @return The Java constructor of our {@link VueComponent}
      */
     @JsIgnore
-    public static ComponentJavaConstructor getJavaConstructor(
-        Class<? extends VueComponent> vueComponentClass)
+    public static <T extends VueComponent> ComponentJavaConstructor getJavaConstructor(
+        Class<T> vueComponentClass)
     {
-        JsObject VueGWT = ((JsObject) JsTools.getWindow().get("VueGWT"));
-        JsObject javaComponentConstructors = (JsObject) VueGWT.get("javaComponentConstructors");
-
-        return (ComponentJavaConstructor) javaComponentConstructors.get(vueComponentClass
-            .getCanonicalName()
-            .replaceAll("\\.", "_"));
+        return (ComponentJavaConstructor) JsConstructorFn.of(vueComponentClass);
     }
 
     /**
@@ -222,11 +198,11 @@ public class VueGWT
             return;
         }
 
-        onReadyCallbacksJava.push(callback);
+        onReadyCallbacks.push(callback);
     }
 
-    private static boolean isVueLibInjected()
+    public static boolean isVueLibInjected()
     {
-        return JsTools.getWindow().get("Vue") != null;
+        return ((JsPropertyMap) DomGlobal.window).get("Vue") != null;
     }
 }

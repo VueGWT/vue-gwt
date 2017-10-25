@@ -4,12 +4,12 @@ import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.client.jsnative.jsfunctions.JsRunnable;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.tools.VueGWTTools;
 import com.axellience.vuegwt.client.vue.VueConfig;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
-import com.google.gwt.dom.client.Element;
+import elemental2.core.Array;
+import elemental2.dom.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -136,7 +136,7 @@ public abstract class Vue
     // @formatter:off
     public static native <T extends VueComponent> VueJsConstructor<T> extend(VueComponentOptions<T> componentOptions);
 
-    public static native void nextTick(JsRunnable callback, JsArray context);
+    public static native void nextTick(JsRunnable callback, Array context);
 
     public static native <T> T set(Object object, String key, T value);
     public static native boolean set(Object object, String key, boolean value);

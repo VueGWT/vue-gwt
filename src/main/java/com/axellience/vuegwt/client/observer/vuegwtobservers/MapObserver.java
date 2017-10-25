@@ -1,10 +1,10 @@
 package com.axellience.vuegwt.client.observer.vuegwtobservers;
 
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
 import com.axellience.vuegwt.client.observer.VueGWTObserver;
 import com.axellience.vuegwt.client.observer.VueGWTObserverManager;
 import com.axellience.vuegwt.client.observer.VueObserver;
 import com.axellience.vuegwt.client.tools.AfterMethodCall;
+import elemental2.core.Array;
 
 import java.util.Map;
 
@@ -34,8 +34,8 @@ public class MapObserver extends VueGWTObserver
 
     private void observeMap(Map map)
     {
-        VueObserver observer = VueGWTObserverManager.getVueObserver(map);
-        observer.observeArray(JsArray.from(map));
+        VueObserver observer = VueGWTObserverManager.get().getVueObserver(map);
+        observer.observeArray(new Array(map));
 
         AfterMethodCall<Map> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
@@ -53,7 +53,7 @@ public class MapObserver extends VueGWTObserver
         }));
         wrapMethod(map, "putAll", ((object, methodName, result, arguments) -> {
             observer.notifyDep();
-            observer.observeArray(JsArray.from(((Map) arguments[0])));
+            observer.observeArray(new Array(((Map) arguments[0])));
         }));
 
         wrapMethod(map, "replace", ((object, methodName, result, arguments) -> {

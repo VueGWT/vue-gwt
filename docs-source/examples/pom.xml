@@ -13,7 +13,7 @@
 
     <properties>
         <!-- Convenience property to set the GWT version -->
-        <gwtVersion>2.8.0</gwtVersion>
+        <gwtVersion>2.8.1</gwtVersion>
 
         <vue-gwt.version>1.0-beta-3-SNAPSHOT</vue-gwt.version>
 		<gin.version>2.1.2</gin.version>
