@@ -7,7 +7,7 @@ import com.axellience.vuegwt.jsr69.component.ComponentGenerationUtil;
 import com.axellience.vuegwt.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.template.parser.variable.VariableInfo;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.dom.client.NativeEvent;
+import elemental2.dom.Event;
 import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
@@ -46,7 +46,7 @@ public class TemplateParserContext
     {
         this.componentJsTypeClass = templateResourceClass;
 
-        this.addImport(NativeEvent.class.getCanonicalName());
+        this.addImport(Event.class.getCanonicalName());
         this.addImport(Math.class.getCanonicalName());
         this.addImport(JsUtils.class.getCanonicalName());
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".map");

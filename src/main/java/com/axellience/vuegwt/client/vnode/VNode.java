@@ -1,8 +1,8 @@
 package com.axellience.vuegwt.client.vnode;
 
 import com.axellience.vuegwt.client.component.VueComponent;
-import com.google.gwt.dom.client.Element;
 import elemental2.core.Array;
+import elemental2.dom.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;

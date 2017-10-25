@@ -4,7 +4,7 @@ import com.axellience.vuegwt.client.directive.VueDirective;
 import com.axellience.vuegwt.client.vnode.VNode;
 import com.axellience.vuegwt.client.vnode.VNodeDirective;
 import com.axellience.vuegwt.jsr69.directive.annotations.Directive;
-import com.google.gwt.dom.client.Element;
+import elemental2.dom.Element;
 
 /**
  * @author Adrien Baron

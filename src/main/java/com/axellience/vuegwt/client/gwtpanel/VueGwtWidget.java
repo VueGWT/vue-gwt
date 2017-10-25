@@ -5,8 +5,10 @@ import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import jsinterop.base.Js;
 
 /**
  * Wraps a {@link VueComponent} instance in a GWT Widget.
@@ -58,8 +60,8 @@ public class VueGwtWidget<T extends VueComponent> extends Widget
 
     private void mountVueComponent()
     {
-        Element vueElement = Document.get().createDivElement();
-        getElement().appendChild(vueElement);
+        HTMLDivElement vueElement = (HTMLDivElement) DomGlobal.document.createElement("div");
+        getElement().appendChild(Js.cast(vueElement));
         vueComponentInstance.$mount(vueElement);
     }
 }

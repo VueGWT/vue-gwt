@@ -40,7 +40,6 @@ import com.axellience.vuegwtexamples.client.examples.vforonobjectwithkeyandindex
 import com.axellience.vuegwtexamples.client.examples.vforwithindex.VForWithIndexComponent;
 import com.axellience.vuegwtexamples.client.examples.vforwithrange.VForWithRangeComponent;
 import com.axellience.vuegwtexamples.client.examples.vonwithdomevent.VOnWithDOMEventComponent;
-import com.google.gwt.dom.client.Document;
 import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -51,7 +50,7 @@ public class VueGwtExamplesService
 {
     public static void initExamples()
     {
-        if (Document.get().getElementById("fullJsComponent") != null)
+        if (DomGlobal.document.getElementById("fullJsComponent") != null)
         {
             VueJsConstructor<VueComponent> vueClass =
                 (VueJsConstructor<VueComponent>) ((JsPropertyMap) DomGlobal.window).get("FullJsComponent");
@@ -111,7 +110,7 @@ public class VueGwtExamplesService
         VueFactory<? extends VueComponent> exampleVueFactory)
     {
         // If we find the containing div for this example, we instantiate it
-        if (Document.get().getElementById(exampleId) != null)
+        if (DomGlobal.document.getElementById(exampleId) != null)
         {
             VueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVueFactory);
             ((JsPropertyMap) DomGlobal.window).set(exampleId, exampleInstance);
