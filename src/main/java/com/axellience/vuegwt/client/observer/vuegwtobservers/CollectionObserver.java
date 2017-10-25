@@ -41,7 +41,7 @@ public class CollectionObserver extends VueGWTObserver
 
     private void observeList(List list)
     {
-        VueObserver observer = VueGWTObserverManager.getVueObserver(list);
+        VueObserver observer = VueGWTObserverManager.get().getVueObserver(list);
         observer.observeArray(new Array(list));
 
         AfterMethodCall<List> callObserver =
@@ -63,7 +63,7 @@ public class CollectionObserver extends VueGWTObserver
 
     private void observeSet(Set set)
     {
-        VueObserver observer = VueGWTObserverManager.getVueObserver(set);
+        VueObserver observer = VueGWTObserverManager.get().getVueObserver(set);
         observer.observeArray(new Array(set));
 
         AfterMethodCall<Set> callObserver =

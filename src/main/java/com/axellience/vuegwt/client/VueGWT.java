@@ -4,7 +4,9 @@ import com.axellience.vuegwt.client.component.ComponentJavaConstructor;
 import com.axellience.vuegwt.client.component.VueComponent;
 import com.axellience.vuegwt.client.jsnative.html.HTMLDocument;
 import com.axellience.vuegwt.client.jsnative.html.HTMLElement;
-import com.axellience.vuegwt.client.resources.VueGwtResources;
+import com.axellience.vuegwt.client.observer.VueGWTObserverManager;
+import com.axellience.vuegwt.client.observer.vuegwtobservers.CollectionObserver;
+import com.axellience.vuegwt.client.observer.vuegwtobservers.MapObserver;
 import com.axellience.vuegwt.client.resources.VueLibResources;
 import com.axellience.vuegwt.client.vue.VueFactory;
 import com.axellience.vuegwt.client.vue.VueJsConstructor;
@@ -68,12 +70,9 @@ public class VueGWT
             throw new RuntimeException(
                 "Couldn't find Vue.js on init. Either include it Vue.js in your index.html or call VueGWT.init() instead of initWithoutVueLib.");
 
-        HTMLDocument document = HTMLDocument.get();
-
-        HTMLElement scriptElement = document.createElement("script");
-        VueGwtResources resources = GWT.create(VueGwtResources.class);
-        scriptElement.innerHTML = resources.vueGWTScript().getText();
-        document.body.appendChild(scriptElement);
+        // Register custom observers for Collection and Maps
+        VueGWTObserverManager.get().registerVueGWTObserver(new CollectionObserver());
+        VueGWTObserverManager.get().registerVueGWTObserver(new MapObserver());
 
         isReady = true;
 

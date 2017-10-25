@@ -26,8 +26,8 @@ public interface VueJsConstructor<T extends VueComponent>
     <K extends T> VueJsConstructor<K> extend(VueComponentOptions<K> vueComponentOptions);
 
     @JsOverlay
-    default T instantiate(Object... args) {
-        return ((JsConstructorFn<T>) this).construct(args);
+    default T instantiate() {
+        return ((JsConstructorFn<T>) this).construct();
     }
 
     @JsOverlay
