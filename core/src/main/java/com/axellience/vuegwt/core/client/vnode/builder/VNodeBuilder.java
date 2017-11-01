@@ -55,6 +55,7 @@ public class VNodeBuilder
      * Create a VNode with the given {@link VueComponent}
      * @param vueComponentClass Class for the {@link VueComponent} we want
      * @param children Children
+     * @param <T> The type of the {@link VueComponent}
      * @return a new VNode of this Component
      */
     public <T extends VueComponent> VNode el(Class<T> vueComponentClass, Object... children)
@@ -67,6 +68,7 @@ public class VNodeBuilder
      * @param vueComponentClass Class for the {@link VueComponent} we want
      * @param data Information for the new VNode (attributes...)
      * @param children Children
+     * @param <T> The type of the {@link VueComponent}
      * @return a new VNode of this Component
      */
     public <T extends VueComponent> VNode el(Class<T> vueComponentClass, VNodeData data, Object... children)
@@ -78,6 +80,7 @@ public class VNodeBuilder
      * Create a VNode with the {@link VueComponent} of the given {@link VueFactory}
      * @param vueFactory {@link VueFactory} for the Component we want
      * @param children Children
+     * @param <T> The type of the {@link VueComponent}
      * @return a new VNode of this Component
      */
     public <T extends VueComponent> VNode el(VueFactory<T> vueFactory, Object... children)
@@ -90,6 +93,7 @@ public class VNodeBuilder
      * @param vueFactory {@link VueFactory} for the Component we want
      * @param data Information for the new VNode (attributes...)
      * @param children Children
+     * @param <T> The type of the {@link VueComponent}
      * @return a new VNode of this Component
      */
     public <T extends VueComponent> VNode el(VueFactory<T> vueFactory, VNodeData data, Object... children)
@@ -101,6 +105,7 @@ public class VNodeBuilder
      * Create a VNode with the {@link VueComponent} of the given {@link VueJsConstructor}
      * @param vueJsConstructor {@link VueJsConstructor} for the Component we want
      * @param children Children
+     * @param <T> The type of the {@link VueComponent}
      * @return a new VNode of this Component
      */
     public <T extends VueComponent> VNode el(VueJsConstructor<T> vueJsConstructor, Object... children)
@@ -113,6 +118,7 @@ public class VNodeBuilder
      * @param vueJsConstructor {@link VueJsConstructor} for the Component we want
      * @param data Information for the new VNode (attributes...)
      * @param children Children
+     * @param <T> The type of the {@link VueComponent}
      * @return a new VNode of this Component
      */
     public <T extends VueComponent> VNode el(VueJsConstructor<T> vueJsConstructor, VNodeData data, Object... children)

@@ -149,6 +149,7 @@ public class VueGWT
      * This Constructor can be used to get the prototype of our Java Class and get the
      * VueComponent methods from it.
      * @param vueComponentClass The {@link VueComponent} we want the constructor of
+     * @param <T> The type of the {@link VueComponent}
      * @return The Java constructor of our {@link VueComponent}
      */
     @JsIgnore
