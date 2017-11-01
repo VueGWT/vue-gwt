@@ -6,6 +6,7 @@ import com.axellience.vuegwt.core.client.directive.VueDirective;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.google.gwt.regexp.shared.RegExp;
 import elemental2.core.Function;
+import elemental2.core.JsObject;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.JsPropertyMap;
 
@@ -63,8 +64,9 @@ public class VueGWTTools
     {
         JsPropertyMap vueProto =
             (JsPropertyMap) ((JsPropertyMap) extendedVueJsConstructor).get("prototype");
+        JsObject vueProtoJsObject = ((JsObject) vueProto);
         componentJavaPrototype.forEach(protoProp -> {
-            if (!vueProto.has(protoProp))
+            if (!vueProtoJsObject.hasOwnProperty(protoProp))
                 vueProto.set(protoProp, componentJavaPrototype.get(protoProp));
         });
     }
