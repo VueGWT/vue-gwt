@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client;
 
-import com.axellience.vuegwt.client.VueGWT;
+import com.axellience.vuegwt.core.client.VueGWT;
 import com.google.gwt.core.client.EntryPoint;
 
 /**

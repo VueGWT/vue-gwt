@@ -1,7 +1,7 @@
 package com.axellience.vuegwtexamples.client.examples.instanciatejscomponent;
 
-import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.jsr69.component.annotations.JsComponent;
+import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 

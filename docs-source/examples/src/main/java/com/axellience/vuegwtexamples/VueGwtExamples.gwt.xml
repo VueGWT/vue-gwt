@@ -5,7 +5,7 @@
     <!-- Inherit the core Web Toolkit stuff.                  -->
     <inherits name='com.google.gwt.user.User'/>
 
-    <inherits name='com.axellience.vuegwt.VueGwt'/>
+    <inherits name='com.axellience.vuegwt.VueGWT'/>
 	<inherits name="dagger.Dagger"/>
 
     <!-- Specify the app entry point class.                   -->

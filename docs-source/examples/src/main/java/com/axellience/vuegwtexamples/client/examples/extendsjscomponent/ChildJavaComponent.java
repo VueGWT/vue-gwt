@@ -1,7 +1,7 @@
 package com.axellience.vuegwtexamples.client.examples.extendsjscomponent;
 
-import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import com.axellience.vuegwt.jsr69.component.annotations.Computed;
+import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwtexamples.client.examples.extendsjscomponent.parent.ParentJsComponent;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;

@@ -6,11 +6,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.axellience</groupId>
-    <artifactId>vue-gwt</artifactId>
+    <artifactId>vue-gwt-parent</artifactId>
     <version>1.0-beta-3-SNAPSHOT</version>
-    <packaging>jar</packaging>
+	<packaging>pom</packaging>
 
-    <name>Vue GWT</name>
+    <name>Vue GWT Parent</name>
     <description>Let you use Vue.js Components in GWT application and code Vue.js Components in Java</description>
     <url>https://github.com/Axellience/vue-gwt</url>
 
@@ -30,6 +30,12 @@
 		</developer>
 	</developers>
 
+	<modules>
+		<module>core</module>
+		<module>gwt2</module>
+		<module>processors</module>
+	</modules>
+
 	<scm>
 		<connection>scm:git:git://github.com/Axellience/vue-gwt.git</connection>
 		<developerConnection>scm:git:ssh://github.com:Axellience/vue-gwt.git</developerConnection>
@@ -37,10 +43,20 @@
 	</scm>
 
 	<properties>
+		<!-- Plugins -->
+		<plugin.version.gwt.maven>1.0-rc-8</plugin.version.gwt.maven>
+
+		<!-- Dependencies -->
         <gwt.version>2.8.1</gwt.version>
         <jsinterop.version>1.0.2</jsinterop.version>
-        <elemental2.version>1.0.0-beta-1</elemental2.version>
         <jsinterop-base.version>1.0.0-beta-1</jsinterop-base.version>
+        <elemental.version>1.0.0-beta-1</elemental.version>
+
+        <javapoet.version>1.9.0</javapoet.version>
+        <jsoup.version>1.10.2</jsoup.version>
+        <javaparser.version>3.0.1</javaparser.version>
+        <nashorn.commonjs.modules.version>1.0.8</nashorn.commonjs.modules.version>
+		<auto-service.version>1.0-rc3</auto-service.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -48,74 +64,96 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>${gwt.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-            <version>${gwt.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-		<dependency>
-			<groupId>com.google.jsinterop</groupId>
-			<artifactId>base</artifactId>
-			<version>${jsinterop-base.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.elemental2</groupId>
-			<artifactId>elemental2-core</artifactId>
-			<version>${elemental2.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.elemental2</groupId>
-			<artifactId>elemental2-dom</artifactId>
-			<version>${elemental2.version}</version>
-		</dependency>
-        <dependency>
-            <groupId>com.squareup</groupId>
-            <artifactId>javapoet</artifactId>
-            <version>1.9.0</version>
-        </dependency>
-        <dependency>
-            <!-- jsoup HTML parser library @ http://jsoup.org/ -->
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.10.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.javaparser</groupId>
-            <artifactId>javaparser-core</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-		<dependency>
-			<groupId>com.samaxes.maven</groupId>
-			<artifactId>minify-maven-plugin</artifactId>
-			<version>1.7.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.coveo</groupId>
-			<artifactId>nashorn-commonjs-modules</artifactId>
-			<version>1.0.8</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>1</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>1</version>
-			<classifier>sources</classifier>
-		</dependency>
-    </dependencies>
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- Vue GWT -->
+			<dependency>
+				<groupId>com.axellience</groupId>
+				<artifactId>vue-gwt</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.axellience</groupId>
+				<artifactId>vue-gwt-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.axellience</groupId>
+				<artifactId>vue-gwt-generators</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- GWT dependencies -->
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt</artifactId>
+				<version>${gwt.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.jsinterop</groupId>
+				<artifactId>base</artifactId>
+				<version>${jsinterop-base.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.elemental2</groupId>
+				<artifactId>elemental2-core</artifactId>
+				<version>${elemental.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.elemental2</groupId>
+				<artifactId>elemental2-dom</artifactId>
+				<version>${elemental.version}</version>
+			</dependency>
+
+			<!-- Annotation Processors -->
+			<dependency>
+				<groupId>com.google.auto.service</groupId>
+				<artifactId>auto-service</artifactId>
+				<version>${auto-service.version}</version>
+			</dependency>
+
+			<!-- Injection -->
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>1</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>1</version>
+				<classifier>sources</classifier>
+			</dependency>
+
+			<!-- Template parsing -->
+			<dependency>
+				<groupId>com.squareup</groupId>
+				<artifactId>javapoet</artifactId>
+				<version>${javapoet.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>${jsoup.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.javaparser</groupId>
+				<artifactId>javaparser-core</artifactId>
+				<version>${javaparser.version}</version>
+			</dependency>
+
+			<!-- Nashorn dependencies -->
+			<dependency>
+				<groupId>com.coveo</groupId>
+				<artifactId>nashorn-commonjs-modules</artifactId>
+				<version>${nashorn.commonjs.modules.version}</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
 
 	<distributionManagement>
 		<snapshotRepository>
@@ -129,30 +167,16 @@
 	</distributionManagement>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.java</include>
-                    <include>**/*.gwt.xml</include>
-                </includes>
-            </resource>
-        </resources>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.1</version>
-				<configuration>
-					<!-- Disable annotation processing for ourselves.-->
-					<compilerArgument>-proc:none</compilerArgument>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>net.ltgt.gwt.maven</groupId>
+					<artifactId>gwt-maven-plugin</artifactId>
+					<version>${plugin.version.gwt.maven}</version>
+					<extensions>true</extensions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<profiles>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.axellience</groupId>
+		<artifactId>vue-gwt-parent</artifactId>
+		<version>1.0-beta-3-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>vue-gwt</artifactId>
+	<name>Vue GWT</name>
+	<description>Vue GWT for GWT 2.x</description>
+	<packaging>gwt-lib</packaging>
+
+	<dependencies>
+		<!-- Vue GWT -->
+		<dependency>
+			<groupId>com.axellience</groupId>
+			<artifactId>vue-gwt-core</artifactId>
+		</dependency>
+
+		<!-- Template parsing -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-core</artifactId>
+		</dependency>
+
+		<!-- Nashorn dependencies -->
+		<dependency>
+			<groupId>com.coveo</groupId>
+			<artifactId>nashorn-commonjs-modules</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>net.ltgt.gwt.maven</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<moduleName>com.axellience.vuegwt.VueGWT</moduleName>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+	</build>
+</project>

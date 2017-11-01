@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.axellience</groupId>
+		<artifactId>vue-gwt-parent</artifactId>
+		<version>1.0-beta-3-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>vue-gwt-processors</artifactId>
+	<name>Vue GWT Processors</name>
+	<description>Annotation Processors for Vue GWT</description>
+	<packaging>jar</packaging>
+
+	<dependencies>
+
+		<!-- Vue GWT -->
+		<dependency>
+			<groupId>com.axellience</groupId>
+			<artifactId>vue-gwt-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.axellience</groupId>
+			<artifactId>vue-gwt</artifactId>
+		</dependency>
+
+		<!-- Annotation Processors -->
+		<dependency>
+			<groupId>com.google.auto.service</groupId>
+			<artifactId>auto-service</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup</groupId>
+			<artifactId>javapoet</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>
