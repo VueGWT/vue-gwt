@@ -1,10 +1,10 @@
 package com.axellience.vuegwtexamples.client;
 
-import com.axellience.vuegwt.client.Vue;
-import com.axellience.vuegwt.client.VueGWT;
-import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.vue.VueFactory;
-import com.axellience.vuegwt.client.vue.VueJsConstructor;
+import com.axellience.vuegwt.core.client.Vue;
+import com.axellience.vuegwt.core.client.VueGWT;
+import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
@@ -107,7 +107,7 @@ public class VueGwtExamplesService
     }
 
     private static void addExample(String exampleId,
-        VueFactory<? extends VueComponent> exampleVueFactory)
+        VueFactory exampleVueFactory)
     {
         // If we find the containing div for this example, we instantiate it
         if (DomGlobal.document.getElementById(exampleId) != null)

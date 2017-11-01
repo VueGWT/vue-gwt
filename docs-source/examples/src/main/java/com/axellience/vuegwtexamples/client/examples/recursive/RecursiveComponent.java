@@ -1,9 +1,9 @@
 package com.axellience.vuegwtexamples.client.examples.recursive;
 
-import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.component.hooks.HasCreated;
-import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import com.axellience.vuegwt.jsr69.component.annotations.Prop;
+import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
+import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Prop;
 import jsinterop.annotations.JsProperty;
 
 /**
