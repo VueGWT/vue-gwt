@@ -43,7 +43,7 @@ public class CollectionObserver extends VueGWTObserver
     private void observeList(List list)
     {
         VueObserver observer = VueGWTObserverManager.get().getVueObserver(list);
-        observer.observeArray(JsUtils.from(list));
+        observer.observeArray(JsUtils.arrayFrom(list));
 
         AfterMethodCall<List> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
@@ -58,7 +58,7 @@ public class CollectionObserver extends VueGWTObserver
         }));
         wrapMethod(list, "addAll", ((object, methodName, result, args) -> {
             observer.notifyDep();
-            observer.observeArray(JsUtils.from((Collection<?>) args[0]));
+            observer.observeArray(JsUtils.arrayFrom((Collection<?>) args[0]));
         }));
         wrapMethod(list, "addAtIndex", ((object, methodName, result, args) -> {
             observer.notifyDep();
@@ -66,7 +66,7 @@ public class CollectionObserver extends VueGWTObserver
         }));
         wrapMethod(list, "addAllAtIndex", ((object, methodName, result, args) -> {
             observer.notifyDep();
-            observer.observeArray(JsUtils.from((Collection<?>) args[1]));
+            observer.observeArray(JsUtils.arrayFrom((Collection<?>) args[1]));
         }));
         wrapMethod(list, "setAtIndex", ((object, methodName, result, args) -> {
             observer.notifyDep();
@@ -77,7 +77,7 @@ public class CollectionObserver extends VueGWTObserver
     private void observeSet(Set set)
     {
         VueObserver observer = VueGWTObserverManager.get().getVueObserver(set);
-        observer.observeArray(JsUtils.from(set));
+        observer.observeArray(JsUtils.arrayFrom(set));
 
         AfterMethodCall<Set> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
@@ -92,7 +92,7 @@ public class CollectionObserver extends VueGWTObserver
         }));
         wrapMethod(set, "addAll", ((object, methodName, result, args) -> {
             observer.notifyDep();
-            observer.observeArray(JsUtils.from((Collection<?>) args[0]));
+            observer.observeArray(JsUtils.arrayFrom((Collection<?>) args[0]));
         }));
     }
 }

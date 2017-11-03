@@ -35,22 +35,22 @@ public class JsUtils
         return new Array<>(array);
     }
 
-    public static <T> Array<T> from(Collection<T> collection)
+    public static <T> Array<T> arrayFrom(Collection<T> collection)
     {
         return Js.cast(collection.toArray());
     }
 
-    public static <K, V> Array<V> from(Map<K, V> map)
+    public static <K, V> Array<V> arrayFrom(Map<K, V> map)
     {
         return Js.cast(map.values().toArray());
     }
 
-    public static <T> Array<T> from(Array<T> array)
+    public static <T> Array<T> arrayFrom(Array<T> array)
     {
         return array;
     }
 
-    public static <T> Array<T> from(T[] array)
+    public static <T> Array<T> arrayFrom(T[] array)
     {
         return Js.cast(array);
     }

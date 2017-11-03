@@ -35,7 +35,7 @@ public class MapObserver extends VueGWTObserver
     private void observeMap(Map map)
     {
         VueObserver observer = VueGWTObserverManager.get().getVueObserver(map);
-        observer.observeArray(JsUtils.from(map));
+        observer.observeArray(JsUtils.arrayFrom(map));
 
         AfterMethodCall<Map> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
@@ -53,7 +53,7 @@ public class MapObserver extends VueGWTObserver
         }));
         wrapMethod(map, "putAll", ((object, methodName, result, args) -> {
             observer.notifyDep();
-            observer.observeArray(JsUtils.from(((Map<?, ?>) args[0])));
+            observer.observeArray(JsUtils.arrayFrom(((Map<?, ?>) args[0])));
         }));
 
         wrapMethod(map, "replace", ((object, methodName, result, args) -> {
