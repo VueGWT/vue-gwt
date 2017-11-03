@@ -9,5 +9,5 @@ import jsinterop.annotations.JsFunction;
 @JsFunction
 public interface AfterMethodCall<T>
 {
-    void execute(T object, String methodName, Object result, Object... arguments);
+    void execute(T object, String methodName, Object result, Object[] arguments);
 }

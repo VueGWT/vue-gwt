@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.client.observer.VueGWTObserver;
 import com.axellience.vuegwt.core.client.observer.VueGWTObserverManager;
 import com.axellience.vuegwt.core.client.observer.VueObserver;
 import com.axellience.vuegwt.core.client.tools.AfterMethodCall;
-import elemental2.core.Array;
+import com.axellience.vuegwt.core.client.tools.JsUtils;
 
 import java.util.Map;
 
@@ -35,7 +35,7 @@ public class MapObserver extends VueGWTObserver
     private void observeMap(Map map)
     {
         VueObserver observer = VueGWTObserverManager.get().getVueObserver(map);
-        observer.observeArray(new Array(map));
+        observer.observeArray(JsUtils.from(map));
 
         AfterMethodCall<Map> callObserver =
             ((object, methodName, result, arguments) -> observer.notifyDep());
@@ -43,22 +43,22 @@ public class MapObserver extends VueGWTObserver
         wrapMethod(map, "clear", callObserver);
         wrapMethod(map, "remove", callObserver);
 
-        wrapMethod(map, "put", ((object, methodName, result, arguments) -> {
+        wrapMethod(map, "put", ((object, methodName, result, args) -> {
             observer.notifyDep();
-            observer.observeArray(new Object[] { arguments[1] });
+            observer.observeArray(new Object[] { args[1] });
         }));
-        wrapMethod(map, "putIfAbsent", ((object, methodName, result, arguments) -> {
+        wrapMethod(map, "putIfAbsent", ((object, methodName, result, args) -> {
             observer.notifyDep();
-            observer.observeArray(new Object[] { arguments[1] });
+            observer.observeArray(new Object[] { args[1] });
         }));
-        wrapMethod(map, "putAll", ((object, methodName, result, arguments) -> {
+        wrapMethod(map, "putAll", ((object, methodName, result, args) -> {
             observer.notifyDep();
-            observer.observeArray(new Array(((Map) arguments[0])));
+            observer.observeArray(JsUtils.from(((Map<?, ?>) args[0])));
         }));
 
-        wrapMethod(map, "replace", ((object, methodName, result, arguments) -> {
+        wrapMethod(map, "replace", ((object, methodName, result, args) -> {
             observer.notifyDep();
-            observer.observeArray(new Object[] { arguments[1], arguments[2] });
+            observer.observeArray(new Object[] { args[1] });
         }));
     }
 }
