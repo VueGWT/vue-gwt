@@ -26,6 +26,10 @@ To add Vue GWT to your Maven project, simply add the following to your `pom.xml`
 </project>
 ```
 
+<p class="warning-panel">
+Starting beta-3, Vue GWT requires at least GWT 2.8.1 to work.
+<p>
+
 ## ✅ Annotation Processing Configuration
 
 Vue GWT uses Java Annotation processing under the hood, this requires a little configuration.
