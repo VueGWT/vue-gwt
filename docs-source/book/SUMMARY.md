@@ -51,11 +51,10 @@
 * [Client Bundles](gwt-integration/client-bundles.md)
 * [Vue GWT and Widgets](gwt-integration/widgets.md)
 * [JsInterop](js-interop/README.md)
-    * [JsObject](js-interop/README.md#js-object)
+    * [JsPropertyMap<T>](js-interop/README.md#js-property-map)
     * [map](js-interop/README.md#map)
-    * [JsArray](js-interop/README.md#js-array)
+    * [Array<T>](js-interop/README.md#array-object)
     * [array](js-interop/README.md#array)
-    * [JsTools](js-interop/README.md#js-tools)
 
 ## Tooling
 * [Unit Testing](tooling/unit-testing.md)
