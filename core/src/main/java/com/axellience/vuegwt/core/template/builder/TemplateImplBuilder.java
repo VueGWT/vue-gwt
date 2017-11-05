@@ -1,11 +1,11 @@
-package com.axellience.vuegwt.gwt2.template.builder;
+package com.axellience.vuegwt.core.template.builder;
 
-import com.axellience.vuegwt.gwt2.template.compiler.VueTemplateCompiler;
-import com.axellience.vuegwt.gwt2.template.compiler.VueTemplateCompilerException;
-import com.axellience.vuegwt.gwt2.template.compiler.VueTemplateCompilerResult;
-import com.axellience.vuegwt.gwt2.template.parser.TemplateParser;
-import com.axellience.vuegwt.gwt2.template.parser.result.TemplateExpression;
-import com.axellience.vuegwt.gwt2.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.core.template.compiler.VueTemplateCompiler;
+import com.axellience.vuegwt.core.template.compiler.VueTemplateCompilerException;
+import com.axellience.vuegwt.core.template.compiler.VueTemplateCompilerResult;
+import com.axellience.vuegwt.core.template.parser.TemplateParser;
+import com.axellience.vuegwt.core.template.parser.result.TemplateExpression;
+import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
 import com.coveo.nashorn_modules.Folder;
 import com.google.gwt.resources.client.CssResource;
 import com.squareup.javapoet.ClassName;

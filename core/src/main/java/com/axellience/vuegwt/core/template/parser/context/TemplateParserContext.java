@@ -1,22 +1,18 @@
-package com.axellience.vuegwt.gwt2.template.parser.context;
+package com.axellience.vuegwt.core.template.parser.context;
 
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.axellience.vuegwt.core.client.tools.JsUtils;
-import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
-import com.axellience.vuegwt.gwt2.template.parser.variable.LocalVariableInfo;
-import com.axellience.vuegwt.gwt2.template.parser.variable.VariableInfo;
-import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
+import com.squareup.javapoet.ClassName;
 import elemental2.dom.Event;
 import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.COMPONENT_JS_TYPE_SUFFIX;
 
 /**
  * Context of the parser.
@@ -26,8 +22,8 @@ import static com.axellience.vuegwt.core.generation.GenerationNameUtil.COMPONENT
  */
 public class TemplateParserContext
 {
-    private final JClassType componentJsTypeClass;
-    private final ContextLayer rootContext;
+    private final ClassName componentTypeName;
+    private final ContextLayer rootLayer;
     private final Deque<ContextLayer> contextLayers = new ArrayDeque<>();
 
     // For import
@@ -39,13 +35,10 @@ public class TemplateParserContext
 
     /**
      * Build the context based on a given {@link ComponentTemplate} Class.
-     * @param templateResourceClass The generated {@link ComponentTemplate} class of the {@link
-     * VueComponent} we are processing
      */
-    public TemplateParserContext(JClassType templateResourceClass)
+    public TemplateParserContext(ClassName componentTypeName)
     {
-        this.componentJsTypeClass = templateResourceClass;
-
+        this.componentTypeName = componentTypeName;
         this.addImport(Event.class.getCanonicalName());
         this.addImport(Math.class.getCanonicalName());
         this.addImport(JsUtils.class.getCanonicalName());
@@ -53,37 +46,10 @@ public class TemplateParserContext
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".e");
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".array");
 
-        this.rootContext = new ContextLayer();
-        this.rootContext.addVariable(String.class, "_uid");
-        registerFieldsAndMethodsInContext(templateResourceClass);
+        this.rootLayer = new ContextLayer();
+        this.rootLayer.addVariable(String.class, "_uid");
 
-        this.contextLayers.add(this.rootContext);
-    }
-
-    /**
-     * Process the {@link ComponentTemplate} class to register all the fields and methods visible in
-     * the context.
-     * @param templateResourceClass The class to process
-     */
-    private void registerFieldsAndMethodsInContext(JClassType templateResourceClass)
-    {
-        // Stop recursion when getting to VueComponent class
-        if (templateResourceClass == null || templateResourceClass
-            .getQualifiedSourceName()
-            .equals(VueComponent.class.getCanonicalName()))
-            return;
-
-        Arrays
-            .stream(templateResourceClass.getFields())
-            .filter(ComponentGenerationUtil::isFieldVisibleInJS)
-            .forEach(rootContext::addVariable);
-
-        Arrays
-            .stream(templateResourceClass.getMethods())
-            .filter(ComponentGenerationUtil::isMethodVisibleInTemplate)
-            .forEach(rootContext::addMethod);
-
-        registerFieldsAndMethodsInContext(templateResourceClass.getSuperclass());
+        this.contextLayers.add(this.rootLayer);
     }
 
     /**
@@ -93,7 +59,16 @@ public class TemplateParserContext
      */
     public void addRootVariable(String type, String name)
     {
-        this.rootContext.addVariable(type, name);
+        this.rootLayer.addVariable(type, name);
+    }
+
+    /**
+     * Register a method in the root context
+     * @param methodName The name of the method
+     */
+    public void addRootMethod(String methodName)
+    {
+        this.rootLayer.addMethod(methodName);
     }
 
     /**
@@ -153,7 +128,7 @@ public class TemplateParserContext
      */
     public boolean hasMethod(String name)
     {
-        return rootContext.hasMethod(name);
+        return rootLayer.hasMethod(name);
     }
 
     /**
@@ -253,8 +228,6 @@ public class TemplateParserContext
      */
     public String getTemplateName()
     {
-        String componentJsTypeName = componentJsTypeClass.getName();
-        return componentJsTypeName.substring(0,
-            componentJsTypeName.length() - COMPONENT_JS_TYPE_SUFFIX.length()) + ".html";
+        return componentTypeName.simpleName() + ".html";
     }
 }
