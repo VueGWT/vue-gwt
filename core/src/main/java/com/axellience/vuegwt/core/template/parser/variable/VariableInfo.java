@@ -1,4 +1,8 @@
-package com.axellience.vuegwt.gwt2.template.parser.variable;
+package com.axellience.vuegwt.core.template.parser.variable;
+
+import com.squareup.javapoet.TypeName;
+
+import static com.axellience.vuegwt.core.generation.GenerationUtil.stringTypeToTypeName;
 
 /**
  * Information about a Variable in the template.
@@ -8,16 +12,16 @@ package com.axellience.vuegwt.gwt2.template.parser.variable;
  */
 public class VariableInfo
 {
-    private String type;
+    private TypeName type;
     private String name;
 
     public VariableInfo(String type, String name)
     {
-        this.type = type;
+        this.type = stringTypeToTypeName(type);
         this.name = name;
     }
 
-    public String getType()
+    public TypeName getType()
     {
         return type;
     }

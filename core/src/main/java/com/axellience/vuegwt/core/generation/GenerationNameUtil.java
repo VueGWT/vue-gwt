@@ -15,8 +15,7 @@ public class GenerationNameUtil
     public static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
     private static String COMPONENT_INJECTED_DEPENDENCIES_SUFFIX = "InjectedDependencies";
 
-    private static String COMPONENT_TEMPLATE_BUNDLE_SUFFIX = "TemplateBundle";
-    public static String COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME = "template";
+    public static String COMPONENT_TEMPLATE_SUFFIX = "Template";
 
     private static String COMPONENT_FACTORY_SUFFIX = "Factory";
 
@@ -30,9 +29,29 @@ public class GenerationNameUtil
         return nameWithSuffix(component, COMPONENT_JS_TYPE_SUFFIX);
     }
 
+    public static ClassName componentJsTypeName(ClassName component)
+    {
+        return nameWithSuffix(component, COMPONENT_JS_TYPE_SUFFIX);
+    }
+
     public static ClassName componentInjectedDependenciesName(TypeElement component)
     {
         return nameWithSuffix(component, COMPONENT_INJECTED_DEPENDENCIES_SUFFIX);
+    }
+
+    public static ClassName componentTemplateName(TypeElement component)
+    {
+        return nameWithSuffix(component, COMPONENT_TEMPLATE_SUFFIX);
+    }
+
+    public static ClassName componentTemplateName(ClassName component)
+    {
+        return nameWithSuffix(component, COMPONENT_TEMPLATE_SUFFIX);
+    }
+
+    public static ClassName componentTemplateImplName(ClassName component)
+    {
+        return nameWithSuffix(component, COMPONENT_TEMPLATE_SUFFIX + "Impl");
     }
 
     public static ClassName componentFactoryName(TypeElement component)
@@ -55,12 +74,12 @@ public class GenerationNameUtil
         return nameWithSuffix(component, COMPONENT_FACTORY_SUFFIX);
     }
 
-    public static ClassName componentTemplateBundleName(TypeElement component)
+    public static ClassName styleBundleName(TypeElement style)
     {
-        return nameWithSuffix(component, COMPONENT_TEMPLATE_BUNDLE_SUFFIX);
+        return nameWithSuffix(style, STYLE_BUNDLE_SUFFIX);
     }
 
-    public static ClassName styleBundleName(TypeElement style)
+    public static ClassName styleBundleName(ClassName style)
     {
         return nameWithSuffix(style, STYLE_BUNDLE_SUFFIX);
     }

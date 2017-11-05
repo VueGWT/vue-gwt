@@ -1,6 +1,6 @@
-package com.axellience.vuegwt.gwt2.template.parser.exceptions;
+package com.axellience.vuegwt.core.template.parser.exceptions;
 
-import com.axellience.vuegwt.gwt2.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
 
 /**
  * A generic exception thrown when parsing the template

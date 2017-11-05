@@ -1,9 +1,7 @@
-package com.axellience.vuegwt.gwt2.template.parser.context;
+package com.axellience.vuegwt.core.template.parser.context;
 
-import com.axellience.vuegwt.gwt2.template.parser.variable.LocalVariableInfo;
-import com.axellience.vuegwt.gwt2.template.parser.variable.VariableInfo;
-import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,11 +33,6 @@ public class ContextLayer
         return addVariable(new LocalVariableInfo(type, templateName));
     }
 
-    VariableInfo addVariable(JField jField)
-    {
-        return addVariable(jField.getType().getQualifiedSourceName(), jField.getName());
-    }
-
     VariableInfo addVariable(Class type, String name)
     {
         return addVariable(type.getCanonicalName(), name);
@@ -50,9 +43,9 @@ public class ContextLayer
         return variables.get(name);
     }
 
-    void addMethod(JMethod method)
+    void addMethod(String methodName)
     {
-        this.methods.add(method.getName());
+        this.methods.add(methodName);
     }
 
     boolean hasMethod(String methodName)

@@ -21,22 +21,6 @@
 			<groupId>com.axellience</groupId>
 			<artifactId>vue-gwt-core</artifactId>
 		</dependency>
-
-		<!-- Template parsing -->
-		<dependency>
-			<groupId>org.jsoup</groupId>
-			<artifactId>jsoup</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.javaparser</groupId>
-			<artifactId>javaparser-core</artifactId>
-		</dependency>
-
-		<!-- Nashorn dependencies -->
-		<dependency>
-			<groupId>com.coveo</groupId>
-			<artifactId>nashorn-commonjs-modules</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>

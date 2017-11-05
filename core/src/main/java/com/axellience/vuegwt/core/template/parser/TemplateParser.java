@@ -1,13 +1,11 @@
-package com.axellience.vuegwt.gwt2.template.parser;
+package com.axellience.vuegwt.core.template.parser;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
-import com.axellience.vuegwt.core.client.template.ComponentTemplate;
-import com.axellience.vuegwt.gwt2.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.gwt2.template.parser.exceptions.TemplateExpressionException;
-import com.axellience.vuegwt.gwt2.template.parser.result.TemplateExpression;
-import com.axellience.vuegwt.gwt2.template.parser.result.TemplateParserResult;
-import com.axellience.vuegwt.gwt2.template.parser.variable.LocalVariableInfo;
-import com.axellience.vuegwt.gwt2.template.parser.variable.VariableInfo;
+import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
+import com.axellience.vuegwt.core.template.parser.result.TemplateExpression;
+import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -16,7 +14,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
-import com.google.gwt.core.ext.typeinfo.JClassType;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -59,19 +56,18 @@ public class TemplateParser
      * Parse a given HTML template and return the a result object containing the expressions, styles
      * and a transformed HTML.
      * @param htmlTemplate The HTML template to process, as a String
-     * @param templateResourceClass The generated {@link ComponentTemplate} class of the {@link
-     * VueComponent} we are processing
+     * @param context Context of the Component we are currently processing
      * @return A {@link TemplateParserResult} containing the processed template, expressions and styles
      */
     public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
-        JClassType templateResourceClass)
+        TemplateParserContext context)
     {
-        result = new TemplateParserResult();
+        this.context = context;
         Parser parser = Parser.htmlParser();
         parser.settings(new ParseSettings(true, true)); // tag, attribute preserve case
         Document doc = parser.parseInput(htmlTemplate, "");
 
-        context = new TemplateParserContext(templateResourceClass);
+        result = new TemplateParserResult();
         processImports(doc);
         processNode(doc);
 

@@ -1,8 +1,8 @@
-package com.axellience.vuegwt.gwt2.template.parser;
+package com.axellience.vuegwt.core.template.parser;
 
-import com.axellience.vuegwt.gwt2.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.gwt2.template.parser.exceptions.TemplateExpressionException;
-import com.axellience.vuegwt.gwt2.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
+import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

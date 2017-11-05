@@ -1,8 +1,7 @@
-package com.axellience.vuegwt.gwt2.template.compiler;
+package com.axellience.vuegwt.core.template.compiler;
 
 import com.coveo.nashorn_modules.Folder;
 import com.coveo.nashorn_modules.Require;
-import com.google.gwt.dev.resource.ResourceOracle;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
@@ -17,31 +16,30 @@ public class VueTemplateCompiler
 {
     private static NashornScriptEngine engine;
 
-    public VueTemplateCompiler(ResourceOracle resourceOracle)
+    /**
+     * @param templateCompilerResourceFolder A Folder containing the Vue template compiler script
+     */
+    public VueTemplateCompiler(Folder templateCompilerResourceFolder)
     {
         // Engine is cached between instance to avoid creating at each compilation
         if (engine == null)
         {
-            initEngine(resourceOracle);
+            initEngine(templateCompilerResourceFolder);
         }
     }
 
     /**
      * Init the Nashorn engine and load the Vue compiler in it.
-     * @param resourceOracle The GWT resource Oracle to access JS files
+     * @param templateCompilerResourceFolder A Folder containing the Vue template compiler script
      */
-    private void initEngine(ResourceOracle resourceOracle)
+    private void initEngine(Folder templateCompilerResourceFolder)
     {
         engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
 
-        // Resources are in the "client" folder to be included during GWT compilation
-        Folder folder =
-            new GwtResourceFolder(resourceOracle,
-                "com/axellience/vuegwt/gwt2/client/template/compiler");
         try
         {
-            Require.enable(engine, folder);
-            engine.eval(folder.getFile("index.js"));
+            Require.enable(engine, templateCompilerResourceFolder);
+            engine.eval(templateCompilerResourceFolder.getFile("index.js"));
         }
         catch (ScriptException e)
         {
