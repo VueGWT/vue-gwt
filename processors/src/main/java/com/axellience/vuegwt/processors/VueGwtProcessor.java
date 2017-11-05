@@ -9,7 +9,7 @@ import com.axellience.vuegwt.processors.component.factory.VueComponentFactoryGen
 import com.axellience.vuegwt.processors.component.factory.VueJsComponentFactoryGenerator;
 import com.axellience.vuegwt.processors.directive.VueDirectiveOptionsGenerator;
 import com.axellience.vuegwt.processors.style.StyleProviderGenerator;
-import com.axellience.vuegwt.processors.template.TemplateBundleGenerator;
+import com.axellience.vuegwt.processors.template.ComponentTemplateGenerator;
 import com.google.auto.service.AutoService;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -85,17 +85,16 @@ public class VueGwtProcessor extends AbstractProcessor
 
         ComponentJsTypeGenerator componentJsTypeGenerator =
             new ComponentJsTypeGenerator(processingEnv);
-        TemplateBundleGenerator templateBundleGenerator =
-            new TemplateBundleGenerator(processingEnv);
+        ComponentTemplateGenerator componentTemplateGenerator =
+            new ComponentTemplateGenerator(processingEnv);
         VueComponentFactoryGenerator vueFactoryGenerator =
             new VueComponentFactoryGenerator(processingEnv);
 
         for (TypeElement componentType : ElementFilter.typesIn(componentElements))
         {
             if (hasTemplate(processingEnv, componentType))
-            {
-                templateBundleGenerator.generate(componentType);
-            }
+                componentTemplateGenerator.generate(componentType);
+
             vueFactoryGenerator.generate(componentType);
             componentJsTypeGenerator.generate(componentType);
         }

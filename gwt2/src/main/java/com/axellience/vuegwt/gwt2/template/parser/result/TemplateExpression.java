@@ -1,10 +1,14 @@
 package com.axellience.vuegwt.gwt2.template.parser.result;
 
 import com.axellience.vuegwt.gwt2.template.parser.variable.VariableInfo;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.axellience.vuegwt.core.generation.GenerationUtil.stringTypeToTypeName;
 
 /**
  * A Java expression from the template.
@@ -18,14 +22,14 @@ public class TemplateExpression
 {
     private final String id;
     private final String body;
-    private final String type;
+    private final TypeName type;
     private final List<VariableInfo> parameters = new LinkedList<>();
 
     public TemplateExpression(String id, String body, String type,
         Collection<VariableInfo> parameters)
     {
         this.id = id;
-        this.type = type;
+        this.type = stringTypeToTypeName(type);
         this.body = body;
         this.parameters.addAll(parameters);
     }
@@ -43,7 +47,7 @@ public class TemplateExpression
      * Java type of the expression.
      * @return The fully qualified name of the returned Java type
      */
-    public String getType()
+    public TypeName getType()
     {
         return type;
     }
@@ -78,5 +82,21 @@ public class TemplateExpression
             this.parameters.stream().map(VariableInfo::getName).toArray(String[]::new);
 
         return this.getId() + "(" + String.join(", ", parametersName) + ")";
+    }
+
+    public boolean isReturnVoid()
+    {
+        return type == TypeName.VOID;
+    }
+
+    public boolean isReturnString()
+    {
+        if (!(type instanceof ClassName))
+            return false;
+
+        ClassName className = (ClassName) type;
+        return className.reflectionName().equals("String") || className
+            .reflectionName()
+            .equals(String.class.getCanonicalName());
     }
 }

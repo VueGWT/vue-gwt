@@ -20,7 +20,7 @@ import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
 import com.axellience.vuegwt.core.generation.GenerationUtil;
-import com.axellience.vuegwt.gwt2.client.template.VueComponentTemplateResource;
+import com.google.gwt.core.shared.GWT;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -53,7 +53,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.*;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.*;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentJsTypeName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateName;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.hasAnnotation;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.hasInterface;
 
@@ -129,9 +132,7 @@ public class ComponentJsTypeGenerator
         Builder componentJsTypeBuilder = TypeSpec
             .classBuilder(jsTypeClassName)
             .addModifiers(Modifier.PUBLIC)
-            .superclass(TypeName.get(component.asType()))
-            .addSuperinterface(ParameterizedTypeName.get(ClassName.get(VueComponentTemplateResource.class),
-                ClassName.get(component.asType())));
+            .superclass(TypeName.get(component.asType()));
 
         // Add @JsType annotation. This ensure this class is included.
         // As we use a class reference to use our Components, this class would be removed by GWT
@@ -185,9 +186,9 @@ public class ComponentJsTypeGenerator
 
         if (hasTemplate(processingEnv, component))
         {
-            optionsMethodBuilder.addStatement("options.setComponentTemplate($T.INSTANCE.$L())",
-                componentTemplateBundleName(component),
-                COMPONENT_TEMPLATE_BUNDLE_METHOD_NAME);
+            optionsMethodBuilder.addStatement("options.setComponentTemplate($T.create($T.class))",
+                GWT.class,
+                componentTemplateName(component));
         }
 
         return optionsMethodBuilder;

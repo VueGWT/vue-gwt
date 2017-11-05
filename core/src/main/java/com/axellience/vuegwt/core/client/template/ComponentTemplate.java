@@ -8,28 +8,15 @@ import jsinterop.base.JsPropertyMap;
 import java.util.Map;
 
 /**
- * Source: GWT Project http://www.gwtproject.org/
- * <p>
- * Modified by Adrien Baron
+ * An interface representing an Vue Component template once processed and compiled.
  */
 public interface ComponentTemplate<T extends VueComponent> extends JsPropertyMap<Function>
 {
     String EXPRESSION_PREFIX = "exp$";
+    String TEMPLATE_EXTENSION = ".html";
 
-    default String getRenderFunction()
-    {
-        return "";
-    }
-    default String[] getStaticRenderFunctions()
-    {
-        return null;
-    }
-    default String[] getTemplateMethods()
-    {
-        return null;
-    }
-    default Map<String, CssResource> getTemplateStyles()
-    {
-        return null;
-    }
+    String getRenderFunction();
+    String[] getStaticRenderFunctions();
+    String[] getTemplateMethods();
+    Map<String, CssResource> getTemplateStyles();
 }
