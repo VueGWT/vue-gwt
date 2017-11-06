@@ -9,7 +9,7 @@ import jsinterop.annotations.JsProperty;
 /**
  * @author Adrien Baron
  */
-@Component
+@Component(name = "my-todo")
 public class TodoComponent extends VueComponent
 {
     @Prop

@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.axellience.vuegwt.core.client.tools.VueGWTTools.componentToTagName;
-import static com.axellience.vuegwt.core.client.tools.VueGWTTools.directiveToTagName;
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getComponentCustomizeOptions;
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getComponentLocalComponents;
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getSuperComponentType;
@@ -156,10 +154,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             injectDependenciesBuilder.addParameter(providerOf(factory), parameterName);
             staticInitParameters.add(CodeBlock.of("() -> $T.get()", factory));
 
-            String tagName = componentToTagName(((DeclaredType) localComponent)
-                .asElement()
-                .getSimpleName()
-                .toString());
+            String tagName = componentToTagName(((DeclaredType) localComponent).asElement());
             injectDependenciesBuilder.addStatement(
                 "components.set($S, render -> render.accept($L.get().getJsConstructor()))",
                 tagName,

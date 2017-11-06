@@ -1,9 +1,14 @@
 package com.axellience.vuegwt.core.generation;
 
+import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.directive.VueDirective;
+import com.google.gwt.regexp.shared.RegExp;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 
 import javax.inject.Provider;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -23,6 +28,10 @@ public class GenerationNameUtil
     public static String STYLE_BUNDLE_METHOD_NAME = "style";
 
     private static String DIRECTIVE_OPTIONS_SUFFIX = "Options";
+
+    private static RegExp CAMEL_CASE_PATTERN = RegExp.compile("([a-z])([A-Z]+)", "g");
+    private static RegExp COMPONENT_SUFFIX_REGEX = RegExp.compile("Component$");
+    private static RegExp DIRECTIVE_SUFFIX_REGEX = RegExp.compile("Directive$");
 
     public static ClassName componentJsTypeName(TypeElement component)
     {
@@ -137,5 +146,41 @@ public class GenerationNameUtil
     public static String getPackage(TypeElement typeElement)
     {
         return ClassName.get(typeElement).packageName();
+    }
+
+    /**
+     * Return the default name to register a component based on it's class name.
+     * The name of the tag is the name of the component converted to kebab-case.
+     * If the component class ends with "Component", this part is ignored.
+     * @param componentClass The Element representing the class of the {@link VueComponent} we want
+     * the name of
+     * @return The name of the component as kebab case
+     */
+    public static String componentToTagName(Element componentClass)
+    {
+        Component componentAnnotation = componentClass.getAnnotation(Component.class);
+        if (!"".equals(componentAnnotation.name()))
+            return componentAnnotation.name();
+
+        // Drop "Component" at the end of the class name
+        String componentClassName = componentClass.getSimpleName().toString();
+        componentClassName = COMPONENT_SUFFIX_REGEX.replace(componentClassName, "");
+        // Convert from CamelCase to kebab-case
+        return CAMEL_CASE_PATTERN.replace(componentClassName, "$1-$2").toLowerCase();
+    }
+
+    /**
+     * Return the default name to register a directive based on it's class name
+     * The name of the tag is the name of the component converted to kebab-case
+     * If the component class ends with "Directive", this part is ignored
+     * @param directiveClassName The class name of the {@link VueDirective}
+     * @return The name of the directive as kebab case
+     */
+    public static String directiveToTagName(String directiveClassName)
+    {
+        // Drop "Component" at the end of the class name
+        directiveClassName = DIRECTIVE_SUFFIX_REGEX.replace(directiveClassName, "");
+        // Convert from CamelCase to kebab-case
+        return CAMEL_CASE_PATTERN.replace(directiveClassName, "$1-$2").toLowerCase();
     }
 }
