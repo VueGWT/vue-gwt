@@ -35,6 +35,7 @@ public class TemplateImplBuilder
      * @param templateParserResult The result of the HTML template parsed by {@link TemplateParser}
      * render function
      * @param templateCompilerResourceFolder Folder holding res
+     * @return The built Java class representing our template
      */
     public TypeSpec buildTemplateImpl(ClassName componentTypeName,
         TemplateParserResult templateParserResult, Folder templateCompilerResourceFolder)

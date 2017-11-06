@@ -35,6 +35,7 @@ public class TemplateParserContext
 
     /**
      * Build the context based on a given {@link ComponentTemplate} Class.
+     * @param componentTypeName Name of the {@link VueComponent} class we process in this context
      */
     public TemplateParserContext(ClassName componentTypeName)
     {
