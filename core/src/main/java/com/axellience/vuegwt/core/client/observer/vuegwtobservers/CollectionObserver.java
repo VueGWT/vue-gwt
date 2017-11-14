@@ -50,6 +50,7 @@ public class CollectionObserver extends VueGWTObserver
 
         wrapMethod(list, "clear", callObserver);
         wrapMethod(list, "remove", callObserver);
+        wrapMethod(list, "removeAtIndex", callObserver);
         wrapMethod(list, "removeAll", callObserver);
         wrapMethod(list, "retainAll", callObserver);
         wrapMethod(list, "add", ((object, methodName, result, args) -> {
