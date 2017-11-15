@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.core.client.component;
 
+import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.component.options.functions.OnEvent;
 import com.axellience.vuegwt.core.client.component.options.functions.OnNextTick;
@@ -8,13 +9,13 @@ import com.axellience.vuegwt.core.client.component.options.watch.OnValueChange;
 import com.axellience.vuegwt.core.client.component.options.watch.WatcherRegistration;
 import com.axellience.vuegwt.core.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.core.client.vnode.VNode;
-import com.axellience.vuegwt.core.annotations.component.Component;
 import elemental2.core.Array;
 import elemental2.dom.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -171,5 +172,12 @@ public abstract class VueComponent
     public final Object $listeners()
     {
         return $listeners;
+    }
+
+    @JsOverlay
+    public final <T> T $computed(String propertyName)
+    {
+        JsPropertyMap<T> map = Js.cast(this);
+        return map.get(propertyName);
     }
 }
