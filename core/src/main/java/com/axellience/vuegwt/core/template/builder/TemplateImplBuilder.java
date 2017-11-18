@@ -108,14 +108,25 @@ public class TemplateImplBuilder
      * @param result The result from compilation using vue-template-compiler
      */
     private void generateGetStaticRenderFunctions(Builder templateBuilder,
-        VueTemplateCompilerResult result)
+                                                  VueTemplateCompilerResult result)
     {
-        MethodSpec.Builder getStaticRenderFunctionsBuilder = MethodSpec
-            .methodBuilder("getStaticRenderFunctions")
-            .addModifiers(Modifier.PUBLIC)
-            .returns(String[].class)
-            .addStatement("return new String[] { $L }",
-                String.join(", ", result.getStaticRenderFunctions()));
+        CodeBlock.Builder staticFunctions = CodeBlock.builder();
+
+        boolean isFirst = true;
+        for (String staticRenderFunction : result.getStaticRenderFunctions()) {
+            if (!isFirst) {
+                staticFunctions.add(", ");
+            } else {
+                isFirst = false;
+            }
+            staticFunctions.add("$S", staticRenderFunction);
+        }
+
+        MethodSpec.Builder getStaticRenderFunctionsBuilder =
+                MethodSpec.methodBuilder("getStaticRenderFunctions")
+                          .addModifiers(Modifier.PUBLIC)
+                          .returns(String[].class)
+                          .addStatement("return new String[] { $L }", staticFunctions.build());
 
         templateBuilder.addMethod(getStaticRenderFunctionsBuilder.build());
     }
