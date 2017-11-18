@@ -686,12 +686,12 @@
             
         </li>
     
-        <li class="chapter " data-level="5.3" data-path="../gwt-integration/user-panels.html">
+        <li class="chapter " data-level="5.3" data-path="../gwt-integration/widgets.html">
             
-                <a href="../gwt-integration/user-panels.html">
+                <a href="../gwt-integration/widgets.html">
             
                     
-                    User Panels
+                    Vue GWT and Widgets
             
                 </a>
             
@@ -715,10 +715,10 @@
     
         <li class="chapter " data-level="5.4.1" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-object">
+                <a href="../js-interop/#js-property-map">
             
                     
-                    JsObject
+                    JsPropertyMap
             
                 </a>
             
@@ -741,10 +741,10 @@
     
         <li class="chapter " data-level="5.4.3" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-array">
+                <a href="../js-interop/#array-object">
             
                     
-                    JsArray
+                    Array
             
                 </a>
             
@@ -758,19 +758,6 @@
             
                     
                     array
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="5.4.5" data-path="../js-interop/">
-            
-                <a href="../js-interop/#js-tools">
-            
-                    
-                    JsTools
             
                 </a>
             
@@ -1408,7 +1395,7 @@ What we need to change is <strong>making the code in the child that affects pare
 <p>is just syntactic sugar for:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span>
   <span class="hljs-attr">v-bind:value</span>=<span class="hljs-string">&quot;something&quot;</span>
-  <span class="hljs-attr">v-on:input</span>=<span class="hljs-string">&quot;setSomethingValue((NativeEvent) $event)&quot;</span>&gt;</span>
+  <span class="hljs-attr">v-on:input</span>=<span class="hljs-string">&quot;setSomethingValue((Event) $event)&quot;</span>&gt;</span>
 </code></pre>
 <p>When used with a component, this simplifies to:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">custom-input</span>
@@ -1741,7 +1728,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-09-06T12:54:35.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-10T15:06:21.162Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Components","level":"2.9","depth":1,"next":{"title":"What are Components?","level":"2.9.1","depth":2,"anchor":"#what-are-components","path":"essential/components.md","ref":"essential/components.md#what-are-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-11-18T11:18:39.274Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-11-18T11:51:52.642Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
