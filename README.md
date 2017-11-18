@@ -6,7 +6,7 @@
     </a>
 </p>
 
-Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtproject.org/) using [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
+Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtproject.org/) using [JsInterop](https://github.com/google/jsinterop-base) and [Elemental2](https://github.com/google/elemental2).
 It lets you write Vue.js components in Java.
 
 <p align="center">
@@ -22,7 +22,7 @@ It lets you write Vue.js components in Java.
 * Use **regular Java Objects and Collections** in your templates
 * Supports [**injection** in Components](https://axellience.github.io/vue-gwt/essential/dependency-injection.html)
 * Supports **most of Vue.js features**
-* Integrates with [GWT Resources](https://axellience.github.io/vue-gwt/gwt-integration/client-bundles.html) and [Widgets](https://axellience.github.io/vue-gwt/gwt-integration/user-panels.html)
+* Integrates with [GWT Resources](https://axellience.github.io/vue-gwt/gwt-integration/client-bundles.html) and [Widgets](https://axellience.github.io/vue-gwt/gwt-integration/widgets.html)
 
 ## Who is this for?
 
