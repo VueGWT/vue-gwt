@@ -11,7 +11,7 @@ Well let's see how we can do that!
 <p class="info-panel">
     This examples declare Vue components directly in the index.html.
     For this to work, you need Vue loaded before you declare them.
-    You can comment <code>VueLib.inject()</code> in your GWT app, and a JS dependency to Vue in your index.html instead. 
+    You can use <code>VueGWT.initWithoutVueLib()</code> in your GWT app, and a JS dependency to Vue in your index.html instead. 
 </p>
 
 ### Instantiating a JS Component in Java
@@ -71,8 +71,8 @@ For this we need some kind of Java definition.
 Let's do it for our `FullJsWithMethodsComponent`:
 
 ```java
-@JsComponent
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+@JsComponent("FullJsWithMethodsComponent")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
 public class FullJsWithMethodsComponent extends VueComponent {
     public int value;
 
@@ -83,7 +83,7 @@ public class FullJsWithMethodsComponent extends VueComponent {
 Looks pretty similar to our Java Components, but there a few key differences:
 
 * We use the `@JsComponent` annotation instead of `@Component`
-* We have to use the `@JsType` annotation with `isNative = true`
+* We have to use the `@JsType` to tell GWT this is a native `Function`
 * Our JS methods are declared as `native` in our Java class.
 We don't need to provide their implementations, they will come from the JS Component.
 * You only need to declare what you want to interact with in the Class.
@@ -110,23 +110,24 @@ You can interact with it in the console, it's just a regular Vue instance.
 </div>
 {% endraw %}
 
-#### About `@JsType`
+#### How does `@JsComponent` find the existing JS Component?
 
-You may have noticed we also pass `namespace = JsPackage.GLOBAL` to our `@JsType` annotation.
-This is because by default, GWT will use the Java package and the Class Name to determine where the JS Constructor is in the JavaScript Context.
+You may have noticed we also pass `"FullJsWithMethodsComponent"` to our `@JsComponent` annotation.
+This is used to find the Js Component on `window`.
 
-So if your Java Class is: `com.mypackage.MyComponent`, it will look for:
-```js
-window.com = {
-	mypackage: {
-		MyComponent: MyComponentConstructor
-	}
-}
+So if you put `@JsComponent("MyVueLib.MyComponent")`, it will link your `JsComponent` class to: `window.MyVueLib.MyComponent`.
+
+#### What if the JS library exposes a Component options object?
+
+Some libraries like [Vue ChartJS](http://vue-chartjs.org/) exposes a Component options object and not a Component Constructor.
+You can use the same method, and Vue GWT will automatically create a Vue Component constructor from those options for you.
+The only change is you have to tell GWT that the instance is an `Object` and not a `Function`:
+
+```java
+@JsComponent("VueChartJs.Line")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+public class AbstractVueLineChartComponent extends VueComponent
 ```
-
-By passing `namespace = JsPackage.GLOBAL` we tell GWT that the JS Constructor is on Window directly.
-If your JS Constructor is in an object `ComponentsBundle` on Window, then pass `namespace = "ComponentsBundle"`.
-You can also pass `name = "MyJSName"` to indicate the name of your JS Constructor, if it differs from your Java Class name.
 
 ### Using Our JS Component in a Java One
 

@@ -90,7 +90,7 @@ And here is the traditional live example for proof 😉  :
 
 ## Extending an existing JS Component {#extending-js-component}
 
-Has you saw in [integrating with JS Components](../advanced/integrating-with-js-components.md) that we can use JS Components in Vue GWT.
+As you saw in [integrating with JS Components](../advanced/integrating-with-js-components.md), we can use JS Components in Vue GWT.
 
 Well, we can also extends them!
 
@@ -119,8 +119,8 @@ window.ParentJsComponent = Vue.extend({
 We declare this Java interface:
 
 ```java
-@JsComponent
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+@JsComponent("ParentJsComponent")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
 public class ParentJsComponent extends VueComponent {
     public String parentMessage;
 
