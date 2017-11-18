@@ -75,8 +75,8 @@ public class TodoTextComponent extends VueComponent {
     @JsProperty Todo todo = new Todo("Hello World!");
 
     @JsMethod
-    public void updateMessage(NativeEvent event) {
-        this.todo.setText(JsTools.get(event.getEventTarget(), "value"));
+    public void updateMessage(Event event) {
+        this.todo.setText(((HTMLInputElement) event.target).value);
     }
 }
 ```

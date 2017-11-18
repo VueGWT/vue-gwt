@@ -1,8 +1,0 @@
-{
-  "name": "vue-gwt",
-  "version": "1.0.0",
-  "description": "Node.js dependencies of Vue GWT",
-  "dependencies": {
-    "vue-template-compiler": "^2.4.3"
-  }
-}

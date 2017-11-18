@@ -1,15 +1,16 @@
 package com.axellience.vuegwtexamples.client.examples.simplerender;
 
-import com.axellience.vuegwt.client.component.HasRender;
-import com.axellience.vuegwt.client.component.VueComponent;
-import com.axellience.vuegwt.client.jsnative.jstypes.JsArray;
-import com.axellience.vuegwt.client.vnode.VNode;
-import com.axellience.vuegwt.client.vnode.VNodeData;
-import com.axellience.vuegwt.client.vnode.builder.VNodeBuilder;
-import com.axellience.vuegwt.jsr69.component.annotations.Component;
-import com.axellience.vuegwt.jsr69.component.annotations.Prop;
+import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Prop;
+import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.hooks.HasRender;
+import com.axellience.vuegwt.core.client.vnode.VNode;
+import com.axellience.vuegwt.core.client.vnode.VNodeData;
+import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.google.gwt.regexp.shared.RegExp;
+import elemental2.core.Array;
 import jsinterop.annotations.JsProperty;
+import jsinterop.base.Js;
 
 /**
  * @author Adrien Baron
@@ -37,12 +38,12 @@ public class AnchoredHeadingComponent extends VueComponent implements HasRender
                 this.$slots().get("default")));
     }
 
-    private String getChildrenTextContent(JsArray<VNode> children)
+    private String getChildrenTextContent(Array<VNode> children)
     {
-        return children.map(child -> {
+        return ((Array<String>) Js.cast(children.map((child, index, array) -> {
             if (child.getChildren() != null && child.getChildren().length > 0)
                 return getChildrenTextContent(child.getChildren());
             return child.getText();
-        }).join("");
+        }))).join("");
     }
 }

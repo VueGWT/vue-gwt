@@ -686,12 +686,12 @@
             
         </li>
     
-        <li class="chapter " data-level="5.3" data-path="../gwt-integration/user-panels.html">
+        <li class="chapter " data-level="5.3" data-path="../gwt-integration/widgets.html">
             
-                <a href="../gwt-integration/user-panels.html">
+                <a href="../gwt-integration/widgets.html">
             
                     
-                    User Panels
+                    Vue GWT and Widgets
             
                 </a>
             
@@ -715,10 +715,10 @@
     
         <li class="chapter " data-level="5.4.1" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-object">
+                <a href="../js-interop/#js-property-map">
             
                     
-                    JsObject
+                    JsPropertyMap
             
                 </a>
             
@@ -741,10 +741,10 @@
     
         <li class="chapter " data-level="5.4.3" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-array">
+                <a href="../js-interop/#array-object">
             
                     
-                    JsArray
+                    Array
             
                 </a>
             
@@ -758,19 +758,6 @@
             
                     
                     array
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="5.4.5" data-path="../js-interop/">
-            
-                <a href="../js-interop/#js-tools">
-            
-                    
-                    JsTools
             
                 </a>
             
@@ -1059,25 +1046,28 @@ Try this in your browser console:</p>
 <h2 id="accessing-the-event">Accessing the Event</h2>
 <p>Sometimes we also need to access the original DOM event in an inline statement handler.
 You can pass it into a method using the special <code>$event</code> variable:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&apos;warn(&quot;Form cannot be submitted yet.&quot;, (NativeEvent) $event)&apos;</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&apos;warn(&quot;Form cannot be submitted yet.&quot;, (Event) $event)&apos;</span>&gt;</span>
     Submit
 <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-comment">// ...</span>
-<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">warn</span><span class="hljs-params">(String message, NativeEvent event)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">warn</span><span class="hljs-params">(String message, Event event)</span> </span>{
     <span class="hljs-keyword">if</span> (event != <span class="hljs-keyword">null</span>) {
         event.preventDefault();
-        message += <span class="hljs-string">&quot; -&gt; Event Type: &quot;</span> + event.getType();
+        message += <span class="hljs-string">&quot; -&gt; Event Type: &quot;</span> + event.type;
     }
 
     Window.alert(message);
 }
 </code></pre>
-<p>You will notice that we cast the <code>$event</code> variable to <code>NativeEvent</code> in our template.
+<p>You will notice that we cast the <code>$event</code> variable to <code>Event</code> in our template.
 This is to indicate the type of the <code>$event</code> variable to Vue GWT.</p>
-<p>This means that if your <code>warn</code> method was actually declared like this: <code>void warn(NativeEvent event, String message)</code> it would break at compile time with an explicit error.</p>
-<p>You don&apos;t have to import the <code>NativeEvent</code> class to use it in your template.
+<p>This means that if your <code>warn</code> method was actually declared like this: <code>void warn(Event event, String message)</code> it would break at compile time with an explicit error.</p>
+<p>You don&apos;t have to import the <code>Event</code> class to use it in your template.
 It&apos;s already imported by default for convenience.</p>
+<p><code>Event</code> comes from <a href="https://github.com/google/elemental2" target="_blank">Elemental2</a>.
+It is the base for all DOM events.
+You cast it to more specific events like <code>MouseEvent</code> or <code>KeyboardEvent</code> in your Component class. </p>
 <p>You&apos;ll see further that <code>$event</code> can also be used when communicating between Components.
 In those case you might cast it to another type, like <code>Todo</code> for example.</p>
 <div class="example-container" data-name="vOnWithDOMEventComponent">
@@ -1154,12 +1144,23 @@ If you haven&apos;t read about components yet, don&apos;t worry about this for n
 <li><code>.left</code></li>
 <li><code>.right</code></li>
 </ul>
-<p>In Vue.js you can also <a href="https://vuejs.org/v2/api/#keyCodes" target="_blank">define custom key modifier aliases</a> via the global <code>config.keyCodes</code> object:</p>
-<pre><code class="lang-js"><span class="hljs-comment">// enable v-on:keyup.f1</span>
-Vue.config.keyCodes.f1 = <span class="hljs-number">112</span>
+<p>You can also <a href="https://vuejs.org/v2/api/#keyCodes" target="_blank">define custom key modifier aliases</a> via the global <code>VueConfig</code>:</p>
+<pre><code class="lang-java"><span class="hljs-comment">// enable v-on:keyup.f1</span>
+Vue.setConfig(<span class="hljs-keyword">new</span> VueConfig().setKeyCode(<span class="hljs-string">&quot;f1&quot;</span>, <span class="hljs-number">112</span>));
 </code></pre>
-<p>This is not doable yet in Vue GWT.</p>
-<h2 id="modifier-keys">Modifier Keys</h2>
+<h3 id="automatic-key-modifers">Automatic Key Modifers</h3>
+<blockquote>
+<p>New in Vue.js 2.5.0</p>
+</blockquote>
+<p>You can also directly use any valid key names exposed via <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values" target="_blank"><code>KeyboardEvent.key</code></a> as modifiers by converting them to kebab-case:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> @<span class="hljs-attr">keyup.page-down</span>=<span class="hljs-string">&quot;onPageDown&quot;</span>&gt;</span>
+</code></pre>
+<p>In the above example, the handler will only be called if <code>$event.key === &apos;PageDown&apos;</code>.</p>
+<p class="info-panel">
+    A few keys (<code>.esc</code> and all arrow keys) have inconsistent <code>key</code> values in IE9, their built-in aliases should be preferred if you need to support IE9.
+</p>
+
+<h2 id="system-modifier-keys">System Modifier Keys</h2>
 <blockquote>
 <p>New in Vue.js 2.1.0</p>
 </blockquote>
@@ -1255,7 +1256,7 @@ In fact, there are several benefits in using <code>v-on</code>:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Event Handling","level":"2.7","depth":1,"next":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"previous":{"title":"List Rendering","level":"2.6","depth":1,"path":"essential/list.md","ref":"essential/list.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/events.md","mtime":"2017-09-06T12:54:35.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-10T15:06:21.162Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Event Handling","level":"2.7","depth":1,"next":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"previous":{"title":"List Rendering","level":"2.6","depth":1,"path":"essential/list.md","ref":"essential/list.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/events.md","mtime":"2017-11-18T11:26:31.060Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-11-18T11:51:52.642Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

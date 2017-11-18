@@ -1,0 +1,8 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.0//EN"
+		"http://gwtproject.org/doctype/2.8.0/gwt-module.dtd">
+<module>
+	<source path="gwt2/client"/>
+	<generate-with class="com.axellience.vuegwt.gwt2.template.TemplateGwtGenerator">
+		<when-type-assignable class="com.axellience.vuegwt.core.client.template.ComponentTemplate"/>
+	</generate-with>
+</module>

@@ -686,12 +686,12 @@
             
         </li>
     
-        <li class="chapter " data-level="5.3" data-path="../gwt-integration/user-panels.html">
+        <li class="chapter " data-level="5.3" data-path="../gwt-integration/widgets.html">
             
-                <a href="../gwt-integration/user-panels.html">
+                <a href="../gwt-integration/widgets.html">
             
                     
-                    User Panels
+                    Vue GWT and Widgets
             
                 </a>
             
@@ -715,10 +715,10 @@
     
         <li class="chapter " data-level="5.4.1" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-object">
+                <a href="../js-interop/#js-property-map">
             
                     
-                    JsObject
+                    JsPropertyMap
             
                 </a>
             
@@ -741,10 +741,10 @@
     
         <li class="chapter " data-level="5.4.3" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-array">
+                <a href="../js-interop/#array-object">
             
                     
-                    JsArray
+                    Array
             
                 </a>
             
@@ -758,19 +758,6 @@
             
                     
                     array
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="5.4.5" data-path="../js-interop/">
-            
-                <a href="../js-interop/#js-tools">
-            
-                    
-                    JsTools
             
                 </a>
             
@@ -1333,15 +1320,15 @@ For example, in a template using <code>v-if</code> and <code>v-for</code>:</p>
 </table>
 <p>Here&apos;s an example with all of these modifiers used together:</p>
 <pre><code class="lang-java">vNodeData.on(<span class="hljs-string">&quot;keyup&quot;</span>, (param) -&gt; {
-    NativeEvent event = (NativeEvent) param;
+    KeyboardEvent event = (KeyboardEvent) param;
 
     <span class="hljs-comment">// Abort if the element emitting the event is not</span>
     <span class="hljs-comment">// the element the event is bound to</span>
-    <span class="hljs-keyword">if</span> (event.getEventTarget() != event.getCurrentEventTarget()) <span class="hljs-keyword">return</span>;
+    <span class="hljs-keyword">if</span> (event.target != event.currentTarget) <span class="hljs-keyword">return</span>;
     <span class="hljs-comment">// Abort if the key that went up is not the enter</span>
-    <span class="hljs-comment">// key (13) and the shift key was not held down</span>
+    <span class="hljs-comment">// and the shift key was not held down</span>
     <span class="hljs-comment">// at the same time</span>
-    <span class="hljs-keyword">if</span> (!event.getShiftKey() || event.getKeyCode() !== <span class="hljs-number">13</span>) <span class="hljs-keyword">return</span>;
+    <span class="hljs-keyword">if</span> (!event.shiftKey || !<span class="hljs-string">&quot;Enter&quot;</span>.equals(event.code)) <span class="hljs-keyword">return</span>;
     <span class="hljs-comment">// Stop event propagation</span>
     event.stopPropagation();
     <span class="hljs-comment">// Prevent the default keyup handler for this element</span>
@@ -1424,7 +1411,7 @@ If you are curious about how Vue.js compile templates you can <a href="https://v
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Render Function","level":"4.3","depth":1,"next":{"title":"Basics","level":"4.3.1","depth":2,"anchor":"#basics","path":"composition/render-function.md","ref":"composition/render-function.md#basics","articles":[]},"previous":{"title":"Custom Directives","level":"4.2","depth":1,"path":"composition/custom-directives.md","ref":"composition/custom-directives.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"composition/render-function.md","mtime":"2017-09-10T17:55:25.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-10T15:06:21.162Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Render Function","level":"4.3","depth":1,"next":{"title":"Basics","level":"4.3.1","depth":2,"anchor":"#basics","path":"composition/render-function.md","ref":"composition/render-function.md#basics","articles":[]},"previous":{"title":"Custom Directives","level":"4.2","depth":1,"path":"composition/custom-directives.md","ref":"composition/custom-directives.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"composition/render-function.md","mtime":"2017-11-18T11:17:05.502Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-11-18T11:51:52.642Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

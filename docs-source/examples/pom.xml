@@ -8,15 +8,13 @@
     <groupId>com.axellience</groupId>
     <artifactId>vue-gwt-examples</artifactId>
     <packaging>war</packaging>
-    <version>1.0-beta-2</version>
+    <version>1.0-beta-3</version>
     <name>Vue GWT Examples</name>
 
     <properties>
         <!-- Convenience property to set the GWT version -->
-        <gwtVersion>2.8.0</gwtVersion>
-
-        <vue-gwt.version>1.0-beta-2</vue-gwt.version>
-		<gin.version>2.1.2</gin.version>
+        <gwt.version>2.8.1</gwt.version>
+		<dagger.version>2.11</dagger.version>
 
         <!-- GWT needs at least java 1.7 -->
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -29,31 +27,38 @@
         <dependency>
             <groupId>com.axellience</groupId>
             <artifactId>vue-gwt</artifactId>
-            <version>${vue-gwt.version}</version>
+            <version>${project.version}</version>
         </dependency>
+		<dependency>
+			<groupId>com.axellience</groupId>
+			<artifactId>vue-gwt-processors</artifactId>
+			<version>${project.version}</version>
+			<optional>true</optional>
+		</dependency>
+
 		<dependency>
 			<groupId>com.google.dagger</groupId>
 			<artifactId>dagger-gwt</artifactId>
-			<version>2.11</version>
+			<version>${dagger.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.dagger</groupId>
 			<artifactId>dagger-compiler</artifactId>
-			<version>2.11</version>
+			<version>${dagger.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>${gwtVersion}</version>
+            <version>${gwt.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
-            <version>${gwtVersion}</version>
+            <version>${gwt.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -76,7 +81,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.8.0</version>
+                <version>2.8.1</version>
                 <executions>
                     <execution>
                         <goals>

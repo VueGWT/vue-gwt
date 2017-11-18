@@ -686,12 +686,12 @@
             
         </li>
     
-        <li class="chapter " data-level="5.3" data-path="../gwt-integration/user-panels.html">
+        <li class="chapter " data-level="5.3" data-path="../gwt-integration/widgets.html">
             
-                <a href="../gwt-integration/user-panels.html">
+                <a href="../gwt-integration/widgets.html">
             
                     
-                    User Panels
+                    Vue GWT and Widgets
             
                 </a>
             
@@ -715,10 +715,10 @@
     
         <li class="chapter " data-level="5.4.1" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-object">
+                <a href="../js-interop/#js-property-map">
             
                     
-                    JsObject
+                    JsPropertyMap
             
                 </a>
             
@@ -741,10 +741,10 @@
     
         <li class="chapter " data-level="5.4.3" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-array">
+                <a href="../js-interop/#array-object">
             
                     
-                    JsArray
+                    Array
             
                 </a>
             
@@ -758,19 +758,6 @@
             
                     
                     array
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="5.4.5" data-path="../js-interop/">
-            
-                <a href="../js-interop/#js-tools">
-            
-                    
-                    JsTools
             
                 </a>
             
@@ -1062,7 +1049,7 @@ For this we just have to use classic Java inheritance.</p>
 </div>
 
 <h2 id="extending-js-component">Extending an existing JS Component </h2>
-<p>Has you saw in <a href="../advanced/integrating-with-js-components.html">integrating with JS Components</a> that we can use JS Components in Vue GWT.</p>
+<p>As you saw in <a href="../advanced/integrating-with-js-components.html">integrating with JS Components</a>, we can use JS Components in Vue GWT.</p>
 <p>Well, we can also extends them!</p>
 <p>If we have this Component:</p>
 <pre><code class="lang-js"><span class="hljs-built_in">window</span>.ParentJsComponent = Vue.extend({
@@ -1084,8 +1071,8 @@ For this we just have to use classic Java inheritance.</p>
 });
 </code></pre>
 <p>We declare this Java interface:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>
-<span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL)
+<pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>(<span class="hljs-string">&quot;ParentJsComponent&quot;</span>)
+<span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL, name = <span class="hljs-string">&quot;Function&quot;</span>)
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentJsComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-keyword">public</span> String parentMessage;
 
@@ -1176,7 +1163,7 @@ For this we just have to use classic Java inheritance.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Extending Components","level":"4.1","depth":1,"next":{"title":"Extending Java Components","level":"4.1.1","depth":2,"anchor":"#extending-java-component","path":"composition/extending-components.md","ref":"composition/extending-components.md#extending-java-component","articles":[]},"previous":{"title":"State Transitions","level":"3.2","depth":1,"path":"transitions/transitioning-state.md","ref":"transitions/transitioning-state.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"composition/extending-components.md","mtime":"2017-09-10T17:55:25.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-10T15:06:21.162Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Extending Components","level":"4.1","depth":1,"next":{"title":"Extending Java Components","level":"4.1.1","depth":2,"anchor":"#extending-java-component","path":"composition/extending-components.md","ref":"composition/extending-components.md#extending-java-component","articles":[]},"previous":{"title":"State Transitions","level":"3.2","depth":1,"path":"transitions/transitioning-state.md","ref":"transitions/transitioning-state.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"composition/extending-components.md","mtime":"2017-11-17T17:42:53.763Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-11-18T11:51:52.642Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.axellience</groupId>
+		<artifactId>vue-gwt-parent</artifactId>
+		<version>1.0-beta-3</version>
+	</parent>
+
+	<artifactId>vue-gwt-core</artifactId>
+	<name>Vue GWT Core</name>
+	<description>Vue GWT Core classes</description>
+	<packaging>gwt-lib</packaging>
+
+	<dependencies>
+
+		<!-- GWT dependencies -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.jsinterop</groupId>
+			<artifactId>base</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.elemental2</groupId>
+			<artifactId>elemental2-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.elemental2</groupId>
+			<artifactId>elemental2-dom</artifactId>
+		</dependency>
+
+		<!-- Code Generation -->
+		<dependency>
+			<groupId>com.squareup</groupId>
+			<artifactId>javapoet</artifactId>
+		</dependency>
+
+		<!-- Template parsing -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-core</artifactId>
+		</dependency>
+
+		<!-- Nashorn dependencies -->
+		<dependency>
+			<groupId>com.coveo</groupId>
+			<artifactId>nashorn-commonjs-modules</artifactId>
+		</dependency>
+
+		<!-- Injection -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>net.ltgt.gwt.maven</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<moduleName>com.axellience.vuegwt.Core</moduleName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

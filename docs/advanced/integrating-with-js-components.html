@@ -686,12 +686,12 @@
             
         </li>
     
-        <li class="chapter " data-level="5.3" data-path="../gwt-integration/user-panels.html">
+        <li class="chapter " data-level="5.3" data-path="../gwt-integration/widgets.html">
             
-                <a href="../gwt-integration/user-panels.html">
+                <a href="../gwt-integration/widgets.html">
             
                     
-                    User Panels
+                    Vue GWT and Widgets
             
                 </a>
             
@@ -715,10 +715,10 @@
     
         <li class="chapter " data-level="5.4.1" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-object">
+                <a href="../js-interop/#js-property-map">
             
                     
-                    JsObject
+                    JsPropertyMap
             
                 </a>
             
@@ -741,10 +741,10 @@
     
         <li class="chapter " data-level="5.4.3" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-array">
+                <a href="../js-interop/#array-object">
             
                     
-                    JsArray
+                    Array
             
                 </a>
             
@@ -758,19 +758,6 @@
             
                     
                     array
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="5.4.5" data-path="../js-interop/">
-            
-                <a href="../js-interop/#js-tools">
-            
-                    
-                    JsTools
             
                 </a>
             
@@ -998,7 +985,7 @@ Well let&apos;s see how we can do that!</p>
 <p class="info-panel">
     This examples declare Vue components directly in the index.html.
     For this to work, you need Vue loaded before you declare them.
-    You can comment <code>VueLib.inject()</code> in your GWT app, and a JS dependency to Vue in your index.html instead. 
+    You can use <code>VueGWT.initWithoutVueLib()</code> in your GWT app, and a JS dependency to Vue in your index.html instead. 
 </p>
 
 <h3 id="instantiating-a-js-component-in-java">Instantiating a JS Component in Java</h3>
@@ -1041,8 +1028,8 @@ myFullJsComponent.$mount(<span class="hljs-string">&quot;#fullJsComponent&quot;<
 <p>We would like to manipulate our instances from Java.
 For this we need some kind of Java definition.</p>
 <p>Let&apos;s do it for our <code>FullJsWithMethodsComponent</code>:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>
-<span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL)
+<pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>(<span class="hljs-string">&quot;FullJsWithMethodsComponent&quot;</span>)
+<span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL, name = <span class="hljs-string">&quot;Function&quot;</span>)
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FullJsWithMethodsComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
 
@@ -1052,7 +1039,7 @@ For this we need some kind of Java definition.</p>
 <p>Looks pretty similar to our Java Components, but there a few key differences:</p>
 <ul>
 <li>We use the <code>@JsComponent</code> annotation instead of <code>@Component</code></li>
-<li>We have to use the <code>@JsType</code> annotation with <code>isNative = true</code></li>
+<li>We have to use the <code>@JsType</code> to tell GWT this is a native <code>Function</code></li>
 <li>Our JS methods are declared as <code>native</code> in our Java class.
 We don&apos;t need to provide their implementations, they will come from the JS Component.</li>
 <li>You only need to declare what you want to interact with in the Class.
@@ -1073,19 +1060,18 @@ You can interact with it in the console, it&apos;s just a regular Vue instance.<
 </div>
 
 
-<h4 id="about-jstype">About <code>@JsType</code></h4>
-<p>You may have noticed we also pass <code>namespace = JsPackage.GLOBAL</code> to our <code>@JsType</code> annotation.
-This is because by default, GWT will use the Java package and the Class Name to determine where the JS Constructor is in the JavaScript Context.</p>
-<p>So if your Java Class is: <code>com.mypackage.MyComponent</code>, it will look for:</p>
-<pre><code class="lang-js"><span class="hljs-built_in">window</span>.com = {
-    mypackage: {
-        MyComponent: MyComponentConstructor
-    }
-}
-</code></pre>
-<p>By passing <code>namespace = JsPackage.GLOBAL</code> we tell GWT that the JS Constructor is on Window directly.
-If your JS Constructor is in an object <code>ComponentsBundle</code> on Window, then pass <code>namespace = &quot;ComponentsBundle&quot;</code>.
-You can also pass <code>name = &quot;MyJSName&quot;</code> to indicate the name of your JS Constructor, if it differs from your Java Class name.</p>
+<h4 id="how-does-jscomponent-find-the-existing-js-component">How does <code>@JsComponent</code> find the existing JS Component?</h4>
+<p>You may have noticed we also pass <code>&quot;FullJsWithMethodsComponent&quot;</code> to our <code>@JsComponent</code> annotation.
+This is used to find the Js Component on <code>window</code>.</p>
+<p>So if you put <code>@JsComponent(&quot;MyVueLib.MyComponent&quot;)</code>, it will link your <code>JsComponent</code> class to: <code>window.MyVueLib.MyComponent</code>.</p>
+<h4 id="what-if-the-js-library-exposes-a-component-options-object">What if the JS library exposes a Component options object?</h4>
+<p>Some libraries like <a href="http://vue-chartjs.org/" target="_blank">Vue ChartJS</a> exposes a Component options object and not a Component Constructor.
+You can use the same method, and Vue GWT will automatically create a Vue Component constructor from those options for you.
+The only change is you have to tell GWT that the instance is an <code>Object</code> and not a <code>Function</code>:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>(<span class="hljs-string">&quot;VueChartJs.Line&quot;</span>)
+<span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL, name = <span class="hljs-string">&quot;Object&quot;</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractVueLineChartComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
+</span></code></pre>
 <h3 id="using-our-js-component-in-a-java-one">Using Our JS Component in a Java One</h3>
 <p>You can use your JS Component just like the Java ones.
 Which means you can also pass them to the <code>@Component</code> annotation <a href="../essential/components.html#using-components">as local components</a>:</p>
@@ -1150,7 +1136,7 @@ vm.$mount(<span class="hljs-string">&quot;#javaComponent&quot;</span>);
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"8.1","depth":1,"next":{"title":"Using JS Components in Java","level":"8.1.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},"previous":{"title":"Routing","level":"7.1","depth":1,"path":"scaling-up/routing.md","ref":"scaling-up/routing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-09-10T17:55:25.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-10T15:06:21.162Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"8.1","depth":1,"next":{"title":"Using JS Components in Java","level":"8.1.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},"previous":{"title":"Routing","level":"7.1","depth":1,"path":"scaling-up/routing.md","ref":"scaling-up/routing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-11-18T09:24:57.571Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-11-18T11:51:52.642Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

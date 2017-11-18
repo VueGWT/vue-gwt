@@ -1,4 +1,4 @@
 <div>
-    <input :value="todo.getText()" @input="updateTodoText((NativeEvent) $event)"/>
+    <input :value="todo.getText()" @input="updateTodoText((Event) $event)"/>
     Todo Text: {{ todo.getText() }}
 </div>

@@ -1,10 +1,10 @@
 package com.axellience.vuegwtexamples.client.examples.focus;
 
-import com.axellience.vuegwt.client.directive.VueDirective;
-import com.axellience.vuegwt.client.vnode.VNode;
-import com.axellience.vuegwt.client.vnode.VNodeDirective;
-import com.axellience.vuegwt.jsr69.directive.annotations.Directive;
-import com.google.gwt.dom.client.Element;
+import com.axellience.vuegwt.core.client.directive.VueDirective;
+import com.axellience.vuegwt.core.client.vnode.VNode;
+import com.axellience.vuegwt.core.client.vnode.VNodeDirective;
+import com.axellience.vuegwt.core.annotations.directive.Directive;
+import elemental2.dom.Element;
 
 /**
  * @author Adrien Baron
