@@ -363,15 +363,15 @@ Here's an example with all of these modifiers used together:
 
 ```java
 vNodeData.on("keyup", (param) -> {
-    NativeEvent event = (NativeEvent) param;
+    KeyboardEvent event = (KeyboardEvent) param;
     
     // Abort if the element emitting the event is not
     // the element the event is bound to
-    if (event.getEventTarget() != event.getCurrentEventTarget()) return;
+    if (event.target != event.currentTarget) return;
     // Abort if the key that went up is not the enter
-    // key (13) and the shift key was not held down
+    // and the shift key was not held down
     // at the same time
-    if (!event.getShiftKey() || event.getKeyCode() !== 13) return;
+    if (!event.shiftKey || !"Enter".equals(event.code)) return;
     // Stop event propagation
     event.stopPropagation();
     // Prevent the default keyup handler for this element

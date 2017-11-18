@@ -590,7 +590,7 @@ is just syntactic sugar for:
 ```html
 <input
   v-bind:value="something"
-  v-on:input="setSomethingValue((NativeEvent) $event)">
+  v-on:input="setSomethingValue((Event) $event)">
 ```
 
 When used with a component, this simplifies to:
