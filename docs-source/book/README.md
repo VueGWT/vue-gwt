@@ -48,7 +48,7 @@ When you are ready, you can get started with by **[setting it up on your project
     If you use it on a small project, please <a href="https://gitter.im/Axellience/vue-gwt" target="_blank">let us know how it goes</a>.
 </p>
 
-*This documentation was last updated for [Vue.js v2.4.3](https://github.com/vuejs/vue/releases/tag/v2.4.3) and Vue GWT 1.0-beta-3*
+*This documentation was last updated for [Vue.js v2.4.3](https://github.com/vuejs/vue/releases/tag/v2.4.3) and Vue GWT 1.0-beta-4*
 
 ## Who made this?
 
