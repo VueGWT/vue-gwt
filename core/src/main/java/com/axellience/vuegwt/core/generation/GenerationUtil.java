@@ -6,6 +6,7 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ClientBundle.Source;
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -27,6 +28,8 @@ import java.beans.Introspector;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Adrien Baron
@@ -172,6 +175,24 @@ public class GenerationUtil
         if (type.equals("Double") || type.equals("java.lang.Double"))
             return TypeName.DOUBLE.box();
 
-        return ClassName.bestGuess(type);
+        // Manage array types
+        Pattern arrayEnding = Pattern.compile("\\[\\]");
+        Matcher matcher = arrayEnding.matcher(type);
+        int arrayCount = 0;
+        while (matcher.find())
+            arrayCount++;
+
+        if (arrayCount > 0)
+        {
+            type = type.substring(0, type.length() - arrayCount * 2);
+        }
+
+        TypeName typeName = ClassName.bestGuess(type);
+        for (int i = 0; i < arrayCount; i++)
+        {
+            typeName = ArrayTypeName.of(typeName);
+        }
+
+        return typeName;
     }
 }
