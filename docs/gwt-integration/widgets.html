@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>User Panels · GitBook</title>
+        <title>Vue GWT and Widgets · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -686,12 +686,12 @@
             
         </li>
     
-        <li class="chapter active" data-level="5.3" data-path="user-panels.html">
+        <li class="chapter active" data-level="5.3" data-path="widgets.html">
             
-                <a href="user-panels.html">
+                <a href="widgets.html">
             
                     
-                    User Panels
+                    Vue GWT and Widgets
             
                 </a>
             
@@ -715,10 +715,10 @@
     
         <li class="chapter " data-level="5.4.1" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-object">
+                <a href="../js-interop/#js-property-map">
             
                     
-                    JsObject
+                    JsPropertyMap
             
                 </a>
             
@@ -741,10 +741,10 @@
     
         <li class="chapter " data-level="5.4.3" data-path="../js-interop/">
             
-                <a href="../js-interop/#js-array">
+                <a href="../js-interop/#array-object">
             
                     
-                    JsArray
+                    Array
             
                 </a>
             
@@ -758,19 +758,6 @@
             
                     
                     array
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="5.4.5" data-path="../js-interop/">
-            
-                <a href="../js-interop/#js-tools">
-            
-                    
-                    JsTools
             
                 </a>
             
@@ -918,7 +905,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >User Panels</a>
+        <a href=".." >Vue GWT and Widgets</a>
     </h1>
 </div>
 
@@ -933,9 +920,9 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="gwt-user-panels">GWT User Panels</h1>
-<p>For easy backward compatibility it&apos;s possible to wrap any Vue GWT Component in a gwt-user <code>Panel</code>.
-For this you need to use <code>VueGwtPanel</code>.</p>
+                                <h1 id="vue-gwt-and-widgets">Vue GWT and Widgets</h1>
+<p>For easy backward compatibility it&apos;s possible to wrap any Vue GWT Component in a GWT <code>Widget</code>.
+For this you need to use <code>VueGwtWidget</code>.</p>
 <h2 id="instantiating-a-democomponent">Instantiating a DemoComponent</h2>
 <p>For example, let&apos;s instantiate a <code>DemoComponent</code> using this mechanism:</p>
 <p><strong><em>GwtIndex.html</em></strong></p>
@@ -945,10 +932,10 @@ For this you need to use <code>VueGwtPanel</code>.</p>
 <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootGwtApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-comment">// Create a VueGwtPanel, it&apos;s a regular GWT Widget and can be attached to any GWT Widget</span>
-        VueGwtPanel&lt;DemoComponent&gt; vueGwtPanel = <span class="hljs-keyword">new</span> VueGwtPanel&lt;&gt;(DemoComponent.class);
+        VueGwtWidget&lt;DemoComponent&gt; vueGwtWidget = <span class="hljs-keyword">new</span> VueGwtWidget&lt;&gt;(DemoComponent.class);
 
         <span class="hljs-comment">// Attach it to inside our DOM element</span>
-        RootPanel.get(<span class="hljs-string">&quot;childComponentAttachPoint&quot;</span>).add(vueGwtPanel);
+        RootPanel.get(<span class="hljs-string">&quot;childComponentAttachPoint&quot;</span>).add(vueGwtWidget);
     }
 }
 </code></pre>
@@ -956,14 +943,14 @@ For this you need to use <code>VueGwtPanel</code>.</p>
 <p>It&apos;s even possible to interact with our instantiated <code>Vue</code>.</p>
 <p>Let&apos;s say our <code>DemoComponent</code> has a method <code>increaseCounter()</code>.
 We can do:</p>
-<pre><code class="lang-java">VueGwtPanel&lt;DemoComponent&gt; vueGwtPanel = <span class="hljs-keyword">new</span> VueGwtPanel&lt;&gt;(DemoComponent.class);
-RootPanel.get(<span class="hljs-string">&quot;childComponentAttachPoint&quot;</span>).add(vueGwtPanel);
+<pre><code class="lang-java">VueGwtWidget&lt;DemoComponent&gt; vueGwtWidget = <span class="hljs-keyword">new</span> VueGwtWidget&lt;&gt;(DemoComponent.class);
+RootPanel.get(<span class="hljs-string">&quot;childComponentAttachPoint&quot;</span>).add(vueGwtWidget);
 
-vueGwtPanel.vue().increaseCounter();
+vueGwtWidget.vue().increaseCounter();
 </code></pre>
 <h2 id="cleaning-up">Cleaning Up</h2>
-<p>If you don&apos;t need your <code>VueGwtPanel</code> anymore, you can destroy it&apos;s Vue instance by calling:</p>
-<pre><code class="lang-java">vueGwtPanel.vue().$destroy();
+<p>If you don&apos;t need your <code>VueGwtWidget</code> anymore, you can destroy it&apos;s Vue instance by calling:</p>
+<pre><code class="lang-java">vueGwtWidget.vue().$destroy();
 </code></pre>
 
                                 
@@ -1008,7 +995,7 @@ vueGwtPanel.vue().increaseCounter();
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"User Panels","level":"5.3","depth":1,"next":{"title":"JsInterop","level":"5.4","depth":1,"path":"js-interop/README.md","ref":"js-interop/README.md","articles":[{"title":"JsObject","level":"5.4.1","depth":2,"anchor":"#js-object","path":"js-interop/README.md","ref":"js-interop/README.md#js-object","articles":[]},{"title":"map","level":"5.4.2","depth":2,"anchor":"#map","path":"js-interop/README.md","ref":"js-interop/README.md#map","articles":[]},{"title":"JsArray","level":"5.4.3","depth":2,"anchor":"#js-array","path":"js-interop/README.md","ref":"js-interop/README.md#js-array","articles":[]},{"title":"array","level":"5.4.4","depth":2,"anchor":"#array","path":"js-interop/README.md","ref":"js-interop/README.md#array","articles":[]},{"title":"JsTools","level":"5.4.5","depth":2,"anchor":"#js-tools","path":"js-interop/README.md","ref":"js-interop/README.md#js-tools","articles":[]}]},"previous":{"title":"Client Bundles","level":"5.2","depth":1,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/user-panels.md","mtime":"2017-07-28T17:40:58.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-10-10T15:06:21.162Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Vue GWT and Widgets","level":"5.3","depth":1,"next":{"title":"JsInterop","level":"5.4","depth":1,"path":"js-interop/README.md","ref":"js-interop/README.md","articles":[{"title":"JsPropertyMap","level":"5.4.1","depth":2,"anchor":"#js-property-map","path":"js-interop/README.md","ref":"js-interop/README.md#js-property-map","articles":[]},{"title":"map","level":"5.4.2","depth":2,"anchor":"#map","path":"js-interop/README.md","ref":"js-interop/README.md#map","articles":[]},{"title":"Array","level":"5.4.3","depth":2,"anchor":"#array-object","path":"js-interop/README.md","ref":"js-interop/README.md#array-object","articles":[]},{"title":"array","level":"5.4.4","depth":2,"anchor":"#array","path":"js-interop/README.md","ref":"js-interop/README.md#array","articles":[]}]},"previous":{"title":"Client Bundles","level":"5.2","depth":1,"path":"gwt-integration/client-bundles.md","ref":"gwt-integration/client-bundles.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/widgets.md","mtime":"2017-10-23T08:17:26.036Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-11-18T11:51:52.642Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
