@@ -9,8 +9,8 @@ import jsinterop.annotations.JsType;
 /**
  * @author Adrien Baron
  */
-@JsComponent
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+@JsComponent("ParentJsComponent")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
 public class ParentJsComponent extends VueComponent
 {
     public String parentMessage;

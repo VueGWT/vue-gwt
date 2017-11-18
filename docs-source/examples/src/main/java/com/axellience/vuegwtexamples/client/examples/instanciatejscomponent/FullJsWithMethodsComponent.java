@@ -8,8 +8,8 @@ import jsinterop.annotations.JsType;
 /**
  * @author Adrien Baron
  */
-@JsComponent
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+@JsComponent("FullJsWithMethodsComponent")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
 public class FullJsWithMethodsComponent extends VueComponent
 {
     public int value;
