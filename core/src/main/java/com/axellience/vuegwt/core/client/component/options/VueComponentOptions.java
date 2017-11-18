@@ -6,8 +6,8 @@ import com.axellience.vuegwt.core.client.component.options.computed.ComputedKind
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedOptions;
 import com.axellience.vuegwt.core.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.core.client.component.options.props.PropOptions;
-import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
+import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.google.gwt.resources.client.CssResource;
 import elemental2.core.Array;
 import elemental2.core.Function;
@@ -357,6 +357,8 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     @JsProperty private Array<Object> staticRenderFns;
 
+    @JsProperty private Array<Object> mixins;
+
     @JsOverlay
     public final Object getData()
     {
@@ -571,6 +573,30 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     public final VueComponentOptions setName(String name)
     {
         this.name = name;
+        return this;
+    }
+
+    @JsOverlay
+    public final Array<Object> getMixins()
+    {
+        return mixins;
+    }
+
+    @JsOverlay
+    public final VueComponentOptions addMixin(Object mixin)
+    {
+        if (this.mixins == null) {
+            this.mixins = new Array<>();
+        }
+
+        this.mixins.push(mixin);
+        return this;
+    }
+
+    @JsOverlay
+    public final VueComponentOptions setMixins(Array<Object> mixins)
+    {
+        this.mixins = mixins;
         return this;
     }
 }
