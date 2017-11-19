@@ -6,7 +6,7 @@
     </a>
 </p>
 
-Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtproject.org/) using [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
+Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtproject.org/) using [JsInterop](https://github.com/google/jsinterop-base) and [Elemental2](https://github.com/google/elemental2).
 It lets you write Vue.js components in Java.
 
 <p align="center">
@@ -22,7 +22,7 @@ It lets you write Vue.js components in Java.
 * Use **regular Java Objects and Collections** in your templates
 * Supports [**injection** in Components](essential/dependency-injection.md)
 * Supports **most of Vue.js features**
-* Integrates with [GWT Resources](gwt-integration/client-bundles.md) and [Widgets](gwt-integration/user-panels.md)
+* Integrates with [GWT Resources](gwt-integration/client-bundles.md) and [Widgets](gwt-integration/widgets.md)
 
 ## Who is this for?
 
@@ -48,7 +48,7 @@ When you are ready, you can get started with by **[setting it up on your project
     If you use it on a small project, please <a href="https://gitter.im/Axellience/vue-gwt" target="_blank">let us know how it goes</a>.
 </p>
 
-*This documentation was last updated for [Vue.js v2.4.3](https://github.com/vuejs/vue/releases/tag/v2.4.3) and Vue GWT 1.0-beta-4*
+*This documentation was last updated for [Vue.js v2.5.5](https://github.com/vuejs/vue/releases/tag/v2.5.5) and Vue GWT 1.0-beta-4*
 
 ## Who made this?
 
