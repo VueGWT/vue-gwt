@@ -5,6 +5,7 @@ import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
+import com.axellience.vuegwtexamples.client.examples.animalselector.AnimalSelectorComponent;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
@@ -53,12 +54,15 @@ public class VueGwtExamplesService
         if (DomGlobal.document.getElementById("fullJsComponent") != null)
         {
             VueJsConstructor<VueComponent> vueClass =
-                (VueJsConstructor<VueComponent>) ((JsPropertyMap) DomGlobal.window).get("FullJsComponent");
+                (VueJsConstructor<VueComponent>) ((JsPropertyMap) DomGlobal.window).get(
+                    "FullJsComponent");
             VueComponent myComponent = vueClass.instantiate();
             myComponent.$mount("#fullJsComponent");
         }
 
         ExampleInjector exampleInjector = DaggerExampleInjector.builder().build();
+
+        Vue.customElement("animal-selector", AnimalSelectorComponent.class);
 
         addExample("simpleLinkComponent", SimpleLinkComponent.class);
         addExample("linkComponent", LinkComponent.class);
@@ -106,8 +110,7 @@ public class VueGwtExamplesService
         addExample(exampleId, VueGWT.getFactory(exampleVueClass));
     }
 
-    private static void addExample(String exampleId,
-        VueFactory exampleVueFactory)
+    private static void addExample(String exampleId, VueFactory exampleVueFactory)
     {
         // If we find the containing div for this example, we instantiate it
         if (DomGlobal.document.getElementById(exampleId) != null)
