@@ -1,0 +1,217 @@
+# Custom Elements support
+
+!INCLUDE "../dependencies.md"
+
+## What are Custom Elements?
+
+Custom Elements are a part of the Web Components standard. 
+They let you create reusable DOM Elements that can be easily shared between web applications.
+In a nutshell, it means being able to code your own custom DOM Elements, that will be able to receive property values and emit events, using the native DOM API.
+
+You can [find more information about the subject on MDN](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements).
+
+## How to Declare a Custom Element?
+
+### About Vue and Custom Elements
+
+Vue Components definitions are already very close to the Custom Element specification.
+That shouldn't come as a surprise as Vue.js was largely inspired by the first draft of the Web Components specification.
+
+For Vue.js, [a small library exists](https://github.com/karol-f/vue-custom-element) to declare Vue.js components as Custom Elements.
+Vue GWT integrates a slightly modified version of this library so you can declare your own Custom Elements easily.
+
+### The AnimalSelector Example
+
+Let's say you have a Vue GWT component called `AnimalSelectorComponent`.
+It let's a user with a given name select an animal, and emits an event each time an animal is selected. 
+
+```java
+@Component
+public class AnimalSelectorComponent extends VueComponent {
+    @Prop
+    @JsProperty
+    String userName;
+
+    @JsMethod
+    public void selectAnimal(Event event) {
+        this.$emit("animal-selected", ((HTMLInputElement) event.target).value);
+    }
+}
+```
+
+```html
+<div>
+    <p>Hello {{ userName }}! Please select your animal:</p>
+    <label>
+        😸 <input type="radio" name="animal" value="😸" @click="selectAnimal"/>
+    </label>
+    <label>
+        🐰 <input type="radio" name="animal" value="🐰" @click="selectAnimal"/>
+    </label>
+    <label>
+        🐕 <input type="radio" name="animal" value="🐕" @click="selectAnimal"/>
+    </label>
+    <label>
+        🐺 <input type="radio" name="animal" value="🐺" @click="selectAnimal"/>
+    </label>
+</div>
+```
+
+It just takes one line to register your Vue GWT Component as a Custom Element 🎉:
+
+```java
+// Register our AnimalSelectorComponent under the name animal-selector
+Vue.customElement("animal-selector", AnimalSelectorComponent.class);
+```
+
+Any `<animal-selector></animal-selector>` in your document will then turn into an instance of that Vue Component.
+
+<p class="info-panel">
+This will work even if the Element is present in the DOM before your GWT app is loaded.
+You Custom Element will also work in Angular, React or Vanilla JS applications.
+</p>
+
+<p class="warning-panel">
+Due to the specification, the name of your Custom Element <b>MUST</b> contain at least one hyphen (-).
+</p>
+
+Here is a live example:
+{% raw %}
+<div class="example-container" data-name="animalSelector">
+    <animal-selector user-name="Tom" id="animalSelector"></animal-selector>
+</div>
+{% endraw %}
+
+## Browser Support
+
+When we said one line was enough, we meant for recent browsers supporting the V1 of the Web Components specification.
+
+| [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/firefox.png" alt="Firefox" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome.png" alt="Chrome" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari.png" alt="Safari" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/opera.png" alt="Opera" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Opera | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari-ios.png" alt="iOS Safari" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>iOS | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome-android.png" alt="Chrome for Android" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Android |
+|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|
+| behind --flag | 54+ | 10.1+ | 42+ | 10.3+ | 55+
+
+[Custom Elements v1 support](http://caniuse.com/#feat=custom-elementsv1)
+
+For older browser you can use the small [document register element polyfill](https://github.com/WebReflection/document-register-element), which will give you IE9+ compatibility:
+
+| [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/edge.png" alt="IE / Edge" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/firefox.png" alt="Firefox" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome.png" alt="Chrome" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari.png" alt="Safari" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/opera.png" alt="Opera" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Opera | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari-ios.png" alt="iOS Safari" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>iOS | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome-android.png" alt="Chrome for Android" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Android |
+|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|
+| IE9+, Edge| &check;| &check; | &check; | &check; | &check; | &check;
+
+Just [download the latest version](https://github.com/WebReflection/document-register-element/blob/master/build/document-register-element.js) and add it to your project, or add the following to your index.html:
+
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/document-register-element/1.7.0/document-register-element.js"></script>
+```
+
+## Properties, Events and Slots
+
+### Properties
+
+You may have noticed that our `AnimalSelectorComponent` has an `@Prop` userName.
+How do we pass the value to our Component?
+
+Well, simply set it on the element (in camel case), and the Component will automatically get it:
+```html
+<animal-selector user-name="Tom"></animal-selector>
+```
+
+Even better, if the property changes, it will be passed again, just like a regular Vue property binding.
+You can open your browser Dev Tools and change the property `user-name`, and check that it does work.
+
+You can also set the value programmatically:
+```js
+document.getElementById("animalSelector").setAttribute("user-name", "Bobby");
+```
+
+Attributes values are always Strings.
+The value will be automatically parsed for you for number types (int/float) and booleans.
+
+### Events
+
+You can also listen to events fire by your Custom Element using `addEventListener`.
+The events fired are of type [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
+They have a read only `detail` array property which contains the values of the event.
+
+So to get the value of AnimalSelector `animal-selected` event, we just do in JavaScript:
+
+```js
+document.getElementById("animalSelector").addEventListener("animal-selected", event => console.log(event.detail[0]));
+```
+
+### Slots
+
+[Slots](../essential/components.md#content-distribution) are also supported.
+The only limitation is that it won't work for dynamic content as the DOM element is replaced with your Vue Component element when created.
+
+Let's see `slots` in action.
+For example with this `DemoSlotsComponent.html` template:
+
+```html
+<div>
+    <slot name="header">No HEADER slot content passed (this is default value)</slot>
+    <p>This is text from inside of the element</p>
+    <slot>No DEFAULT slot content passed (this is default value)</slot>
+    <slot name="footer">No FOOTER slot content passed (this is default value)</slot>
+</div>
+```
+
+The following element in your document:
+
+```html
+<demo-slots>
+  <p vue-slot="header">Some Header Content</p>
+  <p>Default slot</p>
+  <p vue-slot="footer">Some Footer Content</p>
+</demo-slots>
+```
+
+Will render:
+
+{% raw %}
+<div class="example-container" data-name="webComponentSlot">
+    <div>
+        <p>Some Header Content</p>
+        <p>This is text from inside of the element</p>
+        <p>Default slot</p>
+        <p vue-slot="footer">Some Footer Content</p>
+    </div>
+</div>
+{% endraw %}
+
+## Available Options
+
+`Vue.customElement` takes an optional third argument of type `CustomElementOptions<T extends VueComponent>`.
+
+Here are the available options:
+
+* `constructorCallback(element)`: Called when your Custom Element is constructed
+* `connectedCallback(element)`: Element is mounted to the DOM
+* `disconnectedCallback(element)`: Element is disconnected from the DOM
+* `attributeChangedCallback(element, name, oldValue, value)`: An attribute as changed
+* `destroyTimeout`: Time in `ms` between when the Element is removed from the DOM and the associated Vue Component is destroyed. Default to `3000`.
+* `shadow`: Use [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Shadow_DOM) (only supported on browsers that have native Web Components support). Default to `false`.
+* `shadowCss`: CSS rules to apply in the shadow DOM.
+
+Each callback get passed a reference to the Custom Element that fired the event.
+Using this reference you can get the Java instance for your `VueComponent` for that Element.
+
+```java
+CustomElementOptions<AnimalSelectorComponent> customElementOptions =
+    new CustomElementOptions<>()
+        .setConnectedCallback(animalSelectorElement -> {
+            AnimalSelectorComponent myComponent = animalSelectorElement.getVueComponent();
+            // Access any public property, or call any public method on your Component.
+        });
+Vue.customElement("animal-selector", AnimalSelectorComponent.class, customElementOptions);
+```
+
+If you get a reference to your Element from somewhere in your app, simply cast it to `VueCustomElement<MyComponent>` to access the Vue Component instance.
+
+Finally, from JavaScript, you can get access to your Vue Component instance this way:
+
+```js
+const myComponent = myCustomElement.__vue_custom_element__.$children[0];
+```
+
+Keep in mind that only the JsInterop properties and methods from your Component will be visible in JavaScript.

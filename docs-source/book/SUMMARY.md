@@ -63,6 +63,7 @@
 * [Routing](scaling-up/routing.md)
 
 ## Advanced Topics
+* [Custom Elements (Web Components)](advanced/custom-elements.md)
 * [Integrating With JS Components](advanced/integrating-with-js-components.md)
     * [Using JS Components in Java](advanced/integrating-with-js-components.md#using-js-components-in-java)
     * [Using our Java Components in JS](advanced/integrating-with-js-components.md#using-java-components-in-js)
