@@ -2,6 +2,7 @@ package com.axellience.vuegwt.core.client;
 
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
+import com.axellience.vuegwt.core.client.customelement.CustomElementOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.core.client.jsnative.jsfunctions.JsRunnable;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
@@ -10,6 +11,7 @@ import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import elemental2.core.Array;
 import elemental2.dom.Element;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -133,6 +135,49 @@ public abstract class Vue
         return extendedVueJsConstructor;
     }
 
+    @JsOverlay
+    public static <T extends VueComponent> void customElement(String componentTag,
+        Class<T> vueComponentClass)
+    {
+        Vue.customElement(componentTag, vueComponentClass, new CustomElementOptions());
+    }
+
+    @JsOverlay
+    public static <T extends VueComponent> void customElement(String componentTag,
+        VueFactory<T> vueFactory)
+    {
+        Vue.customElement(componentTag, vueFactory, new CustomElementOptions());
+    }
+
+    @JsOverlay
+    public static <T extends VueComponent> void customElement(String componentTag,
+        VueJsConstructor<T> vueJsConstructor)
+    {
+        Vue.customElement(componentTag, vueJsConstructor, new CustomElementOptions());
+    }
+
+    @JsOverlay
+    public static <T extends VueComponent> void customElement(String componentTag,
+        Class<T> vueComponentClass, CustomElementOptions options)
+    {
+        Vue.customElement(componentTag, VueGWT.getFactory(vueComponentClass), options);
+    }
+
+    @JsOverlay
+    public static <T extends VueComponent> void customElement(String componentTag,
+        VueFactory<T> vueFactory, CustomElementOptions options)
+    {
+        Vue.customElement(componentTag, vueFactory.getJsConstructor(), options);
+    }
+
+    @JsOverlay
+    public static <T extends VueComponent> void customElement(String componentTag,
+        VueJsConstructor<T> vueJsConstructor, CustomElementOptions options)
+    {
+        VueCustomElementLibInjector.ensureInjected();
+        Vue.customElementNative(componentTag, vueJsConstructor, options);
+    }
+
     // @formatter:off
     public static native <T extends VueComponent> VueJsConstructor<T> extend(VueComponentOptions<T> componentOptions);
 
@@ -150,6 +195,9 @@ public abstract class Vue
 
     public static native void directive(String id, VueDirectiveOptions directiveOptions);
     public static native VueDirectiveOptions directive(String id);
+
+    @JsMethod(name = "customElement")
+    public static native <T extends VueComponent> void customElementNative(String componentTag, VueJsConstructor<T> vueJsConstructor, CustomElementOptions options);
 
     public static native <T extends VueComponent> void component(String id, VueComponentOptions<T> componentOptions);
     public static native <T extends VueComponent> void component(String id, VueJsConstructor<T> vueJsConstructor);
