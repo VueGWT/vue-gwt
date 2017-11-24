@@ -139,40 +139,40 @@ public abstract class Vue
     public static <T extends VueComponent> void customElement(String componentTag,
         Class<T> vueComponentClass)
     {
-        Vue.customElement(componentTag, vueComponentClass, new CustomElementOptions());
+        Vue.customElement(componentTag, vueComponentClass, new CustomElementOptions<>());
     }
 
     @JsOverlay
     public static <T extends VueComponent> void customElement(String componentTag,
         VueFactory<T> vueFactory)
     {
-        Vue.customElement(componentTag, vueFactory, new CustomElementOptions());
+        Vue.customElement(componentTag, vueFactory, new CustomElementOptions<>());
     }
 
     @JsOverlay
     public static <T extends VueComponent> void customElement(String componentTag,
         VueJsConstructor<T> vueJsConstructor)
     {
-        Vue.customElement(componentTag, vueJsConstructor, new CustomElementOptions());
+        Vue.customElement(componentTag, vueJsConstructor, new CustomElementOptions<>());
     }
 
     @JsOverlay
     public static <T extends VueComponent> void customElement(String componentTag,
-        Class<T> vueComponentClass, CustomElementOptions options)
+        Class<T> vueComponentClass, CustomElementOptions<T> options)
     {
         Vue.customElement(componentTag, VueGWT.getFactory(vueComponentClass), options);
     }
 
     @JsOverlay
     public static <T extends VueComponent> void customElement(String componentTag,
-        VueFactory<T> vueFactory, CustomElementOptions options)
+        VueFactory<T> vueFactory, CustomElementOptions<T> options)
     {
         Vue.customElement(componentTag, vueFactory.getJsConstructor(), options);
     }
 
     @JsOverlay
     public static <T extends VueComponent> void customElement(String componentTag,
-        VueJsConstructor<T> vueJsConstructor, CustomElementOptions options)
+        VueJsConstructor<T> vueJsConstructor, CustomElementOptions<T> options)
     {
         VueCustomElementLibInjector.ensureInjected();
         Vue.customElementNative(componentTag, vueJsConstructor, options);

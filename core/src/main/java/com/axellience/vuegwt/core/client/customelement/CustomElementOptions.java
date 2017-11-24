@@ -1,70 +1,74 @@
 package com.axellience.vuegwt.core.client.customelement;
 
-import com.axellience.vuegwt.core.client.jsnative.jsfunctions.JsRunnable;
+import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.jsnative.jsfunctions.JsConsumer;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class CustomElementOptions
+public class CustomElementOptions<T extends VueComponent>
 {
-    @JsProperty private JsRunnable constructorCallback;
-    @JsProperty private JsRunnable connectedCallback;
-    @JsProperty private JsRunnable disconnectedCallback;
-    @JsProperty private AttributeChangedCallback attributeChangedCallback;
+    @JsProperty private JsConsumer<VueCustomElement<T>> constructorCallback;
+    @JsProperty private JsConsumer<VueCustomElement<T>> connectedCallback;
+    @JsProperty private JsConsumer<VueCustomElement<T>> disconnectedCallback;
+    @JsProperty private AttributeChangedCallback<T> attributeChangedCallback;
     @JsProperty private int destroyTimeout;
     @JsProperty private boolean shadow;
     @JsProperty private String shadowCss;
 
     @JsOverlay
-    public final JsRunnable getConstructorCallback()
+    public final JsConsumer<VueCustomElement<T>> getConstructorCallback()
     {
         return constructorCallback;
     }
 
     @JsOverlay
-    public final CustomElementOptions setConstructorCallback(JsRunnable constructorCallback)
+    public final CustomElementOptions<T> setConstructorCallback(
+        JsConsumer<VueCustomElement<T>> constructorCallback)
     {
         this.constructorCallback = constructorCallback;
         return this;
     }
 
     @JsOverlay
-    public final JsRunnable getConnectedCallback()
+    public final JsConsumer<VueCustomElement<T>> getConnectedCallback()
     {
         return connectedCallback;
     }
 
     @JsOverlay
-    public final CustomElementOptions setConnectedCallback(JsRunnable connectedCallback)
+    public final CustomElementOptions<T> setConnectedCallback(
+        JsConsumer<VueCustomElement<T>> connectedCallback)
     {
         this.connectedCallback = connectedCallback;
         return this;
     }
 
     @JsOverlay
-    public final JsRunnable getDisconnectedCallback()
+    public final JsConsumer<VueCustomElement<T>> getDisconnectedCallback()
     {
         return disconnectedCallback;
     }
 
     @JsOverlay
-    public final CustomElementOptions setDisconnectedCallback(JsRunnable disconnectedCallback)
+    public final CustomElementOptions<T> setDisconnectedCallback(
+        JsConsumer<VueCustomElement<T>> disconnectedCallback)
     {
         this.disconnectedCallback = disconnectedCallback;
         return this;
     }
 
     @JsOverlay
-    public final AttributeChangedCallback getAttributeChangedCallback()
+    public final AttributeChangedCallback<T> getAttributeChangedCallback()
     {
         return attributeChangedCallback;
     }
 
     @JsOverlay
-    public final CustomElementOptions setAttributeChangedCallback(
-        AttributeChangedCallback attributeChangedCallback)
+    public final CustomElementOptions<T> setAttributeChangedCallback(
+        AttributeChangedCallback<T> attributeChangedCallback)
     {
         this.attributeChangedCallback = attributeChangedCallback;
         return this;
@@ -77,7 +81,7 @@ public class CustomElementOptions
     }
 
     @JsOverlay
-    public final CustomElementOptions setDestroyTimeout(int destroyTimeout)
+    public final CustomElementOptions<T> setDestroyTimeout(int destroyTimeout)
     {
         this.destroyTimeout = destroyTimeout;
         return this;
@@ -90,7 +94,7 @@ public class CustomElementOptions
     }
 
     @JsOverlay
-    public final CustomElementOptions setShadow(boolean shadow)
+    public final CustomElementOptions<T> setShadow(boolean shadow)
     {
         this.shadow = shadow;
         return this;
@@ -103,7 +107,7 @@ public class CustomElementOptions
     }
 
     @JsOverlay
-    public final CustomElementOptions setShadowCss(String shadowCss)
+    public final CustomElementOptions<T> setShadowCss(String shadowCss)
     {
         this.shadowCss = shadowCss;
         return this;
