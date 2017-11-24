@@ -13,7 +13,7 @@ public class AnimalSelectorComponent extends VueComponent
 {
     @Prop
     @JsProperty
-    String name;
+    String userName;
 
     @JsMethod
     public void selectAnimal(Event event)
