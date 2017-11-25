@@ -6,7 +6,7 @@
 
 Custom Elements are a part of the Web Components standard. 
 They let you create reusable DOM Elements that can be easily shared between web applications.
-In a nutshell, it means being able to code your own custom DOM Elements, that will be able to receive property values and emit events, using the native DOM API.
+In a nutshell, it means being able to code your own custom DOM Elements, that can receive property values and emit events, using the native DOM API.
 
 You can [find more information about the subject on MDN](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements).
 
@@ -18,7 +18,7 @@ Vue Components definitions are already very close to the Custom Element specific
 That shouldn't come as a surprise as Vue.js was largely inspired by the first draft of the Web Components specification.
 
 For Vue.js, [a small library exists](https://github.com/karol-f/vue-custom-element) to declare Vue.js components as Custom Elements.
-Vue GWT integrates a slightly modified version of this library so you can declare your own Custom Elements easily.
+Vue GWT integrates a [slightly modified version](https://github.com/adrienbaron/vue-custom-element) of this library so you can declare your own Custom Elements easily.
 
 ### The AnimalSelector Example
 
@@ -117,9 +117,10 @@ Well, simply set it on the element (in camel case), and the Component will autom
 ```
 
 Even better, if the property changes, it will be passed again, just like a regular Vue property binding.
-You can open your browser Dev Tools and change the property `user-name`, and check that it does work.
+You can open your browser Dev Tools and change the property `user-name` to check that it works.
 
 You can also set the value programmatically:
+
 ```js
 document.getElementById("animalSelector").setAttribute("user-name", "Bobby");
 ```
@@ -129,9 +130,9 @@ The value will be automatically parsed for you for number types (int/float) and 
 
 ### Events
 
-You can also listen to events fire by your Custom Element using `addEventListener`.
+You can also listen to events fired by your Custom Element using `addEventListener`.
 The events fired are of type [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
-They have a read only `detail` array property which contains the values of the event.
+They have a read only `detail` property which contains an array of the values of the event.
 
 So to get the value of AnimalSelector `animal-selected` event, we just do in JavaScript:
 
@@ -179,6 +180,55 @@ Will render:
 </div>
 {% endraw %}
 
+## Manipulating our Custom Element in Java
+
+### Creating Instances Programmatically
+
+The `createInstance` method returns a `VueCustomElementType<T extends VueComponent>`.
+This object can be used to create instances of your Custom Element easily.
+
+```java
+VueCustomElementType<AnimalSelectorComponent> animalSelectorElementType =
+            Vue.customElement("animal-selector", AnimalSelectorComponent.class);
+
+VueCustomElement<AnimalSelectorComponent> myElement = animalSelectorElementType.create();
+// myElement is a regular DOM element
+DomGlobal.document.body.appendChild(myElement);
+```
+
+You can also just use the regular `createElement` DOM method:
+
+```java
+VueCustomElement<AnimalSelectorComponent> myElement = Js.cast(DomGlobal.document.createElement("animal-selector"));
+```
+
+### Accessing the Vue Component of a Custom Element
+
+#### From Java
+
+From your Custom Element instance you can access the underlying Vue Component.
+This will work no matter how your Custom Element instance is created.
+
+```java
+VueCustomElement<AnimalSelectorComponent> animalSelectorElement = Js.cast(DomGlobal.document.createElement("animal-selector"));
+AnimalSelectorComponent animalSelectorComponent = myElement.getVueComponent();
+// Access any public property, or call any public method on animalSelectorComponent.
+
+VueCustomElement<TodoComponent> todoElement = Js.cast(DomGlobal.document.getElementById("myTodo"));
+TodoComponent todoComponent = todoElement.getVueComponent();
+// Access any public property, or call any public method on todoComponent.
+```
+
+#### From JavaScript
+
+You can also access to your Vue Component instance from JavaScript:
+
+```js
+const myComponent = myCustomElement.__vue_custom_element__.$children[0];
+```
+
+Keep in mind that only the JsInterop properties and methods from your Component will be visible in JavaScript.
+
 ## Available Options
 
 `Vue.customElement` takes an optional third argument of type `CustomElementOptions<T extends VueComponent>`.
@@ -194,24 +244,11 @@ Here are the available options:
 * `shadowCss`: CSS rules to apply in the shadow DOM.
 
 Each callback get passed a reference to the Custom Element that fired the event.
-Using this reference you can get the Java instance for your `VueComponent` for that Element.
 
 ```java
 CustomElementOptions<AnimalSelectorComponent> customElementOptions =
     new CustomElementOptions<>()
-        .setConnectedCallback(animalSelectorElement -> {
-            AnimalSelectorComponent myComponent = animalSelectorElement.getVueComponent();
-            // Access any public property, or call any public method on your Component.
-        });
+        .setConnectedCallback(animalSelectorElement -> DomGlobal.console.log(animalSelectorElement));
+
 Vue.customElement("animal-selector", AnimalSelectorComponent.class, customElementOptions);
 ```
-
-If you get a reference to your Element from somewhere in your app, simply cast it to `VueCustomElement<MyComponent>` to access the Vue Component instance.
-
-Finally, from JavaScript, you can get access to your Vue Component instance this way:
-
-```js
-const myComponent = myCustomElement.__vue_custom_element__.$children[0];
-```
-
-Keep in mind that only the JsInterop properties and methods from your Component will be visible in JavaScript.
