@@ -180,7 +180,7 @@ Will render:
 </div>
 {% endraw %}
 
-## Manipulating our Custom Element in Java
+## Manipulating our Custom Element
 
 ### Creating Instances Programmatically
 
