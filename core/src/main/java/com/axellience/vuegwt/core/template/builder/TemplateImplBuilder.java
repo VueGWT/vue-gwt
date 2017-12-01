@@ -13,6 +13,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import jsinterop.annotations.JsMethod;
@@ -23,7 +24,6 @@ import javax.lang.model.element.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.*;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.getUnusableByJSAnnotation;
@@ -206,21 +206,12 @@ public class TemplateImplBuilder
         TemplateParserResult templateParserResult)
     {
         MethodSpec.Builder getStaticRenderFunctionsBuilder = MethodSpec
-            .methodBuilder("getTemplateMethods")
+            .methodBuilder("getTemplateMethodsCount")
             .addModifiers(Modifier.PUBLIC)
-            .returns(String[].class)
-            .addStatement("return new String[] { $L }", getExpressionsIds(templateParserResult));
+            .returns(TypeName.INT)
+            .addStatement("return $L", templateParserResult.getExpressions().size());
 
         templateBuilder.addMethod(getStaticRenderFunctionsBuilder.build());
-    }
-
-    private String getExpressionsIds(TemplateParserResult templateParserResult)
-    {
-        return templateParserResult
-            .getExpressions()
-            .stream()
-            .map(expression -> "\"" + expression.getId() + "\"")
-            .collect(Collectors.joining(", "));
     }
 
     /**

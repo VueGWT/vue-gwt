@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static com.axellience.vuegwt.core.client.template.ComponentTemplate.EXPRESSION_PREFIX;
 import static elemental2.core.Global.JSON;
 
 /**
@@ -91,8 +92,9 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     @JsOverlay
     private void initExpressions()
     {
-        for (String methodId : componentTemplate.getTemplateMethods())
+        for (int i = 0; i < componentTemplate.getTemplateMethodsCount(); i++)
         {
+            String methodId = EXPRESSION_PREFIX + i;
             addMethod(methodId, componentTemplate.get(methodId));
         }
     }

@@ -17,6 +17,6 @@ public interface ComponentTemplate<T extends VueComponent> extends JsPropertyMap
 
     String getRenderFunction();
     String[] getStaticRenderFunctions();
-    String[] getTemplateMethods();
     Map<String, CssResource> getTemplateStyles();
+    int getTemplateMethodsCount();
 }
