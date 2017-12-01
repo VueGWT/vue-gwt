@@ -25,7 +25,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -44,14 +43,12 @@ import static com.axellience.vuegwt.core.generation.GenerationNameUtil.*;
 public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGenerator
 {
     private final Elements elements;
-    private final Types types;
 
     public VueComponentFactoryGenerator(ProcessingEnvironment processingEnv)
     {
         super(processingEnv);
 
         elements = processingEnv.getElementUtils();
-        types = processingEnv.getTypeUtils();
     }
 
     @Override
@@ -109,8 +106,9 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
      * this provider.
      * <br>
      * We then use that instance to get the values of our Java properties if they are injected.
-     * @param component
-     * @param initBuilder
+     * @param component The Component we generate for
+     * @param initBuilder The builder of the init method
+     * @param staticInitParameters Parameters of the init method
      */
     private void registerProvider(TypeElement component, MethodSpec.Builder initBuilder,
         List<CodeBlock> staticInitParameters)
@@ -133,6 +131,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
      * Their values are either injected, or pass directly when using the "get()" static accessor.
      * @param component The Component we generate for
      * @param injectDependenciesBuilder The builder for the injectDependencies method
+     * @param staticInitParameters The parameters of the static init function
      */
     private void registerLocalComponents(TypeElement component,
         MethodSpec.Builder injectDependenciesBuilder, List<CodeBlock> staticInitParameters)
