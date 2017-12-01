@@ -32,6 +32,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import elemental2.core.Array;
 import elemental2.core.Function;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Filer;
@@ -108,6 +109,7 @@ public class ComponentJsTypeGenerator
             optionsBuilder,
             componentJsTypeBuilder,
             hookMethodsFromInterfaces);
+        processInvalidEmitMethods(component);
         processRenderFunction(component, optionsBuilder, componentJsTypeBuilder);
         createCreatedHook(component, optionsBuilder, componentJsTypeBuilder, dependenciesBuilder);
 
@@ -562,6 +564,27 @@ public class ComponentJsTypeGenerator
             dependenciesName,
             "$options()",
             component);
+    }
+
+    /**
+     * Emit an error message for every method annotated with {@link Emit} that are not also
+     * annotated with {@link JsMethod}.
+     * @param component {@link VueComponent} to process
+     */
+    private void processInvalidEmitMethods(TypeElement component)
+    {
+        ElementFilter
+            .methodsIn(component.getEnclosedElements())
+            .stream()
+            .filter(method -> hasAnnotation(method, Emit.class))
+            .filter(method -> !hasAnnotation(method, JsMethod.class))
+            .forEach(invalidEmitMethod -> {
+                messager.printMessage(Kind.ERROR,
+                    "The method \""
+                        + invalidEmitMethod.getSimpleName().toString()
+                        + "\" annotated with @Emit must also be annotated with @JsMethod in Component: "
+                        + component.getQualifiedName());
+            });
     }
 
     private void copyDependenciesFields(ComponentInjectedDependenciesBuilder dependenciesBuilder,
