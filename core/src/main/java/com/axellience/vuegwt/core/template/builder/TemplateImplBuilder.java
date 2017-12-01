@@ -17,6 +17,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
+import jsinterop.base.Js;
 
 import javax.lang.model.element.Modifier;
 import java.util.HashMap;
@@ -108,25 +109,29 @@ public class TemplateImplBuilder
      * @param result The result from compilation using vue-template-compiler
      */
     private void generateGetStaticRenderFunctions(Builder templateBuilder,
-                                                  VueTemplateCompilerResult result)
+        VueTemplateCompilerResult result)
     {
         CodeBlock.Builder staticFunctions = CodeBlock.builder();
 
         boolean isFirst = true;
-        for (String staticRenderFunction : result.getStaticRenderFunctions()) {
-            if (!isFirst) {
+        for (String staticRenderFunction : result.getStaticRenderFunctions())
+        {
+            if (!isFirst)
+            {
                 staticFunctions.add(", ");
-            } else {
+            }
+            else
+            {
                 isFirst = false;
             }
             staticFunctions.add("$S", staticRenderFunction);
         }
 
-        MethodSpec.Builder getStaticRenderFunctionsBuilder =
-                MethodSpec.methodBuilder("getStaticRenderFunctions")
-                          .addModifiers(Modifier.PUBLIC)
-                          .returns(String[].class)
-                          .addStatement("return new String[] { $L }", staticFunctions.build());
+        MethodSpec.Builder getStaticRenderFunctionsBuilder = MethodSpec
+            .methodBuilder("getStaticRenderFunctions")
+            .addModifiers(Modifier.PUBLIC)
+            .returns(String[].class)
+            .addStatement("return new String[] { $L }", staticFunctions.build());
 
         templateBuilder.addMethod(getStaticRenderFunctionsBuilder.build());
     }
@@ -175,6 +180,12 @@ public class TemplateImplBuilder
         else if (expression.isReturnVoid())
         {
             templateExpressionMethodBuilder.addStatement("$L", expression.getBody());
+        }
+        else if (expression.isReturnAny())
+        {
+            templateExpressionMethodBuilder.addStatement("return $T.asAny($L)",
+                Js.class,
+                expression.getBody());
         }
         else
         {

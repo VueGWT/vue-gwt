@@ -14,6 +14,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
+import jsinterop.base.Any;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -217,7 +218,7 @@ public class TemplateParser
         if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
             return "boolean";
 
-        return "Object";
+        return Any.class.getCanonicalName();
     }
 
     /**

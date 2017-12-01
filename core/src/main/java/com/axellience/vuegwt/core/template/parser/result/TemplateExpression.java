@@ -3,6 +3,7 @@ package com.axellience.vuegwt.core.template.parser.result;
 import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
+import jsinterop.base.Any;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -87,6 +88,11 @@ public class TemplateExpression
     public boolean isReturnVoid()
     {
         return type == TypeName.VOID;
+    }
+
+    public boolean isReturnAny()
+    {
+        return Any.class.getCanonicalName().equals(type.toString());
     }
 
     public boolean isReturnString()
