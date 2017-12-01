@@ -8,6 +8,7 @@ import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -331,21 +332,56 @@ public class TemplateParser
         List<VariableInfo> expressionParameters = new LinkedList<>();
         findExpressionParameters(expression, expressionParameters);
 
+        // If there is a cast first, we use this as the type of our expression
+        expression = getTypeFromCast(expression);
+
         // Update the expression as it might have been changed
         expressionString = expression.toString();
 
-        // If there is a cast first, we use this as the type of our expression
-        if (expression instanceof CastExpr)
+        // Add the resulting expression to our result
+        return result.addExpression(expressionString,
+            currentExpressionReturnType,
+            expressionParameters);
+    }
+
+    /**
+     * Get the type of an expression from the cast at the beginning.
+     * (int) 12 -> 12 of type int
+     * (int) 15 + 5 -> 15 + 5 of type int
+     * (float) (12 + 3) -> 12 + 3 of type float
+     * ((int) 12) + 3 -> ((int) 12) + 3 of type Any
+     * ((JsArray) myArray).getAt(0) -> ((JsArray) myArray).getAt(0) of type Any
+     * @param expression The expression to process
+     * @return The modified expression (where cast has been removed if necessary)
+     */
+    private Expression getTypeFromCast(Expression expression)
+    {
+        if (expression instanceof BinaryExpr)
+        {
+            Expression mostLeft = getLeftmostExpression(expression);
+            if (mostLeft instanceof CastExpr)
+            {
+                CastExpr castExpr = (CastExpr) mostLeft;
+                currentExpressionReturnType = castExpr.getType().toString();
+                BinaryExpr parent = (BinaryExpr) mostLeft.getParentNode().get();
+                parent.setLeft(castExpr.getExpression());
+            }
+        }
+        else if (expression instanceof CastExpr)
         {
             CastExpr castExpr = (CastExpr) expression;
             currentExpressionReturnType = castExpr.getType().toString();
+            expression = castExpr.getExpression();
         }
+        return expression;
+    }
 
-        // Add the resulting expression to our result
-        TemplateExpression templateExpression = result.addExpression(expressionString,
-            currentExpressionReturnType,
-            expressionParameters);
-        return templateExpression;
+    private Expression getLeftmostExpression(Expression expression)
+    {
+        if (expression instanceof BinaryExpr)
+            return getLeftmostExpression(((BinaryExpr) expression).getLeft());
+
+        return expression;
     }
 
     /**
