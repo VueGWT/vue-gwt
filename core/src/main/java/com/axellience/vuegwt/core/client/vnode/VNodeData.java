@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.core.client.vnode;
 
 import com.axellience.vuegwt.core.client.component.options.functions.OnEvent;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -33,7 +33,7 @@ public class VNodeData
     @JsProperty protected Object transition;
     @JsProperty protected boolean show;
     @JsProperty protected InlineTemplate inlineTemplate;
-    @JsProperty protected Array<VNodeDirective> directives;
+    @JsProperty protected JsArray<VNodeDirective> directives;
     @JsProperty protected boolean keepAlive;
 
     public VNodeData()
@@ -198,7 +198,7 @@ public class VNodeData
     }
 
     @JsOverlay
-    public final VNodeData setStyle(Array style)
+    public final VNodeData setStyle(JsArray style)
     {
         this.style = style;
         return this;
@@ -382,13 +382,13 @@ public class VNodeData
     }
 
     @JsOverlay
-    public final Array<VNodeDirective> getDirectives()
+    public final JsArray<VNodeDirective> getDirectives()
     {
         return directives;
     }
 
     @JsOverlay
-    public final VNodeData setDirectives(Array<VNodeDirective> directives)
+    public final VNodeData setDirectives(JsArray<VNodeDirective> directives)
     {
         this.directives = directives;
         return this;
@@ -398,7 +398,7 @@ public class VNodeData
     public final VNodeData addDirective(VNodeDirective directive)
     {
         if (this.directives == null)
-            this.directives = new Array<>();
+            this.directives = new JsArray<>();
 
         this.directives.push(directive);
         return this;

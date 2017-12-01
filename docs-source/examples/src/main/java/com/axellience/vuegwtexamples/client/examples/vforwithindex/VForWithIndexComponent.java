@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsProperty;
 
 /**
@@ -14,7 +14,7 @@ import jsinterop.annotations.JsProperty;
 public class VForWithIndexComponent extends VueComponent implements HasCreated
 {
     @JsProperty String parentMessage = "Message from parent";
-    @JsProperty Array<Todo> todos = new Array<>();
+    @JsProperty JsArray<Todo> todos = new JsArray<>();
 
     @Override
     public void created()

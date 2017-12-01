@@ -30,7 +30,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.core.Function;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
@@ -781,7 +781,7 @@ public class ComponentJsTypeGenerator
         {
             return "String";
         }
-        else if (typeMirror.toString().startsWith(Array.class.getCanonicalName()))
+        else if (typeMirror.toString().startsWith(JsArray.class.getCanonicalName()))
         {
             return "Array";
         }

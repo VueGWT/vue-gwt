@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.client.observer;
 
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -16,12 +16,12 @@ public class VueObserver
     @JsProperty
     private Dep dep;
 
-    public native void observeArray(Array array);
+    public native <T> void observeArray(JsArray<T> array);
     public native void observeArray(Object[] array);
 
     @JsOverlay
     public final void observe(Object toObserve) {
-        observeArray(new Array(toObserve));
+        observeArray(new JsArray<>(toObserve));
     }
 
     @JsOverlay

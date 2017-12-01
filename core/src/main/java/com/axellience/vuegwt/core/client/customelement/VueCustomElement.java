@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.core.client.customelement;
 
 import com.axellience.vuegwt.core.client.component.VueComponent;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.dom.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
@@ -12,7 +12,7 @@ import jsinterop.base.JsPropertyMap;
 public class VueCustomElement<T extends VueComponent> extends Element
 {
     @JsProperty
-    private JsPropertyMap<Array<T>> __vue_custom_element__;
+    private JsPropertyMap<JsArray<T>> __vue_custom_element__;
 
     @JsOverlay
     public final T getVueComponent() {

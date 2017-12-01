@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.client.vue;
 
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -19,7 +19,7 @@ public class VueConfig
     @JsProperty protected boolean performance;
     @JsProperty protected VueErrorHandler errorHandler;
     @JsProperty protected VueWarnHandler warnHandler;
-    @JsProperty protected Array<String> ignoredElements;
+    @JsProperty protected JsArray<String> ignoredElements;
     @JsProperty protected JsPropertyMap keyCodes;
 
     @JsOverlay
@@ -114,13 +114,13 @@ public class VueConfig
     }
 
     @JsOverlay
-    public final Array<String> getIgnoredElements()
+    public final JsArray<String> getIgnoredElements()
     {
         return ignoredElements;
     }
 
     @JsOverlay
-    public final VueConfig setIgnoredElements(Array<String> ignoredElements)
+    public final VueConfig setIgnoredElements(JsArray<String> ignoredElements)
     {
         this.ignoredElements = ignoredElements;
         return this;
@@ -130,7 +130,7 @@ public class VueConfig
     public final VueConfig addIgnoredElement(String ignoredElement)
     {
         if (this.ignoredElements == null)
-            this.ignoredElements = new Array<>();
+            this.ignoredElements = new JsArray<>();
 
         this.ignoredElements.push(ignoredElement);
         return this;

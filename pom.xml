@@ -49,8 +49,8 @@
 		<!-- Dependencies -->
         <gwt.version>2.8.1</gwt.version>
         <jsinterop.version>1.0.2</jsinterop.version>
-        <jsinterop-base.version>1.0.0-beta-1</jsinterop-base.version>
-        <elemental.version>1.0.0-beta-1</elemental.version>
+        <jsinterop-base.version>1.0.0-beta-3</jsinterop-base.version>
+        <elemental.version>1.0.0-beta-2</elemental.version>
 
         <javapoet.version>1.9.0</javapoet.version>
         <jsoup.version>1.10.2</jsoup.version>
@@ -101,6 +101,12 @@
 				<groupId>com.google.elemental2</groupId>
 				<artifactId>elemental2-core</artifactId>
 				<version>${elemental.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.google.jsinterop</groupId>
+						<artifactId>base</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.google.elemental2</groupId>

@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.client.tools;
 
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -30,27 +30,27 @@ public class JsUtils
     }
 
     @SafeVarargs
-    public static <T> Array<T> array(T... array)
+    public static <T> JsArray<T> array(T... array)
     {
-        return new Array<>(array);
+        return new JsArray<>(array);
     }
 
-    public static <T> Array<T> arrayFrom(Collection<T> collection)
+    public static <T> JsArray<T> arrayFrom(Collection<T> collection)
     {
         return Js.cast(collection.toArray());
     }
 
-    public static <K, V> Array<V> arrayFrom(Map<K, V> map)
+    public static <K, V> JsArray<V> arrayFrom(Map<K, V> map)
     {
         return Js.cast(map.values().toArray());
     }
 
-    public static <T> Array<T> arrayFrom(Array<T> array)
+    public static <T> JsArray<T> arrayFrom(JsArray<T> array)
     {
         return array;
     }
 
-    public static <T> Array<T> arrayFrom(T[] array)
+    public static <T> JsArray<T> arrayFrom(T[] array)
     {
         return Js.cast(array);
     }
