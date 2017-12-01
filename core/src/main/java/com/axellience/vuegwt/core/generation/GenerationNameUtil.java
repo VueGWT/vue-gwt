@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.core.generation;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Emit;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.directive.VueDirective;
 import com.google.gwt.regexp.shared.RegExp;
@@ -9,6 +10,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 
 import javax.inject.Provider;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -182,5 +184,20 @@ public class GenerationNameUtil
         directiveClassName = DIRECTIVE_SUFFIX_REGEX.replace(directiveClassName, "");
         // Convert from CamelCase to kebab-case
         return CAMEL_CASE_PATTERN.replace(directiveClassName, "$1-$2").toLowerCase();
+    }
+
+    /**
+     * Return the name of the event to emit for a given method.
+     * Expect the method to be annotated with {@link com.axellience.vuegwt.core.annotations.component.Emit}.
+     * @param method The method to convert
+     * @return The name of the event
+     */
+    public static String methodToEventName(ExecutableElement method)
+    {
+        Emit emitAnnotation = method.getAnnotation(Emit.class);
+        if (!"".equals(emitAnnotation.value()))
+            return emitAnnotation.value();
+
+        return CAMEL_CASE_PATTERN.replace(method.getSimpleName().toString(), "$1-$2").toLowerCase();
     }
 }
