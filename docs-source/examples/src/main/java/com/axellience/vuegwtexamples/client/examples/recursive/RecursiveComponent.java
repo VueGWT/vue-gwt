@@ -1,25 +1,24 @@
 package com.axellience.vuegwtexamples.client.examples.recursive;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
-import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Prop;
+import com.axellience.vuegwt.core.annotations.component.PropDefault;
+import com.axellience.vuegwt.core.client.component.VueComponent;
 import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
  */
 @Component(name = "recursive")
-public class RecursiveComponent extends VueComponent implements HasCreated
+public class RecursiveComponent extends VueComponent
 {
     @Prop
     @JsProperty
-    Integer counter;
+    int counter;
 
-    @Override
-    public void created()
+    @PropDefault(propertyName = "counter")
+    public int defaultCounter()
     {
-        if (this.counter == null)
-            this.counter = 0;
+        return 0;
     }
 }
