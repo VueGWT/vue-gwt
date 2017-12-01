@@ -10,6 +10,7 @@ import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineS
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
 import com.axellience.vuegwtexamples.client.examples.counterwithevent.CounterWithEventComponent;
+import com.axellience.vuegwtexamples.client.examples.emitannotation.ParentEmitAnnotationComponent;
 import com.axellience.vuegwtexamples.client.examples.errorboundary.ErrorBoundaryComponent;
 import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
@@ -65,6 +66,7 @@ public class VueGwtExamplesService
         Vue.customElement("animal-selector", AnimalSelectorComponent.class);
 
         addExample("simpleLinkComponent", SimpleLinkComponent.class);
+        addExample("emitAnnotation", ParentEmitAnnotationComponent.class);
         addExample("linkComponent", LinkComponent.class);
         addExample("canHideComponent", CanHideComponent.class);
         addExample("simpleTodoListComponent", SimpleTodoListComponent.class);
