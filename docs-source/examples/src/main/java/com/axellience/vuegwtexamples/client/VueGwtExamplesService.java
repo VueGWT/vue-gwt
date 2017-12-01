@@ -25,6 +25,7 @@ import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
 import com.axellience.vuegwtexamples.client.examples.message.MessageComponent;
 import com.axellience.vuegwtexamples.client.examples.parent.ParentComponent;
+import com.axellience.vuegwtexamples.client.examples.passvalues.ParentPassValuesComponent;
 import com.axellience.vuegwtexamples.client.examples.propdefaultvalue.ParentPropDefaultValueComponent;
 import com.axellience.vuegwtexamples.client.examples.recursive.RecursiveComponent;
 import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
@@ -81,8 +82,7 @@ public class VueGwtExamplesService
         addExample("vForWithRangeComponent", VForWithRangeComponent.class);
         addExample("vForOnObjectComponent", VForOnObjectComponent.class);
         addExample("vForOnObjectWithKeyComponent", VForOnObjectWithKeyComponent.class);
-        addExample("vForOnObjectWithKeyAndIndexComponent",
-            VForOnObjectWithKeyAndIndexComponent.class);
+        addExample("vForOnObjectWithKeyAndIndexComponent", VForOnObjectWithKeyAndIndexComponent.class);
         addExample("evenNumbersComponent", EvenNumbersComponent.class);
         addExample("bindInlineStyleComponent", BindInlineStyleComponent.class);
         addExample("buttonPlusOneComponent", ButtonPlusOneComponent.class);
@@ -105,6 +105,7 @@ public class VueGwtExamplesService
         addExample("gotQuotesComponent", exampleInjector.gotQuoteComponentFactory());
         addExample("errorBoundary", ErrorBoundaryComponent.class);
         addExample("extendJsComponent", ChildJavaComponent.class);
+        addExample("passValues", ParentPassValuesComponent.class);
     }
 
     private static void addExample(String exampleId, Class<? extends VueComponent> exampleVueClass)

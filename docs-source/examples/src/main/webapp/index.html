@@ -10,7 +10,7 @@
     <script src="VueGwtExamples/VueGwtExamples.nocache.js"></script>
 
     <!-- Vue JS Framework -->
-    <script src="https://unpkg.com/vue@2.5.5/dist/vue.js"></script>
+    <script src="vue.js"></script>
 </head>
 <body>
 <div class="row">
@@ -20,6 +20,9 @@
 
         <h5>Emit Annotation</h5>
         <div id="emitAnnotation"></div>
+
+        <h5>Pass Values</h5>
+        <div id="passValues"></div>
 
         <h5>Simple Link Component</h5>
         <div id="simpleLinkComponent"></div>
@@ -168,6 +171,26 @@
 			}
 		}
 	});
+	Vue.component("pass-values-js", {
+		props: ["myInt",
+			"myBool",
+			"myDouble",
+			"myFloat",
+			"myLong",
+			"wrappedInteger",
+			"wrappedBoolean",
+			"wrappedDouble",
+			"wrappedFloat",
+			"wrappedLong"
+		],
+		template: `<ul>
+            <li>int: {{ myInt }} | Integer: {{ wrappedInteger }}</li>
+            <li>boolean: {{ myBool }} | Boolean: {{ wrappedBoolean }}</li>
+            <li>double: {{ myDouble }} | Double: {{ wrappedDouble }}</li>
+            <li>long: {{ myLong }} | Long: {{ wrappedLong }}</li>
+            <li>float: {{ myFloat }} | Float: {{ wrappedFloat }}</li>
+        </ul>`
+	})
 </script>
 
 </body>
