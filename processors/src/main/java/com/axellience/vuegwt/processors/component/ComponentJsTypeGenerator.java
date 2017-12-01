@@ -248,11 +248,10 @@ public class ComponentJsTypeGenerator
                 if (!isFieldVisibleInJS(field))
                 {
                     messager.printMessage(Kind.ERROR,
-                        "@Prop "
+                        "The field \""
                             + fieldName
-                            + " must also have @JsProperty annotation in VueComponent "
-                            + component.getQualifiedName().toString()
-                            + ".");
+                            + "\" annotated with @Prop must also be annotated with @JsProperty in Component: "
+                            + component.getQualifiedName());
                 }
 
                 optionsBuilder.addStatement("options.addJavaProp($S, $L, $S)",
