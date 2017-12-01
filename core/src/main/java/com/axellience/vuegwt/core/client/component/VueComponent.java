@@ -44,11 +44,11 @@ public abstract class VueComponent
     @JsProperty private JsPropertyMap<ScopedSlot> $scopedSlots;
     @JsProperty private boolean $isServer;
     @JsProperty private Object $ssrContext;
-    @JsProperty private Object $props;
     @JsProperty private Object $vnode;
     @JsProperty private JsPropertyMap<String> $attrs;
     @JsProperty private Object $listeners;
 
+    @JsProperty public JsPropertyMap<Object> $props;
     @JsProperty public String _uid;
 
     // @formatter:off
@@ -148,12 +148,6 @@ public abstract class VueComponent
     public final Object $ssrContext()
     {
         return $ssrContext;
-    }
-
-    @JsOverlay
-    public final Object $props()
-    {
-        return $props;
     }
 
     @JsOverlay
