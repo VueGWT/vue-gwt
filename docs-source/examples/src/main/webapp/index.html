@@ -10,7 +10,7 @@
     <script src="VueGwtExamples/VueGwtExamples.nocache.js"></script>
 
     <!-- Vue JS Framework -->
-    <script src="vue.js"></script>
+    <script src="https://unpkg.com/vue@2.5.5/dist/vue.js"></script>
 </head>
 <body>
 <div class="row">
@@ -184,11 +184,11 @@
 			"wrappedLong"
 		],
 		template: `<ul>
-            <li>int: {{ myInt }} | Integer: {{ wrappedInteger }}</li>
-            <li>boolean: {{ myBool }} | Boolean: {{ wrappedBoolean }}</li>
-            <li>double: {{ myDouble }} | Double: {{ wrappedDouble }}</li>
-            <li>long: {{ myLong }} | Long: {{ wrappedLong }}</li>
-            <li>float: {{ myFloat }} | Float: {{ wrappedFloat }}</li>
+            <li>int: {{ myInt + 5 }} | Integer: {{ wrappedInteger + 5 }}</li>
+            <li>boolean: {{ !myBool }} | Boolean: {{ !wrappedBoolean }}</li>
+            <li>double: {{ myDouble + 5 }} | Double: {{ wrappedDouble + 5 }}</li>
+            <li>long: {{ myLong + 5 }} | Long: {{ wrappedLong + 5 }}</li>
+            <li>float: {{ myFloat + 0.5 }} | Float: {{ wrappedFloat + 0.5 }}</li>
         </ul>`
 	})
 </script>
