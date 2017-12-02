@@ -536,6 +536,38 @@ In that case, you must cast $event to it's type, so that Vue GWT knows what type
 </div>
 ```
 
+#### `@Emit` annotation {#emit-annotation}
+
+If you want a method to automatically emit an event each time it's called you can also use the `@Emit` annotation.
+It works similarly to the one from [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator).
+
+```java
+@Component
+public class EmitAnnotationComponent extends VueComponent {
+    @Emit
+    @JsMethod
+    public void doSomething() {
+        DomGlobal.console.log("Doing something");
+        // Implicit call to this.$emit("do-something")
+    }
+
+    @Emit
+    @JsMethod
+    public void doSomethingWithValue(int value) {
+        DomGlobal.console.log("Doing something with a value");
+        // Implicit call to this.$emit("do-something-with-value", value)
+    }
+
+
+    @Emit("custom-event-name")
+    @JsMethod
+    public void doSomethingWithValueAndCustomName(int value) {
+        DomGlobal.console.log("Doing something");
+        // Implicit call to this.$emit("custom-event-name", value)
+    }
+}
+```
+
 #### Binding Native Events to Components
 
 There may be times when you want to listen for a native event on the root element of a component.
