@@ -513,4 +513,7 @@ public class RootGwtApp implements EntryPoint {
 }
 ```
 
-To understand more in depth how the Observation works, and avoid pitfalls keep reading **[the Vue Instance](../essential/the-vue-instance.md)**.
+It is **strongly recommended** to read the whole [Essentials section](../essential/the-vue-instance.md) even if skimming through it.
+It will teach you everything you need to know to make full use of the framework.
+
+You can then check some specific topics like [Unit Testing](../tooling/unit-testing.md), [Custom Element (Web Component) support](../advanced/custom-elements.md) or [Routing](../scaling-up/routing.md).
