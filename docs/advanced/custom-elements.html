@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Integrating With JS Components · GitBook</title>
+        <title>Custom Elements (Web Components) · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -66,7 +66,7 @@
     <link rel="next" href="integrating-with-js-components.html" />
     
     
-    <link rel="prev" href="custom-elements.html" />
+    <link rel="prev" href="../scaling-up/routing.html" />
     
 
     </head>
@@ -849,7 +849,7 @@
         
         
     
-        <li class="chapter " data-level="8.1" data-path="custom-elements.html">
+        <li class="chapter active" data-level="8.1" data-path="custom-elements.html">
             
                 <a href="custom-elements.html">
             
@@ -862,7 +862,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="8.2" data-path="integrating-with-js-components.html">
+        <li class="chapter " data-level="8.2" data-path="integrating-with-js-components.html">
             
                 <a href="integrating-with-js-components.html">
             
@@ -950,7 +950,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Integrating With JS Components</a>
+        <a href=".." >Custom Elements (Web Components)</a>
     </h1>
 </div>
 
@@ -965,7 +965,7 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="integrating-with-js-components">Integrating With JS Components</h1>
+                                <h1 id="custom-elements-support">Custom Elements support</h1>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script>
     (function() {
@@ -1023,121 +1023,222 @@
     })();
 </script>
 
-<h2 id="using-js-components-in-java">Using JS Components in Java </h2>
-<p>Vue GWT allows us to make our nice Java Components.
-But the Vue.js ecosystem is vast, it would be a shame if we couldn&apos;t take advantage of existing JS Components.
-Well let&apos;s see how we can do that!</p>
-<p class="info-panel">
-    This examples declare Vue components directly in the index.html.
-    For this to work, you need Vue loaded before you declare them.
-    You can use <code>VueGWT.initWithoutVueLib()</code> in your GWT app, and a JS dependency to Vue in your index.html instead. 
-</p>
+<h2 id="what-are-custom-elements">What are Custom Elements?</h2>
+<p>Custom Elements are a part of the Web Components standard. 
+They let you create reusable DOM Elements that can be easily shared between web applications.
+In a nutshell, it means being able to code your own custom DOM Elements, that can receive property values and emit events, using the native DOM API.</p>
+<p>You can <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements" target="_blank">find more information about the subject on MDN</a>.</p>
+<h2 id="how-to-declare-a-custom-element">How to Declare a Custom Element?</h2>
+<h3 id="about-vue-and-custom-elements">About Vue and Custom Elements</h3>
+<p>Vue Components definitions are already very close to the Custom Element specification.
+That shouldn&apos;t come as a surprise as Vue.js was largely inspired by the first draft of the Web Components specification.</p>
+<p>For Vue.js, <a href="https://github.com/karol-f/vue-custom-element" target="_blank">a small library exists</a> to declare Vue.js components as Custom Elements.
+Vue GWT integrates a <a href="https://github.com/adrienbaron/vue-custom-element" target="_blank">slightly modified version</a> of this library so you can declare your own Custom Elements easily.</p>
+<h3 id="the-animalselector-example">The AnimalSelector Example</h3>
+<p>Let&apos;s say you have a Vue GWT component called <code>AnimalSelectorComponent</code>.
+It let&apos;s a user with a given name select an animal, and emits an event each time an animal is selected. </p>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnimalSelectorComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Prop</span>
+    <span class="hljs-meta">@JsProperty</span>
+    String userName;
 
-<h3 id="instantiating-a-js-component-in-java">Instantiating a JS Component in Java</h3>
-<p>Let&apos;s say we have the following JS Component declared in JavaScript:</p>
-<pre><code class="lang-js"><span class="hljs-built_in">window</span>.FullJsComponent = Vue.extend({
-    template: <span class="hljs-string">&quot;&lt;div&gt;I Come In Peace From the JS World.&lt;/div&gt;&quot;</span>
-});
-</code></pre>
-<p>Let&apos;s try see how to instantiate it in Java:</p>
-<pre><code class="lang-java"><span class="hljs-comment">// First, we get the VueJsConstructor from Window</span>
-VueJsConstructor vueJsConstructor = (VueJsConstructor) JsTools.getWindow().get(<span class="hljs-string">&quot;FullJsComponent&quot;</span>);
-<span class="hljs-comment">// We can then manipulate it exactly like</span>
-<span class="hljs-comment">// our VueJsConstructor generated from our Java Components</span>
-VueComponent myFullJsComponent = vueJsConstructor.instantiate();
-myFullJsComponent.$mount(<span class="hljs-string">&quot;#fullJsComponent&quot;</span>);
-</code></pre>
-<p>And here it is live:</p>
-<div class="example-container" data-name="fullJsComponent">
-    <span id="fullJsComponent"></span>
-</div>
-
-
-<p>Easy, right?</p>
-<h3 id="declaring-our-js-component-interface">Declaring our JS Component Interface</h3>
-<p>Our first JS component was rather easy, let&apos;s say we now have this one:</p>
-<pre><code class="lang-js"><span class="hljs-built_in">window</span>.FullJsWithMethodsComponent = Vue.extend({
-    template: <span class="hljs-string">&quot;&lt;div&gt;My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}&lt;/div&gt;&quot;</span>,
-    data: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">return</span> {
-            value: <span class="hljs-number">10</span>
-        }
-    },
-    methods: {
-        multiplyBy2: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">value</span>) </span>{
-            <span class="hljs-keyword">return</span> value * <span class="hljs-number">2</span>;
-        }
+    <span class="hljs-meta">@JsMethod</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">selectAnimal</span><span class="hljs-params">(Event event)</span> </span>{
+        <span class="hljs-keyword">this</span>.$emit(<span class="hljs-string">&quot;animal-selected&quot;</span>, ((HTMLInputElement) event.target).value);
     }
-});
-</code></pre>
-<p>We would like to manipulate our instances from Java.
-For this we need some kind of Java definition.</p>
-<p>Let&apos;s do it for our <code>FullJsWithMethodsComponent</code>:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>(<span class="hljs-string">&quot;FullJsWithMethodsComponent&quot;</span>)
-<span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL, name = <span class="hljs-string">&quot;Function&quot;</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FullJsWithMethodsComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
-
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> <span class="hljs-keyword">int</span> <span class="hljs-title">multiplyBy2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>;
 }
 </code></pre>
-<p>Looks pretty similar to our Java Components, but there a few key differences:</p>
-<ul>
-<li>We use the <code>@JsComponent</code> annotation instead of <code>@Component</code></li>
-<li>We have to use the <code>@JsType</code> to tell GWT this is a native <code>Function</code></li>
-<li>Our JS methods are declared as <code>native</code> in our Java class.
-We don&apos;t need to provide their implementations, they will come from the JS Component.</li>
-<li>You only need to declare what you want to interact with in the Class.
-If you don&apos;t need to call some methods or access some attributes from Java, you don&apos;t have to declare them.</li>
-</ul>
-<p>Because of the <code>@JsComponent</code> annotation, Vue GWT generates a <code>VueFactory</code> class for us, just like with our Java components.</p>
-<p>So we can do:</p>
-<pre><code class="lang-java">FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentFactory.get().create();
-myComponent.$mount(<span class="hljs-string">&quot;#fullJsWithMethodComponent&quot;</span>);
-JsTools.log(myComponent.value); <span class="hljs-comment">// 10</span>
-JsTools.log(myComponent.multiplyBy2(<span class="hljs-number">25</span>)); <span class="hljs-comment">// 50</span>
-myComponent.value = <span class="hljs-number">15</span>; <span class="hljs-comment">// Change the value in the instance of our Component</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Hello {{ userName }}! Please select your animal:<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>
+        &#x1F638; <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;radio&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;animal&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;&#x1F638;&quot;</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;selectAnimal&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>
+        &#x1F430; <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;radio&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;animal&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;&#x1F430;&quot;</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;selectAnimal&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>
+        &#x1F415; <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;radio&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;animal&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;&#x1F415;&quot;</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;selectAnimal&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>
+        &#x1F43A; <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;radio&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;animal&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;&#x1F43A;&quot;</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;selectAnimal&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<p>Bellow is the component instantiated, without any change to it&apos;s original value.
-You can interact with it in the console, it&apos;s just a regular Vue instance.</p>
-<div class="example-container" data-name="fullJsWithMethodsComponent">
-    <span id="fullJsWithMethodsComponent"></span>
+<p>It just takes one line to register your Vue GWT Component as a Custom Element &#x1F389;:</p>
+<pre><code class="lang-java"><span class="hljs-comment">// Register our AnimalSelectorComponent under the name animal-selector</span>
+Vue.customElement(<span class="hljs-string">&quot;animal-selector&quot;</span>, AnimalSelectorComponent.class);
+</code></pre>
+<p>Any <code>&lt;animal-selector&gt;&lt;/animal-selector&gt;</code> in your document will then turn into an instance of that Vue Component.</p>
+<p class="info-panel">
+This will work even if the Element is present in the DOM before your GWT app is loaded.
+You Custom Element will also work in Angular, React or Vanilla JS applications.
+</p>
+
+<p class="warning-panel">
+Due to the specification, the name of your Custom Element <b>MUST</b> contain at least one hyphen (-).
+</p>
+
+<p>Here is a live example:</p>
+<div class="example-container" data-name="animalSelector">
+    <animal-selector user-name="Tom" id="animalSelector"></animal-selector>
 </div>
 
 
-<h4 id="how-does-jscomponent-find-the-existing-js-component">How does <code>@JsComponent</code> find the existing JS Component?</h4>
-<p>You may have noticed we also pass <code>&quot;FullJsWithMethodsComponent&quot;</code> to our <code>@JsComponent</code> annotation.
-This is used to find the Js Component on <code>window</code>.</p>
-<p>So if you put <code>@JsComponent(&quot;MyVueLib.MyComponent&quot;)</code>, it will link your <code>JsComponent</code> class to: <code>window.MyVueLib.MyComponent</code>.</p>
-<h4 id="what-if-the-js-library-exposes-a-component-options-object">What if the JS library exposes a Component options object?</h4>
-<p>Some libraries like <a href="http://vue-chartjs.org/" target="_blank">Vue ChartJS</a> exposes a Component options object and not a Component Constructor.
-You can use the same method, and Vue GWT will automatically create a Vue Component constructor from those options for you.
-The only change is you have to tell GWT that the instance is an <code>Object</code> and not a <code>Function</code>:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@JsComponent</span>(<span class="hljs-string">&quot;VueChartJs.Line&quot;</span>)
-<span class="hljs-meta">@JsType</span>(isNative = <span class="hljs-keyword">true</span>, namespace = JsPackage.GLOBAL, name = <span class="hljs-string">&quot;Object&quot;</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractVueLineChartComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span>
-</span></code></pre>
-<h3 id="using-our-js-component-in-a-java-one">Using Our JS Component in a Java One</h3>
-<p>You can use your JS Component just like the Java ones.
-Which means you can also pass them to the <code>@Component</code> annotation <a href="../essential/components.html#using-components">as local components</a>:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = FullJsWithMethodsComponent.class)
+<h2 id="browser-support">Browser Support</h2>
+<p>When we said one line was enough, we meant for recent browsers supporting the V1 of the Web Components specification.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/firefox.png" alt="Firefox" width="16px" height="16px"></a>&lt;/br&gt;Firefox</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome.png" alt="Chrome" width="16px" height="16px"></a>&lt;/br&gt;Chrome</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari.png" alt="Safari" width="16px" height="16px"></a>&lt;/br&gt;Safari</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/opera.png" alt="Opera" width="16px" height="16px"></a>&lt;/br&gt;Opera</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari-ios.png" alt="iOS Safari" width="16px" height="16px"></a>&lt;/br&gt;iOS</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome-android.png" alt="Chrome for Android" width="16px" height="16px"></a>&lt;/br&gt;Android</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">behind --flag</td>
+<td style="text-align:center">54+</td>
+<td style="text-align:center">10.1+</td>
+<td style="text-align:center">42+</td>
+<td style="text-align:center">10.3+</td>
+<td style="text-align:center">55+</td>
+</tr>
+</tbody>
+</table>
+<p><a href="http://caniuse.com/#feat=custom-elementsv1" target="_blank">Custom Elements v1 support</a></p>
+<p>For older browser you can use the small <a href="https://github.com/WebReflection/document-register-element" target="_blank">document register element polyfill</a>, which will give you IE9+ compatibility:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/edge.png" alt="IE / Edge" width="16px" height="16px"></a>&lt;/br&gt;IE / Edge</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/firefox.png" alt="Firefox" width="16px" height="16px"></a>&lt;/br&gt;Firefox</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome.png" alt="Chrome" width="16px" height="16px"></a>&lt;/br&gt;Chrome</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari.png" alt="Safari" width="16px" height="16px"></a>&lt;/br&gt;Safari</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/opera.png" alt="Opera" width="16px" height="16px"></a>&lt;/br&gt;Opera</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari-ios.png" alt="iOS Safari" width="16px" height="16px"></a>&lt;/br&gt;iOS</th>
+<th style="text-align:center"><a href="http://godban.github.io/browsers-support-badges/" target="_blank"><img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome-android.png" alt="Chrome for Android" width="16px" height="16px"></a>&lt;/br&gt;Android</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">IE9+, Edge</td>
+<td style="text-align:center">&#x2713;</td>
+<td style="text-align:center">&#x2713;</td>
+<td style="text-align:center">&#x2713;</td>
+<td style="text-align:center">&#x2713;</td>
+<td style="text-align:center">&#x2713;</td>
+<td style="text-align:center">&#x2713;</td>
+</tr>
+</tbody>
+</table>
+<p>Just <a href="https://github.com/WebReflection/document-register-element/blob/master/build/document-register-element.js" target="_blank">download the latest version</a> and add it to your project, or add the following to your index.html:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdnjs.cloudflare.com/ajax/libs/document-register-element/1.7.0/document-register-element.js&quot;</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </code></pre>
-<p>You can then simply use it in your Java Component template:</p>
+<h2 id="properties-events-and-slots">Properties, Events and Slots</h2>
+<h3 id="properties">Properties</h3>
+<p>You may have noticed that our <code>AnimalSelectorComponent</code> has an <code>@Prop</code> userName.
+How do we pass the value to our Component?</p>
+<p>Well, simply set it on the element (in camel case), and the Component will automatically get it:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">animal-selector</span> <span class="hljs-attr">user-name</span>=<span class="hljs-string">&quot;Tom&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">animal-selector</span>&gt;</span>
+</code></pre>
+<p>Even better, if the property changes, it will be passed again, just like a regular Vue property binding.
+You can open your browser Dev Tools and change the property <code>user-name</code> to check that it works.</p>
+<p>You can also set the value programmatically:</p>
+<pre><code class="lang-js"><span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;animalSelector&quot;</span>).setAttribute(<span class="hljs-string">&quot;user-name&quot;</span>, <span class="hljs-string">&quot;Bobby&quot;</span>);
+</code></pre>
+<p>Attributes values are always Strings.
+The value will be automatically parsed for you for number types (int/float) and booleans.</p>
+<h3 id="events">Events</h3>
+<p>You can also listen to events fired by your Custom Element using <code>addEventListener</code>.
+The events fired are of type <a href="https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent" target="_blank"><code>CustomEvent</code></a>.
+They have a read only <code>detail</code> property which contains an array of the values of the event.</p>
+<p>So to get the value of AnimalSelector <code>animal-selected</code> event, we just do in JavaScript:</p>
+<pre><code class="lang-js"><span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;animalSelector&quot;</span>).addEventListener(<span class="hljs-string">&quot;animal-selected&quot;</span>, event =&gt; <span class="hljs-built_in">console</span>.log(event.detail[<span class="hljs-number">0</span>]));
+</code></pre>
+<h3 id="slots">Slots</h3>
+<p><a href="../essential/components.html#content-distribution">Slots</a> are also supported.
+The only limitation is that it won&apos;t work for dynamic content as the DOM element is replaced with your Vue Component element when created.</p>
+<p>Let&apos;s see <code>slots</code> in action.
+For example with this <code>DemoSlotsComponent.html</code> template:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">full-js-with-methods</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">full-js-with-methods</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;header&quot;</span>&gt;</span>No HEADER slot content passed (this is default value)<span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>This is text from inside of the element<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">slot</span>&gt;</span>No DEFAULT slot content passed (this is default value)<span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;footer&quot;</span>&gt;</span>No FOOTER slot content passed (this is default value)<span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<h3 id="extending-a-js-component">Extending a JS Component</h3>
-<p>We can also <a href="../composition/extending-components.html#extending-js-component">extend JS Components</a> (this is required for some Vue plugins for example).</p>
-<h2 id="using-java-components-in-js">Using our Java Components in JS </h2>
-<p>It&apos;s possible to get our Java Components to use them in a JS application.</p>
-<p>The <code>VueGWT</code> global object has a <code>getJsConstructor</code> that allow you to retrieve the JS Constructor for your Java Component.
-Beware this object only exist after your GWT app loading (which is async).</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> MyJavaComponent = VueGWT.getJsConstructor(<span class="hljs-string">&quot;com.package.MyJavaComponent&quot;</span>);
-<span class="hljs-keyword">const</span> vm = <span class="hljs-keyword">new</span> MyJavaComponent();
-vm.$mount(<span class="hljs-string">&quot;#javaComponent&quot;</span>);
+<p>The following element in your document:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">demo-slots</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">vue-slot</span>=<span class="hljs-string">&quot;header&quot;</span>&gt;</span>Some Header Content<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Default slot<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">vue-slot</span>=<span class="hljs-string">&quot;footer&quot;</span>&gt;</span>Some Footer Content<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">demo-slots</span>&gt;</span>
 </code></pre>
-<p><code>MyJavaComponent</code> is just a regular Vue Constructor, you can use it anywhere, you can extend it etc...</p>
+<p>Will render:</p>
+<div class="example-container" data-name="webComponentSlot">
+    <div>
+        <p>Some Header Content</p>
+        <p>This is text from inside of the element</p>
+        <p>Default slot</p>
+        <p vue-slot="footer">Some Footer Content</p>
+    </div>
+</div>
+
+
+<h2 id="manipulating-our-custom-element">Manipulating our Custom Element</h2>
+<h3 id="creating-instances-programmatically">Creating Instances Programmatically</h3>
+<p>The <code>createInstance</code> method returns a <code>VueCustomElementType&lt;T extends VueComponent&gt;</code>.
+This object can be used to create instances of your Custom Element easily.</p>
+<pre><code class="lang-java">VueCustomElementType&lt;AnimalSelectorComponent&gt; animalSelectorElementType =
+            Vue.customElement(<span class="hljs-string">&quot;animal-selector&quot;</span>, AnimalSelectorComponent.class);
+
+VueCustomElement&lt;AnimalSelectorComponent&gt; myElement = animalSelectorElementType.create();
+<span class="hljs-comment">// myElement is a regular DOM element</span>
+DomGlobal.document.body.appendChild(myElement);
+</code></pre>
+<p>You can also just use the regular <code>createElement</code> DOM method:</p>
+<pre><code class="lang-java">VueCustomElement&lt;AnimalSelectorComponent&gt; myElement = Js.cast(DomGlobal.document.createElement(<span class="hljs-string">&quot;animal-selector&quot;</span>));
+</code></pre>
+<h3 id="accessing-the-vue-component-of-a-custom-element">Accessing the Vue Component of a Custom Element</h3>
+<h4 id="from-java">From Java</h4>
+<p>From your Custom Element instance you can access the underlying Vue Component.
+This will work no matter how your Custom Element instance is created.</p>
+<pre><code class="lang-java">VueCustomElement&lt;AnimalSelectorComponent&gt; animalSelectorElement = Js.cast(DomGlobal.document.createElement(<span class="hljs-string">&quot;animal-selector&quot;</span>));
+AnimalSelectorComponent animalSelectorComponent = myElement.getVueComponent();
+<span class="hljs-comment">// Access any public property, or call any public method on animalSelectorComponent.</span>
+
+VueCustomElement&lt;TodoComponent&gt; todoElement = Js.cast(DomGlobal.document.getElementById(<span class="hljs-string">&quot;myTodo&quot;</span>));
+TodoComponent todoComponent = todoElement.getVueComponent();
+<span class="hljs-comment">// Access any public property, or call any public method on todoComponent.</span>
+</code></pre>
+<h4 id="from-javascript">From JavaScript</h4>
+<p>You can also access to your Vue Component instance from JavaScript:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> myComponent = myCustomElement.__vue_custom_element__.$children[<span class="hljs-number">0</span>];
+</code></pre>
+<p>Keep in mind that only the JsInterop properties and methods from your Component will be visible in JavaScript.</p>
+<h2 id="available-options">Available Options</h2>
+<p><code>Vue.customElement</code> takes an optional third argument of type <code>CustomElementOptions&lt;T extends VueComponent&gt;</code>.</p>
+<p>Here are the available options:</p>
+<ul>
+<li><code>constructorCallback(element)</code>: Called when your Custom Element is constructed</li>
+<li><code>connectedCallback(element)</code>: Element is mounted to the DOM</li>
+<li><code>disconnectedCallback(element)</code>: Element is disconnected from the DOM</li>
+<li><code>attributeChangedCallback(element, name, oldValue, value)</code>: An attribute as changed</li>
+<li><code>destroyTimeout</code>: Time in <code>ms</code> between when the Element is removed from the DOM and the associated Vue Component is destroyed. Default to <code>3000</code>.</li>
+<li><code>shadow</code>: Use <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Shadow_DOM" target="_blank">shadow DOM</a> (only supported on browsers that have native Web Components support). Default to <code>false</code>.</li>
+<li><code>shadowCss</code>: CSS rules to apply in the shadow DOM.</li>
+</ul>
+<p>Each callback get passed a reference to the Custom Element that fired the event.</p>
+<pre><code class="lang-java">CustomElementOptions&lt;AnimalSelectorComponent&gt; customElementOptions =
+    <span class="hljs-keyword">new</span> CustomElementOptions&lt;&gt;()
+        .setConnectedCallback(animalSelectorElement -&gt; DomGlobal.console.log(animalSelectorElement));
+
+Vue.customElement(<span class="hljs-string">&quot;animal-selector&quot;</span>, AnimalSelectorComponent.class, customElementOptions);
+</code></pre>
 
                                 
                                 </section>
@@ -1165,12 +1266,12 @@ vm.$mount(<span class="hljs-string">&quot;#javaComponent&quot;</span>);
 
             
                 
-                <a href="custom-elements.html" class="navigation navigation-prev " aria-label="Previous page: Custom Elements (Web Components)">
+                <a href="../scaling-up/routing.html" class="navigation navigation-prev " aria-label="Previous page: Routing">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="integrating-with-js-components.html#using-js-components-in-java" class="navigation navigation-next " aria-label="Next page: Using JS Components in Java">
+                <a href="integrating-with-js-components.html" class="navigation navigation-next " aria-label="Next page: Integrating With JS Components">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1181,7 +1282,7 @@ vm.$mount(<span class="hljs-string">&quot;#javaComponent&quot;</span>);
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Integrating With JS Components","level":"8.2","depth":1,"next":{"title":"Using JS Components in Java","level":"8.2.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},"previous":{"title":"Custom Elements (Web Components)","level":"8.1","depth":1,"path":"advanced/custom-elements.md","ref":"advanced/custom-elements.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/integrating-with-js-components.md","mtime":"2017-11-18T11:53:05.446Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-12-02T15:37:07.329Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Custom Elements (Web Components)","level":"8.1","depth":1,"next":{"title":"Integrating With JS Components","level":"8.2","depth":1,"path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md","articles":[{"title":"Using JS Components in Java","level":"8.2.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},{"title":"Using our Java Components in JS","level":"8.2.2","depth":2,"anchor":"#using-java-components-in-js","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-java-components-in-js","articles":[]}]},"previous":{"title":"Routing","level":"7.1","depth":1,"path":"scaling-up/routing.md","ref":"scaling-up/routing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/custom-elements.md","mtime":"2017-12-02T15:31:27.416Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-12-02T15:37:07.329Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
