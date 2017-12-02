@@ -97,6 +97,7 @@ To do this we simply call the Vue.attach() static method and pass the selector o
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
+        VueGWT.init();
         SimpleLinkComponent simpleLinkComponent = Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponent.class);
     }
 }
@@ -505,6 +506,7 @@ You won't need to pass the class of your `VueComponent` to the `components` attr
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
+        VueGWT.init();
         // Register TodoComponent globally
         Vue.component("todo", TodoComponent.class);
     }
