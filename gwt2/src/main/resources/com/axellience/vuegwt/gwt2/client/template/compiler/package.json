@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "Node.js dependencies of Vue GWT",
   "dependencies": {
-    "vue-template-compiler": "^2.5.5"
+    "vue-template-compiler": "^2.5.9"
   }
 }
