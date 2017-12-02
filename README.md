@@ -18,7 +18,7 @@ It lets you write Vue Components in Java.
 
 * **Vue.js** Components with a **Java controller**
 * Template expressions **type checking** at compile time
-* [**Web Components** (Custom Elements)](advanced/custom-elements.md) support
+* [**Web Components** (Custom Elements)](https://axellience.github.io/vue-gwt/advanced/custom-elements.html) support
 * **HTML templates are compiled** during Java Compilation (only requires Vue.js runtime)
 * Use **regular Java Objects and Collections** in your templates
 * Supports [**injection** in Components](https://axellience.github.io/vue-gwt/essential/dependency-injection.html)
