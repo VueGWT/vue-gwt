@@ -64,8 +64,6 @@ public class VueGwtExamplesService
 
         ExampleInjector exampleInjector = DaggerExampleInjector.builder().build();
 
-        Vue.customElement("animal-selector", AnimalSelectorComponent.class);
-
         addExample("simpleLinkComponent", SimpleLinkComponent.class);
         addExample("emitAnnotation", ParentEmitAnnotationComponent.class);
         addExample("linkComponent", LinkComponent.class);
