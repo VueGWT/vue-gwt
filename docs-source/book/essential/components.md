@@ -1,17 +1,17 @@
-# Components
+# Composing with Components
 
 !INCLUDE "../dependencies.md"
 
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/components.html) and has been adapted for Vue GWT.*
 
-## What are Components? {#what-are-components}
+## Using Components {#using-components}
+
+### What are Components? {#what-are-components}
 
 Components are one of the most powerful features of Vue.
 They help you extend basic HTML elements to encapsulate reusable code.
 At a high level, components are custom elements that Vue's compiler attaches behavior to.
 In some cases, they may also appear as a native HTML element extended with the special `is` attribute.
-
-## Using Components {#using-components}
 
 ### Registration
 
@@ -173,8 +173,10 @@ public class SharedDataModelComponent extends VueComponent {
 We then instantiate 3 of those Components:
 
 {% raw %}
-<div class="example-container" data-name="simpleLinkComponent">
-    <span id="simpleLinkComponent"></span>
+<div class="example-container" data-name="sharedDataModelComponent">
+    <span id="sharedDataModelComponent1"></span>
+    <span id="sharedDataModelComponent2"></span>
+    <span id="sharedDataModelComponent3"></span>
 </div>
 {% endraw %}
 
@@ -290,7 +292,7 @@ There are usually two cases where it's tempting to mutate a prop:
 
 The proper answer to these use cases are:
 
-1. Define a local data property that uses the prop's initial value as its initial value:
+<span>1.</span> Define a local data property that uses the prop's initial value as its initial value:
 
 ```java
 @Component
@@ -308,7 +310,7 @@ public class MyComponent extends VueComponent implements HasCreated {
 }
 ```
 
-2. Define a computed property that is computed from the prop's value:
+<span>2.</span> Define a computed property that is computed from the prop's value:
 
 ```java
 @Component
@@ -363,7 +365,7 @@ public class PropDefaultValueComponent extends VueComponent {
 
 Beware that in this method you don't have access to your Instance (`this`).
 
-## Non-Prop Attributes
+## Non-Prop Attributes {#non-prop-attributes}
 
 A non-prop attribute is an attribute that is passed to a component, but does not have a corresponding prop defined.
 
@@ -405,7 +407,7 @@ For most attributes, the value provided to the component will replace the value 
 So for example, passing `type="large"` will replace `type="date"` and probably break it!
 Fortunately, the `class` and `style` attributes are a little smarter, so both values are merged, making the final value: `form-control date-picker-theme-dark`.
 
-## Custom Events
+## Custom Events {#custom-events}
 
 We have learned that the parent can pass data down to the child using props, but how do we communicate back to the parent when something happens?
 This is where Vue's custom event system comes in.
@@ -534,6 +536,38 @@ In that case, you must cast $event to it's type, so that Vue GWT knows what type
     <button-counter v-on:increment="incrementTotal(((int) $event) * 2)"></button-counter>
     <button-counter v-on:increment="incrementTotal(((int) $event) + 4)"></button-counter>
 </div>
+```
+
+#### `@Emit` annotation {#emit-annotation}
+
+If you want a method to automatically emit an event each time it's called you can also use the `@Emit` annotation.
+It works similarly to the one from [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator).
+
+```java
+@Component
+public class EmitAnnotationComponent extends VueComponent {
+    @Emit
+    @JsMethod
+    public void doSomething() {
+        DomGlobal.console.log("Doing something");
+        // Implicit call to this.$emit("do-something")
+    }
+
+    @Emit
+    @JsMethod
+    public void doSomethingWithValue(int value) {
+        DomGlobal.console.log("Doing something with a value");
+        // Implicit call to this.$emit("do-something-with-value", value)
+    }
+
+
+    @Emit("custom-event-name")
+    @JsMethod
+    public void doSomethingWithValueAndCustomName(int value) {
+        DomGlobal.console.log("Doing something");
+        // Implicit call to this.$emit("custom-event-name", value)
+    }
+}
 ```
 
 #### Binding Native Events to Components

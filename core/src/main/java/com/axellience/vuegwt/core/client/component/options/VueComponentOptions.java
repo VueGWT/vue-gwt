@@ -9,9 +9,10 @@ import com.axellience.vuegwt.core.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.google.gwt.resources.client.CssResource;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.core.Function;
 import elemental2.core.JsObject;
+import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static com.axellience.vuegwt.core.client.template.ComponentTemplate.EXPRESSION_PREFIX;
 import static elemental2.core.Global.JSON;
 
 /**
@@ -91,8 +93,9 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     @JsOverlay
     private void initExpressions()
     {
-        for (String methodId : componentTemplate.getTemplateMethods())
+        for (int i = 0; i < componentTemplate.getTemplateMethodsCount(); i++)
         {
+            String methodId = EXPRESSION_PREFIX + i;
             addMethod(methodId, componentTemplate.get(methodId));
         }
     }
@@ -105,7 +108,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     {
         this.set("render", new Function(componentTemplate.getRenderFunction()));
 
-        Array<Object> staticRenderFns = new Array<>();
+        JsArray<Object> staticRenderFns = new JsArray<>();
         for (String staticRenderFunction : componentTemplate.getStaticRenderFunctions())
         {
             staticRenderFns.push(new Function(staticRenderFunction));
@@ -254,8 +257,8 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
         PropOptions propDefinition = new PropOptions();
         propDefinition.required = required;
 
-        //if (jsTypeName != null)
-            //propDefinition.type = ((JsPropertyMap) Window).get(jsTypeName);
+        if (jsTypeName != null)
+            propDefinition.type = ((JsPropertyMap<Object>) DomGlobal.window).get(jsTypeName);
 
         addProp(propName, propDefinition);
     }
@@ -355,9 +358,9 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     @JsProperty private String name;
 
-    @JsProperty private Array<Object> staticRenderFns;
+    @JsProperty private JsArray<Object> staticRenderFns;
 
-    @JsProperty private Array<Object> mixins;
+    @JsProperty private JsArray<Object> mixins;
 
     @JsOverlay
     public final Object getData()
@@ -512,13 +515,13 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     }
 
     @JsOverlay
-    public final Array<Object> getStaticRenderFns()
+    public final JsArray<Object> getStaticRenderFns()
     {
         return staticRenderFns;
     }
 
     @JsOverlay
-    public final VueComponentOptions setStaticRenderFns(Array<Object> staticRenderFns)
+    public final VueComponentOptions setStaticRenderFns(JsArray<Object> staticRenderFns)
     {
         this.staticRenderFns = staticRenderFns;
         return this;
@@ -577,7 +580,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     }
 
     @JsOverlay
-    public final Array<Object> getMixins()
+    public final JsArray<Object> getMixins()
     {
         return mixins;
     }
@@ -586,7 +589,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     public final VueComponentOptions addMixin(Object mixin)
     {
         if (this.mixins == null) {
-            this.mixins = new Array<>();
+            this.mixins = new JsArray<>();
         }
 
         this.mixins.push(mixin);
@@ -594,7 +597,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     }
 
     @JsOverlay
-    public final VueComponentOptions setMixins(Array<Object> mixins)
+    public final VueComponentOptions setMixins(JsArray<Object> mixins)
     {
         this.mixins = mixins;
         return this;

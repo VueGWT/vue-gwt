@@ -2,6 +2,7 @@ package com.axellience.vuegwt.processors.component;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.Emit;
 import com.axellience.vuegwt.core.annotations.component.HookMethod;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.annotations.component.PropDefault;
@@ -29,8 +30,9 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.core.Function;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
 import javax.annotation.processing.Filer;
@@ -53,10 +55,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.*;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentFactoryName;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentInjectedDependenciesName;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentJsTypeName;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.*;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.hasAnnotation;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.hasInterface;
 
@@ -106,7 +105,11 @@ public class ComponentJsTypeGenerator
         processPropValidators(component, optionsBuilder, componentJsTypeBuilder);
         processPropDefaultValues(component, optionsBuilder, componentJsTypeBuilder);
         processHooks(component, optionsBuilder, hookMethodsFromInterfaces);
-        processTemplateMethods(component, optionsBuilder, hookMethodsFromInterfaces);
+        processTemplateMethods(component,
+            optionsBuilder,
+            componentJsTypeBuilder,
+            hookMethodsFromInterfaces);
+        processInvalidEmitMethods(component);
         processRenderFunction(component, optionsBuilder, componentJsTypeBuilder);
         createCreatedHook(component, optionsBuilder, componentJsTypeBuilder, dependenciesBuilder);
 
@@ -245,11 +248,10 @@ public class ComponentJsTypeGenerator
                 if (!isFieldVisibleInJS(field))
                 {
                     messager.printMessage(Kind.ERROR,
-                        "@Prop "
+                        "The field \""
                             + fieldName
-                            + " must also have @JsProperty annotation in VueComponent "
-                            + component.getQualifiedName().toString()
-                            + ".");
+                            + "\" annotated with @Prop must also be annotated with @JsProperty in Component: "
+                            + component.getQualifiedName());
                 }
 
                 optionsBuilder.addStatement("options.addJavaProp($S, $L, $S)",
@@ -283,7 +285,7 @@ public class ComponentJsTypeGenerator
                 ComputedKind.class,
                 kind);
 
-            componentJsTypeBuilder.addMethod(createProxyJsTypeMethod(method));
+            addProxyJsTypeMethodIfNecessary(componentJsTypeBuilder, method);
         });
 
         addFieldsForComputedMethod(component, componentJsTypeBuilder, new HashSet<>());
@@ -294,11 +296,12 @@ public class ComponentJsTypeGenerator
      * @param component {@link VueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
+     * @param componentJsTypeBuilder Builder for the JsType class
      * @param hookMethodsFromInterfaces Hook methods from the interface the {@link VueComponent}
      * implements
      */
     private void processTemplateMethods(TypeElement component, MethodSpec.Builder optionsBuilder,
-        Set<ExecutableElement> hookMethodsFromInterfaces)
+        Builder componentJsTypeBuilder, Set<ExecutableElement> hookMethodsFromInterfaces)
     {
         List<ExecutableElement> templateMethods = ElementFilter
             .methodsIn(component.getEnclosedElements())
@@ -306,6 +309,9 @@ public class ComponentJsTypeGenerator
             .filter(ComponentGenerationUtil::isMethodVisibleInTemplate)
             .filter(method -> !isHookMethod(component, method, hookMethodsFromInterfaces))
             .collect(Collectors.toList());
+
+        templateMethods.forEach(method -> addProxyJsTypeMethodIfNecessary(componentJsTypeBuilder,
+            method));
 
         // Declare methods in the component
         String methodNamesParameters = templateMethods
@@ -366,7 +372,7 @@ public class ComponentJsTypeGenerator
                 watch.propertyName(),
                 watch.isDeep());
 
-            componentJsTypeBuilder.addMethod(createProxyJsTypeMethod(method));
+            addProxyJsTypeMethodIfNecessary(componentJsTypeBuilder, method);
         });
     }
 
@@ -387,7 +393,7 @@ public class ComponentJsTypeGenerator
                 method.getSimpleName().toString(),
                 propertyName);
 
-            componentJsTypeBuilder.addMethod(createProxyJsTypeMethod(method));
+            addProxyJsTypeMethodIfNecessary(componentJsTypeBuilder, method);
         });
     }
 
@@ -408,7 +414,7 @@ public class ComponentJsTypeGenerator
                 method.getSimpleName().toString(),
                 propertyName);
 
-            componentJsTypeBuilder.addMethod(createProxyJsTypeMethod(method));
+            addProxyJsTypeMethodIfNecessary(componentJsTypeBuilder, method);
         });
     }
 
@@ -559,6 +565,27 @@ public class ComponentJsTypeGenerator
             component);
     }
 
+    /**
+     * Emit an error message for every method annotated with {@link Emit} that are not also
+     * annotated with {@link JsMethod}.
+     * @param component {@link VueComponent} to process
+     */
+    private void processInvalidEmitMethods(TypeElement component)
+    {
+        ElementFilter
+            .methodsIn(component.getEnclosedElements())
+            .stream()
+            .filter(method -> hasAnnotation(method, Emit.class))
+            .filter(method -> !hasAnnotation(method, JsMethod.class))
+            .forEach(invalidEmitMethod -> {
+                messager.printMessage(Kind.ERROR,
+                    "The method \""
+                        + invalidEmitMethod.getSimpleName().toString()
+                        + "\" annotated with @Emit must also be annotated with @JsMethod in Component: "
+                        + component.getQualifiedName());
+            });
+    }
+
     private void copyDependenciesFields(ComponentInjectedDependenciesBuilder dependenciesBuilder,
         MethodSpec.Builder createdMethodBuilder)
     {
@@ -609,10 +636,16 @@ public class ComponentJsTypeGenerator
      * Generate a JsInterop proxy method for a {@link VueComponent} method.
      * This proxy will keep the same name in JS and can be therefore passed to Vue to
      * configure our {@link VueComponent}.
+     * @param componentJsTypeBuilder Builder for the JsType class
      * @param originalMethod Method to proxify
      */
-    private MethodSpec createProxyJsTypeMethod(ExecutableElement originalMethod)
+    private void addProxyJsTypeMethodIfNecessary(Builder componentJsTypeBuilder,
+        ExecutableElement originalMethod)
     {
+        Emit emitAnnotation = originalMethod.getAnnotation(Emit.class);
+        if (isMethodVisibleInJS(originalMethod) && emitAnnotation == null)
+            return;
+
         MethodSpec.Builder proxyMethodBuilder = MethodSpec
             .methodBuilder(originalMethod.getSimpleName().toString())
             .addModifiers(Modifier.PUBLIC)
@@ -624,16 +657,28 @@ public class ComponentJsTypeGenerator
                 parameter.getSimpleName().toString()));
 
         String methodCallParameters = getSuperMethodCallParameters(originalMethod);
+        boolean hasReturnValue = !"void".equals(originalMethod.getReturnType().toString());
+        if (hasReturnValue)
+        {
+            proxyMethodBuilder.addStatement("$T result = super.$L($L)",
+                originalMethod.getReturnType(),
+                originalMethod.getSimpleName().toString(),
+                methodCallParameters);
+        }
+        else
+        {
+            proxyMethodBuilder.addStatement("super.$L($L)",
+                originalMethod.getSimpleName().toString(),
+                methodCallParameters);
+        }
 
-        String returnStatement = "";
-        if (!"void".equals(originalMethod.getReturnType().toString()))
-            returnStatement = "return ";
+        if (emitAnnotation != null)
+            addEmitEventCall(originalMethod, proxyMethodBuilder, methodCallParameters);
 
-        proxyMethodBuilder.addStatement(returnStatement + "super.$L($L)",
-            originalMethod.getSimpleName().toString(),
-            methodCallParameters);
+        if (hasReturnValue)
+            proxyMethodBuilder.addStatement("return result");
 
-        return proxyMethodBuilder.build();
+        componentJsTypeBuilder.addMethod(proxyMethodBuilder.build());
     }
 
     /**
@@ -648,6 +693,31 @@ public class ComponentJsTypeGenerator
             .stream()
             .map(parameter -> parameter.getSimpleName().toString())
             .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Add a call to emit an event at the end of the function
+     * @param originalMethod Method we are emitting an event for
+     * @param proxyMethodBuilder Method we are building
+     * @param methodCallParameters Chained parameters name of the method
+     */
+    private void addEmitEventCall(ExecutableElement originalMethod,
+        MethodSpec.Builder proxyMethodBuilder, String methodCallParameters)
+    {
+        String methodName = "$emit";
+        if (methodCallParameters != null && !"".equals(methodCallParameters))
+        {
+            proxyMethodBuilder.addStatement("this.$L($S, $L)",
+                methodName,
+                methodToEventName(originalMethod),
+                methodCallParameters);
+        }
+        else
+        {
+            proxyMethodBuilder.addStatement("this.$L($S)",
+                methodName,
+                methodToEventName(originalMethod));
+        }
     }
 
     /**
@@ -711,7 +781,7 @@ public class ComponentJsTypeGenerator
         {
             return "String";
         }
-        else if (typeMirror.toString().startsWith(Array.class.getCanonicalName()))
+        else if (typeMirror.toString().startsWith(JsArray.class.getCanonicalName()))
         {
             return "Array";
         }

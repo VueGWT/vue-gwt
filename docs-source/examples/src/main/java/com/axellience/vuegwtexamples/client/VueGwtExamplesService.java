@@ -5,10 +5,12 @@ import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
+import com.axellience.vuegwtexamples.client.examples.animalselector.AnimalSelectorComponent;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
 import com.axellience.vuegwtexamples.client.examples.counterwithevent.CounterWithEventComponent;
+import com.axellience.vuegwtexamples.client.examples.emitannotation.ParentEmitAnnotationComponent;
 import com.axellience.vuegwtexamples.client.examples.errorboundary.ErrorBoundaryComponent;
 import com.axellience.vuegwtexamples.client.examples.evennumbers.EvenNumbersComponent;
 import com.axellience.vuegwtexamples.client.examples.exclamation.ExclamationComponent;
@@ -23,6 +25,7 @@ import com.axellience.vuegwtexamples.client.examples.link.LinkComponent;
 import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponent;
 import com.axellience.vuegwtexamples.client.examples.message.MessageComponent;
 import com.axellience.vuegwtexamples.client.examples.parent.ParentComponent;
+import com.axellience.vuegwtexamples.client.examples.passvalues.ParentPassValuesComponent;
 import com.axellience.vuegwtexamples.client.examples.propdefaultvalue.ParentPropDefaultValueComponent;
 import com.axellience.vuegwtexamples.client.examples.recursive.RecursiveComponent;
 import com.axellience.vuegwtexamples.client.examples.reverse.ReverseComponent;
@@ -53,14 +56,18 @@ public class VueGwtExamplesService
         if (DomGlobal.document.getElementById("fullJsComponent") != null)
         {
             VueJsConstructor<VueComponent> vueClass =
-                (VueJsConstructor<VueComponent>) ((JsPropertyMap) DomGlobal.window).get("FullJsComponent");
+                (VueJsConstructor<VueComponent>) ((JsPropertyMap) DomGlobal.window).get(
+                    "FullJsComponent");
             VueComponent myComponent = vueClass.instantiate();
             myComponent.$mount("#fullJsComponent");
         }
 
         ExampleInjector exampleInjector = DaggerExampleInjector.builder().build();
 
+        Vue.customElement("animal-selector", AnimalSelectorComponent.class);
+
         addExample("simpleLinkComponent", SimpleLinkComponent.class);
+        addExample("emitAnnotation", ParentEmitAnnotationComponent.class);
         addExample("linkComponent", LinkComponent.class);
         addExample("canHideComponent", CanHideComponent.class);
         addExample("simpleTodoListComponent", SimpleTodoListComponent.class);
@@ -75,8 +82,7 @@ public class VueGwtExamplesService
         addExample("vForWithRangeComponent", VForWithRangeComponent.class);
         addExample("vForOnObjectComponent", VForOnObjectComponent.class);
         addExample("vForOnObjectWithKeyComponent", VForOnObjectWithKeyComponent.class);
-        addExample("vForOnObjectWithKeyAndIndexComponent",
-            VForOnObjectWithKeyAndIndexComponent.class);
+        addExample("vForOnObjectWithKeyAndIndexComponent", VForOnObjectWithKeyAndIndexComponent.class);
         addExample("evenNumbersComponent", EvenNumbersComponent.class);
         addExample("bindInlineStyleComponent", BindInlineStyleComponent.class);
         addExample("buttonPlusOneComponent", ButtonPlusOneComponent.class);
@@ -99,6 +105,7 @@ public class VueGwtExamplesService
         addExample("gotQuotesComponent", exampleInjector.gotQuoteComponentFactory());
         addExample("errorBoundary", ErrorBoundaryComponent.class);
         addExample("extendJsComponent", ChildJavaComponent.class);
+        addExample("passValues", ParentPassValuesComponent.class);
     }
 
     private static void addExample(String exampleId, Class<? extends VueComponent> exampleVueClass)
@@ -106,8 +113,7 @@ public class VueGwtExamplesService
         addExample(exampleId, VueGWT.getFactory(exampleVueClass));
     }
 
-    private static void addExample(String exampleId,
-        VueFactory exampleVueFactory)
+    private static void addExample(String exampleId, VueFactory exampleVueFactory)
     {
         // If we find the containing div for this example, we instantiate it
         if (DomGlobal.document.getElementById(exampleId) != null)

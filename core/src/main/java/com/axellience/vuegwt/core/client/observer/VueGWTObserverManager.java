@@ -3,7 +3,7 @@ package com.axellience.vuegwt.core.client.observer;
 import com.axellience.vuegwt.core.client.observer.functions.VueObserveArray;
 import com.axellience.vuegwt.core.client.observer.functions.VueWalk;
 import com.google.gwt.core.client.JavaScriptObject;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLScriptElement;
@@ -105,7 +105,7 @@ public class VueGWTObserverManager
      */
     public void observe(Object object)
     {
-        observeArray(new Array(object));
+        observeArray(new JsArray<>(object));
     }
 
     /**
@@ -114,8 +114,9 @@ public class VueGWTObserverManager
      * Will call {@link VueGWTObserverManager#observeJavaObject} on each object to check
      * if we have to make its properties reactive.
      * @param objects The list of object to observe
+     * @param <T> The type of the JsArray
      */
-    public void observeArray(Array objects)
+    public <T> void observeArray(JsArray<T> objects)
     {
         vueObserveArrayFunction.observeArray(objects);
     }

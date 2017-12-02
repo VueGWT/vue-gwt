@@ -9,7 +9,7 @@ import com.axellience.vuegwt.core.client.component.options.watch.OnValueChange;
 import com.axellience.vuegwt.core.client.component.options.watch.WatcherRegistration;
 import com.axellience.vuegwt.core.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.core.client.vnode.VNode;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.dom.Element;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -38,17 +38,17 @@ public abstract class VueComponent
     @JsProperty private VueComponentOptions $options;
     @JsProperty private VueComponent $parent;
     @JsProperty private VueComponent $root;
-    @JsProperty private Array<VueComponent> $children;
+    @JsProperty private JsArray<VueComponent> $children;
     @JsProperty private Object $refs;
-    @JsProperty private JsPropertyMap<Array<VNode>> $slots;
+    @JsProperty private JsPropertyMap<JsArray<VNode>> $slots;
     @JsProperty private JsPropertyMap<ScopedSlot> $scopedSlots;
     @JsProperty private boolean $isServer;
     @JsProperty private Object $ssrContext;
-    @JsProperty private Object $props;
     @JsProperty private Object $vnode;
     @JsProperty private JsPropertyMap<String> $attrs;
     @JsProperty private Object $listeners;
 
+    @JsProperty public JsPropertyMap<Object> $props;
     @JsProperty public String _uid;
 
     // @formatter:off
@@ -115,7 +115,7 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final Array<VueComponent> $children()
+    public final JsArray<VueComponent> $children()
     {
         return $children;
     }
@@ -127,7 +127,7 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final JsPropertyMap<Array<VNode>> $slots()
+    public final JsPropertyMap<JsArray<VNode>> $slots()
     {
         return $slots;
     }
@@ -148,12 +148,6 @@ public abstract class VueComponent
     public final Object $ssrContext()
     {
         return $ssrContext;
-    }
-
-    @JsOverlay
-    public final Object $props()
-    {
-        return $props;
     }
 
     @JsOverlay

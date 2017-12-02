@@ -97,6 +97,7 @@ To do this we simply call the Vue.attach() static method and pass the selector o
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
+        VueGWT.init();
         SimpleLinkComponent simpleLinkComponent = Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponent.class);
     }
 }
@@ -505,13 +506,14 @@ You won't need to pass the class of your `VueComponent` to the `components` attr
 ```java
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
+        VueGWT.init();
         // Register TodoComponent globally
         Vue.component("todo", TodoComponent.class);
     }
 }
 ```
 
-To understand more in depth how the Observation works, and avoid pitfalls it's recommended to read information on **[the Vue Instance](../essential/the-vue-instance.md)**.
+It is **strongly recommended** to read the whole [Essentials section](../essential/the-vue-instance.md) even if skimming through it.
+It will teach you everything you need to know to make full use of the framework.
 
-Your shiny new Vue GWT Components will play nicely with GWT.
-**[Checkout integration with GWT](../gwt-integration/styles.md)**.
+You can then check some specific topics like [Unit Testing](../tooling/unit-testing.md), [Custom Element (Web Component) support](../advanced/custom-elements.md) or [Routing](../scaling-up/routing.md).

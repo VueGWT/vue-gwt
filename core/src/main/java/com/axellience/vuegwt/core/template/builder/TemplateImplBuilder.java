@@ -13,16 +13,17 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
+import jsinterop.base.Js;
 
 import javax.lang.model.element.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.*;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.getUnusableByJSAnnotation;
@@ -108,25 +109,29 @@ public class TemplateImplBuilder
      * @param result The result from compilation using vue-template-compiler
      */
     private void generateGetStaticRenderFunctions(Builder templateBuilder,
-                                                  VueTemplateCompilerResult result)
+        VueTemplateCompilerResult result)
     {
         CodeBlock.Builder staticFunctions = CodeBlock.builder();
 
         boolean isFirst = true;
-        for (String staticRenderFunction : result.getStaticRenderFunctions()) {
-            if (!isFirst) {
+        for (String staticRenderFunction : result.getStaticRenderFunctions())
+        {
+            if (!isFirst)
+            {
                 staticFunctions.add(", ");
-            } else {
+            }
+            else
+            {
                 isFirst = false;
             }
             staticFunctions.add("$S", staticRenderFunction);
         }
 
-        MethodSpec.Builder getStaticRenderFunctionsBuilder =
-                MethodSpec.methodBuilder("getStaticRenderFunctions")
-                          .addModifiers(Modifier.PUBLIC)
-                          .returns(String[].class)
-                          .addStatement("return new String[] { $L }", staticFunctions.build());
+        MethodSpec.Builder getStaticRenderFunctionsBuilder = MethodSpec
+            .methodBuilder("getStaticRenderFunctions")
+            .addModifiers(Modifier.PUBLIC)
+            .returns(String[].class)
+            .addStatement("return new String[] { $L }", staticFunctions.build());
 
         templateBuilder.addMethod(getStaticRenderFunctionsBuilder.build());
     }
@@ -176,6 +181,12 @@ public class TemplateImplBuilder
         {
             templateExpressionMethodBuilder.addStatement("$L", expression.getBody());
         }
+        else if (expression.isReturnAny())
+        {
+            templateExpressionMethodBuilder.addStatement("return $T.asAny($L)",
+                Js.class,
+                expression.getBody());
+        }
         else
         {
             templateExpressionMethodBuilder.addStatement("return ($T) ($L)",
@@ -195,21 +206,12 @@ public class TemplateImplBuilder
         TemplateParserResult templateParserResult)
     {
         MethodSpec.Builder getStaticRenderFunctionsBuilder = MethodSpec
-            .methodBuilder("getTemplateMethods")
+            .methodBuilder("getTemplateMethodsCount")
             .addModifiers(Modifier.PUBLIC)
-            .returns(String[].class)
-            .addStatement("return new String[] { $L }", getExpressionsIds(templateParserResult));
+            .returns(TypeName.INT)
+            .addStatement("return $L", templateParserResult.getExpressions().size());
 
         templateBuilder.addMethod(getStaticRenderFunctionsBuilder.build());
-    }
-
-    private String getExpressionsIds(TemplateParserResult templateParserResult)
-    {
-        return templateParserResult
-            .getExpressions()
-            .stream()
-            .map(expression -> "\"" + expression.getId() + "\"")
-            .collect(Collectors.joining(", "));
     }
 
     /**

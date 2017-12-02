@@ -84,7 +84,7 @@ You can also mix `map` with [`array`](#array):
 JsPropertyMap myObject = map("arrayValue", array("hello", "world"));
 ```
 
-## `Array<T>` {#array-object}
+## `JsArray<T>` {#array-object}
 
 This object comes from Elemental2 core.
 It represents a JavaScript Native Array in the Java world.
@@ -92,13 +92,13 @@ It represents a JavaScript Native Array in the Java world.
 Because we are in the Java world, it is parametrized and can only contain elements of the given type.
 
 But an instance of an Array in JavaScript can actually contain objects of different types.
-Just keep that in mind if you get an instance of `Array` from an external JS library.
+Just keep that in mind if you get an instance of `JsArray` from an external JS library.
 
 ### How to Create an Instance
 
-You create `Array` exactly like any Java Collection:
+You create `JsArray` exactly like any Java Collection:
 ```java
-Array<Todo> myArray = new Array<>();
+JsArray<Todo> myArray = new JsArray<>();
 ```
 
 When your program run this will be executed:
@@ -108,18 +108,18 @@ var myArray = [];
 
 ### `array` static builder method {#array}
 
-It's possible to create a `Array` inline very easily using the static `array` method from `JsUtils` that comes with Vue GWT.
+It's possible to create a `JsArray` inline very easily using the static `array` method from `JsUtils` that comes with Vue GWT.
 
 ```java
 // Equivalent to ["hello", "world"]
-Array<String> myArray = JsUtils.array("hello", "world");
+JsArray<String> myArray = JsUtils.array("hello", "world");
 ```
 
-You also nest the calls to get `Array` in `Array`:
+You also nest the calls to get `JsArray` in `JsArray`:
 
 ```java
 // Equivalent to ["parentValue1", ["childArrayValue1", "childArrayValue2]]
-Array myArray = array("parentValue1", array("childArrayValue1", "childArrayValue2"));
+JsArray<Object> myArray = array("parentValue1", array("childArrayValue1", "childArrayValue2"));
 ```
 
 You can use `array` in templates as it is statically imported for you:
@@ -131,14 +131,14 @@ You can also mix `array` with [`map`](#map):
 
 ```java
 // Equivalent to ["hello", {world: true}]
-Array myArray = array("hello", map("world", true));
+JsArray<Object> myArray = array("hello", map("world", true));
 ```
 
 ### What Can I Do with My JavaScript Array?
 
 #### Accessing/Changing
 
-You can get and set values at index on your `Array`.
+You can get and set values at index on your `JsArray`.
 The `setAt` and `getAt` methods corresponds to the `[]` accessing syntax in JavaScript.
 Be aware [that `setAt` is not observable by Vue.js](https://vuejs.org/v2/guide/list.html#Array-Change-Detection) (due to a technical limitation of ES5 getter/setters).
 
@@ -186,7 +186,7 @@ If you like Java 8 Streams, JavaScript Arrays supports some of the operators you
 
 #### And a Lot More
 
-`Array` supports all the ES5 (IE 9+) methods on Array:
+`JsArray` supports all the ES5 (IE 9+) methods on Array:
 
 * `sort`
 * `join`
@@ -197,4 +197,4 @@ If you like Java 8 Streams, JavaScript Arrays supports some of the operators you
 * And more!
 
 You can get the [full list here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array).
-(Some of the methods in that list are not supported by `Array` because they are not supported by IE 9+).
+(Some of the methods in that list are not supported by `JsArray` because they are not supported by IE 9+).

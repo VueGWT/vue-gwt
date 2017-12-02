@@ -7,7 +7,7 @@
 </p>
 
 Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtproject.org/) using [JsInterop](https://github.com/google/jsinterop-base) and [Elemental2](https://github.com/google/elemental2).
-It lets you write Vue.js components in Java.
+It lets you write Vue Components in Java.
 
 <p align="center">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
@@ -18,6 +18,7 @@ It lets you write Vue.js components in Java.
 
 * **Vue.js** Components with a **Java controller**
 * Template expressions **type checking** at compile time
+* [**Web Components** (Custom Elements)](advanced/custom-elements.md) support
 * **HTML templates are compiled** during Java Compilation (only requires Vue.js runtime)
 * Use **regular Java Objects and Collections** in your templates
 * Supports [**injection** in Components](https://axellience.github.io/vue-gwt/essential/dependency-injection.html)

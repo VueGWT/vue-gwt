@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.core.client.vnode;
 
 import com.axellience.vuegwt.core.client.jsnative.jsfunctions.JsRunnable;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -14,7 +14,7 @@ import jsinterop.annotations.JsType;
 public class InlineTemplate
 {
     @JsProperty protected JsRunnable render;
-    @JsProperty protected Array<JsRunnable> staticRenderFns;
+    @JsProperty protected JsArray<JsRunnable> staticRenderFns;
 
     @JsOverlay
     public final JsRunnable getRender()
@@ -30,13 +30,13 @@ public class InlineTemplate
     }
 
     @JsOverlay
-    public final Array<JsRunnable> getStaticRenderFns()
+    public final JsArray<JsRunnable> getStaticRenderFns()
     {
         return staticRenderFns;
     }
 
     @JsOverlay
-    public final InlineTemplate setStaticRenderFns(Array<JsRunnable> staticRenderFns)
+    public final InlineTemplate setStaticRenderFns(JsArray<JsRunnable> staticRenderFns)
     {
         this.staticRenderFns = staticRenderFns;
         return this;
@@ -45,7 +45,7 @@ public class InlineTemplate
     public final InlineTemplate addStaticRenderFn(JsRunnable staticRenderFn)
     {
         if (this.staticRenderFns == null)
-            this.staticRenderFns = new Array<>();
+            this.staticRenderFns = new JsArray<>();
 
         this.staticRenderFns.push(staticRenderFn);
         return this;

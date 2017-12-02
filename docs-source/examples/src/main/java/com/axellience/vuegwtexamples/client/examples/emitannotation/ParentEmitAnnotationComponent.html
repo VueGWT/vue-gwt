@@ -1,0 +1,5 @@
+<div>
+    <emit-annotation @my-event='log("my-event", null)'
+                     @my-event-with-value='log("my-event-with-value", (int) $event)'
+                     @custom-event='log("custom-event", (int) $event)'></emit-annotation>
+</div>

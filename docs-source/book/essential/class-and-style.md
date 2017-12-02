@@ -127,7 +127,7 @@ That's why it's also possible to use the `map` syntax inside `array` syntax:
 
 ### GWT Styles
 
-You should also check how to use [GWT GSS Styles](../gwt-integration/styles.md) in your app.
+You should also check how to use [GWT GSS Styles](../gwt-integration/client-bundles-and-styles.md#styles) in your app.
 
 ### With Components
 

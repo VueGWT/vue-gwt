@@ -84,7 +84,7 @@ public final class TemplateGwtGenerator extends Generator
         registerFieldsAndMethodsInContext(templateParserContext, componentJsType);
 
         TemplateParserResult templateParserResult =
-            new TemplateParser().parseHtmlTemplate(templateContent, templateParserContext);
+            new TemplateParser(logger).parseHtmlTemplate(templateContent, templateParserContext);
 
         createTemplateImpl(generatorContext,
             logger,

@@ -7,6 +7,7 @@ import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.ClassName;
 import elemental2.dom.Event;
+import jsinterop.base.JsPropertyMap;
 import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
@@ -49,6 +50,7 @@ public class TemplateParserContext
 
         this.rootLayer = new ContextLayer();
         this.rootLayer.addVariable(String.class, "_uid");
+        this.rootLayer.addVariable(JsPropertyMap.class, "$props");
 
         this.contextLayers.add(this.rootLayer);
     }

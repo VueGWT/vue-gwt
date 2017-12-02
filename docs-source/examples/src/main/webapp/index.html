@@ -6,16 +6,24 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
 
-    <script type="text/javascript"
-            language="javascript"
-            src="VueGwtExamples/VueGwtExamples.nocache.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/document-register-element/1.7.0/document-register-element.js"></script>
+    <script src="VueGwtExamples/VueGwtExamples.nocache.js"></script>
 
     <!-- Vue JS Framework -->
-    <script src="https://unpkg.com/vue@2.5.5/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue@2.5.9/dist/vue.js"></script>
 </head>
 <body>
 <div class="row">
     <div class="col s12 m6 l4">
+        <h5 class="custom-color">Custom Element (Animal Selector)</h5>
+        <animal-selector user-name="Tom"></animal-selector>
+
+        <h5>Emit Annotation</h5>
+        <div id="emitAnnotation"></div>
+
+        <h5>Pass Values</h5>
+        <div id="passValues"></div>
+
         <h5>Simple Link Component</h5>
         <div id="simpleLinkComponent"></div>
 
@@ -135,16 +143,16 @@
 	});
 	window.FullJsWithMethodsComponent = Vue.extend({
 		template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
-        data: function () {
-            return {
-            	value: 10
-            }
-		},
-        methods: {
-			multiplyBy2: function (value) {
-                return value * 2;
+		data: function () {
+			return {
+				value: 10
 			}
-        }
+		},
+		methods: {
+			multiplyBy2: function (value) {
+				return value * 2;
+			}
+		}
 	});
 	window.ParentJsComponent = Vue.extend({
 		data: function () {
@@ -157,12 +165,32 @@
 				return value * 2;
 			}
 		},
-        computed: {
+		computed: {
 			parentComputed: function () {
 				return "Computed Message | " + this.parentMessage;
 			}
-        }
+		}
 	});
+	Vue.component("pass-values-js", {
+		props: ["myInt",
+			"myBool",
+			"myDouble",
+			"myFloat",
+			"myLong",
+			"wrappedInteger",
+			"wrappedBoolean",
+			"wrappedDouble",
+			"wrappedFloat",
+			"wrappedLong"
+		],
+		template: `<ul>
+            <li>int: {{ myInt + 5 }} | Integer: {{ wrappedInteger + 5 }}</li>
+            <li>boolean: {{ !myBool }} | Boolean: {{ !wrappedBoolean }}</li>
+            <li>double: {{ myDouble + 5 }} | Double: {{ wrappedDouble + 5 }}</li>
+            <li>long: {{ myLong + 5 }} | Long: {{ wrappedLong + 5 }}</li>
+            <li>float: {{ myFloat + 0.5 }} | Float: {{ wrappedFloat + 0.5 }}</li>
+        </ul>`
+	})
 </script>
 
 </body>

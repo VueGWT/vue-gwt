@@ -12,7 +12,7 @@ import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsConstructorFn;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 import javax.inject.Provider;
@@ -156,7 +156,7 @@ public class VueGWT
     public static <T extends VueComponent> ComponentJavaConstructor getJavaConstructor(
         Class<T> vueComponentClass)
     {
-        return (ComponentJavaConstructor) JsConstructorFn.of(vueComponentClass);
+        return (ComponentJavaConstructor) Js.asConstructorFn(vueComponentClass);
     }
 
     /**

@@ -8,7 +8,7 @@ import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.VNodeData;
 import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.google.gwt.regexp.shared.RegExp;
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsProperty;
 import jsinterop.base.Js;
 
@@ -38,9 +38,9 @@ public class AnchoredHeadingComponent extends VueComponent implements HasRender
                 this.$slots().get("default")));
     }
 
-    private String getChildrenTextContent(Array<VNode> children)
+    private String getChildrenTextContent(JsArray<VNode> children)
     {
-        return ((Array<String>) Js.cast(children.map((child, index, array) -> {
+        return ((JsArray<String>) Js.cast(children.map((child, index, array) -> {
             if (child.getChildren() != null && child.getChildren().length > 0)
                 return getChildrenTextContent(child.getChildren());
             return child.getText();

@@ -17,10 +17,11 @@
 * [List Rendering](essential/list.md)
 * [Event Handling](essential/events.md)
 * [Form Input Bindings](essential/forms.md)
-* [Components](essential/components.md)
-    * [What are Components?](essential/components.md#what-are-components)
+* [Composing with Components](essential/components.md)
     * [Using Components](essential/components.md#using-components)
     * [Props](essential/components.md#props)
+    * [Non-Prop Attributes](essential/components.md#non-prop-attributes)
+    * [Custom Events](essential/components.md#custom-events)
     * [Content Distribution with Slots](essential/components.md#content-distribution)
     * [Dynamic Components](essential/components.md#dynamic-components)
 * [Dependency Injection](essential/dependency-injection.md)
@@ -47,13 +48,14 @@
 * [Plugins](composition/plugins.md)
 
 ## Integration with GWT
-* [Styles](gwt-integration/styles.md)
-* [Client Bundles](gwt-integration/client-bundles.md)
+* [Client Bundles and Styles](gwt-integration/client-bundles-and-styles.md)
+    * [Client Bundles](gwt-integration/client-bundles-and-styles.md#client-bundles)
+    * [Styles (CssResource)](gwt-integration/client-bundles-and-styles.md#styles)
 * [Vue GWT and Widgets](gwt-integration/widgets.md)
 * [JsInterop](js-interop/README.md)
     * [JsPropertyMap<T>](js-interop/README.md#js-property-map)
     * [map](js-interop/README.md#map)
-    * [Array<T>](js-interop/README.md#array-object)
+    * [JsArray<T>](js-interop/README.md#array-object)
     * [array](js-interop/README.md#array)
 
 ## Tooling
@@ -63,6 +65,7 @@
 * [Routing](scaling-up/routing.md)
 
 ## Advanced Topics
+* [Custom Elements (Web Components)](advanced/custom-elements.md)
 * [Integrating With JS Components](advanced/integrating-with-js-components.md)
     * [Using JS Components in Java](advanced/integrating-with-js-components.md#using-js-components-in-java)
     * [Using our Java Components in JS](advanced/integrating-with-js-components.md#using-java-components-in-js)

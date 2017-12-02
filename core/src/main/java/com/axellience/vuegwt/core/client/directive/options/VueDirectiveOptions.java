@@ -3,7 +3,7 @@ package com.axellience.vuegwt.core.client.directive.options;
 import com.axellience.vuegwt.core.client.directive.VueDirective;
 import elemental2.core.Function;
 import elemental2.core.JsString;
-import elemental2.core.RegExp;
+import elemental2.core.JsRegExp;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
 
@@ -67,8 +67,8 @@ public abstract class VueDirectiveOptions implements JsPropertyMap
         JsString jsString = cast(jsFunction.toString());
 
         // Get content between first { and last }
-        JsString m = cast(jsString.match(new RegExp("\\{([\\s\\S]*)\\}", "m"))[1]);
+        JsString m = cast(jsString.match(new JsRegExp("\\{([\\s\\S]*)\\}", "m"))[1]);
         // Strip comments
-        return m.replace(new RegExp("^\\s*\\/\\/.*$", "mg"), "").trim();
+        return m.replace(new JsRegExp("^\\s*\\/\\/.*$", "mg"), "").trim();
     }
 }
