@@ -15,6 +15,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
+import com.google.gwt.core.ext.TreeLogger;
 import jsinterop.base.Any;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
@@ -42,6 +43,7 @@ import java.util.regex.Pattern;
  */
 public class TemplateParser
 {
+    private final TreeLogger logger;
     private static Pattern VUE_ATTR_PATTERN = Pattern.compile("^(v-|:|@).*");
     private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
@@ -50,8 +52,9 @@ public class TemplateParser
 
     private String currentExpressionReturnType;
 
-    public TemplateParser()
+    public TemplateParser(TreeLogger logger)
     {
+        this.logger = logger;
     }
 
     /**
@@ -93,6 +96,10 @@ public class TemplateParser
             {
                 result.addStyleImports(element.attr("name"), element.attr("style"));
                 context.addRootVariable(element.attr("style"), element.attr("name"));
+                logger.log(TreeLogger.WARN,
+                    "Style import in template is deprecated and will be removed in beta-6. Found usage in "
+                        + context.getTemplateName()
+                        + ". Please see https://axellience.github.io/vue-gwt/gwt-integration/client-bundles-and-styles.html#styles for information on how to use styles without this import.");
             }
             else if (element.hasAttr("class"))
             {
