@@ -114,7 +114,7 @@ public class VueGWTObserverManager
      * Will call {@link VueGWTObserverManager#observeJavaObject} on each object to check
      * if we have to make its properties reactive.
      * @param objects The list of object to observe
-     * @param T The type of the JsArray
+     * @param <T> The type of the JsArray
      */
     public <T> void observeArray(JsArray<T> objects)
     {
