@@ -513,7 +513,4 @@ public class RootGwtApp implements EntryPoint {
 }
 ```
 
-To understand more in depth how the Observation works, and avoid pitfalls it's recommended to read information on **[the Vue Instance](../essential/the-vue-instance.md)**.
-
-Your shiny new Vue GWT Components will play nicely with GWT.
-**[Checkout integration with GWT](../gwt-integration/styles.md)**.
+To understand more in depth how the Observation works, and avoid pitfalls keep reading **[the Vue Instance](../essential/the-vue-instance.md)**.

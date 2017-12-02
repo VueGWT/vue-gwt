@@ -50,6 +50,11 @@ We can then simply access our bundle instance from the template:
 
 You could also directly expose your ImageResource to the template, it's really up to you.
 
+<p class="info-panel">
+    You can use <a href="../composition/extending-components.html">Component inheritance</a> to declare a base component in your app and avoid
+    having to expose your resources/styles manually in every components.
+</p>
+
 ## Using `CssResources` in Vue GWT {#styles}
 
 Vue GWT is compatible with GSS styles.
@@ -117,7 +122,7 @@ We can then simply use Vue `v-bind` directive to bind our style.
 </div>
 ```
 
-## Adding More Than One CSS Class
+#### Adding More Than One CSS Class
 
 You can add more than one CSS Class to your Components by using the [`array` builder](../js-interop/README.md#array):
 
@@ -127,7 +132,7 @@ You can add more than one CSS Class to your Components by using the [`array` bui
 </div>
 ```
 
-## Conditional Styling
+#### Conditional Styling
 
 You can apply a Style conditionally.
 First we add a boolean in our `MelisandreComponent`:
@@ -152,7 +157,7 @@ Then we simply use a ternary expression (be careful with the quotes):
 </div>
 ```
 
-## Conditional Styling With Several CSS Class
+#### Conditional Styling With Several CSS Class
 
 You can combine both the `array` and the ternary syntax:
  
@@ -162,7 +167,7 @@ You can combine both the `array` and the ternary syntax:
 </div>
 ```
 
-## Here is our finished `MelisandreComponent`
+#### Here is our finished `MelisandreComponent`
 
 {% raw %}
 <div class="example-container" data-name="melisandreComponent">
@@ -175,3 +180,8 @@ You can try toggling the red color on the two bottom sentences by typing in your
 ```
 melisandreComponent.isRed = false;
 ```
+
+<p class="info-panel">
+    You can use <a href="../composition/extending-components.html">Component inheritance</a> to declare a base component in your app and avoid
+    having to expose your resources/styles manually in every components.
+</p>
