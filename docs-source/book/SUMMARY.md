@@ -47,8 +47,9 @@
 * [Plugins](composition/plugins.md)
 
 ## Integration with GWT
-* [Styles](gwt-integration/styles.md)
-* [Client Bundles](gwt-integration/client-bundles.md)
+* [Client Bundles and Styles](gwt-integration/client-bundles-and-styles.md)
+    * [Client Bundles](gwt-integration/client-bundles-and-styles.md#client-bundles)
+    * [Styles (CssResource)](gwt-integration/client-bundles-and-styles.md#styles)
 * [Vue GWT and Widgets](gwt-integration/widgets.md)
 * [JsInterop](js-interop/README.md)
     * [JsPropertyMap<T>](js-interop/README.md#js-property-map)
