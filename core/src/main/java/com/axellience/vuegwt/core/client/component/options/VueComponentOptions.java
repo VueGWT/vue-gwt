@@ -12,6 +12,7 @@ import com.google.gwt.resources.client.CssResource;
 import elemental2.core.JsArray;
 import elemental2.core.Function;
 import elemental2.core.JsObject;
+import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -256,8 +257,8 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
         PropOptions propDefinition = new PropOptions();
         propDefinition.required = required;
 
-        //if (jsTypeName != null)
-            //propDefinition.type = ((JsPropertyMap) Window).get(jsTypeName);
+        if (jsTypeName != null)
+            propDefinition.type = ((JsPropertyMap<Object>) DomGlobal.window).get(jsTypeName);
 
         addProp(propName, propDefinition);
     }
