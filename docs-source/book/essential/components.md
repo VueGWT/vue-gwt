@@ -341,6 +341,24 @@ If you want this behavior you can pass `checkType` to true to your `@Prop` annot
 
 When prop validation fails, Vue will produce a console warning (if using the development build).
 
+It is also possible to have a custom validation method for your properties.
+For this you can use the `@PropValidator` annotation like this:
+
+```java
+@Component
+public class WhiteWalkerArmyComponent extends VueComponent {
+    @Prop
+    @JsProperty
+    int armyCount;
+    
+    @PropValidator(propertyName = "armyCount")
+    boolean armyCountValidator(int value) {
+        // This will make a runtime error if the value passed for armyCount is <= 20000
+        return value > 20000;
+    }
+}
+```
+
 ### Prop Default Value
 
 It is possible to set a default value for your Prop.
