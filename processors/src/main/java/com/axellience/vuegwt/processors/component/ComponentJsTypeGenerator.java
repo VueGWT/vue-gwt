@@ -30,8 +30,8 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
-import elemental2.core.JsArray;
 import elemental2.core.Function;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
@@ -591,7 +591,7 @@ public class ComponentJsTypeGenerator
     {
         dependenciesBuilder
             .getInjectedFieldsName()
-            .forEach(fieldName -> createdMethodBuilder.addStatement("$L = dependencies.$L",
+            .forEach(fieldName -> createdMethodBuilder.addStatement("super.$L = dependencies.$L",
                 fieldName,
                 fieldName));
     }
