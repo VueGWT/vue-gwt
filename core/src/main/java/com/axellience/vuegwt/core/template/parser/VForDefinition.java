@@ -1,11 +1,13 @@
 package com.axellience.vuegwt.core.template.parser;
 
-import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
-import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
+import jsinterop.base.Any;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
+import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 
 /**
  * An object used to process a v-for expression from the Template.
@@ -15,7 +17,7 @@ public class VForDefinition
 {
     private enum VForDefinitionType
     {
-        ARRAY, OBJECT, RANGE
+        OBJECT, ARRAY_OR_RANGE
     }
 
     private static Pattern VFOR_VARIABLE = Pattern.compile("([^ ]*) ([^ ]*)");
@@ -39,17 +41,10 @@ public class VForDefinition
         String loopVariablesDefinition = splitExpression[0].trim();
         inExpression = splitExpression[1].trim();
 
-        if (vForOnRange(inExpression, loopVariablesDefinition, context))
+        boolean iterateOnObject = inExpression.startsWith("(Object)");
+        if (!iterateOnObject)
         {
-            type = VForDefinitionType.RANGE;
-            return;
-        }
-
-        boolean iterateOnArray = !inExpression.startsWith("(Object)");
-
-        if (iterateOnArray)
-        {
-            type = VForDefinitionType.ARRAY;
+            type = VForDefinitionType.ARRAY_OR_RANGE;
 
             if (vForVariableAndIndex(loopVariablesDefinition, context))
                 return;
@@ -159,30 +154,6 @@ public class VForDefinition
     }
 
     /**
-     * v-for on an a range
-     * "n in 5"
-     * @param inExpression The expression after "in" ("5" in the example above)
-     * @param loopVariableDefinition The variable definition ("n" above)
-     * @param context The context of the parser
-     * @return true if we managed the case, false otherwise
-     */
-    private boolean vForOnRange(String inExpression, String loopVariableDefinition,
-        TemplateParserContext context)
-    {
-        // Try to parse the inExpression as an Int
-        try
-        {
-            Integer.parseInt(inExpression);
-            this.initLoopVariable("int", loopVariableDefinition, context);
-            return true;
-        }
-        catch (NumberFormatException e)
-        {
-            return false;
-        }
-    }
-
-    /**
      * Init the loop variable and add it to the parser context
      * @param type Java type of the variable, will look for qualified class name in the context
      * @param name Name of the variable
@@ -238,16 +209,16 @@ public class VForDefinition
 
     public String getInExpression()
     {
-        if (type == VForDefinitionType.ARRAY)
-            return "JsUtils.arrayFrom(" + inExpression + ")";
+        if (type == VForDefinitionType.ARRAY_OR_RANGE)
+            return "VForExpressionUtil.vForExpressionFromJava(" + inExpression + ")";
 
         return inExpression;
     }
 
     public String getInExpressionType()
     {
-        if (type == VForDefinitionType.RANGE)
-            return "int";
+        if (type == VForDefinitionType.ARRAY_OR_RANGE)
+            return Any.class.getCanonicalName();
 
         return "Object";
     }
@@ -270,10 +241,5 @@ public class VForDefinition
         }
 
         return variableDefinition;
-    }
-
-    public boolean isInExpressionJava()
-    {
-        return type != VForDefinitionType.RANGE;
     }
 }

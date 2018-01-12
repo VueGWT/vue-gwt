@@ -247,13 +247,7 @@ public class TemplateParser
         // Set return of the "in" expression
         currentExpressionReturnType = vForDef.getInExpressionType();
 
-        String inExpression = vForDef.getInExpression();
-
-        // Process in expression if it's java
-        if (vForDef.isInExpressionJava())
-        {
-            inExpression = this.processExpression(inExpression);
-        }
+        String inExpression = this.processExpression(vForDef.getInExpression());
 
         // And return the newly built definition
         return vForDef.getVariableDefinition() + " in " + inExpression;

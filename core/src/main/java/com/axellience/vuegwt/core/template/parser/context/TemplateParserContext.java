@@ -1,19 +1,22 @@
 package com.axellience.vuegwt.core.template.parser.context;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
-import com.axellience.vuegwt.core.client.template.ComponentTemplate;
-import com.axellience.vuegwt.core.client.tools.JsUtils;
-import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
-import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
-import com.squareup.javapoet.ClassName;
 import elemental2.dom.Event;
 import jsinterop.base.JsPropertyMap;
-import org.jsoup.nodes.Node;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jsoup.nodes.Node;
+
+import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.template.ComponentTemplate;
+import com.axellience.vuegwt.core.client.tools.JsUtils;
+import com.axellience.vuegwt.core.client.tools.VForExpressionUtil;
+import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
+import com.squareup.javapoet.ClassName;
 
 /**
  * Context of the parser.
@@ -44,6 +47,7 @@ public class TemplateParserContext
         this.addImport(Event.class.getCanonicalName());
         this.addImport(Math.class.getCanonicalName());
         this.addImport(JsUtils.class.getCanonicalName());
+        this.addImport(VForExpressionUtil.class.getCanonicalName());
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".map");
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".e");
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".array");
