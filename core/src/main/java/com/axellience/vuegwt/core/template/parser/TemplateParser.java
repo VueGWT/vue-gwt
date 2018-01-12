@@ -48,9 +48,10 @@ public class TemplateParser
     private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
     private TemplateParserContext context;
-    private TemplateParserResult result;
+    private TemplateParserResult  result;
 
-    private String currentExpressionReturnType;
+    private Attribute currentAttribute;
+    private String    currentExpressionReturnType;
 
     public TemplateParser(TreeLogger logger)
     {
@@ -96,10 +97,12 @@ public class TemplateParser
             {
                 result.addStyleImports(element.attr("name"), element.attr("style"));
                 context.addRootVariable(element.attr("style"), element.attr("name"));
-                logger.log(TreeLogger.WARN,
-                    "Style import in template is deprecated and will be removed in beta-6. Found usage in "
-                        + context.getTemplateName()
-                        + ". Please see https://axellience.github.io/vue-gwt/gwt-integration/client-bundles-and-styles.html#styles for information on how to use styles without this import.");
+                logger.log(
+                    TreeLogger.WARN,
+                    "Style import in template is deprecated and will be removed in beta-6. Found usage in " +
+                        context.getTemplateName() +
+                        ". Please see https://axellience.github.io/vue-gwt/gwt-integration/client-bundles-and-styles.html#styles for information on how to use styles without this import."
+                );
             }
             else if (element.hasAttr("class"))
             {
@@ -204,6 +207,7 @@ public class TemplateParser
             if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
                 continue;
 
+            this.currentAttribute = attribute;
             currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
             attribute.setValue(processExpression(attribute.getValue()));
         }
@@ -264,24 +268,29 @@ public class TemplateParser
     {
         expressionString = expressionString.trim();
         if (expressionString.isEmpty())
-            return "";
+        {
+            throw new TemplateExpressionException(
+                "Empty expression in template binding. If you want to pass an empty string then simply don't use binding: my-attribute=\"\"",
+                currentAttribute.toString(), context
+            );
+        }
 
         if (expressionString.startsWith("{"))
             throw new TemplateExpressionException(
                 "Object literal syntax are not supported yet in Vue GWT, please use map(e(\"key1\", myValue), e(\"key2\", myValue2 > 5)...) instead.\nThe object returned by map() is a regular Javascript Object (JsObject) with the given key/values.",
-                expressionString,
-                context);
+                expressionString, context
+            );
 
         if (expressionString.startsWith("["))
             throw new TemplateExpressionException(
                 "Array literal syntax are not supported yet in Vue GWT, please use array(myValue, myValue2 > 5...) instead.\nThe object returned by array() is a regular Javascript Array (JsArray) with the given values.",
-                expressionString,
-                context);
+                expressionString, context
+            );
 
         // We don't optimize String expression, as we want GWT to convert
         // Java values to String for us (Enums, wrapped primitives...)
-        if (!"String".equals(currentExpressionReturnType) && isSimpleVueJsExpression(
-            expressionString))
+        if (!"String".equals(currentExpressionReturnType) &&
+            isSimpleVueJsExpression(expressionString))
             return expressionString;
 
         return processJavaExpression(expressionString).toTemplateString();
@@ -324,10 +333,9 @@ public class TemplateParser
         catch (ParseProblemException parseException)
         {
             throw new TemplateExpressionException(
-                "Couldn't parse Expression, make sure it is valid Java.",
-                expressionString,
-                context,
-                parseException);
+                "Couldn't parse Expression, make sure it is valid Java.", expressionString, context,
+                parseException
+            );
         }
 
         resolveTypesUsingImports(expression);
@@ -346,9 +354,9 @@ public class TemplateParser
         expressionString = expression.toString();
 
         // Add the resulting expression to our result
-        return result.addExpression(expressionString,
-            currentExpressionReturnType,
-            expressionParameters);
+        return result.addExpression(expressionString, currentExpressionReturnType,
+            expressionParameters
+        );
     }
 
     /**
@@ -405,8 +413,7 @@ public class TemplateParser
         }
 
         // Recurse downward in the expression
-        expression
-            .getChildNodes()
+        expression.getChildNodes()
             .stream()
             .filter(Expression.class::isInstance)
             .map(Expression.class::cast)
@@ -430,8 +437,7 @@ public class TemplateParser
         }
 
         // Recurse downward in the expression
-        expression
-            .getChildNodes()
+        expression.getChildNodes()
             .stream()
             .filter(Expression.class::isInstance)
             .map(Expression.class::cast)
@@ -455,12 +461,11 @@ public class TemplateParser
                 String methodName = methodCall.getName().getIdentifier();
                 if (!context.hasMethod(methodName) && !context.hasStaticMethod(methodName))
                 {
-                    throw new TemplateExpressionException("Couldn't find the method \""
-                        + methodName
-                        + "\" in the Component."
-                        + "\nMake sure it is not private or try rerunning your Annotation processor.",
-                        expression.toString(),
-                        context);
+                    throw new TemplateExpressionException(
+                        "Couldn't find the method \"" + methodName + "\" in the Component." +
+                            "\nMake sure it is not private or try rerunning your Annotation processor.",
+                        expression.toString(), context
+                    );
                 }
             }
         }
@@ -492,8 +497,7 @@ public class TemplateParser
                 processNameExpression(expression, nameExpr, parameters);
         }
 
-        expression
-            .getChildNodes()
+        expression.getChildNodes()
             .stream()
             .filter(Expression.class::isInstance)
             .map(Expression.class::cast)
@@ -509,9 +513,8 @@ public class TemplateParser
     private void processEventParameter(Expression expression, NameExpr nameExpr,
         List<VariableInfo> parameters)
     {
-        if (nameExpr.getParentNode().isPresent() && nameExpr
-            .getParentNode()
-            .get() instanceof CastExpr)
+        if (nameExpr.getParentNode().isPresent() &&
+            nameExpr.getParentNode().get() instanceof CastExpr)
         {
             CastExpr castExpr = (CastExpr) nameExpr.getParentNode().get();
             parameters.add(new VariableInfo(castExpr.getType().toString(), "$event"));
@@ -520,8 +523,8 @@ public class TemplateParser
         {
             throw new TemplateExpressionException(
                 "\"$event\" should always be casted to it's intended type. Example: @click=\"doSomething((NativeEvent) $event)\".",
-                expression.toString(),
-                context);
+                expression.toString(), context
+            );
         }
     }
 
@@ -546,11 +549,10 @@ public class TemplateParser
         VariableInfo variableInfo = context.findVariable(name);
         if (variableInfo == null)
         {
-            throw new TemplateExpressionException("Couldn't find variable/method \""
-                + name
-                + "\" in the Component.\nMake sure you didn't forget the @JsProperty/@JsMethod annotation or try rerunning your Annotation processor.",
-                expression.toString(),
-                context);
+            throw new TemplateExpressionException("Couldn't find variable/method \"" + name +
+                "\" in the Component.\nMake sure you didn't forget the @JsProperty/@JsMethod annotation or try rerunning your Annotation processor.",
+                expression.toString(), context
+            );
         }
 
         if (variableInfo instanceof LocalVariableInfo)
