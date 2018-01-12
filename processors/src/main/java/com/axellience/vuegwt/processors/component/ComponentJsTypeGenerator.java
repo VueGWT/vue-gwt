@@ -1,5 +1,30 @@
 package com.axellience.vuegwt.processors.component;
 
+import elemental2.core.Function;
+import elemental2.core.JsArray;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
+
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
+
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Emit;
@@ -30,29 +55,6 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
-import elemental2.core.Function;
-import elemental2.core.JsArray;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
-
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic.Kind;
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.*;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.*;
@@ -387,6 +389,15 @@ public class ComponentJsTypeGenerator
     {
         getMethodsWithAnnotation(component, PropValidator.class).forEach(method -> {
             PropValidator propValidator = method.getAnnotation(PropValidator.class);
+
+            if (!TypeName.get(method.getReturnType()).equals(TypeName.BOOLEAN))
+            {
+                messager.printMessage(Kind.ERROR,
+                    "Method "
+                        + method.getSimpleName()
+                        + " annotated with PropValidator must return a boolean in Component: "
+                        + component.getQualifiedName());
+            }
 
             String propertyName = propValidator.propertyName();
             optionsBuilder.addStatement("options.addJavaPropValidator($S, $S)",
