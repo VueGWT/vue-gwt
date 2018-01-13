@@ -1,10 +1,5 @@
 package com.axellience.vuegwt.core.generation;
 
-import javax.inject.Provider;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
-
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Emit;
 import com.axellience.vuegwt.core.client.component.VueComponent;
@@ -13,20 +8,22 @@ import com.google.gwt.regexp.shared.RegExp;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 
+import javax.inject.Provider;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+
 /**
  * @author Adrien Baron
  */
 public class GenerationNameUtil
 {
-    public static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
+    private static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
     private static String COMPONENT_INJECTED_DEPENDENCIES_SUFFIX = "InjectedDependencies";
 
     public static String COMPONENT_TEMPLATE_SUFFIX = "Template";
 
     private static String COMPONENT_FACTORY_SUFFIX = "Factory";
-
-    private static String STYLE_BUNDLE_SUFFIX = "Bundle";
-    public static String STYLE_BUNDLE_METHOD_NAME = "style";
 
     private static String DIRECTIVE_OPTIONS_SUFFIX = "Options";
 
@@ -82,21 +79,6 @@ public class GenerationNameUtil
     public static ClassName componentFactoryName(ClassName component)
     {
         return nameWithSuffix(component, COMPONENT_FACTORY_SUFFIX);
-    }
-
-    public static ClassName styleBundleName(TypeElement style)
-    {
-        return nameWithSuffix(style, STYLE_BUNDLE_SUFFIX);
-    }
-
-    public static ClassName styleBundleName(ClassName style)
-    {
-        return nameWithSuffix(style, STYLE_BUNDLE_SUFFIX);
-    }
-
-    public static ClassName styleBundleName(String styleQualifiedName)
-    {
-        return nameWithSuffix(styleQualifiedName, STYLE_BUNDLE_SUFFIX);
     }
 
     public static ClassName directiveOptionsName(TypeElement directive)

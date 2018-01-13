@@ -65,11 +65,11 @@ public class TemplateParser
     }
 
     /**
-     * Parse a given HTML template and return the a result object containing the expressions, styles
+     * Parse a given HTML template and return the a result object containing the expressions
      * and a transformed HTML.
      * @param htmlTemplate The HTML template to process, as a String
      * @param context Context of the Component we are currently processing
-     * @return A {@link TemplateParserResult} containing the processed template, expressions and styles
+     * @return A {@link TemplateParserResult} containing the processed template and expressions
      */
     public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
         TemplateParserContext context)
@@ -99,19 +99,8 @@ public class TemplateParser
             if (!"vue-gwt:import".equals(element.tagName()))
                 continue;
 
-            if (element.hasAttr("style"))
-            {
-                result.addStyleImports(element.attr("name"), element.attr("style"));
-                context.addRootVariable(element.attr("style"), element.attr("name"));
-                logger.log(TreeLogger.WARN,
-                    "Style import in template is deprecated and will be removed in beta-6. Found usage in "
-                        + context.getTemplateName()
-                        + ". Please see https://axellience.github.io/vue-gwt/gwt-integration/client-bundles-and-styles.html#styles for information on how to use styles without this import.");
-            }
-            else if (element.hasAttr("class"))
-            {
+            if (element.hasAttr("class"))
                 context.addImport(element.attr("class"));
-            }
 
             importElements.add(element);
         }

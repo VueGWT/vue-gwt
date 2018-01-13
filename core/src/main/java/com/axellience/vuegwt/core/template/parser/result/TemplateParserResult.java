@@ -2,10 +2,8 @@ package com.axellience.vuegwt.core.template.parser.result;
 
 import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import static com.axellience.vuegwt.core.client.template.ComponentTemplate.EXPRESSION_PREFIX;
 
@@ -17,7 +15,6 @@ public class TemplateParserResult
 {
     private String processedTemplate;
     private final List<TemplateExpression> expressions = new LinkedList<>();
-    private final Map<String, String> styleImports = new HashMap<>();
 
     /**
      * Set the processed template, once all the Java expression has been replaced by
@@ -70,24 +67,5 @@ public class TemplateParserResult
     public List<TemplateExpression> getExpressions()
     {
         return expressions;
-    }
-
-    /**
-     * Add a style import we found in the template.
-     * @param styleName The name of the style in the template
-     * @param className The fully qualified name of the style class
-     */
-    public void addStyleImports(String styleName, String className)
-    {
-        this.styleImports.put(styleName, className);
-    }
-
-    /**
-     * Return the list of style imports we found in the template
-     * @return List of style imports we found in the template
-     */
-    public Map<String, String> getStyleImports()
-    {
-        return styleImports;
     }
 }
