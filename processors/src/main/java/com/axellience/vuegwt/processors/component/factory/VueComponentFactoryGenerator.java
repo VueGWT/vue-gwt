@@ -1,5 +1,22 @@
 package com.axellience.vuegwt.processors.component.factory;
 
+import jsinterop.base.JsPropertyMap;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.inject.Inject;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.MirroredTypesException;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.component.VueComponent;
@@ -15,20 +32,6 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
-import jsinterop.base.JsPropertyMap;
-
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.inject.Inject;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.MirroredTypesException;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getComponentCustomizeOptions;
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getComponentLocalComponents;
@@ -153,7 +156,9 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             injectDependenciesBuilder.addParameter(providerOf(factory), parameterName);
             staticInitParameters.add(CodeBlock.of("() -> $T.get()", factory));
 
-            String tagName = componentToTagName(((DeclaredType) localComponent).asElement());
+            Element localComponentElement = ((DeclaredType) localComponent).asElement();
+            String tagName = componentToTagName(localComponentElement.getSimpleName().toString(),
+                localComponentElement.getAnnotation(Component.class));
             injectDependenciesBuilder.addStatement(
                 "components.set($S, render -> render.accept($L.get().getJsConstructor()))",
                 tagName,
