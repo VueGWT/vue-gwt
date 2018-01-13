@@ -6,7 +6,7 @@ import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
  * A generic exception thrown when parsing the template
  * @author Adrien Baron
  */
-public abstract class TemplateParserException extends RuntimeException
+public class TemplateParserException extends RuntimeException
 {
     public TemplateParserException(String message, TemplateParserContext context)
     {

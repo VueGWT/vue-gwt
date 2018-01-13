@@ -23,15 +23,17 @@ public class TemplateExpression
 {
     private final String id;
     private final String body;
+    private final boolean shouldCast;
     private final TypeName type;
     private final List<VariableInfo> parameters = new LinkedList<>();
 
-    public TemplateExpression(String id, String body, String type,
+    public TemplateExpression(String id, String body, String type, boolean shouldCast,
         Collection<VariableInfo> parameters)
     {
         this.id = id;
         this.type = stringTypeToTypeName(type);
         this.body = body;
+        this.shouldCast = shouldCast;
         this.parameters.addAll(parameters);
     }
 
@@ -104,5 +106,10 @@ public class TemplateExpression
         return className.reflectionName().equals("String") || className
             .reflectionName()
             .equals(String.class.getCanonicalName());
+    }
+
+    public boolean isShouldCast()
+    {
+        return shouldCast;
     }
 }

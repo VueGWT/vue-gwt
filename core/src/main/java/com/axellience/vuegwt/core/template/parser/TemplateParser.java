@@ -1,24 +1,10 @@
 package com.axellience.vuegwt.core.template.parser;
 
-import jsinterop.base.Any;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
-import org.jsoup.parser.ParseSettings;
-import org.jsoup.parser.Parser;
-
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
+import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponentProp;
 import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
+import com.axellience.vuegwt.core.template.parser.exceptions.TemplateParserException;
 import com.axellience.vuegwt.core.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
@@ -33,6 +19,23 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
 import com.google.gwt.core.ext.TreeLogger;
+import jsinterop.base.Any;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.parser.ParseSettings;
+import org.jsoup.parser.Parser;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -53,6 +56,7 @@ public class TemplateParser
     private TemplateParserResult result;
 
     private Attribute currentAttribute;
+    private LocalComponentProp currentProp;
     private String currentExpressionReturnType;
 
     public TemplateParser(TreeLogger logger)
@@ -126,6 +130,8 @@ public class TemplateParser
     private void processNode(Node node)
     {
         context.setCurrentNode(node);
+        currentProp = null;
+        currentAttribute = null;
 
         boolean nodeHasVFor = node.attributes().hasKey("v-for");
         if (nodeHasVFor)
@@ -196,7 +202,10 @@ public class TemplateParser
      */
     private void processElementNode(Element element)
     {
+        Optional<LocalComponent> localComponent = context.getLocalComponent(element.tagName());
+
         // Iterate on element attributes
+        Set<LocalComponentProp> foundProps = new HashSet<>();
         for (Attribute attribute : element.attributes())
         {
             String attributeName = attribute.getKey().toLowerCase();
@@ -207,9 +216,41 @@ public class TemplateParser
             if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
                 continue;
 
-            this.currentAttribute = attribute;
+            Optional<LocalComponentProp> optionalProp =
+                localComponent.flatMap(lc -> lc.getPropForAttribute(attributeName));
+            optionalProp.ifPresent(foundProps::add);
+            currentAttribute = attribute;
+            currentProp = optionalProp.orElse(null);
             currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
             attribute.setValue(processExpression(attribute.getValue()));
+        }
+
+        localComponent.ifPresent(lc -> validateRequiredProps(lc, foundProps));
+    }
+
+    /**
+     * Validate that all the required properties of a local components are present on a the
+     * HTML node that represents it.
+     * @param localComponent The {@link LocalComponent} we want to check
+     * @param foundProps The props we found on the HTML node during processing
+     */
+    private void validateRequiredProps(LocalComponent localComponent,
+        Set<LocalComponentProp> foundProps)
+    {
+        String missingRequiredProps = localComponent
+            .getRequiredProps()
+            .stream()
+            .filter(prop -> !foundProps.contains(prop))
+            .map(prop -> "\"" + prop.getName() + "\"")
+            .collect(Collectors.joining(","));
+
+        if (!missingRequiredProps.isEmpty())
+        {
+            throw new TemplateParserException("Missing required property: "
+                + missingRequiredProps
+                + " on child component \""
+                + localComponent.getComponentTagName()
+                + "\"", context);
         }
     }
 
@@ -229,6 +270,9 @@ public class TemplateParser
 
         if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
             return "boolean";
+
+        if (currentProp != null)
+            return currentProp.getType().toString();
 
         return Any.class.getCanonicalName();
     }
@@ -294,13 +338,27 @@ public class TemplateParser
                 expressionString,
                 context);
 
-        // We don't optimize String expression, as we want GWT to convert
-        // Java values to String for us (Enums, wrapped primitives...)
-        if (!"String".equals(currentExpressionReturnType) && isSimpleVueJsExpression(
-            expressionString))
+        if (shouldSkipExpressionProcessing(expressionString))
             return expressionString;
 
         return processJavaExpression(expressionString).toTemplateString();
+    }
+
+    /**
+     * In some cases we want to skip expression processing for optimization.
+     * This is when we are sure the expression is valid and there is no need to create a Java method
+     * for it.
+     * @param expressionString The expression to asses
+     * @return true if we can skip the expression
+     */
+    private boolean shouldSkipExpressionProcessing(String expressionString)
+    {
+        // We don't skip if it's a component prop as we want Java validation
+        // We don't optimize String expression, as we want GWT to convert Java values
+        // to String for us (Enums, wrapped primitives...)
+        return currentProp == null
+            && !"String".equals(currentExpressionReturnType)
+            && isSimpleVueJsExpression(expressionString);
     }
 
     private boolean isAttributeBinding(Attribute attribute)
@@ -368,7 +426,8 @@ public class TemplateParser
         findExpressionParameters(expression, expressionParameters);
 
         // If there is a cast first, we use this as the type of our expression
-        expression = getTypeFromCast(expression);
+        if (currentProp == null)
+            expression = getTypeFromCast(expression);
 
         // Update the expression as it might have been changed
         expressionString = expression.toString();
@@ -376,6 +435,7 @@ public class TemplateParser
         // Add the resulting expression to our result
         return result.addExpression(expressionString,
             currentExpressionReturnType,
+            currentProp == null,
             expressionParameters);
     }
 

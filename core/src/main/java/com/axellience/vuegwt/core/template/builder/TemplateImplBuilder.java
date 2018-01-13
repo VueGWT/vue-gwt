@@ -187,11 +187,15 @@ public class TemplateImplBuilder
                 Js.class,
                 expression.getBody());
         }
-        else
+        else if (expression.isShouldCast())
         {
             templateExpressionMethodBuilder.addStatement("return ($T) ($L)",
                 expression.getType(),
                 expression.getBody());
+        }
+        else
+        {
+            templateExpressionMethodBuilder.addStatement("return $L", expression.getBody());
         }
 
         templateBuilder.addMethod(templateExpressionMethodBuilder.build());

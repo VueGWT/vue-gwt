@@ -46,17 +46,18 @@ public class TemplateParserResult
      * @param expression The Java expression
      * @param expressionType The type of the expression, determined depending on the context it is
      * used in.
+     * @param shouldCast Should the expression be cast to the given expressionType
      * @param parameters The parameters this expression depends on (can be empty)
      * @return The {@link TemplateExpression} for this Java expression, will be used to get the
      * string to put in the template instead.
      */
-    public TemplateExpression addExpression(String expression, String expressionType,
+    public TemplateExpression addExpression(String expression, String expressionType, boolean shouldCast,
         List<VariableInfo> parameters)
     {
         String id = EXPRESSION_PREFIX + this.expressions.size();
 
         TemplateExpression templateExpression =
-            new TemplateExpression(id, expression.trim(), expressionType, parameters);
+            new TemplateExpression(id, expression.trim(), expressionType, shouldCast, parameters);
 
         this.expressions.add(templateExpression);
         return templateExpression;
