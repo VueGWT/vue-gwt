@@ -14,6 +14,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 @Retention(SOURCE)
 public @interface Watch
 {
-    String propertyName();
+    String value();
     boolean isDeep() default false;
 }

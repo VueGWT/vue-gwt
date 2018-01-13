@@ -16,7 +16,7 @@ public class RecursiveComponent extends VueComponent
     @JsProperty
     int counter;
 
-    @PropDefault(propertyName = "counter")
+    @PropDefault("counter")
     public int defaultCounter()
     {
         return 0;

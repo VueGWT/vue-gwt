@@ -351,7 +351,7 @@ public class WhiteWalkerArmyComponent extends VueComponent {
     @JsProperty
     int armyCount;
     
-    @PropValidator(propertyName = "armyCount")
+    @PropValidator("armyCount")
     boolean armyCountValidator(int value) {
         // This will make a runtime error if the value passed for armyCount is <= 20000
         return value > 20000;
@@ -374,7 +374,7 @@ public class PropDefaultValueComponent extends VueComponent {
     @JsProperty
     String stringProp;
 
-    @PropDefault(propertyName = "stringProp")
+    @PropDefault("stringProp")
     String stringPropDefault() {
         return "Hello World";
     }
