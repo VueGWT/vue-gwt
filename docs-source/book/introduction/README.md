@@ -419,7 +419,7 @@ public class TodoComponent extends VueComponent {
 
 The `@Prop` annotation tells Vue GWT that our `todo` property will be passed from a parent component.
 
-Be careful, you still need to use the `@JsProperty` to tell VueGWT to not rename this property.
+Be careful, you still need to use the `@JsProperty` to tell Vue GWT to not rename this property.
 
 ***TodoComponent.html***
 
@@ -512,6 +512,12 @@ public class RootGwtApp implements EntryPoint {
     }
 }
 ```
+
+<p class="info-panel">
+    It's better to register locally whenever you can.
+    Locally registered components get compile time type checking when binding property values.
+    They also break at compile time if you miss a required property.
+</p>
 
 It is **strongly recommended** to read the whole [Essentials section](../essential/the-vue-instance.md) even if skimming through it.
 It will teach you everything you need to know to make full use of the framework.
