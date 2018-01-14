@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.core.template.parser;
 
+import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponentProp;
@@ -202,12 +203,16 @@ public class TemplateParser
             if ("v-for".equals(attributeName) || "v-model".equals(attributeName))
                 continue;
 
-            if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
-                continue;
-
             Optional<LocalComponentProp> optionalProp =
                 localComponent.flatMap(lc -> lc.getPropForAttribute(attributeName));
             optionalProp.ifPresent(foundProps::add);
+
+            if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
+            {
+                optionalProp.ifPresent(this::validateStringPropBinding);
+                continue;
+            }
+
             currentAttribute = attribute;
             currentProp = optionalProp.orElse(null);
             currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
@@ -215,6 +220,23 @@ public class TemplateParser
         }
 
         localComponent.ifPresent(lc -> validateRequiredProps(lc, foundProps));
+    }
+
+    /**
+     * Validate that a {@link Prop} bounded with string binding is of type String
+     * @param localComponentProp The prop to check
+     */
+    private void validateStringPropBinding(LocalComponentProp localComponentProp)
+    {
+        if (localComponentProp.getType().toString().equals(String.class.getCanonicalName()))
+            return;
+
+        throw new TemplateParserException("Passing a String to a non String Prop: \""
+            + localComponentProp.getName()
+            + "\"."
+            + "\n\nIf you want to pass a boolean or an int you should use v-bind."
+            + "\nFor example: v-bind:my-prop=\"12\" (or using the short syntax, :my-prop=\"12\") instead of my-prop=\"12\".",
+            context);
     }
 
     /**

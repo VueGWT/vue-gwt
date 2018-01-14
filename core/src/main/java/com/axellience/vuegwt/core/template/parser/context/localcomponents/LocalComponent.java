@@ -46,7 +46,7 @@ public class LocalComponent
         if (attributeName.startsWith(":"))
             return getProp(attributeName.substring(1));
 
-        return Optional.empty();
+        return getProp(attributeName);
     }
 
     public Set<LocalComponentProp> getRequiredProps()

@@ -26,7 +26,6 @@ import com.google.gwt.dev.resource.ResourceOracle;
 import com.google.gwt.dev.util.Util;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
@@ -38,6 +37,7 @@ import static com.axellience.vuegwt.core.generation.GenerationNameUtil.COMPONENT
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentJsTypeName;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateImplName;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentToTagName;
+import static com.axellience.vuegwt.core.generation.GenerationUtil.stringTypeToTypeName;
 
 /**
  * This generator parse and compile the HTML template.
@@ -87,7 +87,9 @@ public final class TemplateGwtGenerator extends Generator
             getTemplateContent(generatorContext.getResourcesOracle(), logger, componentTypeName);
 
         LocalComponents localComponents = new LocalComponents();
-        findLocalComponentsForComponent(localComponents, componentJsType.getSuperclass());
+        findLocalComponentsForComponent(localComponents,
+            componentJsType.getSuperclass(),
+            generatorContext.getTypeOracle());
 
         TemplateParserContext templateParserContext =
             new TemplateParserContext(componentTypeName, localComponents);
@@ -107,49 +109,49 @@ public final class TemplateGwtGenerator extends Generator
      * Register all locally declared components.
      * @param localComponents The {@link LocalComponents} where we register our local components
      * @param componentType The JClass type of the local component
+     * @param typeOracle Used to retrieve a {@link JClassType} in GWT Context
      */
     private void findLocalComponentsForComponent(LocalComponents localComponents,
-        JClassType componentType)
+        JClassType componentType, TypeOracle typeOracle)
     {
         Component componentAnnotation = componentType.getAnnotation(Component.class);
         if (componentAnnotation == null)
             return;
 
-        Arrays.stream(componentAnnotation.components()).forEach(childComponentClass -> {
-            processLocalComponentClass(localComponents, childComponentClass);
-        });
-        findLocalComponentsForComponent(localComponents, componentType.getSuperclass());
+        Arrays
+            .stream(componentAnnotation.components())
+            .map(Class::getCanonicalName)
+            .map(typeOracle::findType)
+            .forEach(childType -> processLocalComponentClass(localComponents, childType));
+
+        findLocalComponentsForComponent(localComponents, componentType.getSuperclass(), typeOracle);
     }
 
     /**
      * Register the local component and all of its {@link Prop}.
      * This will be used for type validation.
      * @param localComponents The {@link LocalComponents} object where we should register our {@link LocalComponent}
-     * @param localComponentClass The {@link Class} of the {@link LocalComponent}
+     * @param localComponentType The {@link JClassType} of the {@link LocalComponent}
      */
     private void processLocalComponentClass(LocalComponents localComponents,
-        Class<? extends VueComponent> localComponentClass)
+        JClassType localComponentType)
     {
-        Component componentAnnotation = localComponentClass.getAnnotation(Component.class);
+        Component componentAnnotation = localComponentType.getAnnotation(Component.class);
         String localComponentTagName =
-            componentToTagName(localComponentClass.getSimpleName(), componentAnnotation);
+            componentToTagName(localComponentType.getName(), componentAnnotation);
 
         if (localComponents.hasLocalComponent(localComponentTagName))
             return;
 
         LocalComponent localComponent = localComponents.addLocalComponent(localComponentTagName);
-        Arrays.stream(localComponentClass.getFields()).forEach(field -> {
+        Arrays.stream(localComponentType.getFields()).forEach(field -> {
             Prop propAnnotation = field.getAnnotation(Prop.class);
             if (propAnnotation != null)
             {
                 localComponent.addProp(field.getName(),
-                    TypeName.get(field.getType()),
+                    stringTypeToTypeName(field.getType().getQualifiedSourceName()),
                     propAnnotation.required());
             }
-        });
-
-        Arrays.stream(componentAnnotation.components()).forEach(localComponentChildClass -> {
-            processLocalComponentClass(localComponents, localComponentChildClass);
         });
     }
 
