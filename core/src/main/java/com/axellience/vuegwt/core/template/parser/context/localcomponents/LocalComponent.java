@@ -1,42 +1,45 @@
 package com.axellience.vuegwt.core.template.parser.context.localcomponents;
 
-import com.squareup.javapoet.TypeName;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.squareup.javapoet.TypeName;
+
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.propNameToAttributeName;
+
 public class LocalComponent
 {
-    private final Map<String, LocalComponentProp> propsMap;
-    private final Set<LocalComponentProp> requiredProps;
-    private final String componentTagName;
+    private final Map<String, LocalComponentProp> attributeNameToPropMap;
+    private final Set<LocalComponentProp>         requiredProps;
+    private final String                          componentTagName;
 
     LocalComponent(String componentTagName)
     {
         this.componentTagName = componentTagName;
-        propsMap = new HashMap<>();
+        attributeNameToPropMap = new HashMap<>();
         requiredProps = new HashSet<>();
     }
 
     public void addProp(String propName, TypeName propType, boolean isRequired)
     {
+        String attributeName = propNameToAttributeName(propName);
         LocalComponentProp localComponentProp =
-            new LocalComponentProp(propName, propType, isRequired);
-        propsMap.put(propName, localComponentProp);
+                new LocalComponentProp(propName, attributeName, propType, isRequired);
+        attributeNameToPropMap.put(attributeName, localComponentProp);
 
         if (isRequired)
             requiredProps.add(localComponentProp);
     }
 
-    private Optional<LocalComponentProp> getProp(String propName)
+    private Optional<LocalComponentProp> getProp(String attributeName)
     {
-        if (!propsMap.containsKey(propName))
+        if (!attributeNameToPropMap.containsKey(attributeName))
             return Optional.empty();
 
-        return Optional.of(propsMap.get(propName));
+        return Optional.of(attributeNameToPropMap.get(attributeName));
     }
 
     public Optional<LocalComponentProp> getPropForAttribute(String attributeName)

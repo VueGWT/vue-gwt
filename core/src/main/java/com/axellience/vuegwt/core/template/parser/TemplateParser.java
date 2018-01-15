@@ -1,5 +1,24 @@
 package com.axellience.vuegwt.core.template.parser;
 
+import jsinterop.base.Any;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.parser.ParseSettings;
+import org.jsoup.parser.Parser;
+
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
@@ -20,23 +39,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
 import com.google.gwt.core.ext.TreeLogger;
-import jsinterop.base.Any;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
-import org.jsoup.parser.ParseSettings;
-import org.jsoup.parser.Parser;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -232,7 +234,7 @@ public class TemplateParser
             return;
 
         throw new TemplateParserException("Passing a String to a non String Prop: \""
-            + localComponentProp.getName()
+            + localComponentProp.getPropName()
             + "\"."
             + "\n\nIf you want to pass a boolean or an int you should use v-bind."
             + "\nFor example: v-bind:my-prop=\"12\" (or using the short syntax, :my-prop=\"12\") instead of my-prop=\"12\".",
@@ -252,7 +254,7 @@ public class TemplateParser
             .getRequiredProps()
             .stream()
             .filter(prop -> !foundProps.contains(prop))
-            .map(prop -> "\"" + prop.getName() + "\"")
+            .map(prop -> "\"" + prop.getPropName() + "\"")
             .collect(Collectors.joining(","));
 
         if (!missingRequiredProps.isEmpty())

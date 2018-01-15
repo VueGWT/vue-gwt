@@ -1,17 +1,18 @@
 package com.axellience.vuegwt.core.generation;
 
+import javax.inject.Provider;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Emit;
+import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.directive.VueDirective;
 import com.google.gwt.regexp.shared.RegExp;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
-
-import javax.inject.Provider;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 
 /**
  * @author Adrien Baron
@@ -167,7 +168,7 @@ public class GenerationNameUtil
 
     /**
      * Return the name of the event to emit for a given method.
-     * Expect the method to be annotated with {@link com.axellience.vuegwt.core.annotations.component.Emit}.
+     * Expect the method to be annotated with {@link Emit}.
      * @param method The method to convert
      * @return The name of the event
      */
@@ -178,5 +179,15 @@ public class GenerationNameUtil
             return emitAnnotation.value();
 
         return CAMEL_CASE_PATTERN.replace(method.getSimpleName().toString(), "$1-$2").toLowerCase();
+    }
+
+    /**
+     * Return the name of the HTML property to use for a given java {@link Prop} field.
+     * @param propName The name of the Java {@link Prop}
+     * @return The name of the HTML attribute to use for that prop
+     */
+    public static String propNameToAttributeName(String propName)
+    {
+        return CAMEL_CASE_PATTERN.replace(propName, "$1-$2").toLowerCase();
     }
 }

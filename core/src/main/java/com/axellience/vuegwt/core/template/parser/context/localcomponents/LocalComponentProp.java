@@ -4,20 +4,27 @@ import com.squareup.javapoet.TypeName;
 
 public class LocalComponentProp
 {
-    private String name;
+    private String   propName;
+    private String   attributeName;
     private TypeName type;
-    boolean isRequired;
+    boolean          isRequired;
 
-    LocalComponentProp(String name, TypeName type, boolean isRequired)
+    LocalComponentProp(String propName, String attributeName, TypeName type, boolean isRequired)
     {
-        this.name = name;
+        this.propName = propName;
+        this.attributeName = attributeName;
         this.type = type;
         this.isRequired = isRequired;
     }
 
-    public String getName()
+    public String getPropName()
     {
-        return name;
+        return propName;
+    }
+
+    public String getAttributeName()
+    {
+        return attributeName;
     }
 
     public TypeName getType()
