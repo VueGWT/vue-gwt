@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.core.template.builder;
 
+import com.axellience.vuegwt.core.client.tools.VueGWTTools;
 import com.axellience.vuegwt.core.template.compiler.VueTemplateCompiler;
 import com.axellience.vuegwt.core.template.compiler.VueTemplateCompilerException;
 import com.axellience.vuegwt.core.template.compiler.VueTemplateCompilerResult;
@@ -166,7 +167,8 @@ public class TemplateImplBuilder
 
         if (expression.isReturnString())
         {
-            templateExpressionMethodBuilder.addStatement("return ($L) + \"\"",
+            templateExpressionMethodBuilder.addStatement("return $T.templateExpressionToString($L)",
+                VueGWTTools.class,
                 expression.getBody());
         }
         else if (expression.isReturnVoid())
