@@ -6,4 +6,7 @@
 	<inherits name="elemental2.dom.Dom"/>
 	<inherits name="javax.inject.Inject"/>
 	<source path="core/client"/>
+
+	<define-property name="vuegwt.environment" values="development,production"/>
+	<set-property name="vuegwt.environment" value="production"/>
 </module>
