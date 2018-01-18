@@ -1033,58 +1033,52 @@ In some cases, they may also appear as a native HTML element extended with the s
 <h3 id="registration">Registration</h3>
 <p>We already saw how to define a Component in Vue GWT.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyChildComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
 }
 </code></pre>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-  A custom component!
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>A custom child component!<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
 </code></pre>
-<p>To register a global component, you can use <code>Vue.component(tagName, MyComponent.class)</code>. For example:</p>
-<pre><code class="lang-java">Vue.component(<span class="hljs-string">&quot;my-component&quot;</span>, MyComponent.class);
-</code></pre>
-<p class="info-panel">
-    Note that Vue does not enforce the <a href="http://www.w3.org/TR/custom-elements/#concepts" target="_blank">W3C Rules</a> for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.
-</p>
-
-<p>Once registered, a component can be used in an instance&apos;s template as a custom element, <code>&lt;my-component&gt;&lt;/my-component&gt;</code>.
-Make sure the component is registered <strong>before</strong> you instantiate the root Component.
-Here&apos;s the full example:</p>
-<p><strong><em>ParentComponent</em></strong></p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">my-component</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-component</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<p>You can make a component available in the scope of another Component by passing it to the <code>components</code> annotation option:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {MyChildComponent.class})
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
 }
 </code></pre>
-<pre><code class="lang-java"><span class="hljs-comment">// Somewhere in your App</span>
-Vue.component(<span class="hljs-string">&quot;my-component&quot;</span>, MyComponent.class);
-Vue.attach(<span class="hljs-string">&quot;#rootComponent&quot;</span>, RootComponent.class);
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">my-child</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-child</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <p>Which will render:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>A custom component!<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>A custom child component!<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
-<h3 id="local-registration">Local Registration</h3>
-<p>You don&apos;t have to register every component globally.
-You can make a component available only in the scope of another instance/component by registering it with the <code>components</code> annotation option:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {MyComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
-}
-</code></pre>
-<p>In that case the name of your Component is determined using the Component&apos;s Class name.</p>
-<p>The name is converted from CamelCase to kebab-case.
+<h4 id="how-is-the-html-tag-name-determined">How is the HTML Tag Name Determined?</h4>
+<p>The HTML tag name of your Component is determined using the Component&apos;s Class name.</p>
+<p>The class name is converted from CamelCase to kebab-case.
 If the name ends with &quot;Component&quot; this part is dropped.</p>
 <p>For example:</p>
 <ul>
+<li><code>MyChildComponent -&gt; my-child</code></li>
 <li><code>TodoComponent -&gt; todo</code></li>
 <li><code>TodoListComponent -&gt; todo-list</code></li>
 <li><code>Header -&gt; header</code></li>
 </ul>
-<p>The same principle applies for other registerable Vue features, such as directives.</p>
+<p>The same principle applies for other registrable Vue features, such as directives.</p>
+<p class="info-panel">
+    Note that Vue does not enforce the <a href="http://www.w3.org/TR/custom-elements/#concepts" target="_blank">W3C Rules</a> for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.
+</p>
+
+<h3 id="global-registration">Global Registration</h3>
+<p>To register a global component, you can use <code>Vue.component(tagName, MyComponent.class)</code>. For example:</p>
+<pre><code class="lang-java">Vue.component(<span class="hljs-string">&quot;my-component&quot;</span>, MyChildComponent.class);
+</code></pre>
+<p>Your Component will then be available in all the Components template from your application.</p>
+<p class="info-panel">
+    It&apos;s better to register locally whenever you can.
+    Locally registered components get compile time type checking when binding property values.
+    They also break at compile time if you miss a required property.
+</p>
+
 <h3 id="dom-template-parsing-caveats">DOM Template Parsing Caveats</h3>
 <p>There are some restrictions that are inherent to how HTML works, because Vue can only retrieve the template content <strong>after</strong> the browser has parsed and normalized it.
 Most notably, some elements such as <code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>, <code>&lt;table&gt;</code> and <code>&lt;select&gt;</code> have restrictions on what elements can appear inside them, and some elements such as <code>&lt;option&gt;</code> can only appear inside certain other elements.</p>
@@ -1196,6 +1190,10 @@ Whenever the data is updated in the parent, it will also flow down to the child:
 <p>It&apos;s often simpler to use the shorthand syntax for <code>v-bind</code>:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">child</span> <span class="hljs-attr">:my-message</span>=<span class="hljs-string">&quot;parentMsg&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">child</span>&gt;</span>
 </code></pre>
+<p class="info-panel">
+    This binding is validated at compile time as long as your child component is registered locally and not globally.
+</p>
+
 <h3 id="literal-vs-dynamic">Literal vs. Dynamic</h3>
 <p>A common mistake beginners tend to make is attempting to pass down a number using the literal syntax:</p>
 <pre><code class="lang-html"><span class="hljs-comment">&lt;!-- this passes down a plain string &quot;1&quot; --&gt;</span>
@@ -1259,6 +1257,21 @@ This is especially useful when you are authoring a component that is intended to
 <p>Vue GWT can tell Vue.js to check the type based on the type of your Java property.
 If you want this behavior you can pass <code>checkType</code> to true to your <code>@Prop</code> annotation.</p>
 <p>When prop validation fails, Vue will produce a console warning (if using the development build).</p>
+<p>It is also possible to have a custom validation method for your properties.
+For this you can use the <code>@PropValidator</code> annotation like this:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WhiteWalkerArmyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+    <span class="hljs-meta">@Prop</span>
+    <span class="hljs-meta">@JsProperty</span>
+    <span class="hljs-keyword">int</span> armyCount;
+
+    <span class="hljs-meta">@PropValidator</span>(<span class="hljs-string">&quot;armyCount&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">armyCountValidator</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span> </span>{
+        <span class="hljs-comment">// This will make a runtime error if the value passed for armyCount is &lt;= 20000</span>
+        <span class="hljs-keyword">return</span> value &gt; <span class="hljs-number">20000</span>;
+    }
+}
+</code></pre>
 <h3 id="prop-default-value">Prop Default Value</h3>
 <p>It is possible to set a default value for your Prop.
 This value will be set whenever the value has not been set by the parent.
@@ -1270,7 +1283,7 @@ This mean whenever the Parent didn&apos;t add the property on the element in it&
     <span class="hljs-meta">@JsProperty</span>
     String stringProp;
 
-    <span class="hljs-meta">@PropDefault</span>(propertyName = <span class="hljs-string">&quot;stringProp&quot;</span>)
+    <span class="hljs-meta">@PropDefault</span>(<span class="hljs-string">&quot;stringProp&quot;</span>)
     <span class="hljs-function">String <span class="hljs-title">stringPropDefault</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Hello World&quot;</span>;
     }
@@ -1799,7 +1812,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Composing with Components","level":"2.9","depth":1,"next":{"title":"Using Components","level":"2.9.1","depth":2,"anchor":"#using-components","path":"essential/components.md","ref":"essential/components.md#using-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2017-12-02T15:31:27.417Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-12-02T16:25:39.065Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Composing with Components","level":"2.9","depth":1,"next":{"title":"Using Components","level":"2.9.1","depth":2,"anchor":"#using-components","path":"essential/components.md","ref":"essential/components.md#using-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2018-01-18T09:01:12.008Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-01-18T09:19:21.611Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
