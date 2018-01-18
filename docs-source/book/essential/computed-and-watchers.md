@@ -135,12 +135,12 @@ public class JohnSnowComponent extends VueComponent implements HasCreated {
         this.fullName = "John Snow";
     }
     
-    @Watch(propertyName = "firstName")
+    @Watch("firstName")
     public void watchFirstName(String newValue) {
         this.fullName = newValue + " " + this.lastName;
     }
     
-    @Watch(propertyName = "lastName")
+    @Watch("lastName")
     public void watchLastName(String newValue) {
         this.fullName = this.firstName + " " + this.newValue;
     }
@@ -193,7 +193,7 @@ Now when you run `this.fullName = 'John Doe'`, the setter will be invoked and `t
 We also follow the Java bean naming convention, so `setFullName` is a setter for the `fullName` property.
 If you need/want to, you can override the name of the property by passing it to the `@Computed` annotation:
 ```java
-@Computed(propertyName = "myProperty")
+@Computed("myProperty")
 public String someMethodName() {
     // Return something
 }
@@ -206,7 +206,7 @@ That's why Vue provides a more generic way to react to data changes through the 
 This is most useful when you want to perform asynchronous or expensive operations in response to changing data.
 
 In Vue GWT we use the `@Watch` annotation on a method to indicate it as a watcher.
-The mandatory `propertyName` attribute of the annotation indicate the property to watch.
+The mandatory `value` attribute of the annotation indicate the name of the property to watch.
 
 Here is an example:
 ```java
@@ -214,17 +214,17 @@ Here is an example:
 public class JohnSnowComponent extends VueComponent {
     @JsProperty String message = "Hello World!";
 
-    @Watch(propertyName = "message")
+    @Watch("message")
     public void watchMessage(String newValue, String oldValue) {
-        // Do something asynchroneous
+        // Do something asynchronous
     }
 }
 ```
 
 <p class="warning-panel">
-    Like for <code>v-model</code>, only <code>JsInterop</code> expression can be used as <code>propertyName</code>.
+    Like for <code>v-model</code>, only <code>JsInterop</code> expression can be used as <code>value</code> for the <code>@Watch</code> annotation.
     This means any attribute from your Component and any of their attributes as long as they have the <code>@JsProperty</code> annotation.<br/>
-    The following: <code>@Watch(propertyName = "todo.text")</code> won't work if the attribute <code>text</code> of the class <code>Todo</code> doesn't have the <code>@JsProperty</code> annotation.
+    The following: <code>@Watch("todo.text")</code> won't work if the attribute <code>text</code> of the class <code>Todo</code> doesn't have the <code>@JsProperty</code> annotation.
 </p>
 
 In addition to the `watch` option, you can also use the imperative [vm.$watch API](https://vuejs.org/v2/api/#vm-watch).

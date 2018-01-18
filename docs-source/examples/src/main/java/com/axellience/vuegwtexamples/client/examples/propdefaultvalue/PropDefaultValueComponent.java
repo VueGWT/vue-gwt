@@ -16,7 +16,7 @@ public class PropDefaultValueComponent extends VueComponent
     @JsProperty
     String stringProp;
 
-    @PropDefault(propertyName = "stringProp")
+    @PropDefault("stringProp")
     String stringPropDefault()
     {
         return "Hello World";

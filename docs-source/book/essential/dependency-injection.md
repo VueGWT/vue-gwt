@@ -152,7 +152,7 @@ public class RootComponent extends VueComponent {}
 ```html
 <div>
     <!-- Create 10 instances of Child1Component -->
-    <child1 v-for="i in 10"></child1>
+    <child1 v-for="int i in 10"></child1>
     <child2></child2>
 </div>
 ```

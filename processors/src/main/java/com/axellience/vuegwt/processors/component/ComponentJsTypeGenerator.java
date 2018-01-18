@@ -30,8 +30,8 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
-import elemental2.core.JsArray;
 import elemental2.core.Function;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
@@ -247,11 +247,10 @@ public class ComponentJsTypeGenerator
 
                 if (!isFieldVisibleInJS(field))
                 {
-                    messager.printMessage(Kind.ERROR,
-                        "The field \""
+                    printError("The field \""
                             + fieldName
-                            + "\" annotated with @Prop must also be annotated with @JsProperty in Component: "
-                            + component.getQualifiedName());
+                            + "\" annotated with @Prop must also be annotated with @JsProperty.",
+                        component);
                 }
 
                 optionsBuilder.addStatement("options.addJavaProp($S, $L, $S)",
@@ -369,7 +368,7 @@ public class ComponentJsTypeGenerator
 
             optionsBuilder.addStatement("options.addJavaWatch($S, $S, $L)",
                 method.getSimpleName().toString(),
-                watch.propertyName(),
+                watch.value(),
                 watch.isDeep());
 
             addProxyJsTypeMethodIfNecessary(componentJsTypeBuilder, method);
@@ -388,7 +387,14 @@ public class ComponentJsTypeGenerator
         getMethodsWithAnnotation(component, PropValidator.class).forEach(method -> {
             PropValidator propValidator = method.getAnnotation(PropValidator.class);
 
-            String propertyName = propValidator.propertyName();
+            if (!TypeName.get(method.getReturnType()).equals(TypeName.BOOLEAN))
+            {
+                printError("Method "
+                    + method.getSimpleName()
+                    + " annotated with PropValidator must return a boolean.", component);
+            }
+
+            String propertyName = propValidator.value();
             optionsBuilder.addStatement("options.addJavaPropValidator($S, $S)",
                 method.getSimpleName().toString(),
                 propertyName);
@@ -409,7 +415,7 @@ public class ComponentJsTypeGenerator
         getMethodsWithAnnotation(component, PropDefault.class).forEach(method -> {
             PropDefault propValidator = method.getAnnotation(PropDefault.class);
 
-            String propertyName = propValidator.propertyName();
+            String propertyName = propValidator.value();
             optionsBuilder.addStatement("options.addJavaPropDefaultValue($S, $S)",
                 method.getSimpleName().toString(),
                 propertyName);
@@ -454,17 +460,16 @@ public class ComponentJsTypeGenerator
                 .methodsIn(typeElement.getEnclosedElements())
                 .stream())
             .filter(method -> hasAnnotation(method, HookMethod.class))
-            .peek(this::validateHookMethod)
+            .peek(hookMethod -> validateHookMethod(hookMethod, component))
             .collect(Collectors.toSet());
     }
 
-    private void validateHookMethod(ExecutableElement hookMethod)
+    private void validateHookMethod(ExecutableElement hookMethod, TypeElement component)
     {
         if (!isMethodVisibleInJS(hookMethod))
-            messager.printMessage(Kind.ERROR,
-                "Method "
-                    + hookMethod.getSimpleName()
-                    + " annotated with HookMethod should also have @JsMethod property.");
+            printError("Method "
+                + hookMethod.getSimpleName()
+                + " annotated with HookMethod should also have @JsMethod property.", component);
     }
 
     /**
@@ -578,11 +583,9 @@ public class ComponentJsTypeGenerator
             .filter(method -> hasAnnotation(method, Emit.class))
             .filter(method -> !hasAnnotation(method, JsMethod.class))
             .forEach(invalidEmitMethod -> {
-                messager.printMessage(Kind.ERROR,
-                    "The method \""
-                        + invalidEmitMethod.getSimpleName().toString()
-                        + "\" annotated with @Emit must also be annotated with @JsMethod in Component: "
-                        + component.getQualifiedName());
+                printError("The method \""
+                    + invalidEmitMethod.getSimpleName().toString()
+                    + "\" annotated with @Emit must also be annotated with @JsMethod.", component);
             });
     }
 
@@ -591,7 +594,7 @@ public class ComponentJsTypeGenerator
     {
         dependenciesBuilder
             .getInjectedFieldsName()
-            .forEach(fieldName -> createdMethodBuilder.addStatement("$L = dependencies.$L",
+            .forEach(fieldName -> createdMethodBuilder.addStatement("super.$L = dependencies.$L",
                 fieldName,
                 fieldName));
     }
@@ -732,7 +735,7 @@ public class ComponentJsTypeGenerator
     {
         if (hasAnnotation(method, HookMethod.class))
         {
-            validateHookMethod(method);
+            validateHookMethod(method, component);
             return true;
         }
 
@@ -789,5 +792,11 @@ public class ComponentJsTypeGenerator
         {
             return "Object";
         }
+    }
+
+    private void printError(String message, TypeElement component)
+    {
+        messager.printMessage(Kind.ERROR,
+            message + " In VueComponent: " + component.getQualifiedName());
     }
 }

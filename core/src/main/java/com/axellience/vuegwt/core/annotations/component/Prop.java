@@ -4,14 +4,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Mark a Java property as being a Vue component Property passed from your Component parent
  * @author Adrien Baron
  */
 @Target(FIELD)
-@Retention(SOURCE)
+@Retention(RUNTIME)
 public @interface Prop
 {
     /**

@@ -1,7 +1,30 @@
 package com.axellience.vuegwt.core.template.parser;
 
+import jsinterop.base.Any;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.parser.ParseSettings;
+import org.jsoup.parser.Parser;
+
+import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
+import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponentProp;
 import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
+import com.axellience.vuegwt.core.template.parser.exceptions.TemplateParserException;
 import com.axellience.vuegwt.core.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
@@ -16,21 +39,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
 import com.google.gwt.core.ext.TreeLogger;
-import jsinterop.base.Any;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
-import org.jsoup.parser.ParseSettings;
-import org.jsoup.parser.Parser;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -50,6 +58,8 @@ public class TemplateParser
     private TemplateParserContext context;
     private TemplateParserResult result;
 
+    private Attribute currentAttribute;
+    private LocalComponentProp currentProp;
     private String currentExpressionReturnType;
 
     public TemplateParser(TreeLogger logger)
@@ -58,11 +68,11 @@ public class TemplateParser
     }
 
     /**
-     * Parse a given HTML template and return the a result object containing the expressions, styles
+     * Parse a given HTML template and return the a result object containing the expressions
      * and a transformed HTML.
      * @param htmlTemplate The HTML template to process, as a String
      * @param context Context of the Component we are currently processing
-     * @return A {@link TemplateParserResult} containing the processed template, expressions and styles
+     * @return A {@link TemplateParserResult} containing the processed template and expressions
      */
     public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
         TemplateParserContext context)
@@ -92,19 +102,8 @@ public class TemplateParser
             if (!"vue-gwt:import".equals(element.tagName()))
                 continue;
 
-            if (element.hasAttr("style"))
-            {
-                result.addStyleImports(element.attr("name"), element.attr("style"));
-                context.addRootVariable(element.attr("style"), element.attr("name"));
-                logger.log(TreeLogger.WARN,
-                    "Style import in template is deprecated and will be removed in beta-6. Found usage in "
-                        + context.getTemplateName()
-                        + ". Please see https://axellience.github.io/vue-gwt/gwt-integration/client-bundles-and-styles.html#styles for information on how to use styles without this import.");
-            }
-            else if (element.hasAttr("class"))
-            {
+            if (element.hasAttr("class"))
                 context.addImport(element.attr("class"));
-            }
 
             importElements.add(element);
         }
@@ -123,6 +122,8 @@ public class TemplateParser
     private void processNode(Node node)
     {
         context.setCurrentNode(node);
+        currentProp = null;
+        currentAttribute = null;
 
         boolean nodeHasVFor = node.attributes().hasKey("v-for");
         if (nodeHasVFor)
@@ -193,7 +194,10 @@ public class TemplateParser
      */
     private void processElementNode(Element element)
     {
+        Optional<LocalComponent> localComponent = context.getLocalComponent(element.tagName());
+
         // Iterate on element attributes
+        Set<LocalComponentProp> foundProps = new HashSet<>();
         for (Attribute attribute : element.attributes())
         {
             String attributeName = attribute.getKey().toLowerCase();
@@ -201,11 +205,65 @@ public class TemplateParser
             if ("v-for".equals(attributeName) || "v-model".equals(attributeName))
                 continue;
 
-            if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
-                continue;
+            Optional<LocalComponentProp> optionalProp =
+                localComponent.flatMap(lc -> lc.getPropForAttribute(attributeName));
+            optionalProp.ifPresent(foundProps::add);
 
+            if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
+            {
+                optionalProp.ifPresent(this::validateStringPropBinding);
+                continue;
+            }
+
+            currentAttribute = attribute;
+            currentProp = optionalProp.orElse(null);
             currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
             attribute.setValue(processExpression(attribute.getValue()));
+        }
+
+        localComponent.ifPresent(lc -> validateRequiredProps(lc, foundProps));
+    }
+
+    /**
+     * Validate that a {@link Prop} bounded with string binding is of type String
+     * @param localComponentProp The prop to check
+     */
+    private void validateStringPropBinding(LocalComponentProp localComponentProp)
+    {
+        if (localComponentProp.getType().toString().equals(String.class.getCanonicalName()))
+            return;
+
+        throw new TemplateParserException("Passing a String to a non String Prop: \""
+            + localComponentProp.getPropName()
+            + "\"."
+            + "\n\nIf you want to pass a boolean or an int you should use v-bind."
+            + "\nFor example: v-bind:my-prop=\"12\" (or using the short syntax, :my-prop=\"12\") instead of my-prop=\"12\".",
+            context);
+    }
+
+    /**
+     * Validate that all the required properties of a local components are present on a the
+     * HTML node that represents it.
+     * @param localComponent The {@link LocalComponent} we want to check
+     * @param foundProps The props we found on the HTML node during processing
+     */
+    private void validateRequiredProps(LocalComponent localComponent,
+        Set<LocalComponentProp> foundProps)
+    {
+        String missingRequiredProps = localComponent
+            .getRequiredProps()
+            .stream()
+            .filter(prop -> !foundProps.contains(prop))
+            .map(prop -> "\"" + prop.getPropName() + "\"")
+            .collect(Collectors.joining(","));
+
+        if (!missingRequiredProps.isEmpty())
+        {
+            throw new TemplateParserException("Missing required property: "
+                + missingRequiredProps
+                + " on child component \""
+                + localComponent.getComponentTagName()
+                + "\"", context);
         }
     }
 
@@ -226,6 +284,9 @@ public class TemplateParser
         if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
             return "boolean";
 
+        if (currentProp != null)
+            return currentProp.getType().toString();
+
         return Any.class.getCanonicalName();
     }
 
@@ -243,13 +304,7 @@ public class TemplateParser
         // Set return of the "in" expression
         currentExpressionReturnType = vForDef.getInExpressionType();
 
-        String inExpression = vForDef.getInExpression();
-
-        // Process in expression if it's java
-        if (vForDef.isInExpressionJava())
-        {
-            inExpression = this.processExpression(inExpression);
-        }
+        String inExpression = this.processExpression(vForDef.getInExpression());
 
         // And return the newly built definition
         return vForDef.getVariableDefinition() + " in " + inExpression;
@@ -264,7 +319,25 @@ public class TemplateParser
     {
         expressionString = expressionString.trim();
         if (expressionString.isEmpty())
-            return "";
+        {
+            if (isAttributeBinding(currentAttribute))
+            {
+                throw new TemplateExpressionException(
+                    "Empty expression in template property binding. If you want to pass an empty string then simply don't use binding: my-attribute=\"\"",
+                    currentAttribute.toString(),
+                    context);
+            }
+            else if (isEventBinding(currentAttribute))
+            {
+                throw new TemplateExpressionException("Empty expression in template event binding.",
+                    currentAttribute.toString(),
+                    context);
+            }
+            else
+            {
+                return "";
+            }
+        }
 
         if (expressionString.startsWith("{"))
             throw new TemplateExpressionException(
@@ -278,13 +351,39 @@ public class TemplateParser
                 expressionString,
                 context);
 
-        // We don't optimize String expression, as we want GWT to convert
-        // Java values to String for us (Enums, wrapped primitives...)
-        if (!"String".equals(currentExpressionReturnType) && isSimpleVueJsExpression(
-            expressionString))
+        if (shouldSkipExpressionProcessing(expressionString))
             return expressionString;
 
         return processJavaExpression(expressionString).toTemplateString();
+    }
+
+    /**
+     * In some cases we want to skip expression processing for optimization.
+     * This is when we are sure the expression is valid and there is no need to create a Java method
+     * for it.
+     * @param expressionString The expression to asses
+     * @return true if we can skip the expression
+     */
+    private boolean shouldSkipExpressionProcessing(String expressionString)
+    {
+        // We don't skip if it's a component prop as we want Java validation
+        // We don't optimize String expression, as we want GWT to convert Java values
+        // to String for us (Enums, wrapped primitives...)
+        return currentProp == null
+            && !"String".equals(currentExpressionReturnType)
+            && isSimpleVueJsExpression(expressionString);
+    }
+
+    private boolean isAttributeBinding(Attribute attribute)
+    {
+        String attributeName = attribute.getKey().toLowerCase();
+        return attributeName.startsWith(":") || attributeName.startsWith("v-bind:");
+    }
+
+    private boolean isEventBinding(Attribute attribute)
+    {
+        String attributeName = attribute.getKey().toLowerCase();
+        return attributeName.startsWith("@") || attributeName.startsWith("v-on:");
     }
 
     /**
@@ -340,7 +439,8 @@ public class TemplateParser
         findExpressionParameters(expression, expressionParameters);
 
         // If there is a cast first, we use this as the type of our expression
-        expression = getTypeFromCast(expression);
+        if (currentProp == null)
+            expression = getTypeFromCast(expression);
 
         // Update the expression as it might have been changed
         expressionString = expression.toString();
@@ -348,6 +448,7 @@ public class TemplateParser
         // Add the resulting expression to our result
         return result.addExpression(expressionString,
             currentExpressionReturnType,
+            currentProp == null,
             expressionParameters);
     }
 

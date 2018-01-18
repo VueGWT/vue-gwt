@@ -8,9 +8,8 @@ import com.axellience.vuegwt.core.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.core.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.core.client.template.ComponentTemplate;
-import com.google.gwt.resources.client.CssResource;
-import elemental2.core.JsArray;
 import elemental2.core.Function;
+import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsOverlay;
@@ -23,7 +22,6 @@ import jsinterop.base.JsPropertyMap;
 import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import static com.axellience.vuegwt.core.client.template.ComponentTemplate.EXPRESSION_PREFIX;
 import static elemental2.core.Global.JSON;
@@ -70,21 +68,8 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     public final void setComponentTemplate(ComponentTemplate<T> componentTemplate)
     {
         this.componentTemplate = componentTemplate;
-        this.injectStyles();
         this.initExpressions();
         this.initRenderFunctions();
-    }
-
-    /**
-     * Find styles in the {@link ComponentTemplate} and ensure they are injected.
-     */
-    @JsOverlay
-    private void injectStyles()
-    {
-        for (CssResource style : componentTemplate.getTemplateStyles().values())
-        {
-            style.ensureInjected();
-        }
     }
 
     /**
@@ -138,31 +123,12 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
         if (useFactory)
         {
             String dataFieldsJSON = JSON.stringify(dataFields);
-            this.setData((DataFactory) () -> {
-                JsPropertyMap data = (JsPropertyMap) JSON.parse(dataFieldsJSON);
-                addStylesToData(data);
-                return data;
-            });
+            this.setData((DataFactory) () -> (JsPropertyMap) JSON.parse(dataFieldsJSON));
         }
         else
         {
-            addStylesToData(dataFields);
             this.setData((DataFactory) () -> dataFields);
         }
-    }
-
-    /**
-     * Copy the Component styles from GWT to the data of the ComponentOptions.
-     * @param data The data of the ComponentOptions
-     */
-    @JsOverlay
-    private void addStylesToData(JsPropertyMap data)
-    {
-        if (componentTemplate == null || componentTemplate.getTemplateStyles() == null)
-            return;
-
-        for (Entry<String, CssResource> style : componentTemplate.getTemplateStyles().entrySet())
-            data.set(style.getKey(), style.getValue());
     }
 
     /**

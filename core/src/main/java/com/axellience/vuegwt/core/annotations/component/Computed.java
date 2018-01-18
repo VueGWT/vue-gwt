@@ -14,5 +14,5 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 @Retention(CLASS)
 public @interface Computed
 {
-    String propertyName() default "";
+    String value() default "";
 }

@@ -303,12 +303,12 @@ For example, in a template using `v-if` and `v-for`:
 
 ```html
 <ul v-if="items.length">
-  <li v-for="item in items">{{ item.name }}</li>
+  <li v-for="Item item in items">{{ item.name }}</li>
 </ul>
 <p v-else>No items found.</p>
 ```
 
-This could be rewritten with JavaScript's `if`/`else` and `map` in a render function:
+This could be rewritten with Java `if`/`else` and `map` in a render function:
 
 ```java
 @Override

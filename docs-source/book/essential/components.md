@@ -19,81 +19,71 @@ We already saw how to define a Component in Vue GWT.
 
 ```java
 @Component
-public class MyComponent extends VueComponent {
+public class MyChildComponent extends VueComponent {
 }
 ```
 
 ```html
-<div>
-  A custom component!
-</div>
+<span>A custom child component!</span>
 ```
 
-To register a global component, you can use `Vue.component(tagName, MyComponent.class)`. For example:
+You can make a component available in the scope of another Component by passing it to the `components` annotation option:
 
 ```java
-Vue.component("my-component", MyComponent.class);
-```
-
-<p class="info-panel">
-    Note that Vue does not enforce the <a href="http://www.w3.org/TR/custom-elements/#concepts">W3C Rules</a> for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.
-</p>
-
-Once registered, a component can be used in an instance's template as a custom element, `<my-component></my-component>`.
-Make sure the component is registered **before** you instantiate the root Component.
-Here's the full example:
-
-***ParentComponent***
-
-```html
-<div>
-  <my-component></my-component>
-</div>
-```
-
-```java
-@Component
+@Component(components = {MyChildComponent.class})
 public class ParentComponent extends VueComponent {
 }
 ```
 
-```java
-// Somewhere in your App
-Vue.component("my-component", MyComponent.class);
-Vue.attach("#rootComponent", RootComponent.class);
+```html
+<div>
+  <my-child></my-child>
+</div>
 ```
 
 Which will render:
 
 ```html
 <div>
-  <div>A custom component!</div>
+  <span>A custom child component!</span>
 </div>
 ```
 
-### Local Registration
+#### How is the HTML Tag Name Determined?
 
-You don't have to register every component globally.
-You can make a component available only in the scope of another instance/component by registering it with the `components` annotation option:
+The HTML tag name of your Component is determined using the Component's Class name.
 
-```java
-@Component(components = {MyComponent.class})
-public class ParentComponent extends VueComponent {
-}
-```
-
-In that case the name of your Component is determined using the Component's Class name.
-
-The name is converted from CamelCase to kebab-case.
+The class name is converted from CamelCase to kebab-case.
 If the name ends with "Component" this part is dropped.
 
 For example:
 
+ * `MyChildComponent -> my-child`
  * `TodoComponent -> todo`
  * `TodoListComponent -> todo-list`
  * `Header -> header`
 
-The same principle applies for other registerable Vue features, such as directives.
+The same principle applies for other registrable Vue features, such as directives.
+
+<p class="info-panel">
+    Note that Vue does not enforce the <a href="http://www.w3.org/TR/custom-elements/#concepts">W3C Rules</a> for custom tag names (all-lowercase, must contain a hyphen) though following this convention is considered good practice.
+</p>
+
+### Global Registration
+
+To register a global component, you can use `Vue.component(tagName, MyComponent.class)`. For example:
+
+```java
+Vue.component("my-component", MyChildComponent.class);
+```
+
+Your Component will then be available in all the Components template from your application.
+
+<p class="info-panel">
+    It's better to register locally whenever you can.
+    Locally registered components get compile time type checking when binding property values.
+    They also break at compile time if you miss a required property.
+</p>
 
 ### DOM Template Parsing Caveats
 
@@ -258,6 +248,10 @@ It's often simpler to use the shorthand syntax for `v-bind`:
 <child :my-message="parentMsg"></child>
 ```
 
+<p class="info-panel">
+    This binding is validated at compile time as long as your child component is registered locally and not globally.
+</p>
+
 ### Literal vs. Dynamic
 
 A common mistake beginners tend to make is attempting to pass down a number using the literal syntax:
@@ -341,6 +335,24 @@ If you want this behavior you can pass `checkType` to true to your `@Prop` annot
 
 When prop validation fails, Vue will produce a console warning (if using the development build).
 
+It is also possible to have a custom validation method for your properties.
+For this you can use the `@PropValidator` annotation like this:
+
+```java
+@Component
+public class WhiteWalkerArmyComponent extends VueComponent {
+    @Prop
+    @JsProperty
+    int armyCount;
+    
+    @PropValidator("armyCount")
+    boolean armyCountValidator(int value) {
+        // This will make a runtime error if the value passed for armyCount is <= 20000
+        return value > 20000;
+    }
+}
+```
+
 ### Prop Default Value
 
 It is possible to set a default value for your Prop.
@@ -356,7 +368,7 @@ public class PropDefaultValueComponent extends VueComponent {
     @JsProperty
     String stringProp;
 
-    @PropDefault(propertyName = "stringProp")
+    @PropDefault("stringProp")
     String stringPropDefault() {
         return "Hello World";
     }

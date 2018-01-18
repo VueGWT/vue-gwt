@@ -18,5 +18,5 @@ public @interface PropDefault
      * Name of the property
      * @return the name of the property
      */
-    String propertyName();
+    String value();
 }

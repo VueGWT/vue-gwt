@@ -1,33 +1,30 @@
 package com.axellience.vuegwt.core.generation;
 
+import javax.inject.Provider;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Emit;
+import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.directive.VueDirective;
 import com.google.gwt.regexp.shared.RegExp;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 
-import javax.inject.Provider;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
-
 /**
  * @author Adrien Baron
  */
 public class GenerationNameUtil
 {
-    public static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
+    private static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
     private static String COMPONENT_INJECTED_DEPENDENCIES_SUFFIX = "InjectedDependencies";
 
     public static String COMPONENT_TEMPLATE_SUFFIX = "Template";
 
     private static String COMPONENT_FACTORY_SUFFIX = "Factory";
-
-    private static String STYLE_BUNDLE_SUFFIX = "Bundle";
-    public static String STYLE_BUNDLE_METHOD_NAME = "style";
 
     private static String DIRECTIVE_OPTIONS_SUFFIX = "Options";
 
@@ -85,21 +82,6 @@ public class GenerationNameUtil
         return nameWithSuffix(component, COMPONENT_FACTORY_SUFFIX);
     }
 
-    public static ClassName styleBundleName(TypeElement style)
-    {
-        return nameWithSuffix(style, STYLE_BUNDLE_SUFFIX);
-    }
-
-    public static ClassName styleBundleName(ClassName style)
-    {
-        return nameWithSuffix(style, STYLE_BUNDLE_SUFFIX);
-    }
-
-    public static ClassName styleBundleName(String styleQualifiedName)
-    {
-        return nameWithSuffix(styleQualifiedName, STYLE_BUNDLE_SUFFIX);
-    }
-
     public static ClassName directiveOptionsName(TypeElement directive)
     {
         return nameWithSuffix(directive, DIRECTIVE_OPTIONS_SUFFIX);
@@ -154,18 +136,16 @@ public class GenerationNameUtil
      * Return the default name to register a component based on it's class name.
      * The name of the tag is the name of the component converted to kebab-case.
      * If the component class ends with "Component", this part is ignored.
-     * @param componentClass The Element representing the class of the {@link VueComponent} we want
-     * the name of
+     * @param componentClassName The Class name of the {@link VueComponent} we want the name of
+     * @param componentAnnotation The {@link Component} annotation for the {@link VueComponent} we want the name of
      * @return The name of the component as kebab case
      */
-    public static String componentToTagName(Element componentClass)
+    public static String componentToTagName(String componentClassName, Component componentAnnotation)
     {
-        Component componentAnnotation = componentClass.getAnnotation(Component.class);
         if (!"".equals(componentAnnotation.name()))
             return componentAnnotation.name();
 
         // Drop "Component" at the end of the class name
-        String componentClassName = componentClass.getSimpleName().toString();
         componentClassName = COMPONENT_SUFFIX_REGEX.replace(componentClassName, "");
         // Convert from CamelCase to kebab-case
         return CAMEL_CASE_PATTERN.replace(componentClassName, "$1-$2").toLowerCase();
@@ -188,7 +168,7 @@ public class GenerationNameUtil
 
     /**
      * Return the name of the event to emit for a given method.
-     * Expect the method to be annotated with {@link com.axellience.vuegwt.core.annotations.component.Emit}.
+     * Expect the method to be annotated with {@link Emit}.
      * @param method The method to convert
      * @return The name of the event
      */
@@ -199,5 +179,15 @@ public class GenerationNameUtil
             return emitAnnotation.value();
 
         return CAMEL_CASE_PATTERN.replace(method.getSimpleName().toString(), "$1-$2").toLowerCase();
+    }
+
+    /**
+     * Return the name of the HTML property to use for a given java {@link Prop} field.
+     * @param propName The name of the Java {@link Prop}
+     * @return The name of the HTML attribute to use for that prop
+     */
+    public static String propNameToAttributeName(String propName)
+    {
+        return CAMEL_CASE_PATTERN.replace(propName, "$1-$2").toLowerCase();
     }
 }

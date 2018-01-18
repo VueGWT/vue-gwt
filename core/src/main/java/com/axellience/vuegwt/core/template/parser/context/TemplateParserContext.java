@@ -3,6 +3,9 @@ package com.axellience.vuegwt.core.template.parser.context;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.axellience.vuegwt.core.client.tools.JsUtils;
+import com.axellience.vuegwt.core.client.tools.VForExpressionUtil;
+import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
+import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.ClassName;
@@ -14,6 +17,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Context of the parser.
@@ -24,6 +28,7 @@ import java.util.Map;
 public class TemplateParserContext
 {
     private final ClassName componentTypeName;
+    private final LocalComponents localComponents;
     private final ContextLayer rootLayer;
     private final Deque<ContextLayer> contextLayers = new ArrayDeque<>();
 
@@ -37,13 +42,16 @@ public class TemplateParserContext
     /**
      * Build the context based on a given {@link ComponentTemplate} Class.
      * @param componentTypeName Name of the {@link VueComponent} class we process in this context
+     * @param localComponents Components registered locally, used to check property bindings
      */
-    public TemplateParserContext(ClassName componentTypeName)
+    public TemplateParserContext(ClassName componentTypeName, LocalComponents localComponents)
     {
         this.componentTypeName = componentTypeName;
+        this.localComponents = localComponents;
         this.addImport(Event.class.getCanonicalName());
         this.addImport(Math.class.getCanonicalName());
         this.addImport(JsUtils.class.getCanonicalName());
+        this.addImport(VForExpressionUtil.class.getCanonicalName());
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".map");
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".e");
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".array");
@@ -232,5 +240,10 @@ public class TemplateParserContext
     public String getTemplateName()
     {
         return componentTypeName.simpleName() + ".html";
+    }
+
+    public Optional<LocalComponent> getLocalComponent(String tagName)
+    {
+        return localComponents.getLocalComponent(tagName);
     }
 }

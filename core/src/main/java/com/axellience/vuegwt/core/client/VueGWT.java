@@ -41,10 +41,19 @@ public class VueGWT
     @JsIgnore
     public static void init()
     {
-        VueLibInjector.ensureInjected();
+        if (isDevMode())
+            VueLibDevInjector.ensureInjected();
+        else
+            VueLibInjector.ensureInjected();
 
         // Init VueGWT
         VueGWT.initWithoutVueLib();
+    }
+
+    private static boolean isDevMode()
+    {
+        return "on".equals(System.getProperty("superdevmode", "off"))
+            || "development".equals(System.getProperty("vuegwt.environment", "production"));
     }
 
     /**

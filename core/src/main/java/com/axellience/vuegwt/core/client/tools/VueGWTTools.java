@@ -15,11 +15,12 @@ import jsinterop.base.JsPropertyMap;
 public class VueGWTTools
 {
     /**
-     * Copy a Java class prototype to a VueComponent declaration.
-     * This allows VueComponent created by Vue to pass as an instance of the VueComponent class
-     * they implement.
+     * Copy a Java class prototype to a VueComponent declaration. This allows
+     * VueComponent created by Vue to pass as an instance of the VueComponent
+     * class they implement.
      * @param extendedVueJsConstructor The Vue.js constructor function to extend
-     * @param componentJavaPrototype The VueComponent class JS prototype to extend with
+     * @param componentJavaPrototype The VueComponent class JS prototype to
+     * extend with
      * @param <T> The type of the VueComponent
      */
     public static <T extends VueComponent> void extendVueConstructorWithJavaPrototype(
@@ -36,13 +37,14 @@ public class VueGWTTools
     }
 
     /**
-     * Proxy a method call to be warned when it called.
-     * This requires the function to be JsInterop (name shouldn't change at runtime).
-     * This used to observe Java Collections/Map.
-     * It won't be necessary in future versions of Vue.js based on ES6 proxies.
+     * Proxy a method call to be warned when it called. This requires the
+     * function to be JsInterop (name shouldn't change at runtime). This used to
+     * observe Java Collections/Map. It won't be necessary in future versions of
+     * Vue.js based on ES6 proxies.
      * @param object The object to observe
      * @param methodName The name of the method to proxify
-     * @param afterMethodCall A callback called each time after the method has been executed
+     * @param afterMethodCall A callback called each time after the method has
+     * been executed
      * @param <T> Type of the object the we Proxy
      */
     public static <T> void wrapMethod(T object, String methodName,
@@ -67,9 +69,9 @@ public class VueGWTTools
     }
 
     /**
-     * Return a "deep" value in a given object by following an expression in the form:
-     * "parent.child.property".
-     * This only works if all the chain is exposed using JsInterop.
+     * Return a "deep" value in a given object by following an expression in the
+     * form: "parent.child.property". This only works if all the chain is
+     * exposed using JsInterop.
      * @param object The root object to get on
      * @param path The path to follow
      * @param <T> The type of object we get in return
@@ -84,5 +86,15 @@ public class VueGWTTools
             objectMap = (JsPropertyMap) objectMap.get(s);
         }
         return (T) objectMap;
+    }
+
+    /**
+     * Convert a template expression to String while keeping null values
+     * @param expressionValue The value of the expression from the template
+     * @return Null if passed null, the value to String otherwise
+     */
+    public static String templateExpressionToString(Object expressionValue)
+    {
+        return expressionValue == null ? null : expressionValue + "";
     }
 }

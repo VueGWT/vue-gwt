@@ -1,12 +1,16 @@
 package com.axellience.vuegwt.gwt2.template;
 
+import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
 import com.axellience.vuegwt.core.template.builder.TemplateImplBuilder;
-import com.axellience.vuegwt.gwt2.template.compiler.GwtResourceFolder;
 import com.axellience.vuegwt.core.template.parser.TemplateParser;
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
+import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.gwt2.template.compiler.GwtResourceFolder;
 import com.coveo.nashorn_modules.Folder;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -32,6 +36,8 @@ import static com.axellience.vuegwt.core.client.template.ComponentTemplate.TEMPL
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.COMPONENT_TEMPLATE_SUFFIX;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentJsTypeName;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateImplName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentToTagName;
+import static com.axellience.vuegwt.core.generation.GenerationUtil.stringTypeToTypeName;
 
 /**
  * This generator parse and compile the HTML template.
@@ -80,7 +86,13 @@ public final class TemplateGwtGenerator extends Generator
         String templateContent =
             getTemplateContent(generatorContext.getResourcesOracle(), logger, componentTypeName);
 
-        TemplateParserContext templateParserContext = new TemplateParserContext(componentTypeName);
+        LocalComponents localComponents = new LocalComponents();
+        findLocalComponentsForComponent(localComponents,
+            componentJsType.getSuperclass(),
+            generatorContext.getTypeOracle());
+
+        TemplateParserContext templateParserContext =
+            new TemplateParserContext(componentTypeName, localComponents);
         registerFieldsAndMethodsInContext(templateParserContext, componentJsType);
 
         TemplateParserResult templateParserResult =
@@ -91,6 +103,56 @@ public final class TemplateGwtGenerator extends Generator
             printWriter,
             componentTypeName,
             templateParserResult);
+    }
+
+    /**
+     * Register all locally declared components.
+     * @param localComponents The {@link LocalComponents} where we register our local components
+     * @param componentType The JClass type of the local component
+     * @param typeOracle Used to retrieve a {@link JClassType} in GWT Context
+     */
+    private void findLocalComponentsForComponent(LocalComponents localComponents,
+        JClassType componentType, TypeOracle typeOracle)
+    {
+        Component componentAnnotation = componentType.getAnnotation(Component.class);
+        if (componentAnnotation == null)
+            return;
+
+        Arrays
+            .stream(componentAnnotation.components())
+            .map(Class::getCanonicalName)
+            .map(typeOracle::findType)
+            .forEach(childType -> processLocalComponentClass(localComponents, childType));
+
+        findLocalComponentsForComponent(localComponents, componentType.getSuperclass(), typeOracle);
+    }
+
+    /**
+     * Register the local component and all of its {@link Prop}.
+     * This will be used for type validation.
+     * @param localComponents The {@link LocalComponents} object where we should register our {@link LocalComponent}
+     * @param localComponentType The {@link JClassType} of the {@link LocalComponent}
+     */
+    private void processLocalComponentClass(LocalComponents localComponents,
+        JClassType localComponentType)
+    {
+        Component componentAnnotation = localComponentType.getAnnotation(Component.class);
+        String localComponentTagName =
+            componentToTagName(localComponentType.getName(), componentAnnotation);
+
+        if (localComponents.hasLocalComponent(localComponentTagName))
+            return;
+
+        LocalComponent localComponent = localComponents.addLocalComponent(localComponentTagName);
+        Arrays.stream(localComponentType.getFields()).forEach(field -> {
+            Prop propAnnotation = field.getAnnotation(Prop.class);
+            if (propAnnotation != null)
+            {
+                localComponent.addProp(field.getName(),
+                    stringTypeToTypeName(field.getType().getQualifiedSourceName()),
+                    propAnnotation.required());
+            }
+        });
     }
 
     /**

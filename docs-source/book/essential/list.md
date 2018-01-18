@@ -177,7 +177,7 @@ In this case it will repeat the template that many times.
 
 ```html
 <div>
-    <span v-for="n in 5">{{ n }} </span>
+    <span v-for="int n in 5">{{ n }} </span>
 </div>
 ```
 

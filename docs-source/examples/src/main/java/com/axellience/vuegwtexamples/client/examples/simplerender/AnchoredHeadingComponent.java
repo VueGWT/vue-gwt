@@ -22,7 +22,7 @@ public class AnchoredHeadingComponent extends VueComponent implements HasRender
 
     @JsProperty
     @Prop(required = true)
-    Integer level;
+    int level;
 
     @Override
     public VNode render(VNodeBuilder builder)

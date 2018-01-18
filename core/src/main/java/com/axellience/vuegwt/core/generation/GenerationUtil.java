@@ -50,8 +50,8 @@ public class GenerationUtil
         Computed computed = method.getAnnotation(Computed.class);
         String methodName = method.getSimpleName().toString();
 
-        if (!"".equals(computed.propertyName()))
-            return computed.propertyName();
+        if (!"".equals(computed.value()))
+            return computed.value();
 
         if (methodName.startsWith("get") || methodName.startsWith("set"))
             return Introspector.decapitalize(methodName.substring(3));
