@@ -8,7 +8,7 @@
     <groupId>com.axellience</groupId>
     <artifactId>vue-gwt-examples</artifactId>
     <packaging>war</packaging>
-    <version>1.0-beta-6-SNAPSHOT</version>
+    <version>1.0-beta-6</version>
     <name>Vue GWT Examples</name>
 
     <properties>
