@@ -2,6 +2,7 @@ package com.axellience.vuegwt.core.template.parser.context;
 
 import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
+import com.squareup.javapoet.TypeName;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,11 @@ public class ContextLayer
     }
 
     VariableInfo addVariable(String type, String name)
+    {
+        return addVariable(new VariableInfo(type, name));
+    }
+
+    VariableInfo addVariable(TypeName type, String name)
     {
         return addVariable(new VariableInfo(type, name));
     }

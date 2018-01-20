@@ -1,24 +1,5 @@
 package com.axellience.vuegwt.core.template.parser;
 
-import jsinterop.base.Any;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
-import org.jsoup.parser.ParseSettings;
-import org.jsoup.parser.Parser;
-
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
@@ -38,7 +19,23 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
-import com.google.gwt.core.ext.TreeLogger;
+import jsinterop.base.Any;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.parser.ParseSettings;
+import org.jsoup.parser.Parser;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -51,7 +48,6 @@ import com.google.gwt.core.ext.TreeLogger;
  */
 public class TemplateParser
 {
-    private final TreeLogger logger;
     private static Pattern VUE_ATTR_PATTERN = Pattern.compile("^(v-|:|@).*");
     private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
@@ -61,11 +57,6 @@ public class TemplateParser
     private Attribute currentAttribute;
     private LocalComponentProp currentProp;
     private String currentExpressionReturnType;
-
-    public TemplateParser(TreeLogger logger)
-    {
-        this.logger = logger;
-    }
 
     /**
      * Parse a given HTML template and return the a result object containing the expressions

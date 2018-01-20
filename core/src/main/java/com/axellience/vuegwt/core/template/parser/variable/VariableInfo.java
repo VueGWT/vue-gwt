@@ -17,7 +17,12 @@ public class VariableInfo
 
     public VariableInfo(String type, String name)
     {
-        this.type = stringTypeToTypeName(type);
+        this(stringTypeToTypeName(type), name);
+    }
+
+    public VariableInfo(TypeName type, String name)
+    {
+        this.type = type;
         this.name = name;
     }
 

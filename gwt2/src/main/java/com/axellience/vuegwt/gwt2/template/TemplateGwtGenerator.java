@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
-import com.axellience.vuegwt.core.template.builder.TemplateImplBuilder;
+import com.axellience.vuegwt.core.template.builder.TemplateBuilder;
 import com.axellience.vuegwt.core.template.parser.TemplateParser;
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
@@ -35,7 +35,7 @@ import java.util.Arrays;
 import static com.axellience.vuegwt.core.client.template.ComponentTemplate.TEMPLATE_EXTENSION;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.COMPONENT_TEMPLATE_SUFFIX;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentJsTypeName;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateImplName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateName;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentToTagName;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.stringTypeToTypeName;
 
@@ -66,7 +66,7 @@ public final class TemplateGwtGenerator extends Generator
             throw new UnableToCompleteException();
         }
 
-        ClassName templateImplTypeName = componentTemplateImplName(componentTypeName);
+        ClassName templateImplTypeName = componentTemplateName(componentTypeName);
         PrintWriter printWriter = generatorContext.tryCreate(logger,
             templateImplTypeName.packageName(),
             templateImplTypeName.simpleName());
@@ -96,7 +96,7 @@ public final class TemplateGwtGenerator extends Generator
         registerFieldsAndMethodsInContext(templateParserContext, componentJsType);
 
         TemplateParserResult templateParserResult =
-            new TemplateParser(logger).parseHtmlTemplate(templateContent, templateParserContext);
+            new TemplateParser().parseHtmlTemplate(templateContent, templateParserContext);
 
         createTemplateImpl(generatorContext,
             logger,
@@ -172,9 +172,9 @@ public final class TemplateGwtGenerator extends Generator
         Folder folder = new GwtResourceFolder(context.getResourcesOracle(),
             "com/axellience/vuegwt/gwt2/client/template/compiler");
 
-        TemplateImplBuilder templateImplBuilder = new TemplateImplBuilder();
+        TemplateBuilder templateBuilder = new TemplateBuilder();
         TypeSpec templateImplType =
-            templateImplBuilder.buildTemplateImpl(componentTypeName, templateParserResult, folder);
+            templateBuilder.buildTemplate(componentTypeName, templateParserResult, folder);
 
         // Write class
         JavaFile javaFile =

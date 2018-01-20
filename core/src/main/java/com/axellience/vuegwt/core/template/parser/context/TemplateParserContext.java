@@ -9,6 +9,7 @@ import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalC
 import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import elemental2.dom.Event;
 import jsinterop.base.JsPropertyMap;
 import org.jsoup.nodes.Node;
@@ -61,6 +62,16 @@ public class TemplateParserContext
         this.rootLayer.addVariable(JsPropertyMap.class, "$props");
 
         this.contextLayers.add(this.rootLayer);
+    }
+
+    /**
+     * Add a variable to the root context.
+     * @param type The type of the variable to add
+     * @param name The name of the variable to add
+     */
+    public void addRootVariable(TypeName type, String name)
+    {
+        this.rootLayer.addVariable(type, name);
     }
 
     /**

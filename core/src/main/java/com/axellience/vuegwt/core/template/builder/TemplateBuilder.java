@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.core.template.builder;
 
+import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
 import com.axellience.vuegwt.core.template.compiler.VueTemplateCompiler;
 import com.axellience.vuegwt.core.template.compiler.VueTemplateCompilerException;
@@ -11,6 +12,7 @@ import com.coveo.nashorn_modules.Folder;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -20,11 +22,10 @@ import jsinterop.base.Js;
 import javax.lang.model.element.Modifier;
 
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentJsTypeName;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateImplName;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateName;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.getUnusableByJSAnnotation;
 
-public class TemplateImplBuilder
+public class TemplateBuilder
 {
     /**
      * Create the template resource implementation based on the result of the template parser.
@@ -34,14 +35,15 @@ public class TemplateImplBuilder
      * @param templateCompilerResourceFolder Folder holding res
      * @return The built Java class representing our template
      */
-    public TypeSpec buildTemplateImpl(ClassName componentTypeName,
+    public TypeSpec buildTemplate(ClassName componentTypeName,
         TemplateParserResult templateParserResult, Folder templateCompilerResourceFolder)
     {
         Builder templateImplBuilder = TypeSpec
-            .classBuilder(componentTemplateImplName(componentTypeName))
+            .classBuilder(componentTemplateName(componentTypeName))
             .addModifiers(Modifier.PUBLIC)
             .superclass(componentJsTypeName(componentTypeName))
-            .addSuperinterface(componentTemplateName(componentTypeName));
+            .addSuperinterface(ParameterizedTypeName.get(ClassName.get(ComponentTemplate.class),
+                componentTypeName));
 
         // Compile the resulting HTML template String
         compileTemplateString(templateImplBuilder,

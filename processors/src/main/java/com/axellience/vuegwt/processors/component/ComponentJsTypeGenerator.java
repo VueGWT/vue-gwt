@@ -21,7 +21,6 @@ import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
 import com.axellience.vuegwt.core.generation.GenerationUtil;
-import com.google.gwt.core.shared.GWT;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -189,8 +188,7 @@ public class ComponentJsTypeGenerator
 
         if (hasTemplate(processingEnv, component))
         {
-            optionsMethodBuilder.addStatement("options.setComponentTemplate($T.create($T.class))",
-                GWT.class,
+            optionsMethodBuilder.addStatement("options.setComponentTemplate(new $T())",
                 componentTemplateName(component));
         }
 
