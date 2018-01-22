@@ -55,7 +55,6 @@
         <javapoet.version>1.9.0</javapoet.version>
         <jsoup.version>1.10.2</jsoup.version>
         <javaparser.version>3.0.1</javaparser.version>
-        <nashorn.commonjs.modules.version>1.0.8</nashorn.commonjs.modules.version>
 		<auto-service.version>1.0-rc3</auto-service.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -149,13 +148,6 @@
 				<groupId>com.github.javaparser</groupId>
 				<artifactId>javaparser-core</artifactId>
 				<version>${javaparser.version}</version>
-			</dependency>
-
-			<!-- Nashorn dependencies -->
-			<dependency>
-				<groupId>com.coveo</groupId>
-				<artifactId>nashorn-commonjs-modules</artifactId>
-				<version>${nashorn.commonjs.modules.version}</version>
 			</dependency>
 
 		</dependencies>

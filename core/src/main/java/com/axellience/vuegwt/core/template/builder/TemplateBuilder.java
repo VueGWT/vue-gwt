@@ -8,7 +8,6 @@ import com.axellience.vuegwt.core.template.compiler.VueTemplateCompilerResult;
 import com.axellience.vuegwt.core.template.parser.TemplateParser;
 import com.axellience.vuegwt.core.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
-import com.coveo.nashorn_modules.Folder;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -32,11 +31,10 @@ public class TemplateBuilder
      * @param componentTypeName The name of our Template class
      * @param templateParserResult The result of the HTML template parsed by {@link TemplateParser}
      * render function
-     * @param templateCompilerResourceFolder Folder holding res
      * @return The built Java class representing our template
      */
     public TypeSpec buildTemplate(ClassName componentTypeName,
-        TemplateParserResult templateParserResult, Folder templateCompilerResourceFolder)
+        TemplateParserResult templateParserResult)
     {
         Builder templateImplBuilder = TypeSpec
             .classBuilder(componentTemplateName(componentTypeName))
@@ -47,8 +45,7 @@ public class TemplateBuilder
 
         // Compile the resulting HTML template String
         compileTemplateString(templateImplBuilder,
-            templateParserResult.getProcessedTemplate(),
-            templateCompilerResourceFolder);
+            templateParserResult.getProcessedTemplate());
 
         // Process the java expressions from the template
         processTemplateExpressions(templateImplBuilder, templateParserResult);
@@ -61,14 +58,13 @@ public class TemplateBuilder
      * @param templateBuilder The template builder
      * @param templateString The HTML template string to compile
      */
-    private void compileTemplateString(Builder templateBuilder, String templateString,
-        Folder templateCompilerResourceFolder)
+    private void compileTemplateString(Builder templateBuilder, String templateString)
     {
         VueTemplateCompilerResult result;
         try
         {
             VueTemplateCompiler vueTemplateCompiler =
-                new VueTemplateCompiler(templateCompilerResourceFolder);
+                new VueTemplateCompiler();
             result = vueTemplateCompiler.compile(templateString);
         }
         catch (VueTemplateCompilerException e)

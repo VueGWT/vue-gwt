@@ -1,7 +1,5 @@
 package com.axellience.vuegwt.core.template.compiler;
 
-import com.coveo.nashorn_modules.Folder;
-import com.coveo.nashorn_modules.Require;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
@@ -16,30 +14,26 @@ public class VueTemplateCompiler
 {
     private static NashornScriptEngine engine;
 
-    /**
-     * @param templateCompilerResourceFolder A Folder containing the Vue template compiler script
-     */
-    public VueTemplateCompiler(Folder templateCompilerResourceFolder)
+    public VueTemplateCompiler()
     {
         // Engine is cached between instance to avoid creating at each compilation
         if (engine == null)
         {
-            initEngine(templateCompilerResourceFolder);
+            initEngine();
         }
     }
 
     /**
      * Init the Nashorn engine and load the Vue compiler in it.
-     * @param templateCompilerResourceFolder A Folder containing the Vue template compiler script
      */
-    private void initEngine(Folder templateCompilerResourceFolder)
+    private void initEngine()
     {
         engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
 
         try
         {
-            Require.enable(engine, templateCompilerResourceFolder);
-            engine.eval(templateCompilerResourceFolder.getFile("index.js"));
+            engine.eval("(function(global){global.global = global})(this);");
+            engine.eval(NashornVueTemplateCompiler.NASHORN_VUE_TEMPLATE_COMPILER);
         }
         catch (ScriptException e)
         {
@@ -66,7 +60,10 @@ public class VueTemplateCompiler
         {
             e.printStackTrace();
             throw new VueTemplateCompilerException(
-                "An error occurred while compiling the template: " + htmlTemplate);
+                "An error occurred while compiling the template: "
+                    + htmlTemplate
+                    + " -> "
+                    + e.getMessage());
         }
 
         String renderFunction = (String) templateCompilerResult.get("render");

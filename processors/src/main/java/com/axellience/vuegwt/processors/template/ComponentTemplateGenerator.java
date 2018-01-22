@@ -9,7 +9,6 @@ import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
-import com.coveo.nashorn_modules.Folder;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
@@ -71,8 +70,7 @@ public class ComponentTemplateGenerator
         // Build the TemplateImpl with the result
         TemplateBuilder templateBuilder = new TemplateBuilder();
         TypeSpec templateType = templateBuilder.buildTemplate(componentTypeName,
-            templateParserResult,
-            getNashornModulesFolder());
+            templateParserResult);
 
         writeJavaFile(componentTypeElement, templateType);
     }
@@ -163,18 +161,13 @@ public class ComponentTemplateGenerator
         }
     }
 
-    private Folder getNashornModulesFolder()
-    {
-        return FilerFolder.create(filer, "template-compiler");
-    }
-
     private String getTemplateContent(ClassName componentTypeName)
     {
         String path = slashify(componentTypeName.reflectionName()) + TEMPLATE_EXTENSION;
         FileObject resource;
         try
         {
-            resource = filer.getResource(StandardLocation.CLASS_PATH, "", path);
+            resource = filer.getResource(StandardLocation.CLASS_OUTPUT, "", path);
         }
         catch (IOException e)
         {

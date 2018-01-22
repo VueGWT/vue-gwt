@@ -1,0 +1,18 @@
+{
+  "name": "vue-gwt-utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "processVueDevRuntime.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vue-template-compiler": "^2.5.13",
+    "vue": "^2.5.13"
+  },
+  "devDependencies": {
+    "webpack": "^3.10.0"
+  }
+}

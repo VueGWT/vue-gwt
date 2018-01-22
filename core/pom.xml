@@ -14,6 +14,11 @@
 	<name>Vue GWT Core</name>
 	<description>Vue GWT Core classes</description>
 	<packaging>gwt-lib</packaging>
+	
+	<properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 
 	<dependencies>
 
@@ -53,12 +58,6 @@
 		<dependency>
 			<groupId>com.github.javaparser</groupId>
 			<artifactId>javaparser-core</artifactId>
-		</dependency>
-
-		<!-- Nashorn dependencies -->
-		<dependency>
-			<groupId>com.coveo</groupId>
-			<artifactId>nashorn-commonjs-modules</artifactId>
 		</dependency>
 
 		<!-- Injection -->

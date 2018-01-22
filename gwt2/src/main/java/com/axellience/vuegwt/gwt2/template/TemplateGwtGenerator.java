@@ -10,8 +10,6 @@ import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
-import com.axellience.vuegwt.gwt2.template.compiler.GwtResourceFolder;
-import com.coveo.nashorn_modules.Folder;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -168,13 +166,9 @@ public final class TemplateGwtGenerator extends Generator
         PrintWriter printWriter, ClassName componentTypeName,
         TemplateParserResult templateParserResult) throws UnableToCompleteException
     {
-        // Resources are in the "client" folder to be included during GWT compilation
-        Folder folder = new GwtResourceFolder(context.getResourcesOracle(),
-            "com/axellience/vuegwt/gwt2/client/template/compiler");
-
         TemplateBuilder templateBuilder = new TemplateBuilder();
         TypeSpec templateImplType =
-            templateBuilder.buildTemplate(componentTypeName, templateParserResult, folder);
+            templateBuilder.buildTemplate(componentTypeName, templateParserResult);
 
         // Write class
         JavaFile javaFile =
