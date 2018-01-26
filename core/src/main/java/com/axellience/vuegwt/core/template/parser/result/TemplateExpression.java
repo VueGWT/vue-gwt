@@ -9,8 +9,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.axellience.vuegwt.core.generation.GenerationUtil.stringTypeToTypeName;
-
 /**
  * A Java expression from the template.
  * For each Java expression in the template, a {@link TemplateExpression} is created.
@@ -27,11 +25,11 @@ public class TemplateExpression
     private final TypeName type;
     private final List<VariableInfo> parameters = new LinkedList<>();
 
-    public TemplateExpression(String id, String body, String type, boolean shouldCast,
+    public TemplateExpression(String id, String body, TypeName type, boolean shouldCast,
         Collection<VariableInfo> parameters)
     {
         this.id = id;
-        this.type = stringTypeToTypeName(type);
+        this.type = type;
         this.body = body;
         this.shouldCast = shouldCast;
         this.parameters.addAll(parameters);

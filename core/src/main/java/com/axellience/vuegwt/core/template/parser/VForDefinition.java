@@ -1,13 +1,13 @@
 package com.axellience.vuegwt.core.template.parser;
 
+import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
+import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
+import com.squareup.javapoet.TypeName;
 import jsinterop.base.Any;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
-import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 
 /**
  * An object used to process a v-for expression from the Template.
@@ -215,12 +215,12 @@ public class VForDefinition
         return inExpression;
     }
 
-    public String getInExpressionType()
+    public TypeName getInExpressionType()
     {
         if (type == VForDefinitionType.ARRAY_OR_RANGE)
-            return Any.class.getCanonicalName();
+            return TypeName.get(Any.class);
 
-        return "Object";
+        return TypeName.get(Object.class);
     }
 
     public String getVariableDefinition()

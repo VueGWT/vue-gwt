@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.core.template.parser.result;
 
 import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
+import com.squareup.javapoet.TypeName;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class TemplateParserResult
      * @return The {@link TemplateExpression} for this Java expression, will be used to get the
      * string to put in the template instead.
      */
-    public TemplateExpression addExpression(String expression, String expressionType, boolean shouldCast,
+    public TemplateExpression addExpression(String expression, TypeName expressionType, boolean shouldCast,
         List<VariableInfo> parameters)
     {
         String id = EXPRESSION_PREFIX + this.expressions.size();

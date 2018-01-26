@@ -19,6 +19,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
+import com.squareup.javapoet.TypeName;
 import jsinterop.base.Any;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
@@ -36,6 +37,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.axellience.vuegwt.core.generation.GenerationUtil.stringTypeToTypeName;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -56,7 +59,7 @@ public class TemplateParser
 
     private Attribute currentAttribute;
     private LocalComponentProp currentProp;
-    private String currentExpressionReturnType;
+    private TypeName currentExpressionReturnType;
 
     /**
      * Parse a given HTML template and return the a result object containing the expressions
@@ -166,7 +169,7 @@ public class TemplateParser
             if (start > 0)
                 newText.append(elementText.substring(lastEnd, start));
 
-            currentExpressionReturnType = "String";
+            currentExpressionReturnType = TypeName.get(String.class);
             String expressionString = elementText.substring(start + 2, end - 2).trim();
             String processedExpression = processExpression(expressionString);
             newText.append("{{ ").append(processedExpression).append(" }}");
@@ -265,20 +268,20 @@ public class TemplateParser
      * @param attribute The attribute the expression is in
      * @return
      */
-    private String getExpressionReturnTypeForAttribute(Attribute attribute)
+    private TypeName getExpressionReturnTypeForAttribute(Attribute attribute)
     {
         String attributeName = attribute.getKey().toLowerCase();
 
         if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0)
-            return "void";
+            return TypeName.VOID;
 
         if ("v-if".equals(attributeName) || "v-show".equals(attributeName))
-            return "boolean";
+            return TypeName.BOOLEAN;
 
         if (currentProp != null)
-            return currentProp.getType().toString();
+            return currentProp.getType();
 
-        return Any.class.getCanonicalName();
+        return TypeName.get(Any.class);
     }
 
     /**
@@ -461,7 +464,7 @@ public class TemplateParser
             if (mostLeft instanceof CastExpr)
             {
                 CastExpr castExpr = (CastExpr) mostLeft;
-                currentExpressionReturnType = castExpr.getType().toString();
+                currentExpressionReturnType = stringTypeToTypeName(castExpr.getType().toString());
                 BinaryExpr parent = (BinaryExpr) mostLeft.getParentNode().get();
                 parent.setLeft(castExpr.getExpression());
             }
@@ -469,7 +472,7 @@ public class TemplateParser
         else if (expression instanceof CastExpr)
         {
             CastExpr castExpr = (CastExpr) expression;
-            currentExpressionReturnType = castExpr.getType().toString();
+            currentExpressionReturnType = stringTypeToTypeName(castExpr.getType().toString());
             expression = castExpr.getExpression();
         }
         return expression;
