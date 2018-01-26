@@ -1,16 +1,20 @@
 package com.axellience.vuegwt.processors.template;
 
+import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
 import com.axellience.vuegwt.core.template.builder.TemplateBuilder;
 import com.axellience.vuegwt.core.template.parser.TemplateParser;
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.Filer;
@@ -18,8 +22,10 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
@@ -30,8 +36,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.axellience.vuegwt.core.client.template.ComponentTemplate.TEMPLATE_EXTENSION;
+import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getComponentLocalComponents;
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getSuperComponentType;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentToTagName;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.getComputedPropertyName;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.hasAnnotation;
 
@@ -43,11 +51,13 @@ public class ComponentTemplateGenerator
 {
     private final Filer filer;
     private final Messager messager;
+    private final Elements elementUtils;
 
     public ComponentTemplateGenerator(ProcessingEnvironment processingEnvironment)
     {
         filer = processingEnvironment.getFiler();
         messager = processingEnvironment.getMessager();
+        elementUtils = processingEnvironment.getElementUtils();
     }
 
     public void generate(TypeElement componentTypeElement)
@@ -55,9 +65,12 @@ public class ComponentTemplateGenerator
         ClassName componentTypeName = ClassName.get(componentTypeElement);
         String templateContent = getTemplateContent(componentTypeName);
 
+        LocalComponents localComponents = new LocalComponents();
+        findLocalComponentsForComponent(localComponents, componentTypeElement);
+
         // Initialize the template parser context based on the VueComponent type element
         TemplateParserContext templateParserContext =
-            new TemplateParserContext(componentTypeName, new LocalComponents());
+            new TemplateParserContext(componentTypeName, localComponents);
         registerFieldsAndMethodsInContext(templateParserContext,
             componentTypeElement,
             new HashSet<>(),
@@ -69,8 +82,8 @@ public class ComponentTemplateGenerator
 
         // Build the TemplateImpl with the result
         TemplateBuilder templateBuilder = new TemplateBuilder();
-        TypeSpec templateType = templateBuilder.buildTemplate(componentTypeName,
-            templateParserResult);
+        TypeSpec templateType =
+            templateBuilder.buildTemplate(componentTypeName, templateParserResult);
 
         writeJavaFile(componentTypeElement, templateType);
     }
@@ -137,6 +150,60 @@ public class ComponentTemplateGenerator
             superComponent,
             alreadyDoneVariable,
             alreadyDoneMethods));
+    }
+
+    /**
+     * Register all locally declared components.
+     * @param localComponents The {@link LocalComponents} where we register our local components
+     * @param componentTypeElement The class to process
+     */
+    private void findLocalComponentsForComponent(LocalComponents localComponents,
+        TypeElement componentTypeElement)
+    {
+        Component componentAnnotation = componentTypeElement.getAnnotation(Component.class);
+        if (componentAnnotation == null)
+            return;
+
+        getComponentLocalComponents(elementUtils, componentTypeElement)
+            .stream()
+            .map(DeclaredType.class::cast)
+            .map(DeclaredType::asElement)
+            .map(TypeElement.class::cast)
+            .forEach(childTypeElement -> processLocalComponentClass(localComponents,
+                childTypeElement));
+
+        getSuperComponentType(componentTypeElement).ifPresent(superComponentType -> findLocalComponentsForComponent(
+            localComponents,
+            superComponentType));
+    }
+
+    /**
+     * Register the local component and all of its {@link Prop}.
+     * This will be used for type validation.
+     * @param localComponents The {@link LocalComponents} object where we should register our {@link LocalComponent}
+     * @param localComponentType The class to process
+     */
+    private void processLocalComponentClass(LocalComponents localComponents,
+        TypeElement localComponentType)
+    {
+        Component componentAnnotation = localComponentType.getAnnotation(Component.class);
+        String localComponentTagName =
+            componentToTagName(localComponentType.getSimpleName().toString(), componentAnnotation);
+
+        if (localComponents.hasLocalComponent(localComponentTagName))
+            return;
+
+        LocalComponent localComponent = localComponents.addLocalComponent(localComponentTagName);
+
+        ElementFilter.fieldsIn(localComponentType.getEnclosedElements()).forEach(field -> {
+            Prop propAnnotation = field.getAnnotation(Prop.class);
+            if (propAnnotation != null)
+            {
+                localComponent.addProp(field.getSimpleName().toString(),
+                    TypeName.get(field.asType()),
+                    propAnnotation.required());
+            }
+        });
     }
 
     private void writeJavaFile(TypeElement componentTypeElement, TypeSpec templateImplType)
