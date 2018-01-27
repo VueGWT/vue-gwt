@@ -87,7 +87,7 @@ public class ComponentJsTypeGenerator
         componentTemplateProcessor = new ComponentTemplateProcessor(processingEnvironment);
     }
 
-    public void generate(TypeElement component)
+    public void generate(TypeElement component, ComponentInjectedDependenciesBuilder dependenciesBuilder)
     {
         // Template resource abstract class
         ClassName componentWithSuffixClassName = componentJsTypeName(component);
@@ -97,9 +97,6 @@ public class ComponentJsTypeGenerator
 
         // Initialize Options getter builder
         MethodSpec.Builder optionsBuilder = getOptionsMethodBuilder(component);
-
-        ComponentInjectedDependenciesBuilder dependenciesBuilder =
-            new ComponentInjectedDependenciesBuilder(processingEnv, component);
 
         Set<ExecutableElement> hookMethodsFromInterfaces = getHookMethodsFromInterfaces(component);
 
@@ -556,7 +553,7 @@ public class ComponentJsTypeGenerator
         ComponentInjectedDependenciesBuilder dependenciesBuilder,
         MethodSpec.Builder createdMethodBuilder)
     {
-        if (!dependenciesBuilder.hasDependencies())
+        if (!dependenciesBuilder.hasInjectedDependencies())
             return;
 
         createDependenciesInstance(component, createdMethodBuilder);

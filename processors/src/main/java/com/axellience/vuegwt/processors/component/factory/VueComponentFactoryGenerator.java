@@ -1,22 +1,5 @@
 package com.axellience.vuegwt.processors.component.factory;
 
-import jsinterop.base.JsPropertyMap;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.inject.Inject;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.MirroredTypesException;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.component.VueComponent;
@@ -32,6 +15,21 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
+import jsinterop.base.JsPropertyMap;
+
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.inject.Inject;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.MirroredTypesException;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentCustomizeOptions;
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
@@ -46,12 +44,20 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.*;
 public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGenerator
 {
     private final Elements elements;
+    private boolean hasInjectedDependencies;
 
     public VueComponentFactoryGenerator(ProcessingEnvironment processingEnv)
     {
         super(processingEnv);
 
         elements = processingEnv.getElementUtils();
+    }
+
+    public void generate(TypeElement component,
+        boolean hasInjectedDependencies)
+    {
+        this.hasInjectedDependencies = hasInjectedDependencies;
+        super.generate(component);
     }
 
     @Override
@@ -92,7 +98,10 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         }
 
         Component componentAnnotation = component.getAnnotation(Component.class);
-        registerProvider(component, initBuilder, initParametersCall);
+
+        if (hasInjectedDependencies)
+            registerDependenciesProvider(component, initBuilder, initParametersCall);
+
         registerLocalComponents(component, initBuilder, initParametersCall);
         registerLocalDirectives(componentAnnotation, initBuilder);
 
@@ -113,7 +122,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
      * @param initBuilder The builder of the init method
      * @param staticInitParameters Parameters of the init method
      */
-    private void registerProvider(TypeElement component, MethodSpec.Builder initBuilder,
+    private void registerDependenciesProvider(TypeElement component, MethodSpec.Builder initBuilder,
         List<CodeBlock> staticInitParameters)
     {
         ClassName componentDependencies = componentInjectedDependenciesName(component);
@@ -133,19 +142,18 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
      * on.
      * Their values are either injected, or pass directly when using the "get()" static accessor.
      * @param component The Component we generate for
-     * @param injectDependenciesBuilder The builder for the injectDependencies method
+     * @param initBuilder The builder for the init method
      * @param staticInitParameters The parameters of the static init function
      */
-    private void registerLocalComponents(TypeElement component,
-        MethodSpec.Builder injectDependenciesBuilder, List<CodeBlock> staticInitParameters)
+    private void registerLocalComponents(TypeElement component, MethodSpec.Builder initBuilder,
+        List<CodeBlock> staticInitParameters)
     {
         List<TypeMirror> localComponents = getComponentLocalComponents(elements, component);
 
         if (localComponents.isEmpty())
             return;
 
-        injectDependenciesBuilder.addStatement(
-            "$T<$T> components = jsConstructor.getOptionsComponents()",
+        initBuilder.addStatement("$T<$T> components = jsConstructor.getOptionsComponents()",
             JsPropertyMap.class,
             ParameterizedTypeName.get(VueJsAsyncProvider.class, VueJsConstructor.class));
 
@@ -153,13 +161,13 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             ClassName factory = componentFactoryName(localComponent);
 
             String parameterName = factory.reflectionName().replaceAll("\\.", "_");
-            injectDependenciesBuilder.addParameter(providerOf(factory), parameterName);
+            initBuilder.addParameter(providerOf(factory), parameterName);
             staticInitParameters.add(CodeBlock.of("() -> $T.get()", factory));
 
             Element localComponentElement = ((DeclaredType) localComponent).asElement();
             String tagName = componentToTagName(localComponentElement.getSimpleName().toString(),
                 localComponentElement.getAnnotation(Component.class));
-            injectDependenciesBuilder.addStatement(
+            initBuilder.addStatement(
                 "components.set($S, render -> render.accept($L.get().getJsConstructor()))",
                 tagName,
                 parameterName);
@@ -169,22 +177,20 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
     /**
      * Register directives passed to the annotation.
      * @param annotation The Component annotation on the Component we generate for
-     * @param injectDependenciesBuilder The builder for the injectDependencies method
+     * @param initBuilder The builder for the init method
      */
-    private void registerLocalDirectives(Component annotation,
-        MethodSpec.Builder injectDependenciesBuilder)
+    private void registerLocalDirectives(Component annotation, MethodSpec.Builder initBuilder)
     {
         try
         {
             Class<?>[] componentsClass = annotation.directives();
 
             if (componentsClass.length > 0)
-                addGetDirectivesStatement(injectDependenciesBuilder);
+                addGetDirectivesStatement(initBuilder);
 
             Stream
                 .of(componentsClass)
-                .forEach(clazz -> injectDependenciesBuilder.addStatement(
-                    "directives.set($S, new $T())",
+                .forEach(clazz -> initBuilder.addStatement("directives.set($S, new $T())",
                     directiveToTagName(clazz.getName()),
                     directiveOptionsName(clazz)));
         }
@@ -193,11 +199,11 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             List<DeclaredType> classTypeMirrors = (List<DeclaredType>) mte.getTypeMirrors();
 
             if (!classTypeMirrors.isEmpty())
-                addGetDirectivesStatement(injectDependenciesBuilder);
+                addGetDirectivesStatement(initBuilder);
 
             classTypeMirrors.forEach(classTypeMirror -> {
                 TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
-                injectDependenciesBuilder.addStatement("directives.set($S, new $T())",
+                initBuilder.addStatement("directives.set($S, new $T())",
                     directiveToTagName(classTypeElement.getSimpleName().toString()),
                     directiveOptionsName(classTypeElement));
             });

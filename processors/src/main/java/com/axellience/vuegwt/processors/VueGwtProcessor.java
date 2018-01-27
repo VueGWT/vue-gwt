@@ -3,6 +3,7 @@ package com.axellience.vuegwt.processors;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.directive.Directive;
+import com.axellience.vuegwt.processors.component.ComponentInjectedDependenciesBuilder;
 import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
 import com.axellience.vuegwt.processors.component.factory.VueComponentFactoryGenerator;
 import com.axellience.vuegwt.processors.component.factory.VueJsComponentFactoryGenerator;
@@ -72,8 +73,11 @@ public class VueGwtProcessor extends AbstractProcessor
 
         for (TypeElement componentType : ElementFilter.typesIn(componentElements))
         {
-            vueFactoryGenerator.generate(componentType);
-            componentJsTypeGenerator.generate(componentType);
+            ComponentInjectedDependenciesBuilder dependenciesBuilder =
+                new ComponentInjectedDependenciesBuilder(processingEnv, componentType);
+            vueFactoryGenerator.generate(componentType,
+                dependenciesBuilder.hasInjectedDependencies());
+            componentJsTypeGenerator.generate(componentType, dependenciesBuilder);
         }
     }
 
