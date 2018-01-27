@@ -2,8 +2,8 @@ package com.axellience.vuegwt.processors.directive;
 
 import com.axellience.vuegwt.core.client.directive.VueDirective;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.core.generation.GenerationNameUtil;
-import com.axellience.vuegwt.core.generation.GenerationUtil;
+import com.axellience.vuegwt.processors.utils.GeneratorsNameUtil;
+import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -39,7 +39,7 @@ public class VueDirectiveOptionsGenerator
      */
     public void generate(TypeElement directiveTypeElement)
     {
-        ClassName optionsClassName = GenerationNameUtil.directiveOptionsName(directiveTypeElement);
+        ClassName optionsClassName = GeneratorsNameUtil.directiveOptionsName(directiveTypeElement);
 
         Builder componentClassBuilder = TypeSpec
             .classBuilder(optionsClassName)
@@ -65,7 +65,7 @@ public class VueDirectiveOptionsGenerator
         componentClassBuilder.addMethod(constructorBuilder.build());
 
         // Build the DirectiveOptions class
-        GenerationUtil.toJavaFile(filer,
+        GeneratorsUtil.toJavaFile(filer,
             componentClassBuilder,
             optionsClassName,
             directiveTypeElement);

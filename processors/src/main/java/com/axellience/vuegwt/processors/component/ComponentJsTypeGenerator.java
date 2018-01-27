@@ -19,8 +19,8 @@ import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
-import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
-import com.axellience.vuegwt.core.generation.GenerationUtil;
+import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
+import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.axellience.vuegwt.processors.component.template.ComponentTemplateProcessor;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -54,13 +54,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.*;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentFactoryName;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentInjectedDependenciesName;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentJsTypeName;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.methodToEventName;
-import static com.axellience.vuegwt.core.generation.GenerationUtil.hasAnnotation;
-import static com.axellience.vuegwt.core.generation.GenerationUtil.hasInterface;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.*;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentJsTypeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
 
 /**
  * Generate a JsType wrapper for the user Java {@link VueComponent}.
@@ -131,7 +131,7 @@ public class ComponentJsTypeGenerator
         componentJsTypeBuilder.addMethod(optionsBuilder.build());
 
         // And generate our Java Class
-        GenerationUtil.toJavaFile(filer,
+        GeneratorsUtil.toJavaFile(filer,
             componentJsTypeBuilder,
             componentWithSuffixClassName,
             component);
@@ -216,7 +216,7 @@ public class ComponentJsTypeGenerator
         List<String> fieldsName = ElementFilter
             .fieldsIn(component.getEnclosedElements())
             .stream()
-            .filter(ComponentGenerationUtil::isFieldVisibleInJS)
+            .filter(ComponentGeneratorsUtil::isFieldVisibleInJS)
             .filter(field -> field.getAnnotation(Prop.class) == null)
             .map(field -> field.getSimpleName().toString())
             .collect(Collectors.toList());
@@ -283,7 +283,7 @@ public class ComponentJsTypeGenerator
             if ("void".equals(method.getReturnType().toString()))
                 kind = ComputedKind.SETTER;
 
-            String propertyName = GenerationUtil.getComputedPropertyName(method);
+            String propertyName = GeneratorsUtil.getComputedPropertyName(method);
             optionsBuilder.addStatement("options.addJavaComputed($S, $S, $T.$L)",
                 methodName,
                 propertyName,
@@ -311,7 +311,7 @@ public class ComponentJsTypeGenerator
         List<ExecutableElement> templateMethods = ElementFilter
             .methodsIn(component.getEnclosedElements())
             .stream()
-            .filter(ComponentGenerationUtil::isMethodVisibleInTemplate)
+            .filter(ComponentGeneratorsUtil::isMethodVisibleInTemplate)
             .filter(method -> !isHookMethod(component, method, hookMethodsFromInterfaces))
             .collect(Collectors.toList());
 
@@ -337,7 +337,7 @@ public class ComponentJsTypeGenerator
         Set<String> alreadyDone)
     {
         getMethodsWithAnnotation(component, Computed.class).forEach(method -> {
-            String propertyName = GenerationUtil.getComputedPropertyName(method);
+            String propertyName = GeneratorsUtil.getComputedPropertyName(method);
 
             if (alreadyDone.contains(propertyName))
                 return;

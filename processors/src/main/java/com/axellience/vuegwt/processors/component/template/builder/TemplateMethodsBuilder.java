@@ -17,7 +17,7 @@ import jsinterop.base.Js;
 
 import javax.lang.model.element.Modifier;
 
-import static com.axellience.vuegwt.core.generation.GenerationUtil.getUnusableByJSAnnotation;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getUnusableByJSAnnotation;
 
 public class TemplateMethodsBuilder
 {

@@ -37,7 +37,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.axellience.vuegwt.core.generation.GenerationUtil.stringTypeToTypeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
 
 /**
  * Parse an HTML Vue GWT template.

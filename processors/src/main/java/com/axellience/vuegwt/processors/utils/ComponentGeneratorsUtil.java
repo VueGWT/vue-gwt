@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.core.generation;
+package com.axellience.vuegwt.processors.utils;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
@@ -36,15 +36,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentFactoryName;
-import static com.axellience.vuegwt.core.generation.GenerationUtil.hasAnnotation;
-import static com.axellience.vuegwt.core.generation.GenerationUtil.hasInterface;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
 
 /**
  * Utilities methods to manipulate the {@link Component} annotation
  * @author Adrien Baron
  */
-public class ComponentGenerationUtil
+public class ComponentGeneratorsUtil
 {
     /**
      * Return the list of {@link VueComponent} dependencies listed on {@link

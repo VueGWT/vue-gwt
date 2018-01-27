@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.processors.component;
 
 import com.axellience.vuegwt.core.client.component.VueComponent;
-import com.axellience.vuegwt.core.generation.GenerationUtil;
+import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentInjectedDependenciesName;
-import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.resolveVariableTypeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.resolveVariableTypeName;
 
 /**
  * Build a class used to inject dependencies of a given {@link VueComponent}.
@@ -64,7 +64,7 @@ public class ComponentInjectedDependenciesBuilder
             .build());
 
         // Generate the file
-        GenerationUtil.toJavaFile(processingEnvironment.getFiler(),
+        GeneratorsUtil.toJavaFile(processingEnvironment.getFiler(),
             componentInjectedDependenciesBuilder,
             componentInjectedDependenciesName(component),
             component);

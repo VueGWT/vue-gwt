@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.core.generation;
+package com.axellience.vuegwt.processors.utils;
 
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.google.gwt.core.ext.typeinfo.HasAnnotations;
@@ -32,9 +32,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * General generator util methods
  * @author Adrien Baron
  */
-public class GenerationUtil
+public class GeneratorsUtil
 {
     public static boolean hasInterface(ProcessingEnvironment processingEnv, TypeMirror type,
         Class myInterface)
@@ -110,7 +111,7 @@ public class GenerationUtil
             .returns(resourceType)
             .build());
 
-        GenerationUtil.toJavaFile(filer, bundleClassBuilder, bundleClassName, sourceType);
+        GeneratorsUtil.toJavaFile(filer, bundleClassBuilder, bundleClassName, sourceType);
     }
 
     public static boolean hasAnnotation(Element element,

@@ -2,7 +2,7 @@ package com.axellience.vuegwt.processors.component.template.parser.variable;
 
 import com.squareup.javapoet.TypeName;
 
-import static com.axellience.vuegwt.core.generation.GenerationUtil.stringTypeToTypeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
 
 /**
  * Information about a Variable in the template.

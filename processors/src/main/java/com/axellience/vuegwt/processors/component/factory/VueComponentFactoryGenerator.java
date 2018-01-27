@@ -26,17 +26,17 @@ import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsAsyncProvider;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
-import com.axellience.vuegwt.core.generation.GenerationNameUtil;
+import com.axellience.vuegwt.processors.utils.GeneratorsNameUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
 
-import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getComponentCustomizeOptions;
-import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getComponentLocalComponents;
-import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getSuperComponentType;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.*;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentCustomizeOptions;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.*;
 
 /**
  * Generate {@link VueFactory} from the user {@link VueComponent} classes annotated by {@link
@@ -74,7 +74,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
 
         // Extend the parent Component
         Optional<ClassName> superFactoryType =
-            getSuperComponentType(component).map(GenerationNameUtil::componentFactoryName);
+            getSuperComponentType(component).map(GeneratorsNameUtil::componentFactoryName);
 
         if (superFactoryType.isPresent())
         {

@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.core.generation;
+package com.axellience.vuegwt.processors.utils;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Emit;
@@ -15,14 +15,13 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
+ * Name
  * @author Adrien Baron
  */
-public class GenerationNameUtil
+public class GeneratorsNameUtil
 {
     private static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
     private static String COMPONENT_INJECTED_DEPENDENCIES_SUFFIX = "InjectedDependencies";
-
-    public static String COMPONENT_TEMPLATE_SUFFIX = "Template";
 
     private static String COMPONENT_FACTORY_SUFFIX = "Factory";
 
@@ -45,16 +44,6 @@ public class GenerationNameUtil
     public static ClassName componentInjectedDependenciesName(TypeElement component)
     {
         return nameWithSuffix(component, COMPONENT_INJECTED_DEPENDENCIES_SUFFIX);
-    }
-
-    public static ClassName componentTemplateName(TypeElement component)
-    {
-        return nameWithSuffix(component, COMPONENT_TEMPLATE_SUFFIX);
-    }
-
-    public static ClassName componentTemplateName(ClassName component)
-    {
-        return nameWithSuffix(component, COMPONENT_TEMPLATE_SUFFIX);
     }
 
     public static ClassName componentFactoryName(TypeElement component)

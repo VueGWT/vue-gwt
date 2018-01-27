@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.squareup.javapoet.TypeName;
 
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.propNameToAttributeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
 
 public class LocalComponent
 {

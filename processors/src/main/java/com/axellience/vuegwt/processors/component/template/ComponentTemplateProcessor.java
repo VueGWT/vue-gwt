@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.VueComponent;
-import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
+import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
 import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
@@ -32,11 +32,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getComponentLocalComponents;
-import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getSuperComponentType;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentToTagName;
-import static com.axellience.vuegwt.core.generation.GenerationUtil.getComputedPropertyName;
-import static com.axellience.vuegwt.core.generation.GenerationUtil.hasAnnotation;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentToTagName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 
 /**
  * Process the HTML template for a given {@link VueComponent}.
@@ -97,7 +97,7 @@ public class ComponentTemplateProcessor
         ElementFilter
             .fieldsIn(componentTypeElement.getEnclosedElements())
             .stream()
-            .filter(ComponentGenerationUtil::isFieldVisibleInJS)
+            .filter(ComponentGeneratorsUtil::isFieldVisibleInJS)
             .forEach(field -> {
                 String name = field.getSimpleName().toString();
                 if (alreadyDoneVariable.contains(name))
@@ -130,7 +130,7 @@ public class ComponentTemplateProcessor
         ElementFilter
             .methodsIn(componentTypeElement.getEnclosedElements())
             .stream()
-            .filter(ComponentGenerationUtil::isMethodVisibleInTemplate)
+            .filter(ComponentGeneratorsUtil::isMethodVisibleInTemplate)
             .map(ExecutableElement::getSimpleName)
             .map(Object::toString)
             .forEach(methodName -> {
