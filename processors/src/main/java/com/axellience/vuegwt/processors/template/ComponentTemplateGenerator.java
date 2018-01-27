@@ -70,7 +70,7 @@ public class ComponentTemplateGenerator
 
         // Initialize the template parser context based on the VueComponent type element
         TemplateParserContext templateParserContext =
-            new TemplateParserContext(componentTypeName, localComponents);
+            new TemplateParserContext(componentTypeElement, localComponents);
         registerFieldsAndMethodsInContext(templateParserContext,
             componentTypeElement,
             new HashSet<>(),
@@ -78,7 +78,7 @@ public class ComponentTemplateGenerator
 
         // Parse the template
         TemplateParserResult templateParserResult =
-            new TemplateParser().parseHtmlTemplate(templateContent, templateParserContext);
+            new TemplateParser().parseHtmlTemplate(templateContent, templateParserContext, messager);
 
         // Build the TemplateImpl with the result
         TemplateBuilder templateBuilder = new TemplateBuilder();

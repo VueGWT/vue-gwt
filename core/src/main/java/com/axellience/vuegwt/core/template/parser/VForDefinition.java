@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.core.template.parser;
 
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
 import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 import com.squareup.javapoet.TypeName;
 import jsinterop.base.Any;
@@ -15,6 +14,8 @@ import java.util.regex.Pattern;
  */
 public class VForDefinition
 {
+    private final TemplateParserErrorReporter errorReporter;
+
     private enum VForDefinitionType
     {
         OBJECT, ARRAY_OR_RANGE
@@ -34,8 +35,10 @@ public class VForDefinition
     private LocalVariableInfo keyVariableInfo = null;
     private LocalVariableInfo indexVariableInfo = null;
 
-    public VForDefinition(String vForValue, TemplateParserContext context)
+    public VForDefinition(String vForValue, TemplateParserContext context,
+        TemplateParserErrorReporter errorReporter)
     {
+        this.errorReporter = errorReporter;
         String[] splitExpression = splitVForExpression(vForValue, context);
 
         String loopVariablesDefinition = splitExpression[0].trim();
@@ -63,10 +66,9 @@ public class VForDefinition
                 return;
         }
 
-        throw new TemplateExpressionException(
+        errorReporter.reportError(
             "Invalid v-for found, they should be in the form: \"Todo todo in myTodos\"",
-            vForValue,
-            context);
+            vForValue);
     }
 
     /**
@@ -199,10 +201,9 @@ public class VForDefinition
             splitExpression = vForValue.split(" of ");
 
         if (splitExpression.length != 2)
-            throw new TemplateExpressionException(
+            errorReporter.reportError(
                 "Invalid v-for found, they should be in the form: \"Todo todo in myTodos\"",
-                vForValue,
-                context);
+                vForValue);
 
         return splitExpression;
     }

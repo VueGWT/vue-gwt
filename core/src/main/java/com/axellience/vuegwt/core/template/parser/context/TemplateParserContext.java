@@ -8,12 +8,12 @@ import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalC
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import elemental2.dom.Event;
 import jsinterop.base.JsPropertyMap;
 import org.jsoup.nodes.Node;
 
+import javax.lang.model.element.TypeElement;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 public class TemplateParserContext
 {
-    private final ClassName componentTypeName;
+    private final TypeElement componentTypeElement;
     private final LocalComponents localComponents;
     private final ContextLayer rootLayer;
     private final Deque<ContextLayer> contextLayers = new ArrayDeque<>();
@@ -42,12 +42,12 @@ public class TemplateParserContext
 
     /**
      * Build the context based on a given {@link ComponentTemplate} Class.
-     * @param componentTypeName Name of the {@link VueComponent} class we process in this context
+     * @param componentTypeElement The {@link VueComponent} class we process in this context
      * @param localComponents Components registered locally, used to check property bindings
      */
-    public TemplateParserContext(ClassName componentTypeName, LocalComponents localComponents)
+    public TemplateParserContext(TypeElement componentTypeElement, LocalComponents localComponents)
     {
-        this.componentTypeName = componentTypeName;
+        this.componentTypeElement = componentTypeElement;
         this.localComponents = localComponents;
         this.addImport(Event.class.getCanonicalName());
         this.addImport(Math.class.getCanonicalName());
@@ -250,11 +250,16 @@ public class TemplateParserContext
      */
     public String getTemplateName()
     {
-        return componentTypeName.simpleName() + ".html";
+        return componentTypeElement.getSimpleName().toString() + ".html";
     }
 
     public Optional<LocalComponent> getLocalComponent(String tagName)
     {
         return localComponents.getLocalComponent(tagName);
+    }
+
+    public TypeElement getComponentTypeElement()
+    {
+        return componentTypeElement;
     }
 }

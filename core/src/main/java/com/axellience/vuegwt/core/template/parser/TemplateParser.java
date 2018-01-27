@@ -4,8 +4,6 @@ import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponentProp;
-import com.axellience.vuegwt.core.template.parser.exceptions.TemplateExpressionException;
-import com.axellience.vuegwt.core.template.parser.exceptions.TemplateParserException;
 import com.axellience.vuegwt.core.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
@@ -29,6 +27,7 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.ParseSettings;
 import org.jsoup.parser.Parser;
 
+import javax.annotation.processing.Messager;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,6 +54,7 @@ public class TemplateParser
     private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
     private TemplateParserContext context;
+    private TemplateParserErrorReporter errorReporter;
     private TemplateParserResult result;
 
     private Attribute currentAttribute;
@@ -66,12 +66,14 @@ public class TemplateParser
      * and a transformed HTML.
      * @param htmlTemplate The HTML template to process, as a String
      * @param context Context of the Component we are currently processing
+     * @param messager Used to report errors in template during Annotation Processing
      * @return A {@link TemplateParserResult} containing the processed template and expressions
      */
     public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
-        TemplateParserContext context)
+        TemplateParserContext context, Messager messager)
     {
         this.context = context;
+        this.errorReporter = new TemplateParserErrorReporter(context, messager);
         Parser parser = Parser.htmlParser();
         parser.settings(new ParseSettings(true, true)); // tag, attribute preserve case
         Document doc = parser.parseInput(htmlTemplate, "");
@@ -227,12 +229,11 @@ public class TemplateParser
         if (localComponentProp.getType().toString().equals(String.class.getCanonicalName()))
             return;
 
-        throw new TemplateParserException("Passing a String to a non String Prop: \""
+        errorReporter.reportError("Passing a String to a non String Prop: \""
             + localComponentProp.getPropName()
             + "\"."
             + "\n\nIf you want to pass a boolean or an int you should use v-bind."
-            + "\nFor example: v-bind:my-prop=\"12\" (or using the short syntax, :my-prop=\"12\") instead of my-prop=\"12\".",
-            context);
+            + "\nFor example: v-bind:my-prop=\"12\" (or using the short syntax, :my-prop=\"12\") instead of my-prop=\"12\".");
     }
 
     /**
@@ -253,11 +254,11 @@ public class TemplateParser
 
         if (!missingRequiredProps.isEmpty())
         {
-            throw new TemplateParserException("Missing required property: "
+            errorReporter.reportError("Missing required property: "
                 + missingRequiredProps
                 + " on child component \""
                 + localComponent.getComponentTagName()
-                + "\"", context);
+                + "\"");
         }
     }
 
@@ -293,7 +294,7 @@ public class TemplateParser
      */
     private String processVForValue(String vForValue)
     {
-        VForDefinition vForDef = new VForDefinition(vForValue, context);
+        VForDefinition vForDef = new VForDefinition(vForValue, context, errorReporter);
 
         // Set return of the "in" expression
         currentExpressionReturnType = vForDef.getInExpressionType();
@@ -316,16 +317,14 @@ public class TemplateParser
         {
             if (isAttributeBinding(currentAttribute))
             {
-                throw new TemplateExpressionException(
+                errorReporter.reportError(
                     "Empty expression in template property binding. If you want to pass an empty string then simply don't use binding: my-attribute=\"\"",
-                    currentAttribute.toString(),
-                    context);
+                    currentAttribute.toString());
             }
             else if (isEventBinding(currentAttribute))
             {
-                throw new TemplateExpressionException("Empty expression in template event binding.",
-                    currentAttribute.toString(),
-                    context);
+                errorReporter.reportError("Empty expression in template event binding.",
+                    currentAttribute.toString());
             }
             else
             {
@@ -334,16 +333,14 @@ public class TemplateParser
         }
 
         if (expressionString.startsWith("{"))
-            throw new TemplateExpressionException(
+            errorReporter.reportError(
                 "Object literal syntax are not supported yet in Vue GWT, please use map(e(\"key1\", myValue), e(\"key2\", myValue2 > 5)...) instead.\nThe object returned by map() is a regular Javascript Object (JsObject) with the given key/values.",
-                expressionString,
-                context);
+                expressionString);
 
         if (expressionString.startsWith("["))
-            throw new TemplateExpressionException(
+            errorReporter.reportError(
                 "Array literal syntax are not supported yet in Vue GWT, please use array(myValue, myValue2 > 5...) instead.\nThe object returned by array() is a regular Javascript Array (JsArray) with the given values.",
-                expressionString,
-                context);
+                expressionString);
 
         if (shouldSkipExpressionProcessing(expressionString))
             return expressionString;
@@ -416,11 +413,8 @@ public class TemplateParser
         }
         catch (ParseProblemException parseException)
         {
-            throw new TemplateExpressionException(
-                "Couldn't parse Expression, make sure it is valid Java.",
-                expressionString,
-                context,
-                parseException);
+            errorReporter.reportError("Couldn't parse Expression, make sure it is valid Java.", expressionString);
+            throw parseException;
         }
 
         resolveTypesUsingImports(expression);
@@ -550,12 +544,11 @@ public class TemplateParser
                 String methodName = methodCall.getName().getIdentifier();
                 if (!context.hasMethod(methodName) && !context.hasStaticMethod(methodName))
                 {
-                    throw new TemplateExpressionException("Couldn't find the method \""
-                        + methodName
-                        + "\" in the Component."
-                        + "\nMake sure it is not private or try rerunning your Annotation processor.",
-                        expression.toString(),
-                        context);
+                    errorReporter.reportError("Couldn't find the method \""
+                            + methodName
+                            + "\" in the Component."
+                            + "\nMake sure it is not private or try rerunning your Annotation processor.",
+                        expression.toString());
                 }
             }
         }
@@ -613,10 +606,9 @@ public class TemplateParser
         }
         else
         {
-            throw new TemplateExpressionException(
+            errorReporter.reportError(
                 "\"$event\" should always be casted to it's intended type. Example: @click=\"doSomething((NativeEvent) $event)\".",
-                expression.toString(),
-                context);
+                expression.toString());
         }
     }
 
@@ -641,11 +633,10 @@ public class TemplateParser
         VariableInfo variableInfo = context.findVariable(name);
         if (variableInfo == null)
         {
-            throw new TemplateExpressionException("Couldn't find variable/method \""
-                + name
-                + "\" in the Component.\nMake sure you didn't forget the @JsProperty/@JsMethod annotation or try rerunning your Annotation processor.",
-                expression.toString(),
-                context);
+            errorReporter.reportError("Couldn't find variable/method \""
+                    + name
+                    + "\" in the Component.\nMake sure you didn't forget the @JsProperty/@JsMethod annotation or try rerunning your Annotation processor.",
+                expression.toString());
         }
 
         if (variableInfo instanceof LocalVariableInfo)
