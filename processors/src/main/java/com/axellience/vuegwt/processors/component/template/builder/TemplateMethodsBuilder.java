@@ -11,6 +11,7 @@ import com.axellience.vuegwt.processors.component.template.parser.result.Templat
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
+import elemental2.core.Function;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 
@@ -69,8 +70,8 @@ public class TemplateMethodsBuilder
         MethodSpec.Builder getRenderFunctionBuilder = MethodSpec
             .methodBuilder("getRenderFunction")
             .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
-            .returns(String.class)
-            .addStatement("return $S", result.getRenderFunction());
+            .returns(Function.class)
+            .addStatement("return new $T($S)", Function.class, result.getRenderFunction());
 
         templateBuilder.addMethod(getRenderFunctionBuilder.build());
     }
@@ -89,21 +90,18 @@ public class TemplateMethodsBuilder
         for (String staticRenderFunction : result.getStaticRenderFunctions())
         {
             if (!isFirst)
-            {
                 staticFunctions.add(", ");
-            }
             else
-            {
                 isFirst = false;
-            }
-            staticFunctions.add("$S", staticRenderFunction);
+
+            staticFunctions.add("new $T($S)", Function.class, staticRenderFunction);
         }
 
         MethodSpec.Builder getStaticRenderFunctionsBuilder = MethodSpec
             .methodBuilder("getStaticRenderFunctions")
             .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
-            .returns(String[].class)
-            .addStatement("return new String[] { $L }", staticFunctions.build());
+            .returns(Function[].class)
+            .addStatement("return new $T[] { $L }", Function.class, staticFunctions.build());
 
         templateBuilder.addMethod(getStaticRenderFunctionsBuilder.build());
     }
