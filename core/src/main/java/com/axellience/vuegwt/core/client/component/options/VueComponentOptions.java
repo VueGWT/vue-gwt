@@ -7,7 +7,6 @@ import com.axellience.vuegwt.core.client.component.options.computed.ComputedOpti
 import com.axellience.vuegwt.core.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.core.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
@@ -23,7 +22,6 @@ import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axellience.vuegwt.core.client.template.ComponentTemplate.EXPRESSION_PREFIX;
 import static elemental2.core.Global.JSON;
 
 /**
@@ -40,15 +38,13 @@ import static elemental2.core.Global.JSON;
 public class VueComponentOptions<T extends VueComponent> extends JsObject implements JsPropertyMap
 {
     private ComponentJavaPrototype<T> componentJavaPrototype;
-    private ComponentTemplate<T> componentTemplate;
     private Map<String, Provider<?>> dependenciesProvider;
     private JsPropertyMap dataFields;
 
     /**
      * Set the Java Prototype on this {@link VueComponentOptions}.
      * This prototype will be used to retrieve the java methods of our {@link VueComponent}.
-     * @param javaPrototype An instance of the {@link ComponentTemplate} class for this
-     * Component
+     * @param javaPrototype The {@link ComponentJavaPrototype} for this Component
      */
     @JsOverlay
     public final void setComponentJavaPrototype(ComponentJavaPrototype<T> javaPrototype)
@@ -56,45 +52,35 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
         this.componentJavaPrototype = javaPrototype;
         // This must be set for Components extending Native JS Components
         this.componentJavaPrototype.set("options", this);
-    }
-
-    /**
-     * Set the {@link ComponentTemplate} on this {@link VueComponentOptions}.
-     * This instance will be used to retrieve the java methods of our {@link VueComponent}.
-     * @param componentTemplate An instance of the {@link ComponentTemplate} class for this
-     * Component
-     */
-    @JsOverlay
-    public final void setComponentTemplate(ComponentTemplate<T> componentTemplate)
-    {
-        this.componentTemplate = componentTemplate;
-        this.initExpressions();
-        this.initRenderFunctions();
+        this.initTemplateExpressions();
     }
 
     /**
      * Add template expressions to this {@link VueComponentOptions}.
      */
     @JsOverlay
-    private void initExpressions()
+    private void initTemplateExpressions()
     {
-        for (int i = 0; i < componentTemplate.getTemplateMethodsCount(); i++)
-        {
-            String methodId = EXPRESSION_PREFIX + i;
-            addMethod(methodId, componentTemplate.get(methodId));
+        int i = 0;
+        Function templateMethod;
+        while ((templateMethod = getJavaComponentMethod("exp$" + i)) != null) {
+            addMethod("exp$" + i, templateMethod);
+            i++;
         }
     }
 
     /**
      * Initialise the render functions from our template.
+     * @param renderFunctionString The render function as a String
+     * @param staticRenderFnsStrings The static render functions as a String
      */
     @JsOverlay
-    private void initRenderFunctions()
+    public final void initRenderFunctions(String renderFunctionString, String[] staticRenderFnsStrings)
     {
-        this.set("render", new Function(componentTemplate.getRenderFunction()));
+        this.set("render", new Function(renderFunctionString));
 
         JsArray<Object> staticRenderFns = new JsArray<>();
-        for (String staticRenderFunction : componentTemplate.getStaticRenderFunctions())
+        for (String staticRenderFunction : staticRenderFnsStrings)
         {
             staticRenderFns.push(new Function(staticRenderFunction));
         }

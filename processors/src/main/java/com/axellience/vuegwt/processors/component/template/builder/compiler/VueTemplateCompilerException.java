@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.processors.component.template.compiler;
+package com.axellience.vuegwt.processors.component.template.builder.compiler;
 
 /**
  * @author Adrien Baron

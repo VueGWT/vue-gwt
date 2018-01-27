@@ -361,7 +361,7 @@ public class TemplateParser
         // We don't optimize String expression, as we want GWT to convert Java values
         // to String for us (Enums, wrapped primitives...)
         return currentProp == null
-            && !"String".equals(currentExpressionReturnType)
+            && !String.class.getCanonicalName().equals(currentExpressionReturnType.toString())
             && isSimpleVueJsExpression(expressionString);
     }
 

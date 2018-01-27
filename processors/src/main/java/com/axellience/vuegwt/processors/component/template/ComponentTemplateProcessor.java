@@ -3,19 +3,18 @@ package com.axellience.vuegwt.processors.component.template;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Prop;
-import com.axellience.vuegwt.core.client.template.ComponentTemplate;
+import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
-import com.axellience.vuegwt.processors.component.template.builder.TemplateBuilder;
+import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
+import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
-import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeSpec.Builder;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -28,39 +27,36 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
-import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.axellience.vuegwt.core.client.template.ComponentTemplate.TEMPLATE_EXTENSION;
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getComponentLocalComponents;
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.getSuperComponentType;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateName;
 import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentToTagName;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.getComputedPropertyName;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.hasAnnotation;
 
 /**
- * Generate a {@link ComponentTemplate} Impl class containing the compiled HTML template.
+ * Process the HTML template for a given {@link VueComponent}.
  * @author Adrien Baron
  */
-public class ComponentTemplateGenerator
+public class ComponentTemplateProcessor
 {
     private final Filer filer;
     private final Messager messager;
     private final Elements elementUtils;
 
-    public ComponentTemplateGenerator(ProcessingEnvironment processingEnvironment)
+    public ComponentTemplateProcessor(ProcessingEnvironment processingEnvironment)
     {
         filer = processingEnvironment.getFiler();
         messager = processingEnvironment.getMessager();
         elementUtils = processingEnvironment.getElementUtils();
     }
 
-    public void generate(TypeElement componentTypeElement)
+    public void processComponentTemplate(TypeElement componentTypeElement,
+        Builder componentJsTypeBuilder)
     {
         ClassName componentTypeName = ClassName.get(componentTypeElement);
         String templateContent = getTemplateContent(componentTypeName);
@@ -77,15 +73,15 @@ public class ComponentTemplateGenerator
             new HashSet<>());
 
         // Parse the template
-        TemplateParserResult templateParserResult =
-            new TemplateParser().parseHtmlTemplate(templateContent, templateParserContext, messager);
+        TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
+            templateContent,
+            templateParserContext,
+            messager);
 
-        // Build the TemplateImpl with the result
-        TemplateBuilder templateBuilder = new TemplateBuilder();
-        TypeSpec templateType =
-            templateBuilder.buildTemplate(componentTypeName, templateParserResult);
-
-        writeJavaFile(componentTypeElement, templateType);
+        // Add expressions from the template to JsType and compile template
+        TemplateMethodsBuilder templateMethodsBuilder = new TemplateMethodsBuilder();
+        templateMethodsBuilder.addTemplateMethodsToComponentJsType(componentJsTypeBuilder,
+            templateParserResult);
     }
 
     /**
@@ -206,31 +202,9 @@ public class ComponentTemplateGenerator
         });
     }
 
-    private void writeJavaFile(TypeElement componentTypeElement, TypeSpec templateImplType)
-    {
-        ClassName templateImpl = componentTemplateName(ClassName.get(componentTypeElement));
-
-        try
-        {
-            JavaFile javaFile =
-                JavaFile.builder(templateImpl.packageName(), templateImplType).build();
-
-            JavaFileObject javaFileObject =
-                filer.createSourceFile(templateImpl.reflectionName(), componentTypeElement);
-
-            Writer writer = javaFileObject.openWriter();
-            javaFile.writeTo(writer);
-            writer.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     private String getTemplateContent(ClassName componentTypeName)
     {
-        String path = slashify(componentTypeName.reflectionName()) + TEMPLATE_EXTENSION;
+        String path = slashify(componentTypeName.reflectionName()) + ".html";
         FileObject resource;
         try
         {

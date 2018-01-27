@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.processors.component.template.parser.context;
 
 import com.axellience.vuegwt.core.client.component.VueComponent;
-import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.axellience.vuegwt.core.client.tools.JsUtils;
 import com.axellience.vuegwt.core.client.tools.VForExpressionUtil;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
@@ -41,7 +40,7 @@ public class TemplateParserContext
     private Node currentNode;
 
     /**
-     * Build the context based on a given {@link ComponentTemplate} Class.
+     * Build the context based on a given {@link VueComponent} Class.
      * @param componentTypeElement The {@link VueComponent} class we process in this context
      * @param localComponents Components registered locally, used to check property bindings
      */

@@ -21,6 +21,7 @@ import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
 import com.axellience.vuegwt.core.generation.GenerationUtil;
+import com.axellience.vuegwt.processors.component.template.ComponentTemplateProcessor;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -54,7 +55,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.*;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.*;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentJsTypeName;
+import static com.axellience.vuegwt.core.generation.GenerationNameUtil.methodToEventName;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.hasAnnotation;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.hasInterface;
 
@@ -72,6 +76,7 @@ public class ComponentJsTypeGenerator
     private final Filer filer;
     private final Messager messager;
     private final Elements elements;
+    private final ComponentTemplateProcessor componentTemplateProcessor;
 
     public ComponentJsTypeGenerator(ProcessingEnvironment processingEnvironment)
     {
@@ -79,6 +84,7 @@ public class ComponentJsTypeGenerator
         filer = processingEnvironment.getFiler();
         messager = processingEnvironment.getMessager();
         elements = processingEnvironment.getElementUtils();
+        componentTemplateProcessor = new ComponentTemplateProcessor(processingEnvironment);
     }
 
     public void generate(TypeElement component)
@@ -111,6 +117,14 @@ public class ComponentJsTypeGenerator
         processInvalidEmitMethods(component);
         processRenderFunction(component, optionsBuilder, componentJsTypeBuilder);
         createCreatedHook(component, optionsBuilder, componentJsTypeBuilder, dependenciesBuilder);
+
+        // Process the HTML template if there is one
+        if (hasTemplate(processingEnv, component))
+        {
+            componentTemplateProcessor.processComponentTemplate(component, componentJsTypeBuilder);
+            optionsBuilder.addStatement(
+                "options.initRenderFunctions(getRenderFunction(), getStaticRenderFunctions())");
+        }
 
         // Finish building Options getter
         optionsBuilder.addStatement("return options");
@@ -185,12 +199,6 @@ public class ComponentJsTypeGenerator
             "options.setComponentJavaPrototype($T.getJavaConstructor($T.class).prototype)",
             VueGWT.class,
             componentJsTypeName(component));
-
-        if (hasTemplate(processingEnv, component))
-        {
-            optionsMethodBuilder.addStatement("options.setComponentTemplate(new $T())",
-                componentTemplateName(component));
-        }
 
         return optionsMethodBuilder;
     }

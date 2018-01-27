@@ -6,8 +6,6 @@ import com.squareup.javapoet.TypeName;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.axellience.vuegwt.core.client.template.ComponentTemplate.EXPRESSION_PREFIX;
-
 /**
  * Result of a template parsing.
  * @author Adrien Baron
@@ -52,7 +50,7 @@ public class TemplateParserResult
     public TemplateExpression addExpression(String expression, TypeName expressionType, boolean shouldCast,
         List<VariableInfo> parameters)
     {
-        String id = EXPRESSION_PREFIX + this.expressions.size();
+        String id = "exp$" + this.expressions.size();
 
         TemplateExpression templateExpression =
             new TemplateExpression(id, expression.trim(), expressionType, shouldCast, parameters);

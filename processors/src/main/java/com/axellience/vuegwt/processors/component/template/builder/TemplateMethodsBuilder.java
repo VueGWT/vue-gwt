@@ -1,56 +1,38 @@
 package com.axellience.vuegwt.processors.component.template.builder;
 
-import com.axellience.vuegwt.core.client.template.ComponentTemplate;
+import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
-import com.axellience.vuegwt.processors.component.template.compiler.VueTemplateCompiler;
-import com.axellience.vuegwt.processors.component.template.compiler.VueTemplateCompilerException;
-import com.axellience.vuegwt.processors.component.template.compiler.VueTemplateCompilerResult;
+import com.axellience.vuegwt.processors.component.template.builder.compiler.VueTemplateCompiler;
+import com.axellience.vuegwt.processors.component.template.builder.compiler.VueTemplateCompilerException;
+import com.axellience.vuegwt.processors.component.template.builder.compiler.VueTemplateCompilerResult;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 
 import javax.lang.model.element.Modifier;
 
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentJsTypeName;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentTemplateName;
 import static com.axellience.vuegwt.core.generation.GenerationUtil.getUnusableByJSAnnotation;
 
-public class TemplateBuilder
+public class TemplateMethodsBuilder
 {
     /**
-     * Create the template resource implementation based on the result of the template parser.
-     * @param componentTypeName The name of our Template class
+     * Add Template methods to @{@link VueComponent} JsType based on the result of the template parser.
+     * @param componentJsTypeBuilder Builder for the JsType class
      * @param templateParserResult The result of the HTML template parsed by {@link TemplateParser}
      * render function
-     * @return The built Java class representing our template
      */
-    public TypeSpec buildTemplate(ClassName componentTypeName,
-        TemplateParserResult templateParserResult)
+    public void addTemplateMethodsToComponentJsType(Builder componentJsTypeBuilder, TemplateParserResult templateParserResult)
     {
-        Builder templateImplBuilder = TypeSpec
-            .classBuilder(componentTemplateName(componentTypeName))
-            .addModifiers(Modifier.PUBLIC)
-            .superclass(componentJsTypeName(componentTypeName))
-            .addSuperinterface(ParameterizedTypeName.get(ClassName.get(ComponentTemplate.class),
-                componentTypeName));
-
         // Compile the resulting HTML template String
-        compileTemplateString(templateImplBuilder,
-            templateParserResult.getProcessedTemplate());
+        compileTemplateString(componentJsTypeBuilder, templateParserResult.getProcessedTemplate());
 
         // Process the java expressions from the template
-        processTemplateExpressions(templateImplBuilder, templateParserResult);
-
-        return templateImplBuilder.build();
+        processTemplateExpressions(componentJsTypeBuilder, templateParserResult);
     }
 
     /**
@@ -63,8 +45,7 @@ public class TemplateBuilder
         VueTemplateCompilerResult result;
         try
         {
-            VueTemplateCompiler vueTemplateCompiler =
-                new VueTemplateCompiler();
+            VueTemplateCompiler vueTemplateCompiler = new VueTemplateCompiler();
             result = vueTemplateCompiler.compile(templateString);
         }
         catch (VueTemplateCompilerException e)
@@ -87,7 +68,7 @@ public class TemplateBuilder
     {
         MethodSpec.Builder getRenderFunctionBuilder = MethodSpec
             .methodBuilder("getRenderFunction")
-            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
             .returns(String.class)
             .addStatement("return $S", result.getRenderFunction());
 
@@ -120,7 +101,7 @@ public class TemplateBuilder
 
         MethodSpec.Builder getStaticRenderFunctionsBuilder = MethodSpec
             .methodBuilder("getStaticRenderFunctions")
-            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
             .returns(String[].class)
             .addStatement("return new String[] { $L }", staticFunctions.build());
 
@@ -139,8 +120,6 @@ public class TemplateBuilder
         {
             generateTemplateExpressionMethod(templateBuilder, expression);
         }
-
-        generateGetTemplateMethods(templateBuilder, templateParserResult);
     }
 
     /**
@@ -191,22 +170,5 @@ public class TemplateBuilder
         }
 
         templateBuilder.addMethod(templateExpressionMethodBuilder.build());
-    }
-
-    /**
-     * Generate the method to get the list of methods from the template
-     * @param templateBuilder The template builder
-     * @param templateParserResult Result from the parsing of the HTML Template
-     */
-    private void generateGetTemplateMethods(Builder templateBuilder,
-        TemplateParserResult templateParserResult)
-    {
-        MethodSpec.Builder getStaticRenderFunctionsBuilder = MethodSpec
-            .methodBuilder("getTemplateMethodsCount")
-            .addModifiers(Modifier.PUBLIC)
-            .returns(TypeName.INT)
-            .addStatement("return $L", templateParserResult.getExpressions().size());
-
-        templateBuilder.addMethod(getStaticRenderFunctionsBuilder.build());
     }
 }
