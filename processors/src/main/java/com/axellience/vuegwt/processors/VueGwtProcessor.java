@@ -7,7 +7,7 @@ import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
 import com.axellience.vuegwt.processors.component.factory.VueComponentFactoryGenerator;
 import com.axellience.vuegwt.processors.component.factory.VueJsComponentFactoryGenerator;
 import com.axellience.vuegwt.processors.directive.VueDirectiveOptionsGenerator;
-import com.axellience.vuegwt.processors.template.ComponentTemplateGenerator;
+import com.axellience.vuegwt.processors.component.template.ComponentTemplateGenerator;
 import com.google.auto.service.AutoService;
 
 import javax.annotation.processing.AbstractProcessor;

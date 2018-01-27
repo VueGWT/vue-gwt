@@ -1,16 +1,16 @@
-package com.axellience.vuegwt.processors.template;
+package com.axellience.vuegwt.processors.component.template;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
-import com.axellience.vuegwt.core.template.builder.TemplateBuilder;
-import com.axellience.vuegwt.core.template.parser.TemplateParser;
-import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
-import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponents;
-import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.processors.component.template.builder.TemplateBuilder;
+import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
+import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
+import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
+import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;

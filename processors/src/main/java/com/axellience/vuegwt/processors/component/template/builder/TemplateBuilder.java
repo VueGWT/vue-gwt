@@ -1,13 +1,13 @@
-package com.axellience.vuegwt.core.template.builder;
+package com.axellience.vuegwt.processors.component.template.builder;
 
 import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
-import com.axellience.vuegwt.core.template.compiler.VueTemplateCompiler;
-import com.axellience.vuegwt.core.template.compiler.VueTemplateCompilerException;
-import com.axellience.vuegwt.core.template.compiler.VueTemplateCompilerResult;
-import com.axellience.vuegwt.core.template.parser.TemplateParser;
-import com.axellience.vuegwt.core.template.parser.result.TemplateExpression;
-import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.processors.component.template.compiler.VueTemplateCompiler;
+import com.axellience.vuegwt.processors.component.template.compiler.VueTemplateCompilerException;
+import com.axellience.vuegwt.processors.component.template.compiler.VueTemplateCompilerResult;
+import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
+import com.axellience.vuegwt.processors.component.template.parser.result.TemplateExpression;
+import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;

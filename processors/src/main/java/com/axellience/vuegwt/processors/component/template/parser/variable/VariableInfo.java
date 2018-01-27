@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.core.template.parser.variable;
+package com.axellience.vuegwt.processors.component.template.parser.variable;
 
 import com.squareup.javapoet.TypeName;
 

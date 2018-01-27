@@ -1,13 +1,13 @@
-package com.axellience.vuegwt.core.template.parser;
+package com.axellience.vuegwt.processors.component.template.parser;
 
 import com.axellience.vuegwt.core.annotations.component.Prop;
-import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
-import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponentProp;
-import com.axellience.vuegwt.core.template.parser.result.TemplateExpression;
-import com.axellience.vuegwt.core.template.parser.result.TemplateParserResult;
-import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
-import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
+import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
+import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponentProp;
+import com.axellience.vuegwt.processors.component.template.parser.result.TemplateExpression;
+import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.expr.BinaryExpr;

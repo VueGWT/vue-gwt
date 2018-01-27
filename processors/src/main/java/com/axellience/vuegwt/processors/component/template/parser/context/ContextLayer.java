@@ -1,7 +1,7 @@
-package com.axellience.vuegwt.core.template.parser.context;
+package com.axellience.vuegwt.processors.component.template.parser.context;
 
-import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
-import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
+import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
 
 import java.util.HashMap;

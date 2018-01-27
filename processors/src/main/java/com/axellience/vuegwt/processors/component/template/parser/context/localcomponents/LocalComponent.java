@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.core.template.parser.context.localcomponents;
+package com.axellience.vuegwt.processors.component.template.parser.context.localcomponents;
 
 import java.util.HashMap;
 import java.util.HashSet;

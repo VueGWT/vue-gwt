@@ -1,13 +1,13 @@
-package com.axellience.vuegwt.core.template.parser.context;
+package com.axellience.vuegwt.processors.component.template.parser.context;
 
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import com.axellience.vuegwt.core.client.tools.JsUtils;
 import com.axellience.vuegwt.core.client.tools.VForExpressionUtil;
-import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponent;
-import com.axellience.vuegwt.core.template.parser.context.localcomponents.LocalComponents;
-import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
-import com.axellience.vuegwt.core.template.parser.variable.VariableInfo;
+import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
+import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
+import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
 import elemental2.dom.Event;
 import jsinterop.base.JsPropertyMap;

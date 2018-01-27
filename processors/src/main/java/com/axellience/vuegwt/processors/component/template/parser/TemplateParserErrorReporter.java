@@ -1,6 +1,6 @@
-package com.axellience.vuegwt.core.template.parser;
+package com.axellience.vuegwt.processors.component.template.parser;
 
-import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 
 import javax.annotation.processing.Messager;
 import javax.tools.Diagnostic.Kind;

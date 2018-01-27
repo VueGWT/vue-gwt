@@ -1,7 +1,7 @@
-package com.axellience.vuegwt.core.template.parser;
+package com.axellience.vuegwt.processors.component.template.parser;
 
-import com.axellience.vuegwt.core.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.core.template.parser.variable.LocalVariableInfo;
+import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
 import com.squareup.javapoet.TypeName;
 import jsinterop.base.Any;
 
