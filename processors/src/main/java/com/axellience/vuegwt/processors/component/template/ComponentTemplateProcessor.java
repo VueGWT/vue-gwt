@@ -4,7 +4,6 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.VueComponent;
-import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
 import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
@@ -12,6 +11,7 @@ import com.axellience.vuegwt.processors.component.template.parser.context.Templa
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -30,6 +30,7 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
@@ -59,7 +60,11 @@ public class ComponentTemplateProcessor
         Builder componentJsTypeBuilder)
     {
         ClassName componentTypeName = ClassName.get(componentTypeElement);
-        String templateContent = getTemplateContent(componentTypeName);
+        Optional<String> optionalTemplateContent =
+            getTemplateContent(componentTypeName, componentTypeElement);
+
+        if (!optionalTemplateContent.isPresent())
+            return;
 
         LocalComponents localComponents = new LocalComponents();
         findLocalComponentsForComponent(localComponents, componentTypeElement);
@@ -74,7 +79,7 @@ public class ComponentTemplateProcessor
 
         // Parse the template
         TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
-            templateContent,
+            optionalTemplateContent.get(),
             templateParserContext,
             messager);
 
@@ -202,7 +207,8 @@ public class ComponentTemplateProcessor
         });
     }
 
-    private String getTemplateContent(ClassName componentTypeName)
+    private Optional<String> getTemplateContent(ClassName componentTypeName,
+        TypeElement componentTypeElement)
     {
         String path = slashify(componentTypeName.reflectionName()) + ".html";
         FileObject resource;
@@ -213,24 +219,27 @@ public class ComponentTemplateProcessor
         catch (IOException e)
         {
             messager.printMessage(Kind.ERROR,
-                "\nCouldn't find template for component \""
-                    + componentTypeName.reflectionName()
-                    + "\". If it doesn't have a template please set hasTemplate to false in the @Component annotation. Template File: "
-                    + path);
-            return null;
+                "Couldn't find template for component: "
+                    + componentTypeName.simpleName()
+                    + ". If it doesn't have a template please set hasTemplate to false in the @Component annotation. Template File: "
+                    + path,
+                componentTypeElement);
+            return Optional.empty();
         }
 
         // Get template content from HTML file
         try
         {
-            return resource.getCharContent(true).toString();
+            return Optional.of(resource.getCharContent(true).toString());
         }
         catch (IOException e)
         {
             messager.printMessage(Kind.ERROR,
-                "\nFailed to open template file for component \""
-                    + componentTypeName.reflectionName());
-            return null;
+                "Failed to open template file for component: "
+                    + componentTypeName.simpleName()
+                    + ". Make sure you added src/main/java to your project resources. If on Eclipse, try rebuilding.",
+                componentTypeElement);
+            return Optional.empty();
         }
     }
 
