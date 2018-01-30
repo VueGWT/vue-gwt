@@ -4,6 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponentProp;
+import com.axellience.vuegwt.processors.component.template.parser.jericho.FilteringJavaLogger;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
@@ -19,15 +20,18 @@ import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
 import com.squareup.javapoet.TypeName;
 import jsinterop.base.Any;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
-import org.jsoup.parser.ParseSettings;
-import org.jsoup.parser.Parser;
+import net.htmlparser.jericho.Attribute;
+import net.htmlparser.jericho.Attributes;
+import net.htmlparser.jericho.CharacterReference;
+import net.htmlparser.jericho.Config;
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Segment;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.Tag;
 
 import javax.annotation.processing.Messager;
+import javax.tools.Diagnostic.Kind;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,8 +40,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -60,6 +66,7 @@ public class TemplateParser
     private Attribute currentAttribute;
     private LocalComponentProp currentProp;
     private TypeName currentExpressionReturnType;
+    private OutputDocument outputDocument;
 
     /**
      * Parse a given HTML template and return the a result object containing the expressions
@@ -72,93 +79,106 @@ public class TemplateParser
     public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
         TemplateParserContext context, Messager messager)
     {
+        initJerichoConfig();
+
         this.context = context;
         this.errorReporter = new TemplateParserErrorReporter(context, messager);
-        Parser parser = Parser.htmlParser();
-        parser.settings(new ParseSettings(true, true)); // tag, attribute preserve case
-        Document doc = parser.parseInput(htmlTemplate, "");
+        Source source = new Source(htmlTemplate);
+        source.setLogger(new FilteringJavaLogger(getLogger(context.getTemplateName()),
+            context.getTemplateName()));
+        outputDocument = new OutputDocument(source);
 
         result = new TemplateParserResult();
-        processImports(doc);
-        processNode(doc);
+        processImports(source);
+        source.getChildElements().forEach(this::processElement);
 
-        result.setProcessedTemplate(doc.body().html());
+        messager.printMessage(Kind.ERROR, outputDocument.toString());
+
+        result.setProcessedTemplate(outputDocument.toString());
         return result;
+    }
+
+    private void initJerichoConfig()
+    {
+        // Allow as many invalid character in attributes as possible
+        Attributes.setDefaultMaxErrorCount(Integer.MAX_VALUE);
+        // Allow any element to be self closing
+        Config.IsHTMLEmptyElementTagRecognised = true;
     }
 
     /**
      * Add java imports in the template to the context.
      * @param doc The document to process
      */
-    private void processImports(Document doc)
+    private void processImports(Source doc)
     {
-        Set<Element> importElements = new HashSet<>();
-        for (Element element : doc.getAllElements())
-        {
-            if (!"vue-gwt:import".equals(element.tagName()))
-                continue;
-
-            if (element.hasAttr("class"))
-                context.addImport(element.attr("class"));
-
-            importElements.add(element);
-        }
-
-        // Remove imports from the template once processed
-        for (Element importElement : importElements)
-        {
-            importElement.remove();
-        }
+        doc
+            .getAllElements()
+            .stream()
+            .filter(element -> "vue-gwt:import".equalsIgnoreCase(element.getName()))
+            .peek(importElement -> {
+                String classAttributeValue = importElement.getAttributeValue("class");
+                if (classAttributeValue != null)
+                    context.addImport(classAttributeValue);
+            })
+            .forEach(outputDocument::remove);
     }
 
     /**
      * Recursive method that will process the whole template DOM tree.
-     * @param node Current node being processed
+     * @param element Current element being processed
      */
-    private void processNode(Node node)
+    private void processElement(Element element)
     {
-        context.setCurrentNode(node);
+        context.setCurrentElement(element);
         currentProp = null;
         currentAttribute = null;
 
-        boolean nodeHasVFor = node.attributes().hasKey("v-for");
-        if (nodeHasVFor)
+        Attributes attributes = element.getAttributes();
+        Attribute vForAttribute = attributes != null ? attributes.get("v-for") : null;
+        if (vForAttribute != null)
         {
             // Add a context layer for our v-for
             context.addContextLayer();
 
             // Process the v-for expression, and update our attribute
-            String processedVForValue = processVForValue(node.attr("v-for"));
-            node.attr("v-for", processedVForValue);
+            String processedVForValue = processVForValue(vForAttribute.getValue());
+            outputDocument.replace(vForAttribute.getValueSegment(), processedVForValue);
         }
 
-        if (node instanceof TextNode)
-        {
-            processTextNode((TextNode) node);
-        }
-        else if (node instanceof Element)
-        {
-            processElementNode((Element) node);
-        }
+        // Process the element
+        if (attributes != null)
+            processElementAttributes(element);
+
+        // Process text segments
+        StreamSupport
+            .stream(((Iterable<Segment>) element::getNodeIterator).spliterator(), false)
+            .filter(segment -> !(segment instanceof Tag)
+                && !(segment instanceof CharacterReference))
+            .filter(segment -> {
+                for (Element child : element.getChildElements())
+                    if (child.encloses(segment))
+                        return false;
+                return true;
+            })
+            .forEach(this::processTextNode);
 
         // Recurse downwards
-        node.childNodes().
-            forEach(this::processNode);
+        element.getChildElements().
+            forEach(this::processElement);
 
-        if (nodeHasVFor)
-        {
-            // After downward recursion, pop the context layer
+        // After downward recursion, pop the context layer
+        if (vForAttribute != null)
             context.popContextLayer();
-        }
     }
 
     /**
      * Process text node to check for {{ }} vue expressions.
-     * @param node Current node being processed
+     * @param textSegment Current segment being processed
      */
-    private void processTextNode(TextNode node)
+    private void processTextNode(Segment textSegment)
     {
-        String elementText = node.text();
+        String elementText = textSegment.toString();
 
         Matcher matcher = VUE_MUSTACHE_PATTERN.matcher(elementText);
 
@@ -180,21 +200,22 @@ public class TemplateParser
         if (lastEnd > 0)
         {
             newText.append(elementText.substring(lastEnd));
-            node.text(newText.toString());
+            outputDocument.replace(textSegment, newText.toString());
         }
     }
 
     /**
-     * Process Element node to check for vue attributes.
-     * @param element Current node being processed
+     * Process an {@link Element} and check for vue attributes.
+     * @param element Current element being processed
      */
-    private void processElementNode(Element element)
+    private void processElementAttributes(Element element)
     {
-        Optional<LocalComponent> localComponent = context.getLocalComponent(element.tagName());
+        Optional<LocalComponent> localComponent =
+            context.getLocalComponent(element.getStartTag().getName());
 
         // Iterate on element attributes
         Set<LocalComponentProp> foundProps = new HashSet<>();
-        for (Attribute attribute : element.attributes())
+        for (Attribute attribute : element.getAttributes())
         {
             String attributeName = attribute.getKey().toLowerCase();
 
@@ -214,7 +235,10 @@ public class TemplateParser
             currentAttribute = attribute;
             currentProp = optionalProp.orElse(null);
             currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
-            attribute.setValue(processExpression(attribute.getValue()));
+            String processedExpression = processExpression(attribute.getValue());
+
+            if (attribute.getValueSegment() != null)
+                outputDocument.replace(attribute.getValueSegment(), processedExpression);
         }
 
         localComponent.ifPresent(lc -> validateRequiredProps(lc, foundProps));
@@ -238,9 +262,9 @@ public class TemplateParser
 
     /**
      * Validate that all the required properties of a local components are present on a the
-     * HTML node that represents it.
+     * HTML {@link Element} that represents it.
      * @param localComponent The {@link LocalComponent} we want to check
-     * @param foundProps The props we found on the HTML node during processing
+     * @param foundProps The props we found on the HTML {@link Element} during processing
      */
     private void validateRequiredProps(LocalComponent localComponent,
         Set<LocalComponentProp> foundProps)
@@ -312,7 +336,7 @@ public class TemplateParser
      */
     private String processExpression(String expressionString)
     {
-        expressionString = expressionString.trim();
+        expressionString = expressionString == null ? "" : expressionString.trim();
         if (expressionString.isEmpty())
         {
             if (isAttributeBinding(currentAttribute))
@@ -360,9 +384,10 @@ public class TemplateParser
         // We don't skip if it's a component prop as we want Java validation
         // We don't optimize String expression, as we want GWT to convert Java values
         // to String for us (Enums, wrapped primitives...)
-        return currentProp == null
-            && !String.class.getCanonicalName().equals(currentExpressionReturnType.toString())
-            && isSimpleVueJsExpression(expressionString);
+        return currentProp == null && !String.class
+            .getCanonicalName()
+            .equals(currentExpressionReturnType.toString()) && isSimpleVueJsExpression(
+            expressionString);
     }
 
     private boolean isAttributeBinding(Attribute attribute)
@@ -413,7 +438,8 @@ public class TemplateParser
         }
         catch (ParseProblemException parseException)
         {
-            errorReporter.reportError("Couldn't parse Expression, make sure it is valid Java.", expressionString);
+            errorReporter.reportError("Couldn't parse Expression, make sure it is valid Java.",
+                expressionString);
             throw parseException;
         }
 

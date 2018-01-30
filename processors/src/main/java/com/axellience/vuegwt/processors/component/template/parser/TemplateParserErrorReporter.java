@@ -29,7 +29,7 @@ public class TemplateParserErrorReporter
                 + ": "
                 + message
                 + "\nWhile processing Node: \n"
-                + context.getCurrentNode().toString(),
+                + context.getCurrentElement().toString(),
             context.getComponentTypeElement());
     }
 }

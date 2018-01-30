@@ -10,7 +10,7 @@ import com.axellience.vuegwt.processors.component.template.parser.variable.Varia
 import com.squareup.javapoet.TypeName;
 import elemental2.dom.Event;
 import jsinterop.base.JsPropertyMap;
-import org.jsoup.nodes.Node;
+import net.htmlparser.jericho.Element;
 
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayDeque;
@@ -37,7 +37,7 @@ public class TemplateParserContext
     // For static imports
     private Map<String, String> methodNameToFullyQualifiedName = new HashMap<>();
 
-    private Node currentNode;
+    private Element currentElement;
 
     /**
      * Build the context based on a given {@link VueComponent} Class.
@@ -225,21 +225,21 @@ public class TemplateParserContext
     }
 
     /**
-     * Return the current HTML {@link Node} being processed
-     * @return The current HTML {@link Node}
+     * Return the current HTML {@link Element} being processed
+     * @return The current HTML {@link Element}
      */
-    public Node getCurrentNode()
+    public Element getCurrentElement()
     {
-        return currentNode;
+        return currentElement;
     }
 
     /**
-     * Set the current HTML {@link Node} being processed
-     * @param currentNode The current HTML {@link Node}
+     * Set the current HTML {@link Element} being processed
+     * @param currentElement The current HTML {@link Element}
      */
-    public void setCurrentNode(Node currentNode)
+    public void setCurrentElement(Element currentElement)
     {
-        this.currentNode = currentNode;
+        this.currentElement = currentElement;
     }
 
     /**

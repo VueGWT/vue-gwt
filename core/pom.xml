@@ -44,22 +44,6 @@
 			<artifactId>elemental2-dom</artifactId>
 		</dependency>
 
-		<!-- Code Generation -->
-		<dependency>
-			<groupId>com.squareup</groupId>
-			<artifactId>javapoet</artifactId>
-		</dependency>
-
-		<!-- Template parsing -->
-		<dependency>
-			<groupId>org.jsoup</groupId>
-			<artifactId>jsoup</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.javaparser</groupId>
-			<artifactId>javaparser-core</artifactId>
-		</dependency>
-
 		<!-- Injection -->
 		<dependency>
 			<groupId>javax.inject</groupId>
