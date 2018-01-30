@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class VForDefinition
 {
-    private final TemplateParserErrorReporter errorReporter;
+    private final TemplateParserLogger logger;
 
     private enum VForDefinitionType
     {
@@ -36,9 +36,9 @@ public class VForDefinition
     private LocalVariableInfo indexVariableInfo = null;
 
     public VForDefinition(String vForValue, TemplateParserContext context,
-        TemplateParserErrorReporter errorReporter)
+        TemplateParserLogger logger)
     {
-        this.errorReporter = errorReporter;
+        this.logger = logger;
         String[] splitExpression = splitVForExpression(vForValue, context);
 
         String loopVariablesDefinition = splitExpression[0].trim();
@@ -66,8 +66,7 @@ public class VForDefinition
                 return;
         }
 
-        errorReporter.reportError(
-            "Invalid v-for found, they should be in the form: \"Todo todo in myTodos\"",
+        logger.error("Invalid v-for found, they should be in the form: \"Todo todo in myTodos\"",
             vForValue);
     }
 
@@ -201,8 +200,7 @@ public class VForDefinition
             splitExpression = vForValue.split(" of ");
 
         if (splitExpression.length != 2)
-            errorReporter.reportError(
-                "Invalid v-for found, they should be in the form: \"Todo todo in myTodos\"",
+            logger.error("Invalid v-for found, they should be in the form: \"Todo todo in myTodos\"",
                 vForValue);
 
         return splitExpression;
