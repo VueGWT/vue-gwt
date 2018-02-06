@@ -208,8 +208,7 @@ public class TemplateParser
      */
     private void processElementAttributes(Element element)
     {
-        Optional<LocalComponent> localComponent =
-            context.getLocalComponent(element.getStartTag().getName());
+        Optional<LocalComponent> localComponent = getLocalComponentForElement(element);
 
         // Iterate on element attributes
         Set<LocalComponentProp> foundProps = new HashSet<>();
@@ -238,6 +237,20 @@ public class TemplateParser
         }
 
         localComponent.ifPresent(lc -> validateRequiredProps(lc, foundProps));
+    }
+
+    /**
+     * Return the {@link LocalComponent} definition for a given DOM {@link Element}
+     * @param element Current element being processed
+     * @return An Optional {@link LocalComponent}
+     */
+    private Optional<LocalComponent> getLocalComponentForElement(Element element)
+    {
+        String componentName = element.getAttributes().getValue("is");
+        if (componentName == null)
+            componentName = element.getStartTag().getName();
+
+        return context.getLocalComponent(componentName);
     }
 
     /**
