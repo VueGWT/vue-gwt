@@ -6,8 +6,10 @@ import com.squareup.javapoet.TypeName;
 import jsinterop.base.Any;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A Java expression from the template.
@@ -32,7 +34,16 @@ public class TemplateExpression
         this.type = type;
         this.body = body;
         this.shouldCast = shouldCast;
-        this.parameters.addAll(parameters);
+
+        // Add parameters and remove duplicates
+        Set<String> uniqueParameters = new HashSet<>();
+        parameters.forEach(parameter -> {
+            if (uniqueParameters.contains(parameter.getName()))
+                return;
+
+            uniqueParameters.add(parameter.getName());
+            this.parameters.add(parameter);
+        });
     }
 
     /**
