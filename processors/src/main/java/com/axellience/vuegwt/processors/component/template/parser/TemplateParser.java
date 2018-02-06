@@ -670,7 +670,7 @@ public class TemplateParser
         {
             logger.error("Couldn't find variable/method \""
                     + name
-                    + "\" in the Component. Make sure you didn't forget the @JsProperty/@JsMethod annotation or try rerunning your Annotation processor.",
+                    + "\" in the Component. Make sure you didn't forget the @JsProperty/@JsMethod annotation.",
                 expression.toString());
         }
 
