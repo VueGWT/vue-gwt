@@ -59,7 +59,6 @@ public class TemplateParserLogger implements Logger
         messager.printMessage(kind,
             "In "
                 + context.getTemplateName()
-                + " "
                 + getElementDebugInfo(context.getCurrentElement())
                 + ": "
                 + message,
