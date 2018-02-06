@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
 
 /**
@@ -214,16 +215,14 @@ public class TemplateParser
         Set<LocalComponentProp> foundProps = new HashSet<>();
         for (Attribute attribute : element.getAttributes())
         {
-            String attributeName = attribute.getKey().toLowerCase();
-
-            if ("v-for".equals(attributeName) || "v-model".equals(attributeName))
+            if ("v-for".equals(attribute.getKey()) || "v-model".equals(attribute.getKey()))
                 continue;
 
             Optional<LocalComponentProp> optionalProp =
-                localComponent.flatMap(lc -> lc.getPropForAttribute(attributeName));
+                localComponent.flatMap(lc -> lc.getPropForAttribute(attribute.getName()));
             optionalProp.ifPresent(foundProps::add);
 
-            if (!VUE_ATTR_PATTERN.matcher(attributeName).matches())
+            if (!VUE_ATTR_PATTERN.matcher(attribute.getKey()).matches())
             {
                 optionalProp.ifPresent(this::validateStringPropBinding);
                 continue;
@@ -270,7 +269,7 @@ public class TemplateParser
             .getRequiredProps()
             .stream()
             .filter(prop -> !foundProps.contains(prop))
-            .map(prop -> "\"" + prop.getPropName() + "\"")
+            .map(prop -> "\"" + propNameToAttributeName(prop.getPropName()) + "\"")
             .collect(Collectors.joining(","));
 
         if (!missingRequiredProps.isEmpty())
