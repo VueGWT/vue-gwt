@@ -221,8 +221,7 @@ public class ComponentTemplateProcessor
             messager.printMessage(Kind.ERROR,
                 "Couldn't find template for component: "
                     + componentTypeName.simpleName()
-                    + ". If it doesn't have a template please set hasTemplate to false in the @Component annotation. Template File: "
-                    + path,
+                    + ". Check our setup guide for help. On Eclipse add !vue-gwt-resources on your project in Properties > Maven > Active Maven Profile",
                 componentTypeElement);
             return Optional.empty();
         }
@@ -237,7 +236,7 @@ public class ComponentTemplateProcessor
             messager.printMessage(Kind.ERROR,
                 "Failed to open template file for component: "
                     + componentTypeName.simpleName()
-                    + ". Make sure you added src/main/java to your project resources. If on Eclipse, try rebuilding.",
+                    + ". Check our setup guide for help. On Eclipse add !vue-gwt-resources on your project in Properties > Maven > Active Maven Profile",
                 componentTypeElement);
             return Optional.empty();
         }
