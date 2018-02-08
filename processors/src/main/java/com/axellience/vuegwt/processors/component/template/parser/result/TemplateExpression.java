@@ -24,16 +24,18 @@ public class TemplateExpression
     private final String id;
     private final String body;
     private final boolean shouldCast;
+    private final Integer lineInHtml;
     private final TypeName type;
     private final List<VariableInfo> parameters = new LinkedList<>();
 
     public TemplateExpression(String id, String body, TypeName type, boolean shouldCast,
-        Collection<VariableInfo> parameters)
+        Collection<VariableInfo> parameters, Integer lineInHtml)
     {
         this.id = id;
         this.type = type;
         this.body = body;
         this.shouldCast = shouldCast;
+        this.lineInHtml = lineInHtml;
 
         // Add parameters and remove duplicates
         Set<String> uniqueParameters = new HashSet<>();
@@ -120,5 +122,10 @@ public class TemplateExpression
     public boolean isShouldCast()
     {
         return shouldCast;
+    }
+
+    public Integer getLineInHtml()
+    {
+        return lineInHtml;
     }
 }

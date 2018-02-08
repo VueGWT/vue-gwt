@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.processors.component.template.parser;
 
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
-import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.Logger;
 
 import javax.annotation.processing.Messager;
@@ -59,18 +58,18 @@ public class TemplateParserLogger implements Logger
         messager.printMessage(kind,
             "In "
                 + context.getTemplateName()
-                + getElementDebugInfo(context.getCurrentElement())
+                + getCurrentLineInfo()
                 + ": "
                 + message,
             context.getComponentTypeElement());
     }
 
-    private String getElementDebugInfo(Element element)
+    private String getCurrentLineInfo()
     {
-        if (element == null)
-            return "";
+        if (context.getCurrentLine().isPresent())
+            return " at line " + context.getCurrentLine().get();
 
-        return " at line " + element.getSource().getRow(element.getBegin());
+        return "";
     }
 
     @Override

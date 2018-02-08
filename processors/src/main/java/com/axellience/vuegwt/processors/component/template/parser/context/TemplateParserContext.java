@@ -10,7 +10,7 @@ import com.axellience.vuegwt.processors.component.template.parser.variable.Varia
 import com.squareup.javapoet.TypeName;
 import elemental2.dom.Event;
 import jsinterop.base.JsPropertyMap;
-import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.Segment;
 
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayDeque;
@@ -37,7 +37,7 @@ public class TemplateParserContext
     // For static imports
     private Map<String, String> methodNameToFullyQualifiedName = new HashMap<>();
 
-    private Element currentElement;
+    private Segment currentSegment;
 
     /**
      * Build the context based on a given {@link VueComponent} Class.
@@ -225,21 +225,25 @@ public class TemplateParserContext
     }
 
     /**
-     * Return the current HTML {@link Element} being processed
-     * @return The current HTML {@link Element}
+     * Return the number of the line currently processed in the HTML
+     * @return The number of the current line being processed or empty
      */
-    public Element getCurrentElement()
+    public Optional<Integer> getCurrentLine()
     {
-        return currentElement;
+        if (currentSegment == null)
+            return Optional.empty();
+
+        return Optional.of(currentSegment.getSource().getRow(currentSegment.getBegin()));
     }
 
     /**
-     * Set the current HTML {@link Element} being processed
-     * @param currentElement The current HTML {@link Element}
+     * Set the current HTML {@link Segment} being processed.
+     * Used for error message and comment on expressions
+     * @param currentSegment The current HTML {@link Segment}
      */
-    public void setCurrentElement(Element currentElement)
+    public void setCurrentSegment(Segment currentSegment)
     {
-        this.currentElement = currentElement;
+        this.currentSegment = currentSegment;
     }
 
     /**

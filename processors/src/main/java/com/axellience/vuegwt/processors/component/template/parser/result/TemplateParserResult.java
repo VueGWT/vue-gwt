@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.processors.component.template.parser.result;
 
+import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
 
@@ -14,6 +15,14 @@ public class TemplateParserResult
 {
     private String processedTemplate;
     private final List<TemplateExpression> expressions = new LinkedList<>();
+    private final TemplateParserContext context;
+    private final String templateName;
+
+    public TemplateParserResult(TemplateParserContext context)
+    {
+        this.context = context;
+        this.templateName = context.getTemplateName();
+    }
 
     /**
      * Set the processed template, once all the Java expression has been replaced by
@@ -47,13 +56,17 @@ public class TemplateParserResult
      * @return The {@link TemplateExpression} for this Java expression, will be used to get the
      * string to put in the template instead.
      */
-    public TemplateExpression addExpression(String expression, TypeName expressionType, boolean shouldCast,
-        List<VariableInfo> parameters)
+    public TemplateExpression addExpression(String expression, TypeName expressionType,
+        boolean shouldCast, List<VariableInfo> parameters)
     {
         String id = "exp$" + this.expressions.size();
 
-        TemplateExpression templateExpression =
-            new TemplateExpression(id, expression.trim(), expressionType, shouldCast, parameters);
+        TemplateExpression templateExpression = new TemplateExpression(id,
+            expression.trim(),
+            expressionType,
+            shouldCast,
+            parameters,
+            context.getCurrentLine().orElse(null));
 
         this.expressions.add(templateExpression);
         return templateExpression;
@@ -66,5 +79,10 @@ public class TemplateParserResult
     public List<TemplateExpression> getExpressions()
     {
         return expressions;
+    }
+
+    public String getTemplateName()
+    {
+        return templateName;
     }
 }

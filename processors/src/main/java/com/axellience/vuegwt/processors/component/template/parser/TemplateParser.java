@@ -86,7 +86,7 @@ public class TemplateParser
         Source source = new Source(htmlTemplate);
         outputDocument = new OutputDocument(source);
 
-        result = new TemplateParserResult();
+        result = new TemplateParserResult(context);
         processImports(source);
         source.getChildElements().forEach(this::processElement);
 
@@ -128,7 +128,7 @@ public class TemplateParser
      */
     private void processElement(Element element)
     {
-        context.setCurrentElement(element);
+        context.setCurrentSegment(element);
         currentProp = null;
         currentAttribute = null;
 
@@ -176,6 +176,7 @@ public class TemplateParser
      */
     private void processTextNode(Segment textSegment)
     {
+        context.setCurrentSegment(textSegment);
         String elementText = textSegment.toString();
 
         Matcher matcher = VUE_MUSTACHE_PATTERN.matcher(elementText);
@@ -226,6 +227,8 @@ public class TemplateParser
                 optionalProp.ifPresent(this::validateStringPropBinding);
                 continue;
             }
+
+            context.setCurrentSegment(attribute);
 
             currentAttribute = attribute;
             currentProp = optionalProp.orElse(null);
@@ -580,10 +583,9 @@ public class TemplateParser
                 if (!context.hasMethod(methodName) && !context.hasStaticMethod(methodName))
                 {
                     logger.error("Couldn't find the method \""
-                            + methodName
-                            + "\" in the Component. "
-                            + "Make sure it is not private or try rerunning your Annotation processor.",
-                        expression.toString());
+                        + methodName
+                        + "\". "
+                        + "Make sure it is not private.");
                 }
             }
         }
@@ -669,9 +671,8 @@ public class TemplateParser
         if (variableInfo == null)
         {
             logger.error("Couldn't find variable/method \""
-                    + name
-                    + "\" in the Component. Make sure you didn't forget the @JsProperty/@JsMethod annotation.",
-                expression.toString());
+                + name
+                + "\". Make sure you didn't forget the @JsProperty/@JsMethod annotation.");
         }
 
         if (variableInfo instanceof LocalVariableInfo)

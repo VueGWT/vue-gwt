@@ -27,7 +27,8 @@ public class TemplateMethodsBuilder
      * @param templateParserResult The result of the HTML template parsed by {@link TemplateParser}
      * render function
      */
-    public void addTemplateMethodsToComponentJsType(Builder componentJsTypeBuilder, TemplateParserResult templateParserResult)
+    public void addTemplateMethodsToComponentJsType(Builder componentJsTypeBuilder,
+        TemplateParserResult templateParserResult)
     {
         // Compile the resulting HTML template String
         compileTemplateString(componentJsTypeBuilder, templateParserResult.getProcessedTemplate());
@@ -116,7 +117,9 @@ public class TemplateMethodsBuilder
     {
         for (TemplateExpression expression : templateParserResult.getExpressions())
         {
-            generateTemplateExpressionMethod(templateBuilder, expression);
+            generateTemplateExpressionMethod(templateBuilder,
+                expression,
+                templateParserResult.getTemplateName());
         }
     }
 
@@ -124,9 +127,10 @@ public class TemplateMethodsBuilder
      * Generate the Java method for an expression in the Template
      * @param templateBuilder The template builder
      * @param expression An expression from the HTML template
+     * @param templateName The name of the Template the expression is from
      */
     private void generateTemplateExpressionMethod(Builder templateBuilder,
-        TemplateExpression expression)
+        TemplateExpression expression, String templateName)
     {
         MethodSpec.Builder templateExpressionMethodBuilder = MethodSpec
             .methodBuilder(expression.getId())
@@ -134,6 +138,12 @@ public class TemplateMethodsBuilder
             .addAnnotation(JsMethod.class)
             .addAnnotation(getUnusableByJSAnnotation())
             .returns(expression.getType());
+
+        String expressionPosition = templateName;
+        if (expression.getLineInHtml() != null)
+            expressionPosition += ", line " + expression.getLineInHtml();
+
+        templateExpressionMethodBuilder.addComment(expressionPosition);
 
         expression
             .getParameters()
