@@ -2,4 +2,5 @@
 		"http://gwtproject.org/doctype/2.8.0/gwt-module.dtd">
 <module>
 	<source path="gwt2/client"/>
+	<inherits name="com.google.gwt.user.User"/>
 </module>

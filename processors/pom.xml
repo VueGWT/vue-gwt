@@ -20,10 +20,6 @@
 		<!-- Vue GWT -->
 		<dependency>
 			<groupId>com.axellience</groupId>
-			<artifactId>vue-gwt-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.axellience</groupId>
 			<artifactId>vue-gwt</artifactId>
 		</dependency>
 

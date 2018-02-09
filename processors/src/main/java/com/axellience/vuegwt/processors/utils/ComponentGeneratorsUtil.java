@@ -9,8 +9,6 @@ import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
 import com.axellience.vuegwt.core.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
-import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -160,22 +158,6 @@ public class ComponentGeneratorsUtil
     }
 
     /**
-     * Check if a given method is usable in the template
-     * @param method The method we are checking
-     * @return true if visible, false otherwise
-     */
-    public static boolean isMethodVisibleInTemplate(JMethod method)
-    {
-        return isMethodVisibleInJS(method)
-            && !hasAnnotation(method, Computed.class)
-            && !hasAnnotation(method, Watch.class)
-            && !hasAnnotation(method, PropValidator.class)
-            && !hasAnnotation(method, PropDefault.class)
-            && !method.isStatic()
-            && !method.isPrivate();
-    }
-
-    /**
      * Return weather a given field is visible in JS (JsInterop).
      * It will be the case if it's public and it's class has the {@link JsType} annotation, or
      * if it has the {@link JsProperty} annotation.
@@ -202,33 +184,6 @@ public class ComponentGeneratorsUtil
         return (hasAnnotation(method.getEnclosingElement(), JsType.class) && method
             .getModifiers()
             .contains(Modifier.PUBLIC)) || hasAnnotation(method, JsMethod.class);
-    }
-
-    /**
-     * Return weather a given field is visible in JS (JsInterop).
-     * It will be the case if it's public and it's class has the {@link JsType} annotation, or
-     * if it has the {@link JsProperty} annotation.
-     * @param field The field to check
-     * @return true if it is visible (JsInterop), false otherwise
-     */
-    public static boolean isFieldVisibleInJS(JField field)
-    {
-        return (hasAnnotation(field.getEnclosingType(), JsType.class) && field.isPublic())
-            || hasAnnotation(field, JsProperty.class);
-    }
-
-    /**
-     * Return weather a given method is visible in JS (JsInterop).
-     * It will be the case if it's public and it's class/interface has the {@link JsType}
-     * annotation, or
-     * if it has the {@link JsMethod} annotation.
-     * @param method The method to check
-     * @return true if it is visible (JsInterop), false otherwise
-     */
-    public static boolean isMethodVisibleInJS(JMethod method)
-    {
-        return (hasAnnotation(method.getEnclosingType(), JsType.class) && method.isPublic())
-            || hasAnnotation(method, JsMethod.class);
     }
 
     /**

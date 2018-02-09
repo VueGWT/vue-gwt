@@ -10,9 +10,9 @@
 		<version>1.0-beta-7-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>vue-gwt-core</artifactId>
-	<name>Vue GWT Core</name>
-	<description>Vue GWT Core classes</description>
+	<artifactId>vue-gwt</artifactId>
+	<name>Vue GWT</name>
+	<description>Vue GWT core classes</description>
 	<packaging>gwt-lib</packaging>
 	
 	<properties>
@@ -23,14 +23,6 @@
 	<dependencies>
 
 		<!-- GWT dependencies -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-dev</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>com.google.jsinterop</groupId>
 			<artifactId>base</artifactId>
@@ -64,7 +56,7 @@
 				<artifactId>gwt-maven-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
-					<moduleName>com.axellience.vuegwt.Core</moduleName>
+					<moduleName>com.axellience.vuegwt.VueGWT</moduleName>
 				</configuration>
 			</plugin>
 		</plugins>

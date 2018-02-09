@@ -1,26 +1,17 @@
 package com.axellience.vuegwt.processors.utils;
 
 import com.axellience.vuegwt.core.annotations.component.Computed;
-import com.google.gwt.core.ext.typeinfo.HasAnnotations;
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ClientBundle.Source;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
@@ -84,43 +75,7 @@ public class GeneratorsUtil
         }
     }
 
-    public static void generateGwtBundle(TypeElement sourceType, ClassName bundleClassName,
-        String bundleMethodName, TypeName resourceType, String resourceExtension, Filer filer)
-    {
-        Builder bundleClassBuilder = TypeSpec
-            .interfaceBuilder(bundleClassName)
-            .addModifiers(Modifier.PUBLIC)
-            .addSuperinterface(ClientBundle.class);
-
-        bundleClassBuilder.addField(FieldSpec
-            .builder(bundleClassName, "INSTANCE", Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-            .initializer(CodeBlock.of("$T.create($T.class)", GWT.class, bundleClassName))
-            .build());
-
-        String typeElementName = sourceType.getQualifiedName().toString();
-        String resourcePath = typeElementName.replaceAll("\\.", "/") + "." + resourceExtension;
-        AnnotationSpec annotationSpec = AnnotationSpec
-            .builder(Source.class)
-            .addMember("value", CodeBlock.of("$S", resourcePath))
-            .build();
-
-        bundleClassBuilder.addMethod(MethodSpec
-            .methodBuilder(bundleMethodName)
-            .addAnnotation(annotationSpec)
-            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-            .returns(resourceType)
-            .build());
-
-        GeneratorsUtil.toJavaFile(filer, bundleClassBuilder, bundleClassName, sourceType);
-    }
-
     public static boolean hasAnnotation(Element element,
-        Class<? extends Annotation> annotationClass)
-    {
-        return element.getAnnotation(annotationClass) != null;
-    }
-
-    public static boolean hasAnnotation(HasAnnotations element,
         Class<? extends Annotation> annotationClass)
     {
         return element.getAnnotation(annotationClass) != null;

@@ -5,7 +5,7 @@ import com.axellience.vuegwt.core.annotations.component.Emit;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.directive.VueDirective;
-import com.google.gwt.regexp.shared.RegExp;
+import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 
@@ -26,10 +26,6 @@ public class GeneratorsNameUtil
     private static String COMPONENT_FACTORY_SUFFIX = "Factory";
 
     private static String DIRECTIVE_OPTIONS_SUFFIX = "Options";
-
-    private static RegExp CAMEL_CASE_PATTERN = RegExp.compile("([a-z])([A-Z]+)", "g");
-    private static RegExp COMPONENT_SUFFIX_REGEX = RegExp.compile("Component$");
-    private static RegExp DIRECTIVE_SUFFIX_REGEX = RegExp.compile("Directive$");
 
     public static ClassName componentJsTypeName(TypeElement component)
     {
@@ -130,9 +126,9 @@ public class GeneratorsNameUtil
             return componentAnnotation.name();
 
         // Drop "Component" at the end of the class name
-        componentClassName = COMPONENT_SUFFIX_REGEX.replace(componentClassName, "");
+        componentClassName = componentClassName.replaceAll("Component$", "");
         // Convert from CamelCase to kebab-case
-        return CAMEL_CASE_PATTERN.replace(componentClassName, "$1-$2").toLowerCase();
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, componentClassName).toLowerCase();
     }
 
     /**
@@ -145,9 +141,9 @@ public class GeneratorsNameUtil
     public static String directiveToTagName(String directiveClassName)
     {
         // Drop "Component" at the end of the class name
-        directiveClassName = DIRECTIVE_SUFFIX_REGEX.replace(directiveClassName, "");
+        directiveClassName = directiveClassName.replaceAll("Directive$", "");
         // Convert from CamelCase to kebab-case
-        return CAMEL_CASE_PATTERN.replace(directiveClassName, "$1-$2").toLowerCase();
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, directiveClassName).toLowerCase();
     }
 
     /**
@@ -162,7 +158,7 @@ public class GeneratorsNameUtil
         if (!"".equals(emitAnnotation.value()))
             return emitAnnotation.value();
 
-        return CAMEL_CASE_PATTERN.replace(method.getSimpleName().toString(), "$1-$2").toLowerCase();
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, method.getSimpleName().toString()).toLowerCase();
     }
 
     /**
@@ -172,6 +168,6 @@ public class GeneratorsNameUtil
      */
     public static String propNameToAttributeName(String propName)
     {
-        return CAMEL_CASE_PATTERN.replace(propName, "$1-$2").toLowerCase();
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, propName).toLowerCase();
     }
 }

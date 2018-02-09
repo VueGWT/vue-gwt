@@ -2,7 +2,6 @@ package com.axellience.vuegwt.core.client.observer;
 
 import com.axellience.vuegwt.core.client.observer.functions.VueObserveArray;
 import com.axellience.vuegwt.core.client.observer.functions.VueWalk;
-import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
@@ -67,8 +66,8 @@ public class VueGWTObserverManager
      */
     private boolean observeJavaObject(Object object)
     {
-        // Ignore pure JS objects
-        if (object.getClass() == JavaScriptObject.class)
+        // Ignore pure JS objects, this is to avoid impacting pure Vue.js components
+        if (object.getClass() == JsObject.class)
             return false;
 
         // Don't observe Java classes
