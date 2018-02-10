@@ -3,9 +3,25 @@
 For easy backward compatibility it's possible to wrap any Vue GWT Component in a GWT `Widget`.
 For this you need to use `VueGwtWidget`.
 
+## Adding the dependency
+
+`VueGwtWidget` is in it's own Maven module.
+If you want to use it, add this Maven Dependency to your `pom.xml`:
+```xml
+<dependency>
+	<groupId>com.axellience</groupId>
+	<artifactId>vue-gwt-gwt2</artifactId>
+	<version>${vue-gwt.version}</version>
+</dependency>
+```
+And this in your `gwt.xml`:
+```xml
+<inherits name='com.axellience.vuegwt.GWT2'/>
+``` 
+
 ## Instantiating a DemoComponent
 
-For example, let's instantiate a `DemoComponent` using this mechanism:
+Let's instantiate a `DemoComponent` with `VueGwtWidget`:
  
 ***GwtIndex.html***
  
