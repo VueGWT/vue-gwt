@@ -2,10 +2,10 @@
 
 ## ✅ Vue GWT IntelliJ Plugin
 
-First, download the latest release from [Vue GWT IntelliJ Plugin](https://github.com/Axellience/vue-gwt-intellij-plugin/releases).
-Then install it in IntelliJ by going to `Preferences > Plugins > Install Plugin from disk...` and selecting the downloaded ZIP.
-
+First, install the [IntelliJ Vue GWT Plugin](https://plugins.jetbrains.com/plugin/10441-vue-gwt).
 This will make IntelliJ re-process your Components templates when you save them.
+
+You can find it in your IDE in `Preferences > Plugins > Browse Repositories... > Vue GWT`
 
 ## ✅ Enable Auto Build
 

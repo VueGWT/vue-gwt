@@ -2,10 +2,12 @@
 
 ## ✅ Vue GWT Eclipse Plugin
 
-First, download the latest release of [Vue GWT Eclipse Plugin](https://github.com/Axellience/vue-gwt-eclipse-plugin/releases).
-Then copy the downloaded JAR in the plugins directory of your Eclipse installation.
-
+First, install the [Vue GWT Eclipse Plugin](https://marketplace.eclipse.org/content/vue-gwt).
 This will make Eclipse re-process your Components templates when you save them.
+
+To install, just drag and drop the following button on your Eclipse window:
+
+[![Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3923910 "Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client")
 
 ## ✅ Make Eclipse find your Templates
 
