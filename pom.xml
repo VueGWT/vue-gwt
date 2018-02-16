@@ -36,6 +36,7 @@
 		<module>core</module>
 		<module>gwt2</module>
 		<module>processors</module>
+		<module>tests</module>
 	</modules>
 
 	<scm>
@@ -76,12 +77,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.axellience</groupId>
-				<artifactId>vue-gwt-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.axellience</groupId>
-				<artifactId>vue-gwt-generators</artifactId>
+				<artifactId>vue-gwt-processors</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
