@@ -5,7 +5,7 @@ module.exports = function (config) {
 		basePath: "../../..",
 		frameworks: ['mocha'],
 		files: [
-			'src/main/java/com/axellience/vuegwt/tests/client/components/**/*.js',
+			'src/test/javascript/components/**/*.js',
 			{
 				pattern: "target/vue-gwt-tests-1.0-beta-7-SNAPSHOT/**/*.nocache.js",
 				watched: false
@@ -23,7 +23,7 @@ module.exports = function (config) {
 		singleRun: false,
 		autoWatch: true,
 		preprocessors: {
-			'src/main/java/com/axellience/vuegwt/tests/client/components/**/*.js': ['webpack']
+			'src/test/javascript/components/**/*.js': ['webpack']
 		},
 		webpack: webpackConfig
 	});

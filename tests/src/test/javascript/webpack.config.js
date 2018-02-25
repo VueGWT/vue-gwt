@@ -1,6 +1,6 @@
 module.exports = {
 	output: {
-		path: 'src/main/java/com/axellience/vuegwt/tests/client/components/',
+		path: 'src/test/javascript/components/',
 		filename: '[name].js'
 	},
 	resolve: {

@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { mount } from 'vue-test-utils'
-import { vueGwtTests } from '../../vue-gwt-tests-utils'
+import { vueGwtTests } from '../vue-gwt-tests-utils'
 
 beforeEach(() => vueGwtTests.initForPackage("com.axellience.vuegwt.tests.client.components.test1"));
 

@@ -1,8 +1,7 @@
 class VueGwtTestsUtils {
 	constructor() {
 		this.onReadyPromise = new Promise((onSuccess) => {
-			this.setVueGwtIsReady = onSuccess;
-			window.onVueGwtTestsReady = () => this.setVueGwtIsReady();
+			window.onVueGwtTestsReady = () => onSuccess();
 		});
 	}
 
