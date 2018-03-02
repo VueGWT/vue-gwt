@@ -10,8 +10,15 @@ class VueGwtTestsUtils {
 		return this.onReadyPromise;
 	}
 
-	getComponent(testComponentName) {
+	getComponentConstructor(testComponentName) {
 		return window.VueGWT.getJsConstructor(`${this.rootPackage}.${testComponentName}`);
+	}
+
+	createAndMountComponent(testComponentName) {
+		const div = document.createElement("div");
+		document.body.appendChild(div);
+		const ComponentConstructor = this.getComponentConstructor(testComponentName);
+		return new ComponentConstructor({el: div});
 	}
 }
 

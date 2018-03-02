@@ -16,7 +16,6 @@
     "puppeteer": "^1.1.0",
     "vue": "^2.5.13",
     "vue-template-compiler": "^2.5.13",
-    "vue-test-utils": "https://github.com/vuejs/vue-test-utils",
     "webpack": "^3.5.6"
   }
 }
