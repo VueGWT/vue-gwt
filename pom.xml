@@ -46,7 +46,7 @@
 
 	<properties>
 		<!-- Plugins -->
-		<plugin.version.gwt.maven>1.0-rc-8</plugin.version.gwt.maven>
+		<plugin.version.gwt.maven>1.0-rc-9</plugin.version.gwt.maven>
 
 		<!-- Dependencies -->
 		<gwt.version>2.8.2</gwt.version>
