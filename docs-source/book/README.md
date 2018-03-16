@@ -27,13 +27,13 @@ It lets you write Vue.js components in Java.
 
 ## Who is this for?
 
-* You want to code a **Vue app with type checking**, and take advantage of GWT optimizations. 
+* You want to code a **Vue app with type checking**, and take advantage of GWT optimizations.
 * You have **GWT app**, and you want **easy to write views** with **2 way data binding**.
 * You have a **Vue app** and you need to **use a Java library in some Components**.
 
 ## What does it look like?
 
-You can start reading **[our documentation](introduction/README.md)** it contains live examples. 
+You can start reading **[our documentation](introduction/README.md)** it contains live examples.
 You can also checkout the **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)**.
 
 Curious about the implementation? See the sources in our public **[Github repository](https://github.com/Axellience/vue-gwt)**.
@@ -49,7 +49,7 @@ When you are ready, you can get started with by **[setting it up on your project
     If you use it on a small project, please <a href="https://gitter.im/Axellience/vue-gwt" target="_blank">let us know how it goes</a>.
 </p>
 
-*This documentation was last updated for [Vue.js v2.5.16](https://github.com/vuejs/vue/releases/tag/v2.5.16) and Vue GWT 1.0-beta-6*
+*This documentation was last updated for [Vue.js v2.5.16](https://github.com/vuejs/vue/releases/tag/v2.5.16) and Vue GWT 1.0-beta-7*
 
 ## Who made this?
 
