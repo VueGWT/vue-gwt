@@ -23,7 +23,7 @@ It lets you write Vue Components in Java.
 * Use **regular Java Objects and Collections** in your templates
 * Supports [**injection** in Components](https://axellience.github.io/vue-gwt/essential/dependency-injection.html)
 * Supports **most of Vue.js features**
-* Integrates with [GWT Resources](https://axellience.github.io/vue-gwt/gwt-integration/client-bundles.html) and [Widgets](https://axellience.github.io/vue-gwt/gwt-integration/widgets.html)
+* Integrates with [GWT Resources](https://axellience.github.io/vue-gwt/gwt-integration/client-bundles-and-styles.html) and [Widgets](https://axellience.github.io/vue-gwt/gwt-integration/widgets.html)
 
 ## Who is this for?
 
@@ -42,11 +42,8 @@ Curious about the implementation? See the sources in our public **[Github reposi
 
 When you are ready, you can start by **[setting it up on your project](https://axellience.github.io/vue-gwt/project-setup.html)**.
 
->️ ℹ️ Vue GWT is in an **beta** state.
-It may still contain some bugs.
-
 > We are looking for feedback and contributions.
-If you use it on a small project, please [let us know how it goes](https://gitter.im/Axellience/vue-gwt).
+If you use it on a project, please [let us know how it goes](https://gitter.im/Axellience/vue-gwt).
 
 ## Who made this?
 
