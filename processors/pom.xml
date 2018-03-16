@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.axellience</groupId>
 		<artifactId>vue-gwt-parent</artifactId>
-		<version>1.0-beta-6</version>
+		<version>1.0-beta-7</version>
 	</parent>
 
 	<artifactId>vue-gwt-processors</artifactId>
@@ -20,14 +20,14 @@
 		<!-- Vue GWT -->
 		<dependency>
 			<groupId>com.axellience</groupId>
-			<artifactId>vue-gwt-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.axellience</groupId>
 			<artifactId>vue-gwt</artifactId>
 		</dependency>
 
 		<!-- Annotation Processors -->
+		<dependency>
+			<groupId>net.htmlparser.jericho</groupId>
+			<artifactId>jericho-html</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.google.auto.service</groupId>
 			<artifactId>auto-service</artifactId>
@@ -35,6 +35,10 @@
 		<dependency>
 			<groupId>com.squareup</groupId>
 			<artifactId>javapoet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-core</artifactId>
 		</dependency>
 
 	</dependencies>

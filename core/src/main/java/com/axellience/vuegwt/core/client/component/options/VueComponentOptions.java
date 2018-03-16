@@ -7,7 +7,6 @@ import com.axellience.vuegwt.core.client.component.options.computed.ComputedOpti
 import com.axellience.vuegwt.core.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.core.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.core.client.template.ComponentTemplate;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
@@ -23,7 +22,6 @@ import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axellience.vuegwt.core.client.template.ComponentTemplate.EXPRESSION_PREFIX;
 import static elemental2.core.Global.JSON;
 
 /**
@@ -40,15 +38,13 @@ import static elemental2.core.Global.JSON;
 public class VueComponentOptions<T extends VueComponent> extends JsObject implements JsPropertyMap
 {
     private ComponentJavaPrototype<T> componentJavaPrototype;
-    private ComponentTemplate<T> componentTemplate;
     private Map<String, Provider<?>> dependenciesProvider;
     private JsPropertyMap dataFields;
 
     /**
      * Set the Java Prototype on this {@link VueComponentOptions}.
      * This prototype will be used to retrieve the java methods of our {@link VueComponent}.
-     * @param javaPrototype An instance of the {@link ComponentTemplate} class for this
-     * Component
+     * @param javaPrototype The {@link ComponentJavaPrototype} for this Component
      */
     @JsOverlay
     public final void setComponentJavaPrototype(ComponentJavaPrototype<T> javaPrototype)
@@ -56,49 +52,35 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
         this.componentJavaPrototype = javaPrototype;
         // This must be set for Components extending Native JS Components
         this.componentJavaPrototype.set("options", this);
-    }
-
-    /**
-     * Set the {@link ComponentTemplate} on this {@link VueComponentOptions}.
-     * This instance will be used to retrieve the java methods of our {@link VueComponent}.
-     * @param componentTemplate An instance of the {@link ComponentTemplate} class for this
-     * Component
-     */
-    @JsOverlay
-    public final void setComponentTemplate(ComponentTemplate<T> componentTemplate)
-    {
-        this.componentTemplate = componentTemplate;
-        this.initExpressions();
-        this.initRenderFunctions();
+        this.initTemplateExpressions();
     }
 
     /**
      * Add template expressions to this {@link VueComponentOptions}.
      */
     @JsOverlay
-    private void initExpressions()
+    private void initTemplateExpressions()
     {
-        for (int i = 0; i < componentTemplate.getTemplateMethodsCount(); i++)
+        int i = 0;
+        Function templateMethod;
+        while ((templateMethod = getJavaComponentMethod("exp$" + i)) != null)
         {
-            String methodId = EXPRESSION_PREFIX + i;
-            addMethod(methodId, componentTemplate.get(methodId));
+            addMethod("exp$" + i, templateMethod);
+            i++;
         }
     }
 
     /**
      * Initialise the render functions from our template.
+     * @param renderFunctionString The render function
+     * @param staticRenderFnsStrings The static render functions
      */
     @JsOverlay
-    private void initRenderFunctions()
+    public final void initRenderFunctions(Function renderFunctionString,
+        Function[] staticRenderFnsStrings)
     {
-        this.set("render", new Function(componentTemplate.getRenderFunction()));
-
-        JsArray<Object> staticRenderFns = new JsArray<>();
-        for (String staticRenderFunction : componentTemplate.getStaticRenderFunctions())
-        {
-            staticRenderFns.push(new Function(staticRenderFunction));
-        }
-        this.setStaticRenderFns(staticRenderFns);
+        this.setRender(renderFunctionString);
+        this.setStaticRenderFns(Js.cast(staticRenderFnsStrings));
     }
 
     /**
@@ -134,7 +116,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     /**
      * Add a computed property to this ComponentOptions.
      * If the computed has both a getter and a setter, this will be called twice, once for each.
-     * @param javaMethodName Name of the method in the {@link ComponentTemplate}
+     * @param javaMethodName Name of the method in the {@link VueComponent}
      * @param computedPropertyName Name of the computed property in the Template and the
      * ComponentOptions
      * @param kind Kind of the computed method (getter or setter)
@@ -159,7 +141,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     /**
      * Add a watch property to this Component Definition
-     * @param javaMethodName Name of the method in the {@link ComponentTemplate}
+     * @param javaMethodName Name of the method in the {@link VueComponent}
      * @param watchedPropertyName Name of the property name to watch in the data model
      * @param isDeep Is the watcher deep (will watch child properties)
      */
@@ -231,7 +213,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     /**
      * Add a custom prop validator to validate a property
-     * @param javaMethodName Name of the method in the {@link ComponentTemplate}
+     * @param javaMethodName Name of the method in the {@link VueComponent}
      * @param propertyName The name of the property to validate
      */
     @JsOverlay
@@ -243,7 +225,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     /**
      * Add a custom prop validator to validate a property
-     * @param javaMethodName Name of the method in the {@link ComponentTemplate}
+     * @param javaMethodName Name of the method in the {@link VueComponent}
      * @param propertyName The name of the property to validate
      */
     @JsOverlay
@@ -254,7 +236,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     }
 
     /**
-     * Get the given java method from the {@link ComponentTemplate}.
+     * Get the given java method from the {@link VueComponent}.
      * @param javaMethodName Name of the Java method to retrieve
      * @return The JS function that represent our Java method.
      */
@@ -324,7 +306,8 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     @JsProperty private String name;
 
-    @JsProperty private JsArray<Object> staticRenderFns;
+    @JsProperty private Function render;
+    @JsProperty private JsArray<Function> staticRenderFns;
 
     @JsProperty private JsArray<Object> mixins;
 
@@ -360,7 +343,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
         if (this.props == null)
             this.props = JsPropertyMap.of();
 
-        ((JsPropertyMap)this.props).set(name, propOptions);
+        ((JsPropertyMap) this.props).set(name, propOptions);
         return this;
     }
 
@@ -481,15 +464,28 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     }
 
     @JsOverlay
-    public final JsArray<Object> getStaticRenderFns()
+    public final JsArray<Function> getStaticRenderFns()
     {
         return staticRenderFns;
     }
 
     @JsOverlay
-    public final VueComponentOptions setStaticRenderFns(JsArray<Object> staticRenderFns)
+    public final VueComponentOptions setStaticRenderFns(JsArray<Function> staticRenderFns)
     {
         this.staticRenderFns = staticRenderFns;
+        return this;
+    }
+
+    @JsOverlay
+    public final Function getRender()
+    {
+        return render;
+    }
+
+    @JsOverlay
+    public final VueComponentOptions setRender(Function render)
+    {
+        this.render = render;
         return this;
     }
 
@@ -554,7 +550,8 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     @JsOverlay
     public final VueComponentOptions addMixin(Object mixin)
     {
-        if (this.mixins == null) {
+        if (this.mixins == null)
+        {
             this.mixins = new JsArray<>();
         }
 

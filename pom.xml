@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.axellience</groupId>
-    <artifactId>vue-gwt-parent</artifactId>
-    <version>1.0-beta-6</version>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.axellience</groupId>
+	<artifactId>vue-gwt-parent</artifactId>
+	<version>1.0-beta-7</version>
 	<packaging>pom</packaging>
 
-    <name>Vue GWT Parent</name>
-    <description>Let you use Vue.js Components in GWT application and code Vue.js Components in Java</description>
-    <url>https://github.com/Axellience/vue-gwt</url>
+	<name>Vue GWT Parent</name>
+	<description>Let you use Vue.js Components in GWT application and code Vue.js Components in
+		Java
+	</description>
+	<url>https://github.com/Axellience/vue-gwt</url>
 
 	<licenses>
 		<license>
@@ -44,25 +46,24 @@
 
 	<properties>
 		<!-- Plugins -->
-		<plugin.version.gwt.maven>1.0-rc-8</plugin.version.gwt.maven>
+		<plugin.version.gwt.maven>1.0-rc-9</plugin.version.gwt.maven>
 
 		<!-- Dependencies -->
-        <gwt.version>2.8.1</gwt.version>
-        <jsinterop.version>1.0.2</jsinterop.version>
-        <jsinterop-base.version>1.0.0-RC1</jsinterop-base.version>
-        <elemental.version>1.0.0-RC1</elemental.version>
+		<gwt.version>2.8.2</gwt.version>
+		<jsinterop.version>1.0.2</jsinterop.version>
+		<jsinterop-base.version>1.0.0-RC1</jsinterop-base.version>
+		<elemental.version>1.0.0-RC1</elemental.version>
 
-        <javapoet.version>1.9.0</javapoet.version>
-        <jsoup.version>1.10.2</jsoup.version>
-        <javaparser.version>3.0.1</javaparser.version>
-        <nashorn.commonjs.modules.version>1.0.8</nashorn.commonjs.modules.version>
-		<auto-service.version>1.0-rc3</auto-service.version>
+		<javapoet.version>1.9.0</javapoet.version>
+		<jericho.version>3.4</jericho.version>
+		<javaparser.version>3.0.1</javaparser.version>
+		<auto-service.version>1.0-rc4</auto-service.version>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	</properties>
 
 	<dependencyManagement>
 		<dependencies>
@@ -101,12 +102,6 @@
 				<groupId>com.google.elemental2</groupId>
 				<artifactId>elemental2-core</artifactId>
 				<version>${elemental.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>com.google.jsinterop</groupId>
-						<artifactId>base</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.google.elemental2</groupId>
@@ -141,21 +136,14 @@
 				<version>${javapoet.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.jsoup</groupId>
-				<artifactId>jsoup</artifactId>
-				<version>${jsoup.version}</version>
+				<groupId>net.htmlparser.jericho</groupId>
+				<artifactId>jericho-html</artifactId>
+				<version>${jericho.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.javaparser</groupId>
 				<artifactId>javaparser-core</artifactId>
 				<version>${javaparser.version}</version>
-			</dependency>
-
-			<!-- Nashorn dependencies -->
-			<dependency>
-				<groupId>com.coveo</groupId>
-				<artifactId>nashorn-commonjs-modules</artifactId>
-				<version>${nashorn.commonjs.modules.version}</version>
 			</dependency>
 
 		</dependencies>
@@ -172,7 +160,7 @@
 		</repository>
 	</distributionManagement>
 
-    <build>
+	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -198,6 +186,17 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.amashchenko.maven.plugin</groupId>
+				<artifactId>gitflow-maven-plugin</artifactId>
+				<version>1.9.0</version>
+				<configuration>
+					<pushRemote>false</pushRemote>
+					<skipTestProject>true</skipTestProject>
+					<skipFeatureVersion>true</skipFeatureVersion>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

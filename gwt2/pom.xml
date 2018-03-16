@@ -7,19 +7,23 @@
 	<parent>
 		<groupId>com.axellience</groupId>
 		<artifactId>vue-gwt-parent</artifactId>
-		<version>1.0-beta-6</version>
+		<version>1.0-beta-7</version>
 	</parent>
 
-	<artifactId>vue-gwt</artifactId>
-	<name>Vue GWT</name>
-	<description>Vue GWT for GWT 2.x</description>
+	<artifactId>vue-gwt-gwt2</artifactId>
+	<name>Vue GWT GWT2</name>
+	<description>Vue GWT compatibility classes for GWT 2.x</description>
 	<packaging>gwt-lib</packaging>
 
 	<dependencies>
-		<!-- Vue GWT -->
 		<dependency>
 			<groupId>com.axellience</groupId>
-			<artifactId>vue-gwt-core</artifactId>
+			<artifactId>vue-gwt</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -30,15 +34,9 @@
 				<artifactId>gwt-maven-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
-					<moduleName>com.axellience.vuegwt.VueGWT</moduleName>
+					<moduleName>com.axellience.vuegwt.GWT2</moduleName>
 				</configuration>
 			</plugin>
 		</plugins>
-
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
 	</build>
 </project>

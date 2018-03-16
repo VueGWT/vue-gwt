@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
-import com.axellience.vuegwt.core.generation.GenerationUtil;
+import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.squareup.javapoet.ClassName;
@@ -24,7 +24,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.util.List;
 
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
 
 /**
  * Abstract class to generate {@link VueFactory} from the user {@link VueComponent} classes.
@@ -67,7 +67,7 @@ public abstract class AbstractVueComponentFactoryGenerator
             .build());
 
         // Build the ComponentOptions class
-        GenerationUtil.toJavaFile(filer, vueFactoryBuilder, vueFactoryClassName, component);
+        GeneratorsUtil.toJavaFile(filer, vueFactoryBuilder, vueFactoryClassName, component);
     }
 
     /**

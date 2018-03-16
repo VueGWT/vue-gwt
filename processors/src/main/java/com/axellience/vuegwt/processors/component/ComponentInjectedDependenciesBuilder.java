@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.processors.component;
 
 import com.axellience.vuegwt.core.client.component.VueComponent;
-import com.axellience.vuegwt.core.generation.GenerationUtil;
+import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -13,23 +13,22 @@ import com.squareup.javapoet.TypeSpec.Builder;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.inject.Inject;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.componentInjectedDependenciesName;
-import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.resolveVariableTypeName;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.resolveVariableTypeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.processors.utils.InjectedDependenciesUtil.getInjectedFields;
+import static com.axellience.vuegwt.processors.utils.InjectedDependenciesUtil.getInjectedMethods;
+import static com.axellience.vuegwt.processors.utils.InjectedDependenciesUtil.hasInjectAnnotation;
 
 /**
  * Build a class used to inject dependencies of a given {@link VueComponent}.
@@ -57,17 +56,20 @@ public class ComponentInjectedDependenciesBuilder
         processInjectedFields(component);
         processInjectedMethods(component);
 
-        componentInjectedDependenciesBuilder.addMethod(MethodSpec
-            .constructorBuilder()
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Inject.class)
-            .build());
+        if (hasInjectedDependencies())
+        {
+            componentInjectedDependenciesBuilder.addMethod(MethodSpec
+                .constructorBuilder()
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Inject.class)
+                .build());
 
-        // Generate the file
-        GenerationUtil.toJavaFile(processingEnvironment.getFiler(),
-            componentInjectedDependenciesBuilder,
-            componentInjectedDependenciesName(component),
-            component);
+            // Generate the file
+            GeneratorsUtil.toJavaFile(processingEnvironment.getFiler(),
+                componentInjectedDependenciesBuilder,
+                componentInjectedDependenciesName(component),
+                component);
+        }
     }
 
     /**
@@ -76,15 +78,7 @@ public class ComponentInjectedDependenciesBuilder
      */
     private void processInjectedFields(TypeElement component)
     {
-        // Get the list of fields to copy over
-        List<VariableElement> injectedFields = ElementFilter
-            .fieldsIn(component.getEnclosedElements())
-            .stream()
-            .filter(this::hasInjectAnnotation)
-            .peek(this::validateField)
-            .collect(Collectors.toList());
-
-        injectedFields.forEach(field -> {
+        getInjectedFields(component).stream().peek(this::validateField).forEach(field -> {
             String fieldName = field.getSimpleName().toString();
             addInjectedVariable(field, fieldName);
             injectedFieldsName.add(fieldName);
@@ -97,14 +91,10 @@ public class ComponentInjectedDependenciesBuilder
      */
     private void processInjectedMethods(TypeElement component)
     {
-        List<ExecutableElement> injectedMethods = ElementFilter
-            .methodsIn(component.getEnclosedElements())
+        getInjectedMethods(component)
             .stream()
-            .filter(this::hasInjectAnnotation)
             .peek(this::validateMethod)
-            .collect(Collectors.toList());
-
-        injectedMethods.forEach(this::processInjectedMethod);
+            .forEach(this::processInjectedMethod);
     }
 
     /**
@@ -206,29 +196,10 @@ public class ComponentInjectedDependenciesBuilder
     }
 
     /**
-     * Check if the given element has an Inject annotation. Either the one from Google Gin, or the
-     * javax one. We don't want to depend on Gin, so we check the google one based on qualifiedName
-     * @param element The element we want to check
-     * @return True if has an Inject annotation, false otherwise
-     */
-    private boolean hasInjectAnnotation(Element element)
-    {
-        for (AnnotationMirror annotationMirror : element.getAnnotationMirrors())
-        {
-            String annotationQualifiedName = annotationMirror.getAnnotationType().toString();
-            if (annotationQualifiedName.equals(Inject.class.getCanonicalName()))
-                return true;
-            if (annotationQualifiedName.equals("com.google.inject.Inject"))
-                return true;
-        }
-        return false;
-    }
-
-    /**
      * Return true if the component instance has injected dependencies
      * @return true if the component instance has injected dependencies, false otherwise
      */
-    public boolean hasDependencies()
+    public boolean hasInjectedDependencies()
     {
         return !injectedFieldsName.isEmpty() || !injectedParametersByMethod.isEmpty();
     }

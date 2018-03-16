@@ -31,9 +31,14 @@ buildNumber.properties
 .classpath
 .project
 .settings
+.factorypath
 
 ### Gitbook
 docs-source/book/_book
 docs-source/book/node_modules
 docs-source/book/scripts
 docs-source/book/resources/scripts
+
+### Utils out
+utils/out
+utils/node_modules

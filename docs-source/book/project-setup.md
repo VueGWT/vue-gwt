@@ -43,8 +43,7 @@ First, in the `plugins` section of your Maven `pom.xml` add the following `plugi
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <!-- version is important to have java annotation processing correctly handled -->
-            <version>3.3</version><!--$NO-MVN-MAN-VER$-->
+            <version>3.3</version>
             <configuration>
                 <compilerArgument>-parameters</compilerArgument>
                 <testCompilerArgument>-parameters</testCompilerArgument>
@@ -57,66 +56,28 @@ First, in the `plugins` section of your Maven `pom.xml` add the following `plugi
 </project>
 ```
 
-### Eclipse
-If you use Eclipse first ensure you have the `m2e-apt` plugin installed:
-[https://marketplace.eclipse.org/content/m2e-apt](https://marketplace.eclipse.org/content/m2e-apt).
- 
-Then you need to add the following to your `pom.xml` to store the settings of `m2e-apt`:
+Then add this profile, this is to expose templates to the annotation processor:
 
 ```xml
-<pluginManagement>
-    <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        <plugin>
-            <groupId>org.eclipse.m2e</groupId>
-            <artifactId>lifecycle-mapping</artifactId>
-            <version>1.0.0</version>
-            <configuration>
-                <lifecycleMappingMetadata>
-                    <pluginExecutions>
-                        <pluginExecution>
-                            <pluginExecutionFilter>
-                                <groupId>
-                                    org.codehaus.mojo
-                                </groupId>
-                                <artifactId>
-                                    gwt-maven-plugin
-                                </artifactId>
-                                <versionRange>
-                                    [2.7.0,)
-                                </versionRange>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                            </pluginExecutionFilter>
-                            <action>
-                                <ignore></ignore>
-                            </action>
-                        </pluginExecution>
-                    </pluginExecutions>
-                </lifecycleMappingMetadata>
-            </configuration>
-        </plugin>
-    </plugins>
-</pluginManagement>
+<profiles>
+    <profile>
+        <id>vue-gwt-resources</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <build>
+            <resources>
+                <resource>
+                    <directory>src/main/java</directory>
+                    <includes>
+                        <include>**/*.html</include>
+                    </includes>
+                </resource>
+            </resources>
+        </build>
+    </profile>
+</profiles>
 ```
-
-Once this is done, you need to enable annotation processing for your project in the `m2e-apt` project settings:
-
-![Enabling Annotation processing in Eclipse](https://axellience.github.io/vue-gwt/resources/images/eclipse-enable-annotation-processing.jpg)
-
-### IntelliJ IDEA
-By default IntelliJ doesn't support automatic annotation processing when the app is running.
-But don't worry, enabling it is easy!
-
-Go to `File -> Settings -> Build, Execution, Deployment -> Compiler` and enable “Make project automatically”
-
-Open the Action window :
-* Linux : `CTRL+SHIFT+A`
-* MacOS : `SHIFT+COMMAND+A`
-* Windows : `CTRL+ALT+SHIFT+/`
-
-Enter `Registry...` and enable `compiler.automake.allow.when.app.running`.
 
 ## ✅ Configure `JsInterop`
 
@@ -143,6 +104,20 @@ For Maven, if you use [GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-
     </plugin>
 </plugins>
 ```
+
+## ✅ Configure your IDE
+
+### IntelliJ
+
+You must [configure IntelliJ](ide-setup/intellij.md) to enable auto build when changing your Components Templates.
+
+### Eclipse
+
+You must [configure Eclipse](ide-setup/eclipse.md) to enable auto build when changing your Components Templates and Annotation Processing.
+
+### NetBeans
+
+[Feedback](https://gitter.im/Axellience/vue-gwt) for Vue GWT on NetBeans welcome.
 
 ## ✅ Configure Your GWT App
 

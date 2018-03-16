@@ -2,6 +2,8 @@
 
 * [About Vue GWT](README.md)
 * [Project Setup](project-setup.md)
+    * [IntelliJ Setup](ide-setup/intellij.md)
+    * [Eclipse Setup](ide-setup/eclipse.md)
 * [Getting Started](introduction/README.md)
     * [Your First Component](introduction/README.md#your-first-component)
     * [Conditional and Loops](introduction/README.md#conditional-and-loop)

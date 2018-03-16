@@ -19,9 +19,9 @@ import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
-import com.axellience.vuegwt.core.generation.ComponentGenerationUtil;
-import com.axellience.vuegwt.core.generation.GenerationUtil;
-import com.google.gwt.core.shared.GWT;
+import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
+import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
+import com.axellience.vuegwt.processors.component.template.ComponentTemplateProcessor;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -54,10 +54,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.axellience.vuegwt.core.generation.ComponentGenerationUtil.*;
-import static com.axellience.vuegwt.core.generation.GenerationNameUtil.*;
-import static com.axellience.vuegwt.core.generation.GenerationUtil.hasAnnotation;
-import static com.axellience.vuegwt.core.generation.GenerationUtil.hasInterface;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.*;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentJsTypeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
 
 /**
  * Generate a JsType wrapper for the user Java {@link VueComponent}.
@@ -73,6 +76,7 @@ public class ComponentJsTypeGenerator
     private final Filer filer;
     private final Messager messager;
     private final Elements elements;
+    private final ComponentTemplateProcessor componentTemplateProcessor;
 
     public ComponentJsTypeGenerator(ProcessingEnvironment processingEnvironment)
     {
@@ -80,9 +84,10 @@ public class ComponentJsTypeGenerator
         filer = processingEnvironment.getFiler();
         messager = processingEnvironment.getMessager();
         elements = processingEnvironment.getElementUtils();
+        componentTemplateProcessor = new ComponentTemplateProcessor(processingEnvironment);
     }
 
-    public void generate(TypeElement component)
+    public void generate(TypeElement component, ComponentInjectedDependenciesBuilder dependenciesBuilder)
     {
         // Template resource abstract class
         ClassName componentWithSuffixClassName = componentJsTypeName(component);
@@ -92,9 +97,6 @@ public class ComponentJsTypeGenerator
 
         // Initialize Options getter builder
         MethodSpec.Builder optionsBuilder = getOptionsMethodBuilder(component);
-
-        ComponentInjectedDependenciesBuilder dependenciesBuilder =
-            new ComponentInjectedDependenciesBuilder(processingEnv, component);
 
         Set<ExecutableElement> hookMethodsFromInterfaces = getHookMethodsFromInterfaces(component);
 
@@ -113,12 +115,20 @@ public class ComponentJsTypeGenerator
         processRenderFunction(component, optionsBuilder, componentJsTypeBuilder);
         createCreatedHook(component, optionsBuilder, componentJsTypeBuilder, dependenciesBuilder);
 
+        // Process the HTML template if there is one
+        if (hasTemplate(processingEnv, component))
+        {
+            componentTemplateProcessor.processComponentTemplate(component, componentJsTypeBuilder);
+            optionsBuilder.addStatement(
+                "options.initRenderFunctions(getRenderFunction(), getStaticRenderFunctions())");
+        }
+
         // Finish building Options getter
         optionsBuilder.addStatement("return options");
         componentJsTypeBuilder.addMethod(optionsBuilder.build());
 
         // And generate our Java Class
-        GenerationUtil.toJavaFile(filer,
+        GeneratorsUtil.toJavaFile(filer,
             componentJsTypeBuilder,
             componentWithSuffixClassName,
             component);
@@ -187,13 +197,6 @@ public class ComponentJsTypeGenerator
             VueGWT.class,
             componentJsTypeName(component));
 
-        if (hasTemplate(processingEnv, component))
-        {
-            optionsMethodBuilder.addStatement("options.setComponentTemplate($T.create($T.class))",
-                GWT.class,
-                componentTemplateName(component));
-        }
-
         return optionsMethodBuilder;
     }
 
@@ -210,7 +213,7 @@ public class ComponentJsTypeGenerator
         List<String> fieldsName = ElementFilter
             .fieldsIn(component.getEnclosedElements())
             .stream()
-            .filter(ComponentGenerationUtil::isFieldVisibleInJS)
+            .filter(ComponentGeneratorsUtil::isFieldVisibleInJS)
             .filter(field -> field.getAnnotation(Prop.class) == null)
             .map(field -> field.getSimpleName().toString())
             .collect(Collectors.toList());
@@ -277,7 +280,7 @@ public class ComponentJsTypeGenerator
             if ("void".equals(method.getReturnType().toString()))
                 kind = ComputedKind.SETTER;
 
-            String propertyName = GenerationUtil.getComputedPropertyName(method);
+            String propertyName = GeneratorsUtil.getComputedPropertyName(method);
             optionsBuilder.addStatement("options.addJavaComputed($S, $S, $T.$L)",
                 methodName,
                 propertyName,
@@ -305,7 +308,7 @@ public class ComponentJsTypeGenerator
         List<ExecutableElement> templateMethods = ElementFilter
             .methodsIn(component.getEnclosedElements())
             .stream()
-            .filter(ComponentGenerationUtil::isMethodVisibleInTemplate)
+            .filter(ComponentGeneratorsUtil::isMethodVisibleInTemplate)
             .filter(method -> !isHookMethod(component, method, hookMethodsFromInterfaces))
             .collect(Collectors.toList());
 
@@ -331,7 +334,7 @@ public class ComponentJsTypeGenerator
         Set<String> alreadyDone)
     {
         getMethodsWithAnnotation(component, Computed.class).forEach(method -> {
-            String propertyName = GenerationUtil.getComputedPropertyName(method);
+            String propertyName = GeneratorsUtil.getComputedPropertyName(method);
 
             if (alreadyDone.contains(propertyName))
                 return;
@@ -550,7 +553,7 @@ public class ComponentJsTypeGenerator
         ComponentInjectedDependenciesBuilder dependenciesBuilder,
         MethodSpec.Builder createdMethodBuilder)
     {
-        if (!dependenciesBuilder.hasDependencies())
+        if (!dependenciesBuilder.hasInjectedDependencies())
             return;
 
         createDependenciesInstance(component, createdMethodBuilder);

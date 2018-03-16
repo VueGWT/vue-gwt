@@ -18,16 +18,16 @@ public class VueGwtWidget<T extends VueComponent> extends Widget
 {
     private final T vueComponentInstance;
 
-    public VueGwtWidget(VueFactory<T> vueFactory)
-    {
-        this(vueFactory.getJsConstructor());
-    }
-
     public VueGwtWidget(VueJsConstructor<T> vueJsConstructor)
     {
         super();
         setElement(Document.get().createDivElement());
         vueComponentInstance = vueJsConstructor.instantiate();
+    }
+
+    public VueGwtWidget(VueFactory<T> vueFactory)
+    {
+        this(vueFactory.getJsConstructor());
     }
 
     public VueGwtWidget(Class<T> vueClass)

@@ -7,7 +7,7 @@ import com.axellience.vuegwt.core.client.observer.vuegwtobservers.CollectionObse
 import com.axellience.vuegwt.core.client.observer.vuegwtobservers.MapObserver;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
-import com.google.gwt.core.client.JavaScriptObject;
+import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsPackage;
@@ -101,7 +101,7 @@ public class VueGWT
     @JsIgnore
     public static <T extends VueComponent> VueFactory<T> getFactory(Class<T> vueComponentClass)
     {
-        if (JavaScriptObject.class.equals(vueComponentClass))
+        if (JsObject.class.equals(vueComponentClass))
         {
             throw new RuntimeException(
                 "You can't use the .class of a JsComponent to instantiate it. Please use MyComponentFactory.get() instead.");
