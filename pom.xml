@@ -57,7 +57,7 @@
 		<javapoet.version>1.9.0</javapoet.version>
 		<jericho.version>3.4</jericho.version>
 		<javaparser.version>3.0.1</javaparser.version>
-		<auto-service.version>1.0-rc3</auto-service.version>
+		<auto-service.version>1.0-rc4</auto-service.version>
 
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
