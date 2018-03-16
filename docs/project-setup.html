@@ -63,7 +63,7 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="introduction/" />
+    <link rel="next" href="ide-setup/intellij.html" />
     
     
     <link rel="prev" href="./" />
@@ -118,6 +118,38 @@
                 </a>
             
 
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="ide-setup/intellij.html">
+            
+                <a href="ide-setup/intellij.html">
+            
+                    
+                    IntelliJ Setup
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="ide-setup/eclipse.html">
+            
+                <a href="ide-setup/eclipse.html">
+            
+                    
+                    Eclipse Setup
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
             
         </li>
     
@@ -1056,8 +1088,7 @@ Starting beta-3, Vue GWT requires at least GWT 2.8.1 to work.</p>
         <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
             <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
             <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-            <span class="hljs-comment">&lt;!-- version is important to have java annotation processing correctly handled --&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.3<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><span class="hljs-comment">&lt;!--$NO-MVN-MAN-VER$--&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.3<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
             <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
                 <span class="hljs-tag">&lt;<span class="hljs-name">compilerArgument</span>&gt;</span>-parameters<span class="hljs-tag">&lt;/<span class="hljs-name">compilerArgument</span>&gt;</span>
                 <span class="hljs-tag">&lt;<span class="hljs-name">testCompilerArgument</span>&gt;</span>-parameters<span class="hljs-tag">&lt;/<span class="hljs-name">testCompilerArgument</span>&gt;</span>
@@ -1069,59 +1100,26 @@ Starting beta-3, Vue GWT requires at least GWT 2.8.1 to work.</p>
     <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">project</span>&gt;</span>
 </code></pre>
-<h3 id="eclipse">Eclipse</h3>
-<p>If you use Eclipse first ensure you have the <code>m2e-apt</code> plugin installed:
-<a href="https://marketplace.eclipse.org/content/m2e-apt" target="_blank">https://marketplace.eclipse.org/content/m2e-apt</a>.</p>
-<p>Then you need to add the following to your <code>pom.xml</code> to store the settings of <code>m2e-apt</code>:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">pluginManagement</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
-        <span class="hljs-comment">&lt;!--This plugin&apos;s configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.--&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.eclipse.m2e<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lifecycle-mapping<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">lifecycleMappingMetadata</span>&gt;</span>
-                    <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecutions</span>&gt;</span>
-                        <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecution</span>&gt;</span>
-                            <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecutionFilter</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>
-                                    org.codehaus.mojo
-                                <span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>
-                                    gwt-maven-plugin
-                                <span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">versionRange</span>&gt;</span>
-                                    [2.7.0,)
-                                <span class="hljs-tag">&lt;/<span class="hljs-name">versionRange</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span>
-                                    <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>compile<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
-                                <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span>
-                            <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecutionFilter</span>&gt;</span>
-                            <span class="hljs-tag">&lt;<span class="hljs-name">action</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">ignore</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ignore</span>&gt;</span>
-                            <span class="hljs-tag">&lt;/<span class="hljs-name">action</span>&gt;</span>
-                        <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecution</span>&gt;</span>
-                    <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecutions</span>&gt;</span>
-                <span class="hljs-tag">&lt;/<span class="hljs-name">lifecycleMappingMetadata</span>&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">pluginManagement</span>&gt;</span>
+<p>Then add this profile, this is to expose templates to the annotation processor:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">profiles</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>vue-gwt-resources<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">activation</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">activeByDefault</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">activeByDefault</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">activation</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>src/main/java<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">includes</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.html<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">includes</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">profiles</span>&gt;</span>
 </code></pre>
-<p>Once this is done, you need to enable annotation processing for your project in the <code>m2e-apt</code> project settings:</p>
-<p><img src="https://axellience.github.io/vue-gwt/resources/images/eclipse-enable-annotation-processing.jpg" alt="Enabling Annotation processing in Eclipse"></p>
-<h3 id="intellij-idea">IntelliJ IDEA</h3>
-<p>By default IntelliJ doesn&apos;t support automatic annotation processing when the app is running.
-But don&apos;t worry, enabling it is easy!</p>
-<p>Go to <code>File -&gt; Settings -&gt; Build, Execution, Deployment -&gt; Compiler</code> and enable &#x201C;Make project automatically&#x201D;</p>
-<p>Open the Action window :</p>
-<ul>
-<li>Linux : <code>CTRL+SHIFT+A</code></li>
-<li>MacOS : <code>SHIFT+COMMAND+A</code></li>
-<li>Windows : <code>CTRL+ALT+SHIFT+/</code></li>
-</ul>
-<p>Enter <code>Registry...</code> and enable <code>compiler.automake.allow.when.app.running</code>.</p>
 <h2 id="&#x2705;-configure-jsinterop">&#x2705; Configure <code>JsInterop</code></h2>
 <p>Vue GWT relies heavily on GWT <code>JsInterop</code>.
 It is not enabled by default in GWT 2.8, so you must enable it in your SuperDevMode and Maven configurations.</p>
@@ -1141,6 +1139,13 @@ It is not enabled by default in GWT 2.8, so you must enable it in your SuperDevM
     <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
 </code></pre>
+<h2 id="&#x2705;-configure-your-ide">&#x2705; Configure your IDE</h2>
+<h3 id="intellij">IntelliJ</h3>
+<p>You must <a href="ide-setup/intellij.html">configure IntelliJ</a> to enable auto build when changing your Components Templates.</p>
+<h3 id="eclipse">Eclipse</h3>
+<p>You must <a href="ide-setup/eclipse.html">configure Eclipse</a> to enable auto build when changing your Components Templates and Annotation Processing.</p>
+<h3 id="netbeans">NetBeans</h3>
+<p><a href="https://gitter.im/Axellience/vue-gwt" target="_blank">Feedback</a> for Vue GWT on NetBeans welcome.</p>
 <h2 id="&#x2705;-configure-your-gwt-app">&#x2705; Configure Your GWT App</h2>
 <h3 id="add-the-module-dependency">Add the Module Dependency</h3>
 <p>You must add Vue GWT dependency in your module <code>.gwt.xml</code> file:</p>
@@ -1187,7 +1192,7 @@ It is not enabled by default in GWT 2.8, so you must enable it in your SuperDevM
                 </a>
                 
                 
-                <a href="introduction/" class="navigation navigation-next " aria-label="Next page: Getting Started">
+                <a href="ide-setup/intellij.html" class="navigation navigation-next " aria-label="Next page: IntelliJ Setup">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1198,7 +1203,7 @@ It is not enabled by default in GWT 2.8, so you must enable it in your SuperDevM
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Project Setup","level":"1.2","depth":1,"next":{"title":"Getting Started","level":"1.3","depth":1,"path":"introduction/README.md","ref":"introduction/README.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"anchor":"#conditional-and-loop","path":"introduction/README.md","ref":"introduction/README.md#conditional-and-loop","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"anchor":"#handling-user-input","path":"introduction/README.md","ref":"introduction/README.md#handling-user-input","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]}]},"previous":{"title":"About Vue GWT","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"project-setup.md","mtime":"2018-01-18T09:22:17.725Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-01-18T09:24:13.942Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Project Setup","level":"1.2","depth":1,"next":{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"path":"ide-setup/intellij.md","ref":"ide-setup/intellij.md","articles":[]},"previous":{"title":"About Vue GWT","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"project-setup.md","mtime":"2018-03-16T11:07:28.206Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-16T11:13:31.194Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

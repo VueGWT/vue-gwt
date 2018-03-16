@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Routing · GitBook</title>
+        <title>IntelliJ Setup · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -63,10 +63,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../advanced/custom-elements.html" />
+    <link rel="next" href="eclipse.html" />
     
     
-    <link rel="prev" href="../tooling/unit-testing.html" />
+    <link rel="prev" href="../project-setup.html" />
     
 
     </head>
@@ -122,9 +122,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.1" data-path="../ide-setup/intellij.html">
+        <li class="chapter active" data-level="1.2.1" data-path="intellij.html">
             
-                <a href="../ide-setup/intellij.html">
+                <a href="intellij.html">
             
                     
                     IntelliJ Setup
@@ -135,9 +135,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.2" data-path="../ide-setup/eclipse.html">
+        <li class="chapter " data-level="1.2.2" data-path="eclipse.html">
             
-                <a href="../ide-setup/eclipse.html">
+                <a href="eclipse.html">
             
                     
                     Eclipse Setup
@@ -861,9 +861,9 @@
         
         
     
-        <li class="chapter active" data-level="7.1" data-path="routing.html">
+        <li class="chapter " data-level="7.1" data-path="../scaling-up/routing.html">
             
-                <a href="routing.html">
+                <a href="../scaling-up/routing.html">
             
                     
                     Routing
@@ -982,7 +982,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Routing</a>
+        <a href=".." >IntelliJ Setup</a>
     </h1>
 </div>
 
@@ -997,11 +997,23 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="routing">Routing</h1>
-<p>If you are building a Single Page Application you probably want routing.
-Luckily Vue.js has an <a href="https://github.com/vuejs/vue-router" target="_blank">official Router library</a>.</p>
-<p>Vue GWT supports this library and we provide <a href="https://github.com/Axellience/vue-router-gwt" target="_blank">a JsInterop wrapper for you to use</a>.</p>
-<p>Simply follow <a href="https://github.com/Axellience/vue-router-gwt" target="_blank">the given instructions</a> to use it in your app.</p>
+                                <h1 id="intellij-idea">IntelliJ IDEA</h1>
+<h2 id="&#x2705;-vue-gwt-intellij-plugin">&#x2705; Vue GWT IntelliJ Plugin</h2>
+<p>First, install the <a href="https://plugins.jetbrains.com/plugin/10441-vue-gwt" target="_blank">IntelliJ Vue GWT Plugin</a>.
+This will make IntelliJ re-process your Components templates when you save them.</p>
+<p>You can find it in your IDE in <code>Preferences &gt; Plugins &gt; Browse Repositories... &gt; Vue GWT</code>.</p>
+<h2 id="&#x2705;-enable-auto-build">&#x2705; Enable Auto Build</h2>
+<p>By default IntelliJ doesn&apos;t support automatic annotation processing when the app is running.
+But don&apos;t worry, enabling it is easy!</p>
+<p>Go to <code>File -&gt; Settings -&gt; Build, Execution, Deployment -&gt; Compiler</code> and enable &#x201C;Make project automatically&#x201D;</p>
+<p>Open the Action window :</p>
+<ul>
+<li>Linux : <code>CTRL+SHIFT+A</code></li>
+<li>MacOS : <code>SHIFT+COMMAND+A</code></li>
+<li>Windows : <code>CTRL+ALT+SHIFT+/</code></li>
+</ul>
+<p>Enter <code>Registry...</code> and enable <code>compiler.automake.allow.when.app.running</code>.</p>
+<p><img src="https://axellience.github.io/vue-gwt/resources/images/intellij-enable-autobuild-running.png" alt="IntelliJ enable auto build when running"></p>
 
                                 
                                 </section>
@@ -1029,12 +1041,12 @@ Luckily Vue.js has an <a href="https://github.com/vuejs/vue-router" target="_bla
 
             
                 
-                <a href="../tooling/unit-testing.html" class="navigation navigation-prev " aria-label="Previous page: Unit Testing">
+                <a href="../project-setup.html" class="navigation navigation-prev " aria-label="Previous page: Project Setup">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="../advanced/custom-elements.html" class="navigation navigation-next " aria-label="Next page: Custom Elements (Web Components)">
+                <a href="eclipse.html" class="navigation navigation-next " aria-label="Next page: Eclipse Setup">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1045,7 +1057,7 @@ Luckily Vue.js has an <a href="https://github.com/vuejs/vue-router" target="_bla
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Routing","level":"7.1","depth":1,"next":{"title":"Custom Elements (Web Components)","level":"8.1","depth":1,"path":"advanced/custom-elements.md","ref":"advanced/custom-elements.md","articles":[]},"previous":{"title":"Unit Testing","level":"6.1","depth":1,"path":"tooling/unit-testing.md","ref":"tooling/unit-testing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"scaling-up/routing.md","mtime":"2017-09-10T17:55:25.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-16T11:13:31.194Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"next":{"title":"Eclipse Setup","level":"1.2.2","depth":2,"path":"ide-setup/eclipse.md","ref":"ide-setup/eclipse.md","articles":[]},"previous":{"title":"Project Setup","level":"1.2","depth":1,"path":"project-setup.md","ref":"project-setup.md","articles":[{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"path":"ide-setup/intellij.md","ref":"ide-setup/intellij.md","articles":[]},{"title":"Eclipse Setup","level":"1.2.2","depth":2,"path":"ide-setup/eclipse.md","ref":"ide-setup/eclipse.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ide-setup/intellij.md","mtime":"2018-03-16T11:07:28.205Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-16T11:13:31.194Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
