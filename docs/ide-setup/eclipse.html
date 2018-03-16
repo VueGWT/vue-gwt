@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Routing · GitBook</title>
+        <title>Eclipse Setup · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -63,10 +63,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../advanced/custom-elements.html" />
+    <link rel="next" href="../introduction/" />
     
     
-    <link rel="prev" href="../tooling/unit-testing.html" />
+    <link rel="prev" href="intellij.html" />
     
 
     </head>
@@ -122,9 +122,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.1" data-path="../ide-setup/intellij.html">
+        <li class="chapter " data-level="1.2.1" data-path="intellij.html">
             
-                <a href="../ide-setup/intellij.html">
+                <a href="intellij.html">
             
                     
                     IntelliJ Setup
@@ -135,9 +135,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.2" data-path="../ide-setup/eclipse.html">
+        <li class="chapter active" data-level="1.2.2" data-path="eclipse.html">
             
-                <a href="../ide-setup/eclipse.html">
+                <a href="eclipse.html">
             
                     
                     Eclipse Setup
@@ -861,9 +861,9 @@
         
         
     
-        <li class="chapter active" data-level="7.1" data-path="routing.html">
+        <li class="chapter " data-level="7.1" data-path="../scaling-up/routing.html">
             
-                <a href="routing.html">
+                <a href="../scaling-up/routing.html">
             
                     
                     Routing
@@ -982,7 +982,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Routing</a>
+        <a href=".." >Eclipse Setup</a>
     </h1>
 </div>
 
@@ -997,11 +997,59 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="routing">Routing</h1>
-<p>If you are building a Single Page Application you probably want routing.
-Luckily Vue.js has an <a href="https://github.com/vuejs/vue-router" target="_blank">official Router library</a>.</p>
-<p>Vue GWT supports this library and we provide <a href="https://github.com/Axellience/vue-router-gwt" target="_blank">a JsInterop wrapper for you to use</a>.</p>
-<p>Simply follow <a href="https://github.com/Axellience/vue-router-gwt" target="_blank">the given instructions</a> to use it in your app.</p>
+                                <h1 id="eclipse">Eclipse</h1>
+<h2 id="&#x2705;-vue-gwt-eclipse-plugin">&#x2705; Vue GWT Eclipse Plugin</h2>
+<p>First, install the <a href="https://marketplace.eclipse.org/content/vue-gwt" target="_blank">Vue GWT Eclipse Plugin</a>.
+This will make Eclipse re-process your Components templates when you save them.</p>
+<p>To install, just drag and drop the following button on your Eclipse window:</p>
+<p><a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3923910" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" target="_blank"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client"></a></p>
+<h2 id="&#x2705;-make-eclipse-find-your-templates">&#x2705; Make Eclipse find your Templates</h2>
+<p>Eclipse will filter your template files in <code>src/main/java</code> (which will throw an error that your templates cannot be found).</p>
+<p>To fix this, right click on your project then select: <code>Properties &gt; Maven</code>.
+In <code>Active Maven profiles</code> add <code>!vue-gwt-resources</code>.</p>
+<p><img src="https://axellience.github.io/vue-gwt/resources/images/eclipse-set-maven-profile.png" alt="Setting Maven Profile for Eclipse"></p>
+<h2 id="&#x2705;-annotation-processing">&#x2705; Annotation Processing</h2>
+<p>We then need to enable Annotation Processing on Eclipse.
+First install the <code>m2e-apt</code> plugin:
+<a href="https://marketplace.eclipse.org/content/m2e-apt" target="_blank">https://marketplace.eclipse.org/content/m2e-apt</a>.</p>
+<p>Then you need to add the following to your <code>pom.xml</code>:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">pluginManagement</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.eclipse.m2e<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lifecycle-mapping<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">lifecycleMappingMetadata</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecutions</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecution</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecutionFilter</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>
+                                    org.codehaus.mojo
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>
+                                    gwt-maven-plugin
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">versionRange</span>&gt;</span>
+                                    [2.7.0,)
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">versionRange</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>compile<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecutionFilter</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">action</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">ignore</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ignore</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">action</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecution</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecutions</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">lifecycleMappingMetadata</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">pluginManagement</span>&gt;</span>
+</code></pre>
+<p>Once this is done, you need to enable annotation processing for your project in the <code>m2e-apt</code> project settings:</p>
+<p><img src="https://axellience.github.io/vue-gwt/resources/images/eclipse-enable-annotation-processing.png" alt="Enabling Annotation processing in Eclipse"></p>
 
                                 
                                 </section>
@@ -1029,12 +1077,12 @@ Luckily Vue.js has an <a href="https://github.com/vuejs/vue-router" target="_bla
 
             
                 
-                <a href="../tooling/unit-testing.html" class="navigation navigation-prev " aria-label="Previous page: Unit Testing">
+                <a href="intellij.html" class="navigation navigation-prev " aria-label="Previous page: IntelliJ Setup">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="../advanced/custom-elements.html" class="navigation navigation-next " aria-label="Next page: Custom Elements (Web Components)">
+                <a href="../introduction/" class="navigation navigation-next " aria-label="Next page: Getting Started">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1045,7 +1093,7 @@ Luckily Vue.js has an <a href="https://github.com/vuejs/vue-router" target="_bla
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Routing","level":"7.1","depth":1,"next":{"title":"Custom Elements (Web Components)","level":"8.1","depth":1,"path":"advanced/custom-elements.md","ref":"advanced/custom-elements.md","articles":[]},"previous":{"title":"Unit Testing","level":"6.1","depth":1,"path":"tooling/unit-testing.md","ref":"tooling/unit-testing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"scaling-up/routing.md","mtime":"2017-09-10T17:55:25.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-16T11:13:31.194Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Eclipse Setup","level":"1.2.2","depth":2,"next":{"title":"Getting Started","level":"1.3","depth":1,"path":"introduction/README.md","ref":"introduction/README.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"anchor":"#conditional-and-loop","path":"introduction/README.md","ref":"introduction/README.md#conditional-and-loop","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"anchor":"#handling-user-input","path":"introduction/README.md","ref":"introduction/README.md#handling-user-input","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]}]},"previous":{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"path":"ide-setup/intellij.md","ref":"ide-setup/intellij.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"include":{},"toggle-chapters":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ide-setup/eclipse.md","mtime":"2018-03-16T11:07:28.205Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-16T11:13:31.194Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
