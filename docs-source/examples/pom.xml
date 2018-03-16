@@ -159,4 +159,24 @@
 		</resources>
     </build>
 
+	<profiles>
+		<profile>
+			<id>vue-gwt-resources</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/java</directory>
+						<includes>
+							<include>
+								**/*.html
+							</include>
+						</includes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
 </project>
