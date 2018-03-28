@@ -1004,51 +1004,45 @@ This will make Eclipse re-process your Components templates when you save them.<
 <p>To install, just drag and drop the following button on your Eclipse window:</p>
 <p><a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3923910" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" target="_blank"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client"></a></p>
 <h2 id="&#x2705;-make-eclipse-find-your-templates">&#x2705; Make Eclipse find your Templates</h2>
-<p>Eclipse will filter your template files in <code>src/main/java</code> (which will throw an error that your templates cannot be found).</p>
-<p>To fix this, right click on your project then select: <code>Properties &gt; Maven</code>.
-In <code>Active Maven profiles</code> add <code>!vue-gwt-resources</code>.</p>
-<p><img src="https://axellience.github.io/vue-gwt/resources/images/eclipse-set-maven-profile.png" alt="Setting Maven Profile for Eclipse"></p>
-<h2 id="&#x2705;-annotation-processing">&#x2705; Annotation Processing</h2>
+<p>Because of the <code>resources</code> block in the <code>pom.xml</code>, Eclipse automatically adds a rule to ignore files in <code>src/main/java</code>.
+This will throw an error that your templates cannot be found.</p>
+<p>To fix this, the easiest way is placing the <code>resources</code> block from your pom.xml in a profile that will only be enabled when not in Eclipse.</p>
+<p>So remove this block that you added in the project setup:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>src/main/java<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
+</code></pre>
+<p>And add this block instead:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">profiles</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>vue-gwt-resources<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">activation</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>!m2e.version<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">activation</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>src/main/java<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">profiles</span>&gt;</span>
+</code></pre>
+<p></p><p class="warning-panel">
+Adding this profile will disable your default Maven profiles if you have any.
+So you will have to add -PmyDefaultProfile when compiling in command line.</p>
+<p>
+
+</p><h2 id="&#x2705;-annotation-processing">&#x2705; Annotation Processing</h2>
 <p>We then need to enable Annotation Processing on Eclipse.
 First install the <code>m2e-apt</code> plugin:
 <a href="https://marketplace.eclipse.org/content/m2e-apt" target="_blank">https://marketplace.eclipse.org/content/m2e-apt</a>.</p>
-<p>Then you need to add the following to your <code>pom.xml</code>:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">pluginManagement</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.eclipse.m2e<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lifecycle-mapping<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">lifecycleMappingMetadata</span>&gt;</span>
-                    <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecutions</span>&gt;</span>
-                        <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecution</span>&gt;</span>
-                            <span class="hljs-tag">&lt;<span class="hljs-name">pluginExecutionFilter</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>
-                                    org.codehaus.mojo
-                                <span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>
-                                    gwt-maven-plugin
-                                <span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">versionRange</span>&gt;</span>
-                                    [2.7.0,)
-                                <span class="hljs-tag">&lt;/<span class="hljs-name">versionRange</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span>
-                                    <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>compile<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
-                                <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span>
-                            <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecutionFilter</span>&gt;</span>
-                            <span class="hljs-tag">&lt;<span class="hljs-name">action</span>&gt;</span>
-                                <span class="hljs-tag">&lt;<span class="hljs-name">ignore</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ignore</span>&gt;</span>
-                            <span class="hljs-tag">&lt;/<span class="hljs-name">action</span>&gt;</span>
-                        <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecution</span>&gt;</span>
-                    <span class="hljs-tag">&lt;/<span class="hljs-name">pluginExecutions</span>&gt;</span>
-                <span class="hljs-tag">&lt;/<span class="hljs-name">lifecycleMappingMetadata</span>&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">pluginManagement</span>&gt;</span>
-</code></pre>
-<p>Once this is done, you need to enable annotation processing for your project in the <code>m2e-apt</code> project settings:</p>
+<p>Then you need to enable annotation processing for your project in the <code>m2e-apt</code> project settings:</p>
 <p><img src="https://axellience.github.io/vue-gwt/resources/images/eclipse-enable-annotation-processing.png" alt="Enabling Annotation processing in Eclipse"></p>
 
                                 
@@ -1093,7 +1087,7 @@ First install the <code>m2e-apt</code> plugin:
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Eclipse Setup","level":"1.2.2","depth":2,"next":{"title":"Getting Started","level":"1.3","depth":1,"path":"introduction/README.md","ref":"introduction/README.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"anchor":"#conditional-and-loop","path":"introduction/README.md","ref":"introduction/README.md#conditional-and-loop","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"anchor":"#handling-user-input","path":"introduction/README.md","ref":"introduction/README.md#handling-user-input","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]}]},"previous":{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"path":"ide-setup/intellij.md","ref":"ide-setup/intellij.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ide-setup/eclipse.md","mtime":"2018-03-16T11:14:52.513Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-16T13:51:01.080Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Eclipse Setup","level":"1.2.2","depth":2,"next":{"title":"Getting Started","level":"1.3","depth":1,"path":"introduction/README.md","ref":"introduction/README.md","articles":[{"title":"Your First Component","level":"1.3.1","depth":2,"anchor":"#your-first-component","path":"introduction/README.md","ref":"introduction/README.md#your-first-component","articles":[]},{"title":"Conditional and Loops","level":"1.3.2","depth":2,"anchor":"#conditional-and-loop","path":"introduction/README.md","ref":"introduction/README.md#conditional-and-loop","articles":[]},{"title":"Handling User Input","level":"1.3.3","depth":2,"anchor":"#handling-user-input","path":"introduction/README.md","ref":"introduction/README.md#handling-user-input","articles":[]},{"title":"Composing with Components","level":"1.3.4","depth":2,"anchor":"#composing-with-components","path":"introduction/README.md","ref":"introduction/README.md#composing-with-components","articles":[]}]},"previous":{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"path":"ide-setup/intellij.md","ref":"ide-setup/intellij.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ide-setup/eclipse.md","mtime":"2018-03-28T17:42:23.488Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

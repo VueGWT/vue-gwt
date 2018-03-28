@@ -11,59 +11,54 @@ To install, just drag and drop the following button on your Eclipse window:
 
 ## ✅ Make Eclipse find your Templates
 
-Eclipse will filter your template files in `src/main/java` (which will throw an error that your templates cannot be found).
+Because of the `resources` block in the `pom.xml`, Eclipse automatically adds a rule to ignore files in `src/main/java`.
+This will throw an error that your templates cannot be found.
 
-To fix this, right click on your project then select: `Properties > Maven`.
-In `Active Maven profiles` add `!vue-gwt-resources`.
+To fix this, the easiest way is placing the `resources` block from your pom.xml in a profile that will only be enabled when not in Eclipse.
 
-![Setting Maven Profile for Eclipse](https://axellience.github.io/vue-gwt/resources/images/eclipse-set-maven-profile.png)
+So remove this block that you added in the project setup:
+```xml
+<resources>
+    <resource>
+        <directory>src/main/java</directory>
+    </resource>
+</resources>
+```
+
+And add this block instead:
+
+```xml
+<profiles>
+	<profile>
+		<id>vue-gwt-resources</id>
+		<activation>
+			<property>
+				<name>!m2e.version</name>
+			</property>
+		</activation>
+		<build>
+			<resources>
+				<resource>
+					<directory>src/main/java</directory>
+				</resource>
+			</resources>
+		</build>
+	</profile>
+</profiles>
+```
+
+<p class="warning-panel">
+Adding this profile will disable your default Maven profiles if you have any.
+So you will have to add -PmyDefaultProfile when compiling in command line.
+<p>
 
 ## ✅ Annotation Processing
 
 We then need to enable Annotation Processing on Eclipse.
 First install the `m2e-apt` plugin:
 [https://marketplace.eclipse.org/content/m2e-apt](https://marketplace.eclipse.org/content/m2e-apt).
- 
-Then you need to add the following to your `pom.xml`:
 
-```xml
-<pluginManagement>
-    <plugins>
-        <plugin>
-            <groupId>org.eclipse.m2e</groupId>
-            <artifactId>lifecycle-mapping</artifactId>
-            <version>1.0.0</version>
-            <configuration>
-                <lifecycleMappingMetadata>
-                    <pluginExecutions>
-                        <pluginExecution>
-                            <pluginExecutionFilter>
-                                <groupId>
-                                    org.codehaus.mojo
-                                </groupId>
-                                <artifactId>
-                                    gwt-maven-plugin
-                                </artifactId>
-                                <versionRange>
-                                    [2.7.0,)
-                                </versionRange>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                            </pluginExecutionFilter>
-                            <action>
-                                <ignore></ignore>
-                            </action>
-                        </pluginExecution>
-                    </pluginExecutions>
-                </lifecycleMappingMetadata>
-            </configuration>
-        </plugin>
-    </plugins>
-</pluginManagement>
-```
-
-Once this is done, you need to enable annotation processing for your project in the `m2e-apt` project settings:
+Then you need to enable annotation processing for your project in the `m2e-apt` project settings:
 
 ![Enabling Annotation processing in Eclipse](https://axellience.github.io/vue-gwt/resources/images/eclipse-enable-annotation-processing.png)
 

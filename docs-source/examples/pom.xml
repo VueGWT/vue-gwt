@@ -71,13 +71,9 @@
 	</repositories>
 
     <build>
-        <!-- Output classes directly into the webapp, so that IDEs and "mvn process-classes" update them in DevMode -->
-        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes
-        </outputDirectory>
+        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 
         <plugins>
-
-            <!-- Mojo's Maven Plugin for GWT -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
@@ -90,8 +86,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <!-- Plugin configuration. There are many available options, see
-                  gwt-maven-plugin documentation at codehaus.org -->
                 <configuration>
                     <runTarget>index.html</runTarget>
                     <modules>
@@ -104,8 +98,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <!-- version is important to have java annotation processing correctly handled -->
-                <version>3.3</version><!--$NO-MVN-MAN-VER$-->
+                <version>3.3</version>
                 <configuration>
                     <compilerArgument>-parameters</compilerArgument>
                     <testCompilerArgument>-parameters</testCompilerArgument>
@@ -115,65 +108,20 @@
                 </configuration>
             </plugin>
         </plugins>
-
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            org.codehaus.mojo
-                                        </groupId>
-                                        <artifactId>
-                                            gwt-maven-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [2.7.0,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>compile</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
-		<resources>
-			<resource>
-				<directory>src/main/java</directory>
-			</resource>
-		</resources>
     </build>
 
 	<profiles>
 		<profile>
 			<id>vue-gwt-resources</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>!m2e.version</name>
+				</property>
 			</activation>
 			<build>
 				<resources>
 					<resource>
 						<directory>src/main/java</directory>
-						<includes>
-							<include>
-								**/*.html
-							</include>
-						</includes>
 					</resource>
 				</resources>
 			</build>

@@ -56,27 +56,16 @@ First, in the `plugins` section of your Maven `pom.xml` add the following `plugi
 </project>
 ```
 
-Then add this profile, this is to expose templates to the annotation processor:
+Then add this to expose templates to the annotation processor:
 
 ```xml
-<profiles>
-    <profile>
-        <id>vue-gwt-resources</id>
-        <activation>
-            <activeByDefault>true</activeByDefault>
-        </activation>
-        <build>
-            <resources>
-                <resource>
-                    <directory>src/main/java</directory>
-                    <includes>
-                        <include>**/*.html</include>
-                    </includes>
-                </resource>
-            </resources>
-        </build>
-    </profile>
-</profiles>
+<build>
+    <resources>
+        <resource>
+            <directory>src/main/java</directory>
+        </resource>
+    </resources>
+</build>
 ```
 
 ## ✅ Configure `JsInterop`
