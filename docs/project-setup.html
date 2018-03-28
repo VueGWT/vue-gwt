@@ -1100,25 +1100,14 @@ Starting beta-3, Vue GWT requires at least GWT 2.8.1 to work.</p>
     <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">project</span>&gt;</span>
 </code></pre>
-<p>Then add this profile, this is to expose templates to the annotation processor:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">profiles</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>vue-gwt-resources<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">activation</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">activeByDefault</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">activeByDefault</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">activation</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span>
-                    <span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>src/main/java<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span>
-                    <span class="hljs-tag">&lt;<span class="hljs-name">includes</span>&gt;</span>
-                        <span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.html<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
-                    <span class="hljs-tag">&lt;/<span class="hljs-name">includes</span>&gt;</span>
-                <span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">profiles</span>&gt;</span>
+<p>Then add this to expose templates to the annotation processor:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>src/main/java<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span>
 </code></pre>
 <h2 id="&#x2705;-configure-jsinterop">&#x2705; Configure <code>JsInterop</code></h2>
 <p>Vue GWT relies heavily on GWT <code>JsInterop</code>.
@@ -1203,7 +1192,7 @@ It is not enabled by default in GWT 2.8, so you must enable it in your SuperDevM
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Project Setup","level":"1.2","depth":1,"next":{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"path":"ide-setup/intellij.md","ref":"ide-setup/intellij.md","articles":[]},"previous":{"title":"About Vue GWT","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"project-setup.md","mtime":"2018-03-16T11:28:59.167Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-16T13:51:01.080Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Project Setup","level":"1.2","depth":1,"next":{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"path":"ide-setup/intellij.md","ref":"ide-setup/intellij.md","articles":[]},"previous":{"title":"About Vue GWT","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"project-setup.md","mtime":"2018-03-28T16:34:24.963Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
