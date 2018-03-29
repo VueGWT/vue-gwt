@@ -56,20 +56,13 @@ public class TemplateParserLogger implements Logger
     public void printMessage(Kind kind, String message)
     {
         messager.printMessage(kind,
-            "In "
-                + context.getTemplateName()
-                + getCurrentLineInfo()
-                + ": "
-                + message,
+            "In " + context.getTemplateName() + getCurrentLineInfo() + ": " + message,
             context.getComponentTypeElement());
     }
 
     private String getCurrentLineInfo()
     {
-        if (context.getCurrentLine().isPresent())
-            return " at line " + context.getCurrentLine().get();
-
-        return "";
+        return context.getCurrentLine().map(integer -> " at line " + integer).orElse("");
     }
 
     @Override

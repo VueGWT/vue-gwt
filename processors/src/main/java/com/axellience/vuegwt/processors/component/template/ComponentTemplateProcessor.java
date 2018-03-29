@@ -221,7 +221,7 @@ public class ComponentTemplateProcessor
             messager.printMessage(Kind.ERROR,
                 "Couldn't find template for component: "
                     + componentTypeName.simpleName()
-                    + ". Check our setup guide for help. On Eclipse add !vue-gwt-resources on your project in Properties > Maven > Active Maven Profile",
+                    + ". Make sure you included src/main/java in your Resources. Check our setup guide for help.",
                 componentTypeElement);
             return Optional.empty();
         }
@@ -236,7 +236,7 @@ public class ComponentTemplateProcessor
             messager.printMessage(Kind.ERROR,
                 "Failed to open template file for component: "
                     + componentTypeName.simpleName()
-                    + ". Check our setup guide for help. On Eclipse add !vue-gwt-resources on your project in Properties > Maven > Active Maven Profile",
+                    + ". Make sure you included src/main/java in your Resources. Check our setup guide for help.",
                 componentTypeElement);
             return Optional.empty();
         }
