@@ -1,5 +1,10 @@
 {
   "plugins": [
     "include", "toggle-chapters"
-  ]
+  ],
+  "pluginsConfig": {
+    "lunr": {
+      "ignoreSpecialCharacters": true
+    }
+  }
 }

@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.axellience</groupId>
 	<artifactId>vue-gwt-parent</artifactId>
-	<version>1.0-beta-7-SNAPSHOT</version>
+	<version>1.0-beta-8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Vue GWT Parent</name>
@@ -47,10 +47,10 @@
 
 	<properties>
 		<!-- Plugins -->
-		<plugin.version.gwt.maven>1.0-rc-8</plugin.version.gwt.maven>
+		<plugin.version.gwt.maven>1.0-rc-9</plugin.version.gwt.maven>
 
 		<!-- Dependencies -->
-		<gwt.version>2.8.1</gwt.version>
+		<gwt.version>2.8.2</gwt.version>
 		<jsinterop.version>1.0.2</jsinterop.version>
 		<jsinterop-base.version>1.0.0-RC1</jsinterop-base.version>
 		<elemental.version>1.0.0-RC1</elemental.version>
@@ -58,7 +58,7 @@
 		<javapoet.version>1.9.0</javapoet.version>
 		<jericho.version>3.4</jericho.version>
 		<javaparser.version>3.0.1</javaparser.version>
-		<auto-service.version>1.0-rc3</auto-service.version>
+		<auto-service.version>1.0-rc4</auto-service.version>
 
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -182,6 +182,17 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.amashchenko.maven.plugin</groupId>
+				<artifactId>gitflow-maven-plugin</artifactId>
+				<version>1.9.0</version>
+				<configuration>
+					<pushRemote>false</pushRemote>
+					<skipTestProject>true</skipTestProject>
+					<skipFeatureVersion>true</skipFeatureVersion>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

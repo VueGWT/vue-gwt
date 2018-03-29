@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Client Bundles and Styles · GitBook</title>
+        <title>IntelliJ Setup · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -63,10 +63,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="client-bundles-and-styles.html" />
+    <link rel="next" href="eclipse.html" />
     
     
-    <link rel="prev" href="../composition/plugins.html" />
+    <link rel="prev" href="../project-setup.html" />
     
 
     </head>
@@ -122,9 +122,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.1" data-path="../ide-setup/intellij.html">
+        <li class="chapter active" data-level="1.2.1" data-path="intellij.html">
             
-                <a href="../ide-setup/intellij.html">
+                <a href="intellij.html">
             
                     
                     IntelliJ Setup
@@ -135,9 +135,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.2" data-path="../ide-setup/eclipse.html">
+        <li class="chapter " data-level="1.2.2" data-path="eclipse.html">
             
-                <a href="../ide-setup/eclipse.html">
+                <a href="eclipse.html">
             
                     
                     Eclipse Setup
@@ -705,9 +705,9 @@
         
         
     
-        <li class="chapter active" data-level="5.1" data-path="client-bundles-and-styles.html">
+        <li class="chapter " data-level="5.1" data-path="../gwt-integration/client-bundles-and-styles.html">
             
-                <a href="client-bundles-and-styles.html">
+                <a href="../gwt-integration/client-bundles-and-styles.html">
             
                     
                     Client Bundles and Styles
@@ -719,9 +719,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="5.1.1" data-path="client-bundles-and-styles.html">
+        <li class="chapter " data-level="5.1.1" data-path="../gwt-integration/client-bundles-and-styles.html">
             
-                <a href="client-bundles-and-styles.html#client-bundles">
+                <a href="../gwt-integration/client-bundles-and-styles.html#client-bundles">
             
                     
                     Client Bundles
@@ -732,9 +732,9 @@
             
         </li>
     
-        <li class="chapter " data-level="5.1.2" data-path="client-bundles-and-styles.html">
+        <li class="chapter " data-level="5.1.2" data-path="../gwt-integration/client-bundles-and-styles.html">
             
-                <a href="client-bundles-and-styles.html#styles">
+                <a href="../gwt-integration/client-bundles-and-styles.html#styles">
             
                     
                     Styles (CssResource)
@@ -750,9 +750,9 @@
             
         </li>
     
-        <li class="chapter " data-level="5.2" data-path="widgets.html">
+        <li class="chapter " data-level="5.2" data-path="../gwt-integration/widgets.html">
             
-                <a href="widgets.html">
+                <a href="../gwt-integration/widgets.html">
             
                     
                     Vue GWT and Widgets
@@ -982,7 +982,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Client Bundles and Styles</a>
+        <a href=".." >IntelliJ Setup</a>
     </h1>
 </div>
 
@@ -997,190 +997,24 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="client-bundles-and-styles">Client Bundles and Styles</h1>
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
-<script>
-    (function() {
-        if (window.VueGwtExamplesService) {
-            window.VueGwtExamplesService.initExamples();
-            return;
-        }
+                                <h1 id="intellij-idea">IntelliJ IDEA</h1>
+<h2 id="&#x2705;-vue-gwt-intellij-plugin">&#x2705; Vue GWT IntelliJ Plugin</h2>
+<p>First, install the <a href="https://plugins.jetbrains.com/plugin/10441-vue-gwt" target="_blank">IntelliJ Vue GWT Plugin</a>.
+This will make IntelliJ re-process your Components templates when you save them.</p>
+<p>You can find it in your IDE in <code>Preferences &gt; Plugins &gt; Browse Repositories... &gt; Vue GWT</code>.</p>
+<h2 id="&#x2705;-enable-auto-build">&#x2705; Enable Auto Build</h2>
+<p>By default IntelliJ doesn&apos;t support automatic annotation processing when the app is running.
+But don&apos;t worry, enabling it is easy!</p>
+<p>Go to <code>File -&gt; Settings -&gt; Build, Execution, Deployment -&gt; Compiler</code> and enable &#x201C;Make project automatically&#x201D;</p>
+<p>Open the Action window :</p>
+<ul>
+<li>Linux : <code>CTRL+SHIFT+A</code></li>
+<li>MacOS : <code>SHIFT+COMMAND+A</code></li>
+<li>Windows : <code>CTRL+ALT+SHIFT+/</code></li>
+</ul>
+<p>Enter <code>Registry...</code> and enable <code>compiler.automake.allow.when.app.running</code>.</p>
+<p><img src="https://axellience.github.io/vue-gwt/resources/images/intellij-enable-autobuild-running.png" alt="IntelliJ enable auto build when running"></p>
 
-        var script = document.createElement("script");
-        script.src = "https://unpkg.com/vue/dist/vue.js";
-        script.onload = function () {
-            window.FullJsComponent = Vue.extend({
-                        template: "<div>I Come In Peace From the JS World.</div>"
-            });
-            window.FullJsWithMethodsComponent = Vue.extend({
-                template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
-                data: function () {
-                    return {
-                        value: 10
-                    }
-                },
-                methods: {
-                    multiplyBy2: function (value) {
-                        return value * 2;
-                    }
-                }
-            });
-            window.ParentJsComponent = Vue.extend({
-                data: function () {
-                    return {
-                        parentMessage: "This is a message from the Parent"
-                    };
-                },
-                methods: {
-                    parentMultiplyBy2: function (value) {
-                        return value * 2;
-                    }
-                },
-                computed: {
-                    parentComputed: function () {
-                        return "Computed Message | " + this.parentMessage;
-                    }
-                }
-            });
-
-            var basePath = "/";
-            if (window.location.hostname === "axellience.github.io")
-                basePath = "/vue-gwt/";
-
-            var script = document.createElement("script");
-            script.src = basePath + "resources/scripts/VueGwtExamples.nocache.js";
-            document.head.appendChild(script);
-        }
-        document.head.appendChild(script);
-    })();
-</script>
-
-<p>You can use any valid Java expression in your template.
-This means that Vue GWT is compatible with GWT 2.x <code>ClientBundles</code>.</p>
-<h2 id="client-bundles">Exposing a <code>ClientBundle</code> to the Template </h2>
-<p>Lets see how this work with an example.</p>
-<p>First, we create a simple <code>ClientBundle</code> with an <code>ImageResource</code>:</p>
-<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">KittenClientBundle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClientBundle</span> </span>{
-    KittenClientBundle INSTANCE = GWT.create(KittenClientBundle.class);
-
-    <span class="hljs-meta">@Source</span>(<span class="hljs-string">&quot;kitten.jpg&quot;</span>)
-    <span class="hljs-function">ImageResource <span class="hljs-title">myKitten</span><span class="hljs-params">()</span></span>;
-}
-</code></pre>
-<p>There is no need for any special annotations on it.</p>
-<p>We then create a Component to use our <code>ClientBundle</code>.
-In this component we add a computed property for our <code>KittenClientBundle</code>.
-This will expose the bundle to the Template.</p>
-<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KittenComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
-    <span class="hljs-meta">@Computed</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> KittenClientBundle <span class="hljs-title">getMyKittenBundle</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">return</span> KittenClientBundle.INSTANCE;
-    }
-}
-</code></pre>
-<p>We can then simply access our bundle instance from the template:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">v-bind:src</span>=<span class="hljs-string">&quot;myKittenBundle.myKitten().getSafeUri().asString()&quot;</span>/&gt;</span>
-</code></pre>
-<div class="example-container" data-name="kittenComponent">
-    <span id="kittenComponent"></span>
-</div>
-
-
-<p>You could also directly expose your ImageResource to the template, it&apos;s really up to you.</p>
-<p class="info-panel">
-    You can use <a href="../composition/extending-components.html">Component inheritance</a> to declare a base component in your app and avoid
-    having to expose your resources/styles manually in every components.
-</p>
-
-<h2 id="styles">Using <code>CssResources</code> in Vue GWT </h2>
-<p>Vue GWT is compatible with GSS styles.
-You can declare your <code>CssResource</code> interfaces and use them within your Vue GWT Components.</p>
-<p>You also get type checking of your styles rules at compile type.
-So if you try to use <code>myStyle.bob()</code> in your template, and this style doesn&apos;t exist, the compilation will break with an explicit error.</p>
-<p>Let see it in action with a simple example.</p>
-<h3 id="setting-up-a-small-cssresource">Setting up a Small <code>CssResource</code></h3>
-<p>Let&apos;s say we have the following <code>CssResource</code> (and it&apos;s associated <code>gss</code> file):</p>
-<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">MelisandreComponentStyle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CssResource</span> </span>{
-    <span class="hljs-function">String <span class="hljs-title">red</span><span class="hljs-params">()</span></span>;
-    <span class="hljs-function">String <span class="hljs-title">bold</span><span class="hljs-params">()</span></span>;
-}
-</code></pre>
-<p>Our <code>MelisandreComponentStyle</code> is exposed in an <code>AppClientBundle</code>:</p>
-<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">AppClientBundle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClientBundle</span> </span>{
-    AppClientBundle INSTANCE = GWT.create(AppClientBundle.class);
-
-    <span class="hljs-meta">@Source</span>(<span class="hljs-string">&quot;melisandreComponentStyle.gss&quot;</span>)
-    <span class="hljs-function">MelisandreComponentStyle <span class="hljs-title">melisandreStyle</span><span class="hljs-params">()</span></span>;
-}
-</code></pre>
-<p>And in our <code>RootGwtApp</code> we call <code>ensureInjected</code> to make sure it&apos;s injected:</p>
-<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootGwtApp</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EntryPoint</span> </span>{
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onModuleLoad</span><span class="hljs-params">()</span> </span>{
-        VueGWT.init();
-        AppClientBundle.INSTANCE.melisandreStyle().ensureInjected();
-        <span class="hljs-comment">// ...</span>
-    }
-}
-</code></pre>
-<h3 id="using-our-small-cssresource-in-a-component">Using Our Small <code>CssResource</code> in a Component</h3>
-<p>Let&apos;s use our style in a small Component.
-As with the <code>ClientBundle</code>, we can use a computed method to expose our Style.</p>
-<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MelisandreComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
-    <span class="hljs-meta">@Computed</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> MelisandreComponentStyle <span class="hljs-title">getMyStyle</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">return</span> MelisandreComponentClientBundle.INSTANCE.melisandreComponentStyle();
-    }
-}
-</code></pre>
-<p>We can then simply use Vue <code>v-bind</code> directive to bind our style.</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;myStyle.red()&quot;</span>&gt;</span>
-    For the night is dark and full of terrors.
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<h4 id="adding-more-than-one-css-class">Adding More Than One CSS Class</h4>
-<p>You can add more than one CSS Class to your Components by using the <a href="../js-interop/#array"><code>array</code> builder</a>:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;array(myStyle.red(), myStyle.bold())&quot;</span>&gt;</span>
-    For the night is dark, full of terrors and bold.
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<h4 id="conditional-styling">Conditional Styling</h4>
-<p>You can apply a Style conditionally.
-First we add a boolean in our <code>MelisandreComponent</code>:</p>
-<pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MelisandreComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
-    <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">boolean</span> isRed = <span class="hljs-keyword">true</span>;
-
-    <span class="hljs-meta">@Computed</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> MelisandreComponentStyle <span class="hljs-title">getMyStyle</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">return</span> MelisandreComponentClientBundle.INSTANCE.melisandreComponentStyle();
-    }
-}
-</code></pre>
-<p>Then we simply use a ternary expression (be careful with the quotes):</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;isRed ? myStyle.red() : &quot;&quot;&apos;</span>&gt;</span>
-    For the night is dark, full of terrors and might or not be red.
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<h4 id="conditional-styling-with-several-css-class">Conditional Styling With Several CSS Class</h4>
-<p>You can combine both the <code>array</code> and the ternary syntax:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&apos;array(isRed ? myStyle.red() : &quot;&quot;, myStyle.bold())&apos;</span>&gt;</span>
-    For the night is dark, full of terrors, might or not be red and always BOLD.
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<h4 id="here-is-our-finished-melisandrecomponent">Here is our finished <code>MelisandreComponent</code></h4>
-<div class="example-container" data-name="melisandreComponent">
-    <span id="melisandreComponent"></span>
-</div>
-
-
-<p>You can try toggling the red color on the two bottom sentences by typing in your browser console:</p>
-<pre><code>melisandreComponent.isRed = false;
-</code></pre><p class="info-panel">
-    You can use <a href="../composition/extending-components.html">Component inheritance</a> to declare a base component in your app and avoid
-    having to expose your resources/styles manually in every components.
-</p>
                                 
                                 </section>
                             
@@ -1207,12 +1041,12 @@ First we add a boolean in our <code>MelisandreComponent</code>:</p>
 
             
                 
-                <a href="../composition/plugins.html" class="navigation navigation-prev " aria-label="Previous page: Plugins">
+                <a href="../project-setup.html" class="navigation navigation-prev " aria-label="Previous page: Project Setup">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="client-bundles-and-styles.html#client-bundles" class="navigation navigation-next " aria-label="Next page: Client Bundles">
+                <a href="eclipse.html" class="navigation navigation-next " aria-label="Next page: Eclipse Setup">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1223,7 +1057,7 @@ First we add a boolean in our <code>MelisandreComponent</code>:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Client Bundles and Styles","level":"5.1","depth":1,"next":{"title":"Client Bundles","level":"5.1.1","depth":2,"anchor":"#client-bundles","path":"gwt-integration/client-bundles-and-styles.md","ref":"gwt-integration/client-bundles-and-styles.md#client-bundles","articles":[]},"previous":{"title":"Plugins","level":"4.4","depth":1,"path":"composition/plugins.md","ref":"composition/plugins.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/client-bundles-and-styles.md","mtime":"2017-12-02T15:31:27.418Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"next":{"title":"Eclipse Setup","level":"1.2.2","depth":2,"path":"ide-setup/eclipse.md","ref":"ide-setup/eclipse.md","articles":[]},"previous":{"title":"Project Setup","level":"1.2","depth":1,"path":"project-setup.md","ref":"project-setup.md","articles":[{"title":"IntelliJ Setup","level":"1.2.1","depth":2,"path":"ide-setup/intellij.md","ref":"ide-setup/intellij.md","articles":[]},{"title":"Eclipse Setup","level":"1.2.2","depth":2,"path":"ide-setup/eclipse.md","ref":"ide-setup/eclipse.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ide-setup/intellij.md","mtime":"2018-03-16T11:14:52.514Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

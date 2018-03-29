@@ -13,13 +13,13 @@ To add Vue GWT to your Maven project, simply add the following to your `pom.xml`
         <dependency>
             <groupId>com.axellience</groupId>
             <artifactId>vue-gwt</artifactId>
-            <version>1.0-beta-6</version>
+            <version>1.0-beta-7</version>
         </dependency>
         <!-- Annotation Processors for Vue GWT -->
         <dependency>
             <groupId>com.axellience</groupId>
             <artifactId>vue-gwt-processors</artifactId>
-            <version>1.0-beta-6</version>
+            <version>1.0-beta-7</version>
 			<optional>true</optional>
         </dependency>
     </dependencies>
@@ -56,27 +56,16 @@ First, in the `plugins` section of your Maven `pom.xml` add the following `plugi
 </project>
 ```
 
-Then add this profile, this is to expose templates to the annotation processor:
+Then add this to expose templates to the annotation processor:
 
 ```xml
-<profiles>
-    <profile>
-        <id>vue-gwt-resources</id>
-        <activation>
-            <activeByDefault>true</activeByDefault>
-        </activation>
-        <build>
-            <resources>
-                <resource>
-                    <directory>src/main/java</directory>
-                    <includes>
-                        <include>**/*.html</include>
-                    </includes>
-                </resource>
-            </resources>
-        </build>
-    </profile>
-</profiles>
+<build>
+    <resources>
+        <resource>
+            <directory>src/main/java</directory>
+        </resource>
+    </resources>
+</build>
 ```
 
 ## ✅ Configure `JsInterop`
