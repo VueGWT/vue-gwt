@@ -19,9 +19,9 @@ import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
+import com.axellience.vuegwt.processors.component.template.ComponentTemplateProcessor;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
-import com.axellience.vuegwt.processors.component.template.ComponentTemplateProcessor;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -35,6 +35,7 @@ import elemental2.core.JsArray;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
+import javax.annotation.Generated;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -47,6 +48,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import java.lang.annotation.Annotation;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -87,7 +89,8 @@ public class ComponentJsTypeGenerator
         componentTemplateProcessor = new ComponentTemplateProcessor(processingEnvironment);
     }
 
-    public void generate(TypeElement component, ComponentInjectedDependenciesBuilder dependenciesBuilder)
+    public void generate(TypeElement component,
+        ComponentInjectedDependenciesBuilder dependenciesBuilder)
     {
         // Template resource abstract class
         ClassName componentWithSuffixClassName = componentJsTypeName(component);
@@ -145,7 +148,13 @@ public class ComponentJsTypeGenerator
         Builder componentJsTypeBuilder = TypeSpec
             .classBuilder(jsTypeClassName)
             .addModifiers(Modifier.PUBLIC)
-            .superclass(TypeName.get(component.asType()));
+            .superclass(TypeName.get(component.asType()))
+            .addAnnotation(AnnotationSpec
+                .builder(Generated.class)
+                .addMember("value", "$S", ComponentJsTypeGenerator.class.getCanonicalName())
+                .addMember("date", "$S", new Date().toString())
+                .addMember("comments", "$S", "https://github.com/Axellience/vue-gwt")
+                .build());
 
         // Add @JsType annotation. This ensure this class is included.
         // As we use a class reference to use our Components, this class would be removed by GWT
@@ -585,11 +594,10 @@ public class ComponentJsTypeGenerator
             .stream()
             .filter(method -> hasAnnotation(method, Emit.class))
             .filter(method -> !hasAnnotation(method, JsMethod.class))
-            .forEach(invalidEmitMethod -> {
-                printError("The method \""
-                    + invalidEmitMethod.getSimpleName().toString()
-                    + "\" annotated with @Emit must also be annotated with @JsMethod.", component);
-            });
+            .forEach(invalidEmitMethod -> printError("The method \"" + invalidEmitMethod
+                    .getSimpleName()
+                    .toString() + "\" annotated with @Emit must also be annotated with @JsMethod.",
+                component));
     }
 
     private void copyDependenciesFields(ComponentInjectedDependenciesBuilder dependenciesBuilder,

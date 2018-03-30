@@ -1,12 +1,13 @@
 package com.axellience.vuegwt.processors.component.factory;
 
+import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
-import com.axellience.vuegwt.core.annotations.component.Component;
-import com.axellience.vuegwt.core.annotations.component.JsComponent;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -15,6 +16,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
+import javax.annotation.Generated;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -22,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import java.util.Date;
 import java.util.List;
 
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
@@ -35,10 +38,10 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componen
  */
 public abstract class AbstractVueComponentFactoryGenerator
 {
-    private static String INSTANCE_PROP = "INSTANCE";
+    private static final String INSTANCE_PROP = "INSTANCE";
 
     private final Filer filer;
-    protected final Messager messager;
+    final Messager messager;
 
     AbstractVueComponentFactoryGenerator(ProcessingEnvironment processingEnv)
     {
@@ -85,7 +88,13 @@ public abstract class AbstractVueComponentFactoryGenerator
                 ClassName.get(component)))
             .addAnnotation(Singleton.class)
             .addJavadoc("VueFactory for Component {@link $S}",
-                component.getQualifiedName().toString());
+                component.getQualifiedName().toString())
+            .addAnnotation(AnnotationSpec
+                .builder(Generated.class)
+                .addMember("value", "$S", this.getClass().getCanonicalName())
+                .addMember("date", "$S", new Date().toString())
+                .addMember("comments", "$S", "https://github.com/Axellience/vue-gwt")
+                .build());
     }
 
     /**
