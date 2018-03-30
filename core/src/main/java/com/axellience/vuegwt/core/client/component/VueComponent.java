@@ -11,6 +11,7 @@ import com.axellience.vuegwt.core.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.core.client.vnode.VNode;
 import elemental2.core.JsArray;
 import elemental2.dom.Element;
+import javaemul.internal.annotations.DoNotAutobox;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -71,7 +72,7 @@ public abstract class VueComponent
     public native void $on(String name, OnEvent callback);
     public native void $once(String name, OnEvent callback);
     public native void $off(String name, OnEvent callback);
-    public native void $emit(String name, Object... param);
+    public native void $emit(String name, @DoNotAutobox Object... param);
 
     // Lifecycle
     public native VueComponent $mount();

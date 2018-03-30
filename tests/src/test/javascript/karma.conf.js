@@ -7,11 +7,11 @@ module.exports = function (config) {
 		files: [
 			'src/test/javascript/components/**/*.js',
 			{
-				pattern: "target/vue-gwt-tests-1.0-beta-7-SNAPSHOT/**/*.nocache.js",
+				pattern: "target/vue-gwt-tests-*/**/*.nocache.js",
 				watched: false
 			},
 			{
-				pattern: "target/vue-gwt-tests-1.0-beta-7-SNAPSHOT/**/*.cache.js",
+				pattern: "target/vue-gwt-tests-*/**/*.cache.js",
 				watched: false,
 				included: false
 			}
