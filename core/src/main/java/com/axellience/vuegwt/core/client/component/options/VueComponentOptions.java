@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.core.client.component.options;
 
 import com.axellience.vuegwt.core.client.component.ComponentJavaPrototype;
-import com.axellience.vuegwt.core.client.component.VueComponent;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedOptions;

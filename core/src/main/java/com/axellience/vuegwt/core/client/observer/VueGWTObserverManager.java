@@ -143,7 +143,7 @@ public class VueGWTObserverManager
         vueObserveArrayFunction = vueObserverPrototype.observeArray;
         vueWalkFunction = vueObserverPrototype.walk;
 
-        vueObserverPrototype.walk = (toObserve) -> {
+        vueObserverPrototype.walk =  (toObserve) -> {
             if (observeJavaObject(toObserve))
                 return;
 
@@ -186,7 +186,7 @@ public class VueGWTObserverManager
             cache = initClassPropertiesCache(object, className);
         }
 
-        JsPropertyMap javaObjectPropertyMap = ((JsPropertyMap) object);
+        JsPropertyMap<Object> javaObjectPropertyMap = ((JsPropertyMap<Object>) object);
         cache.forEach((key, value) -> {
             if (!object.hasOwnProperty(key))
                 javaObjectPropertyMap.set(key, value);
