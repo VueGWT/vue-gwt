@@ -1,12 +1,14 @@
 package com.axellience.vuegwt.core.client.observer;
 
+import com.axellience.vuegwt.core.client.jsnative.jsfunctions.JsRunnable;
 import com.axellience.vuegwt.core.client.observer.functions.VueObserveArray;
 import com.axellience.vuegwt.core.client.observer.functions.VueWalk;
+import com.axellience.vuegwt.core.client.tools.VueGWTTools;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
-import elemental2.dom.HTMLScriptElement;
 import jsinterop.base.Js;
+import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 
 import java.util.HashMap;
@@ -32,7 +34,8 @@ public class VueGWTObserverManager
 
     public static VueGWTObserverManager get()
     {
-        if (INSTANCE == null) {
+        if (INSTANCE == null)
+        {
             INSTANCE = new VueGWTObserverManager();
             INSTANCE.captureVueObserver();
         }
@@ -141,7 +144,7 @@ public class VueGWTObserverManager
         vueObserveArrayFunction = vueObserverPrototype.observeArray;
         vueWalkFunction = vueObserverPrototype.walk;
 
-        vueObserverPrototype.walk =  (toObserve) -> {
+        vueObserverPrototype.walk = (toObserve) -> {
             if (observeJavaObject(toObserve))
                 return;
 
@@ -154,11 +157,14 @@ public class VueGWTObserverManager
      */
     private void captureVueObserver()
     {
-        HTMLScriptElement scriptElement =
-            (HTMLScriptElement) DomGlobal.document.createElement("script");
-        scriptElement.text =
-            "new Vue({created: function () {VueGWT.customizeVueObserverPrototype(this.$data.__ob__.__proto__);}});";
-        DomGlobal.document.body.appendChild(scriptElement);
+        JsPropertyMap<JsRunnable> capturingInstanceDefinition = (JsPropertyMap<JsRunnable>) new JsObject();
+        capturingInstanceDefinition.set("created",
+            () -> customizeVueObserverPrototype(VueGWTTools.getDeepValue(this,
+                "$data.__ob__.__proto__")));
+
+        JsConstructorFn vueConstructor =
+            ((JsPropertyMap<JsConstructorFn>) DomGlobal.window).get("Vue");
+        vueConstructor.construct(capturingInstanceDefinition);
     }
 
     /**

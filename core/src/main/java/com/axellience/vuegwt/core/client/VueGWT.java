@@ -3,7 +3,6 @@ package com.axellience.vuegwt.core.client;
 import com.axellience.vuegwt.core.client.component.ComponentJavaConstructor;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.observer.VueGWTObserverManager;
-import com.axellience.vuegwt.core.client.observer.VueObserverPrototype;
 import com.axellience.vuegwt.core.client.observer.vuegwtobservers.CollectionObserver;
 import com.axellience.vuegwt.core.client.observer.vuegwtobservers.MapObserver;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
@@ -198,16 +197,5 @@ public class VueGWT
     public static boolean isVueLibInjected()
     {
         return ((JsPropertyMap) DomGlobal.window).get("Vue") != null;
-    }
-
-    /**
-     * Customize the VueObserver instance.
-     * We get in between to be warned whenever an object is observed and observe it using
-     * our Java observers if necessary.
-     * @param vueObserverPrototype A {@link VueObserverPrototype}
-     */
-    public static void customizeVueObserverPrototype(VueObserverPrototype vueObserverPrototype)
-    {
-        VueGWTObserverManager.get().customizeVueObserverPrototype(vueObserverPrototype);
     }
 }
