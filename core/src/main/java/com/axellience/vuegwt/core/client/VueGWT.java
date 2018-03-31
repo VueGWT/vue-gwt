@@ -3,6 +3,7 @@ package com.axellience.vuegwt.core.client;
 import com.axellience.vuegwt.core.client.component.ComponentJavaConstructor;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.observer.VueGWTObserverManager;
+import com.axellience.vuegwt.core.client.observer.VueObserverPrototype;
 import com.axellience.vuegwt.core.client.observer.vuegwtobservers.CollectionObserver;
 import com.axellience.vuegwt.core.client.observer.vuegwtobservers.MapObserver;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
@@ -30,8 +31,6 @@ public class VueGWT
     private static boolean isReady = false;
     private static LinkedList<Runnable> onReadyCallbacks = new LinkedList<>();
 
-    private static final Map<String, VueFactory<? extends IsVueComponent>> factories =
-        new HashMap<>();
     private static final Map<String, Provider<?>> factoryProviders = new HashMap<>();
 
     /**
@@ -120,9 +119,6 @@ public class VueGWT
         if (factoryProviders.containsKey(qualifiedName))
             return (VueFactory<T>) factoryProviders.get(qualifiedName).get();
 
-        if (factories.containsKey(qualifiedName))
-            return (VueFactory<T>) factories.get(qualifiedName);
-
         throw new RuntimeException("Couldn't find VueFactory for Component: "
             + qualifiedName
             + ". Make sure that annotation are being processed, and that you added the -generateJsInteropExports flag to GWT. You can also try a \"mvn clean\" on your maven project.");
@@ -169,19 +165,6 @@ public class VueGWT
     }
 
     /**
-     * Register a {@link VueFactory} for a given {@link IsVueComponent} fully qualified name.
-     * @param qualifiedName The fully qualified name of the {@link IsVueComponent} class
-     * @param vueFactory A {@link VueFactory} you can use to instantiate components
-     * @param <T> The type of the {@link IsVueComponent}
-     */
-    @JsIgnore
-    public static <T extends IsVueComponent> void register(String qualifiedName,
-        VueFactory<T> vueFactory)
-    {
-        factories.put(qualifiedName, vueFactory);
-    }
-
-    /**
      * Register a {@link Supplier} returning the {@link VueFactory} for a given {@link
      * IsVueComponent}.
      * @param qualifiedName The fully qualified name of the {@link IsVueComponent} class
@@ -211,8 +194,20 @@ public class VueGWT
         onReadyCallbacks.push(callback);
     }
 
+    @JsIgnore
     public static boolean isVueLibInjected()
     {
         return ((JsPropertyMap) DomGlobal.window).get("Vue") != null;
+    }
+
+    /**
+     * Customize the VueObserver instance.
+     * We get in between to be warned whenever an object is observed and observe it using
+     * our Java observers if necessary.
+     * @param vueObserverPrototype A {@link VueObserverPrototype}
+     */
+    public static void customizeVueObserverPrototype(VueObserverPrototype vueObserverPrototype)
+    {
+        VueGWTObserverManager.get().customizeVueObserverPrototype(vueObserverPrototype);
     }
 }

@@ -3,6 +3,7 @@ package com.axellience.vuegwt.core.client.vue;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
+import jsinterop.annotations.JsMethod;
 
 /**
  * A factory to create {@link IsVueComponent}s.
@@ -15,11 +16,13 @@ public class VueFactory<T extends IsVueComponent>
 {
     protected VueJsConstructor<T> jsConstructor;
 
+    @JsMethod
     public final T create()
     {
         return jsConstructor.instantiate();
     }
 
+    @JsMethod
     public VueJsConstructor<T> getJsConstructor()
     {
         return jsConstructor;

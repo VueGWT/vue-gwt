@@ -6,7 +6,6 @@ import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLScriptElement;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -22,7 +21,6 @@ import java.util.Map;
  * This class let you inject your own observers.
  * @author Adrien Baron
  */
-@JsType(namespace = "VueGWT")
 public class VueGWTObserverManager
 {
     private static VueGWTObserverManager INSTANCE;
@@ -159,7 +157,7 @@ public class VueGWTObserverManager
         HTMLScriptElement scriptElement =
             (HTMLScriptElement) DomGlobal.document.createElement("script");
         scriptElement.text =
-            "new Vue({created: function () {VueGWT.VueGWTObserverManager.get().customizeVueObserverPrototype(this.$data.__ob__.__proto__);}});";
+            "new Vue({created: function () {VueGWT.customizeVueObserverPrototype(this.$data.__ob__.__proto__);}});";
         DomGlobal.document.body.appendChild(scriptElement);
     }
 
