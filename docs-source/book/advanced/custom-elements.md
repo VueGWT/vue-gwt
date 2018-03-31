@@ -184,7 +184,7 @@ Will render:
 
 ### Creating Instances Programmatically
 
-The `createInstance` method returns a `VueCustomElementType<T extends IsVueComponent>`.
+The `customElement` method returns a `VueCustomElementType<T extends IsVueComponent>`.
 This object can be used to create instances of your Custom Element easily.
 
 ```java
@@ -211,11 +211,11 @@ This will work no matter how your Custom Element instance is created.
 
 ```java
 VueCustomElement<AnimalSelectorComponent> animalSelectorElement = Js.cast(DomGlobal.document.createElement("animal-selector"));
-AnimalSelectorComponent animalSelectorComponent = myElement.getVueComponent();
+AnimalSelectorComponent animalSelectorComponent = myElement.getComponent();
 // Access any public property, or call any public method on animalSelectorComponent.
 
 VueCustomElement<TodoComponent> todoElement = Js.cast(DomGlobal.document.getElementById("myTodo"));
-TodoComponent todoComponent = todoElement.getVueComponent();
+TodoComponent todoComponent = todoElement.getComponent();
 // Access any public property, or call any public method on todoComponent.
 ```
 

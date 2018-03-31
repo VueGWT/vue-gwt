@@ -9,7 +9,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
 
 @Component(hasTemplate = false)
-public class ErrorMakerComponent implements IsVueComponent , HasCreated, HasRender
+public class ErrorMakerComponent implements IsVueComponent, HasCreated, HasRender
 {
     @Override
     public void created()

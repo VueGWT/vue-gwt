@@ -11,7 +11,7 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component
-public class VForWithIndexComponent implements IsVueComponent , HasCreated
+public class VForWithIndexComponent implements IsVueComponent, HasCreated
 {
     @JsProperty String parentMessage = "Message from parent";
     @JsProperty JsArray<Todo> todos = new JsArray<>();

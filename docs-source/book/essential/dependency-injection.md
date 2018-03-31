@@ -47,7 +47,7 @@ It's not possible to use injected constructor parameters as Java constructors ar
 
 ```java
 @Component
-public class GotQuotesComponent implements IsVueComponent , HasCreated {
+public class GotQuotesComponent implements IsVueComponent, HasCreated {
     @JsProperty GotQuote quote;
     @Inject GotQuotesService gotQuotesService;
 

@@ -28,11 +28,12 @@ Let's try see how to instantiate it in Java:
 
 ```java
 // First, we get the VueJsConstructor from Window
-VueJsConstructor vueJsConstructor = (VueJsConstructor) JsTools.getWindow().get("FullJsComponent");
+VueJsConstructor vueJsConstructor = ((JsPropertyMap<VueJsConstructor>) DomGlobal.window).get("FullJsComponent");
+
 // We can then manipulate it exactly like
 // our VueJsConstructor generated from our Java Components
-VueComponent myFullJsComponent = vueJsConstructor.instantiate();
-myFullJsComponent.$mount("#fullJsComponent");
+IsVueComponent myFullJsComponent = vueJsConstructor.instantiate();
+myFullJsComponent.asVue().$mount("#fullJsComponent");
 ```
 
 And here it is live:
@@ -42,8 +43,6 @@ And here it is live:
     <span id="fullJsComponent"></span>
 </div>
 {% endraw %}
-
-Easy, right?
 
 ### Declaring our JS Component Interface
 
@@ -95,7 +94,7 @@ So we can do:
 
 ```java
 FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentFactory.get().create();
-myComponent.$mount("#fullJsWithMethodComponent");
+myComponent.asVue().$mount("#fullJsWithMethodComponent");
 JsTools.log(myComponent.value); // 10
 JsTools.log(myComponent.multiplyBy2(25)); // 50
 myComponent.value = 15; // Change the value in the instance of our Component

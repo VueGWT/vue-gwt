@@ -22,7 +22,7 @@ The `v-for` directive requires a special syntax in the form of `Type item in ite
 
 ```java
 @Component
-public class SimpleTodoListComponent implements IsVueComponent , HasCreated {
+public class SimpleTodoListComponent implements IsVueComponent, HasCreated {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
     @Override
@@ -56,7 +56,7 @@ Inside `v-for` blocks we have full access to parent scope properties.
 
 ```java
 @Component
-public class VForWithIndexComponent implements IsVueComponent , HasCreated {
+public class VForWithIndexComponent implements IsVueComponent, HasCreated {
     @JsProperty String parentMessage = "Message from parent";
     @JsProperty List<Todo> todos = new LinkedList<>();
 
@@ -114,7 +114,7 @@ This tells Vue GWT that you are iterating on an `Object` and not an regular Coll
 
 ```java
 @Component
-public class VForOnObjectComponent implements IsVueComponent , HasCreated {
+public class VForOnObjectComponent implements IsVueComponent, HasCreated {
     @JsProperty JsObject<Object> myObject = new JsObject<>();
 
     @Override

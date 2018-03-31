@@ -15,7 +15,7 @@ public class VueCustomElement<T extends IsVueComponent> extends Element
     private JsPropertyMap<JsArray<T>> __vue_custom_element__;
 
     @JsOverlay
-    public final T getVueComponent() {
+    public final T getComponent() {
         return this.__vue_custom_element__.get("$children").getAt(0);
     }
 }

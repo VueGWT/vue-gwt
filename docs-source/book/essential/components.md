@@ -290,7 +290,7 @@ The proper answer to these use cases are:
 
 ```java
 @Component
-public class MyComponent implements IsVueComponent , HasCreated {
+public class MyComponent implements IsVueComponent, HasCreated {
     @Prop
     @JsProperty
     public String initialCounter;
@@ -910,10 +910,10 @@ To achieve this you have to assign a reference ID to the child component using `
 
 ```java
 @Component(components = UserProfileComponent.class)
-public class ParentComponent implements IsVueComponent , HasCreated {
+public class ParentComponent implements IsVueComponent, HasCreated {
     @Override
     public void created() {
-        UserProfileComponent userProfileComponent = this.$refs.get("profile");
+        UserProfileComponent userProfileComponent = asVue().$refs.get("profile");
     }
 }
 ```
@@ -961,7 +961,7 @@ Bellow is an example recursive component:
 
 ```java
 @Component(name = "recursive")
-public class RecursiveComponent implements IsVueComponent , HasCreated {
+public class RecursiveComponent implements IsVueComponent, HasCreated {
     @Prop
     @JsProperty
     Integer counter;

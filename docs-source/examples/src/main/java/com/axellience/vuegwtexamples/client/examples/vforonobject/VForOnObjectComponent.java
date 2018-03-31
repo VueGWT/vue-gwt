@@ -11,7 +11,7 @@ import jsinterop.base.JsPropertyMap;
  * @author Adrien Baron
  */
 @Component
-public class VForOnObjectComponent implements IsVueComponent , HasCreated
+public class VForOnObjectComponent implements IsVueComponent, HasCreated
 {
     @JsProperty JsPropertyMap<Object> myObject;
 

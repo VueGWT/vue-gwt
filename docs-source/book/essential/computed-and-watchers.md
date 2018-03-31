@@ -123,7 +123,7 @@ However, it is often a better idea to use a computed property rather than an imp
 
 ```java
 @Component
-public class JohnSnowComponent implements IsVueComponent , HasCreated {
+public class JohnSnowComponent implements IsVueComponent, HasCreated {
     @JsProperty String firstName;
     @JsProperty String lastName;
     @JsProperty String fullName;
@@ -230,7 +230,7 @@ public class JohnSnowComponent implements IsVueComponent {
 In addition to the `watch` option, you can also use the imperative [vm.$watch API](https://vuejs.org/v2/api/#vm-watch).
 This allow you to watch non `JsInterop` properties:
 ```java
-this.$watch(
+asVue().$watch(
     () -> this.todo.getText(),
     (newValue, oldValue) -> {
         // Do something

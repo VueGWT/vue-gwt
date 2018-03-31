@@ -9,7 +9,7 @@ import jsinterop.annotations.JsProperty;
 import javax.inject.Inject;
 
 @Component
-public class GotQuotesComponent implements IsVueComponent , HasCreated
+public class GotQuotesComponent implements IsVueComponent, HasCreated
 {
     @JsProperty
     GotQuote quote;

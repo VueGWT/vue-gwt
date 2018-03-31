@@ -22,7 +22,7 @@ This Component will simply display an html link.
 #### Declaring the Component
 
 ##### Java Class
-To create our Component, we must create a Class annotated by `@Component` that extends `VueComponent`.
+To create our Component, we must create a Class annotated by `@Component` that implements `IsVueComponent`.
 
 ***SimpleLinkComponent.java***
 ```java
@@ -32,16 +32,7 @@ public class SimpleLinkComponent implements IsVueComponent {
 }
 ```
 
-##### Why `@JsProperty`?
-
-Only `JsInterop` attributes and methods of our Class will be accessible in our template.
-
-Meaning either:
-
- * Adding the `@JsType` annotation to our Class and setting attributes/methods to `public`
- * Adding the `@JsProperty`/`@JsMethod` annotation to each attribute/method and setting them to at least `package-protected`.
-
-In this documentation we chose to use the `@JsProperty`/`@JsMethod` annotation on properties/methods.
+Adding `@JsProperty` on the property makes it visible in the HTML template.
 
 ##### HTML Template
 
@@ -108,7 +99,7 @@ We can then use [Component composition](README.md#composing-with-components).
 
 ##### Why can't I just do `new SimpleLinkComponent()`?
 
-Behind the scene, our Java `VueComponent` Class is converted to the options that Vue.js is expecting:
+Behind the scene, our Java `IsVueComponent` Class is converted to the options that Vue.js is expecting:
 ```javascript
 {
     render: function() {
@@ -124,7 +115,7 @@ Behind the scene, our Java `VueComponent` Class is converted to the options that
 ```
 
 Those options are passed to the [`Vue.extend()`](https://vuejs.org/v2/api/#Vue-extend) JavaScript method.
-The result is a `VueJsConstructor` we can use to generate new instances of our `VueComponent`.
+The result is a `VueJsConstructor` we can use to generate new instances of our Vue Component.
 
 When you call `attach`, `VueGWT` get this `VueJsConstructor` for you and use it to create a new instance of your Component.
 
@@ -229,7 +220,7 @@ You can see it as your Component constructor.
 
 ```java
 @Component
-public class SimpleTodoListComponent implements IsVueComponent , HasCreated {
+public class SimpleTodoListComponent implements IsVueComponent, HasCreated {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
     @Override
@@ -251,7 +242,7 @@ public class SimpleTodoListComponent implements IsVueComponent , HasCreated {
 ```
 
 Vue GWT observes Java Collections for you.
-For now this observation work for `List`, `Set` and `Map`.
+For now this observation works for the `List`, `Set` and `Map` interfaces.
 
 Another difference with Vue.js is you must indicate your loop variable type.
 This is because Vue GWT compile templates expressions to Java and so needs the type information.
@@ -263,7 +254,7 @@ You can import Java types in your template by using the `vue-gwt:import` element
 </div>
 {% endraw %}
 
-As the `Todo` class does not have the `@JsInterop` annotation it's not possible to create new Todos from the JavaScript console.
+As the `Todo` class does not have the `@JsType` annotation it's not possible to create new Todos from the JavaScript console.
 But you can try removing all the `Todo` from the list in your browser console:
 ```
 simpleTodoListComponent.todos.clear();
@@ -419,7 +410,7 @@ public class TodoComponent implements IsVueComponent {
 
 The `@Prop` annotation tells Vue GWT that our `todo` property will be passed from a parent component.
 
-Be careful, you still need to use the `@JsProperty` to tell Vue GWT to not rename this property.
+Be careful, you still need to use the `@JsProperty` alongside it.
 
 ***TodoComponent.html***
 
@@ -438,7 +429,7 @@ Let's call it `TodoListComponent`:
 
 ```java
 @Component(components = {TodoComponent.class})
-public class TodoListComponent implements IsVueComponent , HasCreated {
+public class TodoListComponent implements IsVueComponent, HasCreated {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
     @Override
@@ -501,7 +492,7 @@ For example:
 
 Components can also be registered globally.
 They will then be usable in any Component in your app.
-You won't need to pass the class of your `VueComponent` to the `components` attribute in the `@Component` annotation.
+You won't need to pass the class of your Vue Component to the `components` attribute in the `@Component` annotation.
 
 ```java
 public class RootGwtApp implements EntryPoint {

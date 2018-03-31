@@ -199,7 +199,7 @@ It is often a good idea to bind to a style object directly so that the template 
 ```
 ```java
 @Component
-public class StylishComponent implements IsVueComponent , HasCreated {
+public class StylishComponent implements IsVueComponent, HasCreated {
     @JsProperty JsObject<String> styleObject;
 
     @Override

@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Component
-public class SimpleTodoListComponent implements IsVueComponent , HasCreated
+public class SimpleTodoListComponent implements IsVueComponent, HasCreated
 {
     @JsProperty List<Todo> todos = new LinkedList<>();
 
