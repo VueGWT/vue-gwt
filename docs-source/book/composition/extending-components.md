@@ -20,7 +20,7 @@ Let's say we have the following Component:
 
 ```java
 @Component
-public abstract class ParentComponent extends VueComponent {
+public abstract class ParentComponent implements IsVueComponent {
     @JsProperty String parentMessage = "This is a message from the parent";
 
     @JsMethod
@@ -45,7 +45,7 @@ For this we just have to use classic Java inheritance.
 
 ```java
 @Component
-public class ChildJavaComponent extends ParentJsComponent implements HasCreated {
+public class ChildJavaComponent extends ParentJsComponent , HasCreated {
     @JsProperty int childValue;
 
     public void created() {
@@ -121,7 +121,7 @@ We declare this Java interface:
 ```java
 @JsComponent("ParentJsComponent")
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public class ParentJsComponent extends VueComponent {
+public class ParentJsComponent implements IsVueComponent {
     public String parentMessage;
 
     public native int parentMultiplyBy2(int value);

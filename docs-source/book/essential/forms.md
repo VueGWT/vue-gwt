@@ -27,7 +27,7 @@ You can use a computed properties along with the regular `v-model`:
 
 ```java
 @Component
-public class TodoTextComputedComponent extends VueComponent {
+public class TodoTextComputedComponent implements IsVueComponent {
     @JsProperty Todo todo = new Todo("Hello World!");
 
     @Computed
@@ -71,7 +71,7 @@ In those case you can use the following syntax:
 
 ```java
 @Component
-public class TodoTextComponent extends VueComponent {
+public class TodoTextComponent implements IsVueComponent {
     @JsProperty Todo todo = new Todo("Hello World!");
 
     @JsMethod

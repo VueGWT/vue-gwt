@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.processors.component.template.parser.context;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.tools.JsUtils;
 import com.axellience.vuegwt.core.client.tools.VForExpressionUtil;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
@@ -40,8 +40,8 @@ public class TemplateParserContext
     private Segment currentSegment;
 
     /**
-     * Build the context based on a given {@link VueComponent} Class.
-     * @param componentTypeElement The {@link VueComponent} class we process in this context
+     * Build the context based on a given {@link IsVueComponent} Class.
+     * @param componentTypeElement The {@link IsVueComponent} class we process in this context
      * @param localComponents Components registered locally, used to check property bindings
      */
     public TemplateParserContext(TypeElement componentTypeElement, LocalComponents localComponents)
@@ -247,9 +247,9 @@ public class TemplateParserContext
     }
 
     /**
-     * Simple getter for the currently processed {@link VueComponent} Template name.
+     * Simple getter for the currently processed {@link IsVueComponent} Template name.
      * Used for debugging.
-     * @return The currently process {@link VueComponent} Template name
+     * @return The currently process {@link IsVueComponent} Template name
      */
     public String getTemplateName()
     {

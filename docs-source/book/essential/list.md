@@ -22,7 +22,7 @@ The `v-for` directive requires a special syntax in the form of `Type item in ite
 
 ```java
 @Component
-public class SimpleTodoListComponent extends VueComponent implements HasCreated {
+public class SimpleTodoListComponent implements IsVueComponent , HasCreated {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
     @Override
@@ -56,7 +56,7 @@ Inside `v-for` blocks we have full access to parent scope properties.
 
 ```java
 @Component
-public class VForWithIndexComponent extends VueComponent implements HasCreated {
+public class VForWithIndexComponent implements IsVueComponent , HasCreated {
     @JsProperty String parentMessage = "Message from parent";
     @JsProperty List<Todo> todos = new LinkedList<>();
 
@@ -114,7 +114,7 @@ This tells Vue GWT that you are iterating on an `Object` and not an regular Coll
 
 ```java
 @Component
-public class VForOnObjectComponent extends VueComponent implements HasCreated {
+public class VForOnObjectComponent implements IsVueComponent , HasCreated {
     @JsProperty JsObject<Object> myObject = new JsObject<>();
 
     @Override
@@ -331,7 +331,7 @@ For example:
 
 ```java
 @Component
-public class EvenNumbersComponent extends VueComponent {
+public class EvenNumbersComponent implements IsVueComponent {
     @JsProperty List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
     @Computed
@@ -358,7 +358,7 @@ In situations where computed properties are not feasible (e.g. inside nested `v-
 
 ```java
 @Component
-public class EvenNumbersComponent extends VueComponent {
+public class EvenNumbersComponent implements IsVueComponent {
     // No @Computed annotation
     public List<Integer> getEven(List<Integer> numbers) {
         return this.numbers.stream().filter(number -> number % 2 == 0).collect(Collectors.toList());

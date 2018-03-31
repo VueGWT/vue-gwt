@@ -73,7 +73,7 @@ Let's do it for our `FullJsWithMethodsComponent`:
 ```java
 @JsComponent("FullJsWithMethodsComponent")
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public class FullJsWithMethodsComponent extends VueComponent {
+public class FullJsWithMethodsComponent implements IsVueComponent {
     public int value;
 
     public native int multiplyBy2(int value);
@@ -126,7 +126,7 @@ The only change is you have to tell GWT that the instance is an `Object` and not
 ```java
 @JsComponent("VueChartJs.Line")
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class AbstractVueLineChartComponent extends VueComponent
+public class AbstractVueLineChartComponent implements IsVueComponent
 ```
 
 ### Using Our JS Component in a Java One

@@ -39,7 +39,7 @@ public abstract class VueComponent
     @JsProperty private VueComponentOptions $options;
     @JsProperty private VueComponent $parent;
     @JsProperty private VueComponent $root;
-    @JsProperty private JsArray<VueComponent> $children;
+    @JsProperty private JsArray<IsVueComponent> $children;
     @JsProperty private Object $refs;
     @JsProperty private JsPropertyMap<JsArray<VNode>> $slots;
     @JsProperty private JsPropertyMap<ScopedSlot> $scopedSlots;
@@ -116,7 +116,7 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final JsArray<VueComponent> $children()
+    public final JsArray<IsVueComponent> $children()
     {
         return $children;
     }

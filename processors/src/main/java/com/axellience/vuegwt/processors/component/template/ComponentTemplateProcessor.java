@@ -3,7 +3,7 @@ package com.axellience.vuegwt.processors.component.template;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Prop;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
 import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
@@ -40,7 +40,7 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedP
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 
 /**
- * Process the HTML template for a given {@link VueComponent}.
+ * Process the HTML template for a given {@link IsVueComponent}.
  * @author Adrien Baron
  */
 public class ComponentTemplateProcessor

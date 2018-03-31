@@ -2,7 +2,7 @@ package com.axellience.vuegwt.processors.component.factory;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
@@ -30,7 +30,7 @@ import java.util.List;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
 
 /**
- * Abstract class to generate {@link VueFactory} from the user {@link VueComponent} classes.
+ * Abstract class to generate {@link VueFactory} from the user {@link IsVueComponent} classes.
  * It is inherited by {@link VueComponentFactoryGenerator} which generate for {@link Component}
  * annotated class and {@link VueJsComponentFactoryGenerator} which generate for {@link
  * JsComponent} annotated class.
@@ -51,7 +51,7 @@ public abstract class AbstractVueComponentFactoryGenerator
 
     /**
      * Generate our {@link VueFactory} class.
-     * @param component The {@link VueComponent} class to generate {@link VueComponentOptions} from
+     * @param component The {@link IsVueComponent} class to generate {@link VueComponentOptions} from
      */
     public void generate(TypeElement component)
     {

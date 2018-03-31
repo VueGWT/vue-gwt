@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.client.customelement;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.jsnative.jsfunctions.JsConsumer;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -8,7 +8,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class CustomElementOptions<T extends VueComponent>
+public class CustomElementOptions<T extends IsVueComponent>
 {
     @JsProperty private JsConsumer<VueCustomElement<T>> constructorCallback;
     @JsProperty private JsConsumer<VueCustomElement<T>> connectedCallback;

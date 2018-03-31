@@ -5,7 +5,7 @@ import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.PropDefault;
 import com.axellience.vuegwt.core.annotations.component.PropValidator;
 import com.axellience.vuegwt.core.annotations.component.Watch;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
 import com.axellience.vuegwt.core.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
@@ -45,13 +45,13 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface
 public class ComponentGeneratorsUtil
 {
     /**
-     * Return the list of {@link VueComponent} dependencies listed on {@link
+     * Return the list of {@link IsVueComponent} dependencies listed on {@link
      * Component#components()}.
      * When retrieving this list, it can produce a {@link MirroredTypesException}.
      * The case is managed here and we always returns {@link TypeMirror} of the dependencies.
      * @param elementsUtil The Element utils provided by the annotation processor environement.
      * @param component The {@link Component} annotation to process
-     * @return The list of TypeMirror of the {@link VueComponent} the {@link Component} depends on
+     * @return The list of TypeMirror of the {@link IsVueComponent} the {@link Component} depends on
      */
     public static List<TypeMirror> getComponentLocalComponents(Elements elementsUtil,
         TypeElement component)
@@ -187,17 +187,17 @@ public class ComponentGeneratorsUtil
     }
 
     /**
-     * Return the {@link TypeElement} of the parent {@link VueComponent} of a given {@link
-     * VueComponent}.
-     * If the super class of the {@link VueComponent} is just {@link VueComponent}, return an empty
+     * Return the {@link TypeElement} of the parent {@link IsVueComponent} of a given {@link
+     * IsVueComponent}.
+     * If the super class of the {@link IsVueComponent} is just {@link IsVueComponent}, return an empty
      * {@link Optional}
-     * @param component The {@link VueComponent} to get the super type of
-     * @return The {@link TypeElement} of the super {@link VueComponent} or an empty {@link Optional}
+     * @param component The {@link IsVueComponent} to get the super type of
+     * @return The {@link TypeElement} of the super {@link IsVueComponent} or an empty {@link Optional}
      */
     public static Optional<TypeElement> getSuperComponentType(TypeElement component)
     {
         // If super type is vue component, don't return it
-        if (TypeName.get(VueComponent.class).equals(TypeName.get(component.getSuperclass())))
+        if (TypeName.get(Object.class).equals(TypeName.get(component.getSuperclass())))
             return Optional.empty();
 
         return Optional.of((TypeElement) ((DeclaredType) component.getSuperclass()).asElement());
@@ -205,7 +205,7 @@ public class ComponentGeneratorsUtil
 
     /**
      * Return the number of super component in the chain of parents
-     * @param component The {@link VueComponent} to count the super type of
+     * @param component The {@link IsVueComponent} to count the super type of
      * @return The number of super components
      */
     public static int getSuperComponentCount(TypeElement component)

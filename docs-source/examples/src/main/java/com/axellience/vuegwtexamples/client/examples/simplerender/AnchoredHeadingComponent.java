@@ -2,7 +2,7 @@ package com.axellience.vuegwtexamples.client.examples.simplerender;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Prop;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
 import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.VNodeData;
@@ -16,7 +16,7 @@ import jsinterop.base.Js;
  * @author Adrien Baron
  */
 @Component
-public class AnchoredHeadingComponent extends VueComponent implements HasRender
+public class AnchoredHeadingComponent implements IsVueComponent, HasRender
 {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
 
@@ -28,14 +28,14 @@ public class AnchoredHeadingComponent extends VueComponent implements HasRender
     public VNode render(VNodeBuilder builder)
     {
         String text =
-            getChildrenTextContent(this.$slots().get("default")).trim().replaceAll(" ", "-");
+            getChildrenTextContent(asVue().$slots().get("default")).trim().replaceAll(" ", "-");
 
         String headingId = camelCasePattern.replace(text, "$1-$2").toLowerCase();
 
         return builder.el("h" + this.level,
             builder.el("a",
                 VNodeData.get().attr("name", headingId).attr("href", "#" + headingId),
-                this.$slots().get("default")));
+                asVue().$slots().get("default")));
     }
 
     private String getChildrenTextContent(JsArray<VNode> children)

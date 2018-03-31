@@ -10,7 +10,7 @@ import com.axellience.vuegwt.core.annotations.component.PropValidator;
 import com.axellience.vuegwt.core.annotations.component.Watch;
 import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.ComponentJavaConstructor;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
@@ -65,7 +65,7 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotatio
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
 
 /**
- * Generate a JsType wrapper for the user Java {@link VueComponent}.
+ * Generate a JsType wrapper for the user Java {@link IsVueComponent}.
  * It will wrap any non JsInterop methods from the original
  * component to make them visible to JS.
  * It also provides the {@link VueComponentOptions} that will be passed down to Vue.js
@@ -138,8 +138,8 @@ public class ComponentJsTypeGenerator
     }
 
     /**
-     * Create and return the builder for the JsType of our {@link VueComponent}.
-     * @param component The {@link VueComponent} we are generating for
+     * Create and return the builder for the JsType of our {@link IsVueComponent}.
+     * @param component The {@link IsVueComponent} we are generating for
      * @param jsTypeClassName The name of the generated JsType class
      * @return A Builder to build the class
      */
@@ -180,8 +180,8 @@ public class ComponentJsTypeGenerator
 
     /**
      * Create and return the builder for the method that creating the {@link VueComponentOptions}
-     * for this {@link VueComponent}.
-     * @param component The {@link VueComponent} we are generating for
+     * for this {@link IsVueComponent}.
+     * @param component The {@link IsVueComponent} we are generating for
      * @return A {@link MethodSpec.Builder} for the method that creates the {@link VueComponentOptions}
      */
     private MethodSpec.Builder getOptionsMethodBuilder(TypeElement component)
@@ -210,8 +210,8 @@ public class ComponentJsTypeGenerator
     }
 
     /**
-     * Process data fields from the {@link VueComponent} Class.
-     * @param component {@link VueComponent} to process
+     * Process data fields from the {@link IsVueComponent} Class.
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
      */
@@ -242,8 +242,8 @@ public class ComponentJsTypeGenerator
     }
 
     /**
-     * Process Vue Props from the {@link VueComponent} Class.
-     * @param component {@link VueComponent} to process
+     * Process Vue Props from the {@link IsVueComponent} Class.
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
      */
@@ -274,7 +274,7 @@ public class ComponentJsTypeGenerator
 
     /**
      * Process computed properties from the Component Class.
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
      * @param componentJsTypeBuilder Builder for the JsType class
@@ -303,12 +303,12 @@ public class ComponentJsTypeGenerator
     }
 
     /**
-     * Process template methods for our {@link VueComponent} class.
-     * @param component {@link VueComponent} to process
+     * Process template methods for our {@link IsVueComponent} class.
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
      * @param componentJsTypeBuilder Builder for the JsType class
-     * @param hookMethodsFromInterfaces Hook methods from the interface the {@link VueComponent}
+     * @param hookMethodsFromInterfaces Hook methods from the interface the {@link IsVueComponent}
      * implements
      */
     private void processTemplateMethods(TypeElement component, MethodSpec.Builder optionsBuilder,
@@ -334,7 +334,7 @@ public class ComponentJsTypeGenerator
 
     /**
      * Add fields for computed methods so they are visible in the template
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      * @param componentJsTypeBuilder Builder for the JsType class
      * @param alreadyDone Already processed computed properties (in case there is a getter and a
      * setter, avoid creating the field twice).
@@ -368,7 +368,7 @@ public class ComponentJsTypeGenerator
 
     /**
      * Process watchers from the Component Class.
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
      */
@@ -389,7 +389,7 @@ public class ComponentJsTypeGenerator
 
     /**
      * Process prop validators from the Component Class.
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
      */
@@ -417,7 +417,7 @@ public class ComponentJsTypeGenerator
 
     /**
      * Process prop default values from the Component Class.
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
      */
@@ -438,10 +438,10 @@ public class ComponentJsTypeGenerator
 
     /**
      * Process hook methods from the Component Class.
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
-     * @param hookMethodsFromInterfaces Hook methods from the interface the {@link VueComponent}
+     * @param hookMethodsFromInterfaces Hook methods from the interface the {@link IsVueComponent}
      * implements
      */
     private void processHooks(TypeElement component, MethodSpec.Builder optionsBuilder,
@@ -486,7 +486,7 @@ public class ComponentJsTypeGenerator
 
     /**
      * Process the render function from the Component Class if it has one.
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
      * @param componentJsTypeBuilder Builder for the JsType class
@@ -514,7 +514,7 @@ public class ComponentJsTypeGenerator
      * created.
      * It will inject dependencies if any, and call the {@link ComponentJavaConstructor} on the
      * newly created instance.
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the
      * {@link VueComponentOptions}
      * @param componentJsTypeBuilder Builder for the JsType class
@@ -553,7 +553,7 @@ public class ComponentJsTypeGenerator
      * Inject the dependencies in the instance if needed. We do that by injecting an instance of an
      * object generated by {@link ComponentInjectedDependenciesBuilder}. We then copy the fields
      * of this object, and call methods that needs injection.
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      * @param dependenciesBuilder Builder for our component dependencies, needed here to inject the
      * dependencies in the instance
      * @param createdMethodBuilder Builder for our Create method
@@ -575,7 +575,7 @@ public class ComponentJsTypeGenerator
     {
         ClassName dependenciesName = componentInjectedDependenciesName(component);
         createdMethodBuilder.addStatement(
-            "$T dependencies = ($T) this.$L.getProvider($T.class).get()",
+            "$T dependencies = ($T) asVue().$L.getProvider($T.class).get()",
             dependenciesName,
             dependenciesName,
             "$options()",
@@ -585,7 +585,7 @@ public class ComponentJsTypeGenerator
     /**
      * Emit an error message for every method annotated with {@link Emit} that are not also
      * annotated with {@link JsMethod}.
-     * @param component {@link VueComponent} to process
+     * @param component {@link IsVueComponent} to process
      */
     private void processInvalidEmitMethods(TypeElement component)
     {
@@ -632,8 +632,8 @@ public class ComponentJsTypeGenerator
     }
 
     /**
-     * Call our {@link VueComponent} constructor. Pass injected parameters if needed.
-     * @param component {@link VueComponent} to process
+     * Call our {@link IsVueComponent} constructor. Pass injected parameters if needed.
+     * @param component {@link IsVueComponent} to process
      * @param createdMethodBuilder Builder for our Create method
      */
     private void callConstructor(TypeElement component, MethodSpec.Builder createdMethodBuilder)
@@ -647,9 +647,9 @@ public class ComponentJsTypeGenerator
     }
 
     /**
-     * Generate a JsInterop proxy method for a {@link VueComponent} method.
+     * Generate a JsInterop proxy method for a {@link IsVueComponent} method.
      * This proxy will keep the same name in JS and can be therefore passed to Vue to
-     * configure our {@link VueComponent}.
+     * configure our {@link IsVueComponent}.
      * @param componentJsTypeBuilder Builder for the JsType class
      * @param originalMethod Method to proxify
      */
@@ -721,14 +721,14 @@ public class ComponentJsTypeGenerator
         String methodName = "$emit";
         if (methodCallParameters != null && !"".equals(methodCallParameters))
         {
-            proxyMethodBuilder.addStatement("this.$L($S, $L)",
+            proxyMethodBuilder.addStatement("asVue().$L($S, $L)",
                 methodName,
                 methodToEventName(originalMethod),
                 methodCallParameters);
         }
         else
         {
-            proxyMethodBuilder.addStatement("this.$L($S)",
+            proxyMethodBuilder.addStatement("asVue().$L($S)",
                 methodName,
                 methodToEventName(originalMethod));
         }
@@ -736,7 +736,7 @@ public class ComponentJsTypeGenerator
 
     /**
      * Return true of the given method is a proxy method
-     * @param component {@link VueComponent} this method belongs to
+     * @param component {@link IsVueComponent} this method belongs to
      * @param method The java method to check
      * @param hookMethodsFromInterfaces All the hook methods in the implement interfaces
      * @return True if this method is a hook method, false otherwise

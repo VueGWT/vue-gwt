@@ -27,7 +27,7 @@ To create our Component, we must create a Class annotated by `@Component` that e
 ***SimpleLinkComponent.java***
 ```java
 @Component
-public class SimpleLinkComponent extends VueComponent {
+public class SimpleLinkComponent implements IsVueComponent {
     @JsProperty String linkName = "Hello Vue GWT!";
 }
 ```
@@ -139,7 +139,7 @@ This one will allow us to set the link `href` attribute in our Java Class.
 
 ```java
 @Component
-public class LinkComponent extends VueComponent {
+public class LinkComponent implements IsVueComponent {
     @JsProperty String linkName = "Hello Vue GWT!";
     @JsProperty String linkTarget = "https://github.com/Axellience/vue-gwt";
 }
@@ -179,7 +179,7 @@ Let's check this with a small example:
 
 ```java
 @Component
-public class CanHideComponent extends VueComponent {
+public class CanHideComponent implements IsVueComponent {
     @JsProperty boolean visible = true;
 }
 ```
@@ -229,7 +229,7 @@ You can see it as your Component constructor.
 
 ```java
 @Component
-public class SimpleTodoListComponent extends VueComponent implements HasCreated {
+public class SimpleTodoListComponent implements IsVueComponent , HasCreated {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
     @Override
@@ -283,7 +283,7 @@ To let users interact with your app, we can use the `v-on` directive to attach e
 
 ```java
 @Component
-public class ExclamationComponent extends VueComponent {
+public class ExclamationComponent implements IsVueComponent {
     @JsProperty String message = "Hello Vue GWT!";
     
     @JsMethod // Notice the @JsMethod annotation to expose this method to our template
@@ -318,7 +318,7 @@ Vue also provides the [v-model directive](../forms.md) that makes two-way bindin
 
 ```java
 @Component
-public class MessageComponent extends VueComponent {
+public class MessageComponent implements IsVueComponent {
     @JsProperty String message = "Hello Vue GWT!";
 }
 ```
@@ -357,7 +357,7 @@ We first create a Class like for our previous examples.
 
 ```java
 @Component
-public class TodoComponent extends VueComponent {
+public class TodoComponent implements IsVueComponent {
 }
 ```
 
@@ -379,7 +379,7 @@ We first register `TodoComponent` to be used in our `ParentComponent` by passing
 
 ```java
 @Component(components = {TodoComponent.class})
-public class ParentComponent extends VueComponent {
+public class ParentComponent implements IsVueComponent {
 }
 ```
 
@@ -410,7 +410,7 @@ Let’s modify our `TodoComponent` to make it accept a property.
 ***TodoComponent.java***
 ```java
 @Component
-public class TodoComponent extends VueComponent {
+public class TodoComponent implements IsVueComponent {
     @Prop
     @JsProperty
     Todo todo;
@@ -438,7 +438,7 @@ Let's call it `TodoListComponent`:
 
 ```java
 @Component(components = {TodoComponent.class})
-public class TodoListComponent extends VueComponent implements HasCreated {
+public class TodoListComponent implements IsVueComponent , HasCreated {
     @JsProperty List<Todo> todos = new LinkedList<>();
     
     @Override

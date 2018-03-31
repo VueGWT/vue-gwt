@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.processors.component;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -33,7 +33,7 @@ import static com.axellience.vuegwt.processors.utils.InjectedDependenciesUtil.ge
 import static com.axellience.vuegwt.processors.utils.InjectedDependenciesUtil.hasInjectAnnotation;
 
 /**
- * Build a class used to inject dependencies of a given {@link VueComponent}.
+ * Build a class used to inject dependencies of a given {@link IsVueComponent}.
  * @author Adrien Baron
  */
 public class ComponentInjectedDependenciesBuilder
@@ -84,7 +84,7 @@ public class ComponentInjectedDependenciesBuilder
 
     /**
      * Process all the injected fields from our Component.
-     * @param component The {@link VueComponent} we are processing
+     * @param component The {@link IsVueComponent} we are processing
      */
     private void processInjectedFields(TypeElement component)
     {
@@ -97,7 +97,7 @@ public class ComponentInjectedDependenciesBuilder
 
     /**
      * Process all the injected methods from our Component.
-     * @param component The {@link VueComponent} we are processing
+     * @param component The {@link IsVueComponent} we are processing
      */
     private void processInjectedMethods(TypeElement component)
     {

@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.client.vue;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
@@ -21,7 +21,7 @@ import jsinterop.base.JsPropertyMap;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public interface VueJsConstructor<T extends VueComponent>
+public interface VueJsConstructor<T extends IsVueComponent>
 {
     <K extends T> VueJsConstructor<K> extend(VueComponentOptions<K> vueComponentOptions);
 

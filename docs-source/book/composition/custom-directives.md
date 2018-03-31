@@ -51,7 +51,7 @@ If you want to register a directive locally instead, the `@Component` also accep
 
 ```java
 @Component(directives = FocusDirective.class)
-public class FocusDirectiveComponent extends VueComponent
+public class FocusDirectiveComponent implements IsVueComponent
 ```
 
 Then in a template, you can use the new `v-focus` attribute on any element, like this:

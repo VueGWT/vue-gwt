@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.todotextcomputed;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -10,7 +10,7 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component
-public class TodoTextComputedComponent extends VueComponent
+public class TodoTextComputedComponent implements IsVueComponent
 {
     @JsProperty Todo todo = new Todo("Hello World!");
 

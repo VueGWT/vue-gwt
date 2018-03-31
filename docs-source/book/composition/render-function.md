@@ -57,7 +57,7 @@ When you get started with a component that just generates a heading based on the
 
 ```java
 @Component
-public class AnchoredHeadingComponent extends VueComponent {
+public class AnchoredHeadingComponent implements IsVueComponent {
     @JsProperty
     @Prop(required = true)
     Integer level;
@@ -71,7 +71,7 @@ While templates work great for most components, it's clear that this isn't one o
 
 ```java
 @Component(hasTemplate = false)
-public class AnchoredHeadingComponent extends VueComponent implements HasRender {
+public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
     @JsProperty
     @Prop(required = true)
     public Integer level;
@@ -129,24 +129,24 @@ public class VNodeBuilder {
 
 
     /**
-     * Create a VNode with the given {@link VueComponent}
-     * @param vueComponentClass Class for the {@link VueComponent} we want
+     * Create a VNode with the given {@link IsVueComponent}
+     * @param isVueComponentClass Class for the {@link IsVueComponent} we want
      * @param data Information for the new VNode (attributes...)
      * @param children Children
      * @return a new VNode of this Component
      */
-    public VNode el(Class<VueComponent> vueComponentClass, VNodeData data, Object... children) { ... }
+    public VNode el(Class<IsVueComponent> isVueComponentClass, VNodeData data, Object... children) { ... }
 
     /**
-     * Create a VNode with the {@link VueComponent} of the given {@link VueFactory}
+     * Create a VNode with the {@link IsVueComponent} of the given {@link VueFactory}
      * @param vueFactory {@link VueFactory} for the Component we want
      * @param children Children
      * @return a new VNode of this Component
      */
-    public VNode el(VueFactory<VueComponent> vueFactory, Object... children) { ... }
+    public VNode el(VueFactory<IsVueComponent> vueFactory, Object... children) { ... }
 
     /**
-     * Create a VNode with the {@link VueComponent} of the given {@link VueJsConstructor}
+     * Create a VNode with the {@link IsVueComponent} of the given {@link VueJsConstructor}
      * @param vueJsConstructor {@link VueJsConstructor} for the Component we want
      * @param children Children
      * @return a new VNode of this Component
@@ -233,7 +233,7 @@ With this knowledge, we can now finish the component we started:
 
 ```java
 @Component(hasTemplate = false)
-public class AnchoredHeadingComponent extends VueComponent implements HasRender {
+public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
 
     @JsProperty

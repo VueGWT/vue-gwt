@@ -3,7 +3,7 @@ package com.axellience.vuegwt.processors.utils;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Emit;
 import com.axellience.vuegwt.core.annotations.component.Prop;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.directive.VueDirective;
 import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.ClassName;
@@ -116,8 +116,8 @@ public class GeneratorsNameUtil
      * Return the default name to register a component based on it's class name.
      * The name of the tag is the name of the component converted to kebab-case.
      * If the component class ends with "Component", this part is ignored.
-     * @param componentClassName The Class name of the {@link VueComponent} we want the name of
-     * @param componentAnnotation The {@link Component} annotation for the {@link VueComponent} we want the name of
+     * @param componentClassName The Class name of the {@link IsVueComponent} we want the name of
+     * @param componentAnnotation The {@link Component} annotation for the {@link IsVueComponent} we want the name of
      * @return The name of the component as kebab case
      */
     public static String componentToTagName(String componentClassName, Component componentAnnotation)

@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.shareddatamodel;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import jsinterop.annotations.JsProperty;
 
@@ -8,7 +8,7 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component(useFactory = false)
-public class SharedDataModelComponent extends VueComponent
+public class SharedDataModelComponent implements IsVueComponent
 {
     @JsProperty int counter = 0;
 }

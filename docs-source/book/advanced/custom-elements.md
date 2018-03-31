@@ -27,14 +27,14 @@ It let's a user with a given name select an animal, and emits an event each time
 
 ```java
 @Component
-public class AnimalSelectorComponent extends VueComponent {
+public class AnimalSelectorComponent implements IsVueComponent {
     @Prop
     @JsProperty
     String userName;
 
     @JsMethod
     public void selectAnimal(Event event) {
-        this.$emit("animal-selected", ((HTMLInputElement) event.target).value);
+        asVue().$emit("animal-selected", ((HTMLInputElement) event.target).value);
     }
 }
 ```
@@ -184,7 +184,7 @@ Will render:
 
 ### Creating Instances Programmatically
 
-The `createInstance` method returns a `VueCustomElementType<T extends VueComponent>`.
+The `createInstance` method returns a `VueCustomElementType<T extends IsVueComponent>`.
 This object can be used to create instances of your Custom Element easily.
 
 ```java
@@ -231,7 +231,7 @@ Keep in mind that only the JsInterop properties and methods from your Component 
 
 ## Available Options
 
-`Vue.customElement` takes an optional third argument of type `CustomElementOptions<T extends VueComponent>`.
+`Vue.customElement` takes an optional third argument of type `CustomElementOptions<T extends IsVueComponent>`.
 
 Here are the available options:
 

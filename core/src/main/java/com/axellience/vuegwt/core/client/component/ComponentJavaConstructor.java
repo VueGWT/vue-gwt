@@ -8,7 +8,7 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public class ComponentJavaConstructor<T extends VueComponent> extends Function
+public class ComponentJavaConstructor<T extends IsVueComponent> extends Function
 {
     public ComponentJavaPrototype<T> prototype;
 }

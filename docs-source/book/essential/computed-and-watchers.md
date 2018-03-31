@@ -32,7 +32,7 @@ That's why for any complex logic, you should use a **computed property**.
 
 ```java
 @Component
-public class ReverseComponent extends VueComponent {
+public class ReverseComponent implements IsVueComponent {
     @JsProperty String message = "Hello";
 
     @Computed // Note the annotation that tells Vue GWT that this is a Computed Properties
@@ -77,7 +77,7 @@ You may have noticed we can achieve the same result by invoking a method in the 
 
 ```java
 @Component
-public class ReverseComponent extends VueComponent {
+public class ReverseComponent implements IsVueComponent {
     @JsProperty String message = "Hello";
 
     // Note that there a no more @Computed annotation
@@ -123,7 +123,7 @@ However, it is often a better idea to use a computed property rather than an imp
 
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent implements HasCreated {
+public class JohnSnowComponent implements IsVueComponent , HasCreated {
     @JsProperty String firstName;
     @JsProperty String lastName;
     @JsProperty String fullName;
@@ -151,7 +151,7 @@ The above code is imperative and repetitive. Compare it with a computed property
 
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent {
+public class JohnSnowComponent implements IsVueComponent {
     @JsProperty String firstName = "John";
     @JsProperty String lastName = "Snow";
 
@@ -170,7 +170,7 @@ Computed properties are by default getter-only, but you can also provide a sette
 
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent {
+public class JohnSnowComponent implements IsVueComponent {
     @JsProperty String firstName = "John";
     @JsProperty String lastName = "Snow";
 
@@ -211,7 +211,7 @@ The mandatory `value` attribute of the annotation indicate the name of the prope
 Here is an example:
 ```java
 @Component
-public class JohnSnowComponent extends VueComponent {
+public class JohnSnowComponent implements IsVueComponent {
     @JsProperty String message = "Hello World!";
 
     @Watch("message")

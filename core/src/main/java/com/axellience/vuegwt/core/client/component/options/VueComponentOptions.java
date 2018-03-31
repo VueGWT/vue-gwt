@@ -2,6 +2,7 @@ package com.axellience.vuegwt.core.client.component.options;
 
 import com.axellience.vuegwt.core.client.component.ComponentJavaPrototype;
 import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedOptions;
 import com.axellience.vuegwt.core.client.component.options.data.DataFactory;
@@ -35,7 +36,7 @@ import static elemental2.core.Global.JSON;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class VueComponentOptions<T extends VueComponent> extends JsObject implements JsPropertyMap
+public class VueComponentOptions<T extends IsVueComponent> extends JsObject implements JsPropertyMap
 {
     private ComponentJavaPrototype<T> componentJavaPrototype;
     private Map<String, Provider<?>> dependenciesProvider;
@@ -43,7 +44,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     /**
      * Set the Java Prototype on this {@link VueComponentOptions}.
-     * This prototype will be used to retrieve the java methods of our {@link VueComponent}.
+     * This prototype will be used to retrieve the java methods of our {@link IsVueComponent}.
      * @param javaPrototype The {@link ComponentJavaPrototype} for this Component
      */
     @JsOverlay
@@ -116,7 +117,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     /**
      * Add a computed property to this ComponentOptions.
      * If the computed has both a getter and a setter, this will be called twice, once for each.
-     * @param javaMethodName Name of the method in the {@link VueComponent}
+     * @param javaMethodName Name of the method in the {@link IsVueComponent}
      * @param computedPropertyName Name of the computed property in the Template and the
      * ComponentOptions
      * @param kind Kind of the computed method (getter or setter)
@@ -141,7 +142,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     /**
      * Add a watch property to this Component Definition
-     * @param javaMethodName Name of the method in the {@link VueComponent}
+     * @param javaMethodName Name of the method in the {@link IsVueComponent}
      * @param watchedPropertyName Name of the property name to watch in the data model
      * @param isDeep Is the watcher deep (will watch child properties)
      */
@@ -213,7 +214,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     /**
      * Add a custom prop validator to validate a property
-     * @param javaMethodName Name of the method in the {@link VueComponent}
+     * @param javaMethodName Name of the method in the {@link IsVueComponent}
      * @param propertyName The name of the property to validate
      */
     @JsOverlay
@@ -225,7 +226,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
 
     /**
      * Add a custom prop validator to validate a property
-     * @param javaMethodName Name of the method in the {@link VueComponent}
+     * @param javaMethodName Name of the method in the {@link IsVueComponent}
      * @param propertyName The name of the property to validate
      */
     @JsOverlay
@@ -236,7 +237,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     }
 
     /**
-     * Get the given java method from the {@link VueComponent}.
+     * Get the given java method from the {@link IsVueComponent}.
      * @param javaMethodName Name of the Java method to retrieve
      * @return The JS function that represent our Java method.
      */
@@ -302,7 +303,7 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     @JsProperty private JsPropertyMap<VueDirectiveOptions> directives;
 
     @JsProperty private JsPropertyMap<VueComponentOptions> components;
-    @JsProperty private VueComponent parent;
+    @JsProperty private IsVueComponent parent;
 
     @JsProperty private String name;
 
@@ -516,13 +517,13 @@ public class VueComponentOptions<T extends VueComponent> extends JsObject implem
     }
 
     @JsOverlay
-    public final VueComponent getParent()
+    public final IsVueComponent getParent()
     {
         return parent;
     }
 
     @JsOverlay
-    public final VueComponentOptions setParent(VueComponent parent)
+    public final VueComponentOptions setParent(IsVueComponent parent)
     {
         this.parent = parent;
         return this;

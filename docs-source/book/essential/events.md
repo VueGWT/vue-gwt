@@ -18,7 +18,7 @@ For example:
 ```
 ```java
 @Component
-public class ButtonPlusOneComponent extends VueComponent {
+public class ButtonPlusOneComponent implements IsVueComponent {
     @JsProperty int counter = 0;
 }
 ```
@@ -44,7 +44,7 @@ For example:
 
 ```java
 @Component
-public class GreetComponent extends VueComponent {
+public class GreetComponent implements IsVueComponent {
     @JsMethod
     public void greet() {
         Window.alert("Hello from GWT!");
@@ -79,7 +79,7 @@ Instead of binding directly to a method name, we can also use methods in an inli
 ```
 ```java
 @Component
-public class HiWhatComponent extends VueComponent {
+public class HiWhatComponent implements IsVueComponent {
     @JsMethod
     public void say(String message) {
         Window.alert(message);

@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.todolist;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Component(components = TodoComponent.class)
-public class TodoListComponent extends VueComponent implements HasCreated
+public class TodoListComponent implements IsVueComponent , HasCreated
 {
     @JsProperty List<Todo> todos = new LinkedList<>();
 

@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.core.client.tools;
 
 import com.axellience.vuegwt.core.client.component.ComponentJavaPrototype;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import elemental2.core.Function;
 import elemental2.core.JsObject;
@@ -23,7 +23,7 @@ public class VueGWTTools
      * extend with
      * @param <T> The type of the VueComponent
      */
-    public static <T extends VueComponent> void extendVueConstructorWithJavaPrototype(
+    public static <T extends IsVueComponent> void extendVueConstructorWithJavaPrototype(
         VueJsConstructor<T> extendedVueJsConstructor,
         ComponentJavaPrototype<T> componentJavaPrototype)
     {

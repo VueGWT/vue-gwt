@@ -8,6 +8,6 @@ import jsinterop.base.JsPropertyMap;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class ComponentJavaPrototype<T extends VueComponent> implements JsPropertyMap
+public class ComponentJavaPrototype<T extends IsVueComponent> implements JsPropertyMap
 {
 }

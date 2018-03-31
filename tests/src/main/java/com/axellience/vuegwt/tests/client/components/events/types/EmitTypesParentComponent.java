@@ -1,13 +1,13 @@
 package com.axellience.vuegwt.tests.client.components.events.types;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.tests.client.common.Todo;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 
 @Component(components = { EmitTypesChildComponent.class })
-class EmitTypesParentComponent extends VueComponent
+class EmitTypesParentComponent implements IsVueComponent
 {
     @JsProperty public int myInt; // 10
     @JsProperty public boolean myBoolean; // false

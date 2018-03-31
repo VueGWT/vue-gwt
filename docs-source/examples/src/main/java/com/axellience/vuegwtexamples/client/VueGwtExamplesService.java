@@ -2,10 +2,9 @@ package com.axellience.vuegwtexamples.client;
 
 import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.VueGWT;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
-import com.axellience.vuegwtexamples.client.examples.animalselector.AnimalSelectorComponent;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
 import com.axellience.vuegwtexamples.client.examples.canhide.CanHideComponent;
@@ -55,11 +54,11 @@ public class VueGwtExamplesService
     {
         if (DomGlobal.document.getElementById("fullJsComponent") != null)
         {
-            VueJsConstructor<VueComponent> vueClass =
-                (VueJsConstructor<VueComponent>) ((JsPropertyMap) DomGlobal.window).get(
+            VueJsConstructor<IsVueComponent> vueClass =
+                (VueJsConstructor<IsVueComponent>) ((JsPropertyMap) DomGlobal.window).get(
                     "FullJsComponent");
-            VueComponent myComponent = vueClass.instantiate();
-            myComponent.$mount("#fullJsComponent");
+            IsVueComponent myComponent = vueClass.instantiate();
+            myComponent.asVue().$mount("#fullJsComponent");
         }
 
         ExampleInjector exampleInjector = DaggerExampleInjector.builder().build();
@@ -106,7 +105,7 @@ public class VueGwtExamplesService
         addExample("passValues", ParentPassValuesComponent.class);
     }
 
-    private static void addExample(String exampleId, Class<? extends VueComponent> exampleVueClass)
+    private static void addExample(String exampleId, Class<? extends IsVueComponent> exampleVueClass)
     {
         addExample(exampleId, VueGWT.getFactory(exampleVueClass));
     }
@@ -116,7 +115,7 @@ public class VueGwtExamplesService
         // If we find the containing div for this example, we instantiate it
         if (DomGlobal.document.getElementById(exampleId) != null)
         {
-            VueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVueFactory);
+            IsVueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVueFactory);
             ((JsPropertyMap) DomGlobal.window).set(exampleId, exampleInstance);
         }
     }

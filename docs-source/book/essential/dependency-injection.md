@@ -47,7 +47,7 @@ It's not possible to use injected constructor parameters as Java constructors ar
 
 ```java
 @Component
-public class GotQuotesComponent extends VueComponent implements HasCreated {
+public class GotQuotesComponent implements IsVueComponent , HasCreated {
     @JsProperty GotQuote quote;
     @Inject GotQuotesService gotQuotesService;
 
@@ -146,7 +146,7 @@ All the Components used in the template and declared in `components` will be inj
 
 ```java
 @Component(components = {Child1Component.class, Child2Component.class})
-public class RootComponent extends VueComponent {}
+public class RootComponent implements IsVueComponent {}
 ```
 
 ```html
@@ -161,7 +161,7 @@ public class RootComponent extends VueComponent {}
 
 ```java
 @Component(components = GrandChild1Component.class)
-public class Child1Component extends VueComponent {
+public class Child1Component implements IsVueComponent {
     @Inject MyService myService;
 }
 ```
@@ -176,7 +176,7 @@ public class Child1Component extends VueComponent {
 
 ```java
 @Component
-public class Child2Component extends VueComponent {
+public class Child2Component implements IsVueComponent {
     @Inject MyService myService;
     @Inject AnotherService anotherService;
 }
@@ -186,7 +186,7 @@ public class Child2Component extends VueComponent {
 
 ```java
 @Component
-public class GrandChild1Component extends VueComponent {
+public class GrandChild1Component implements IsVueComponent {
     @Inject AnotherService anotherService;
 }
 ```

@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.gwt2.client.widget;
 
 import com.axellience.vuegwt.core.client.VueGWT;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.google.gwt.dom.client.Document;
@@ -12,9 +12,9 @@ import elemental2.dom.HTMLDivElement;
 import jsinterop.base.Js;
 
 /**
- * Wraps a {@link VueComponent} instance in a GWT Widget.
+ * Wraps a {@link IsVueComponent} instance in a GWT Widget.
  */
-public class VueGwtWidget<T extends VueComponent> extends Widget
+public class VueGwtWidget<T extends IsVueComponent> extends Widget
 {
     private final T vueComponentInstance;
 
@@ -63,6 +63,6 @@ public class VueGwtWidget<T extends VueComponent> extends Widget
     {
         HTMLDivElement vueElement = (HTMLDivElement) DomGlobal.document.createElement("div");
         getElement().appendChild(Js.cast(vueElement));
-        vueComponentInstance.$mount(vueElement);
+        vueComponentInstance.asVue().$mount(vueElement);
     }
 }

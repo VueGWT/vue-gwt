@@ -1,6 +1,6 @@
 package com.axellience.vuegwtexamples.client.examples.vforonobject;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -11,7 +11,7 @@ import jsinterop.base.JsPropertyMap;
  * @author Adrien Baron
  */
 @Component
-public class VForOnObjectComponent extends VueComponent implements HasCreated
+public class VForOnObjectComponent implements IsVueComponent , HasCreated
 {
     @JsProperty JsPropertyMap<Object> myObject;
 

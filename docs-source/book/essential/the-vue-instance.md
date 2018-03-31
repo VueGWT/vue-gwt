@@ -45,7 +45,7 @@ This `data` object is built for you by Vue GWT based on the public properties of
 For example this Vue Component:
 ```java
 @Component
-public class DemoComponent extends VueComponent {
+public class DemoComponent implements IsVueComponent {
     @JsProperty Todo todo;
 }
 ```
@@ -100,7 +100,7 @@ public class Todo {
 }
 
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent implements IsVueComponent , HasCreated {
     @JsProperty todo;
     
     @Override
@@ -150,7 +150,7 @@ public class Todo {
 
 // The text property will be observable in your Component
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent implements IsVueComponent , HasCreated {
     @JsProperty todo;
     
     @Override
@@ -173,7 +173,7 @@ public class Todo {
 }
 
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent implements IsVueComponent , HasCreated {
     @JsProperty todo;
     
     @Override
@@ -199,7 +199,7 @@ For example:
 
 ```java
 @Component
-public class DemoComponent extends VueComponent implements HasCreated {
+public class DemoComponent implements IsVueComponent , HasCreated {
     @JsProperty Todo todo;
     
     @Override
@@ -227,7 +227,7 @@ For example, the [`mounted`](https://vuejs.org/v2/api/#mounted) hook is called a
 
 ```java
 @Component
-public class DemoComponent extends VueComponent implements HasMounted {
+public class DemoComponent implements IsVueComponent, HasMounted {
     @JsProperty Todo todo;
     
     @Override

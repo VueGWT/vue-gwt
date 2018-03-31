@@ -2,7 +2,7 @@ package com.axellience.vuegwt.processors.component.factory;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.client.Vue;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
@@ -37,7 +37,7 @@ import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.get
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.*;
 
 /**
- * Generate {@link VueFactory} from the user {@link VueComponent} classes annotated by {@link
+ * Generate {@link VueFactory} from the user {@link IsVueComponent} classes annotated by {@link
  * Component}.
  * @author Adrien Baron
  */
@@ -112,7 +112,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
     }
 
     /**
-     * Register the {@link VueComponent} dependencies provider.
+     * Register the {@link IsVueComponent} dependencies provider.
      * <br>
      * For each instance of our VueComponent, we will create a Java instance of dependencies using
      * this provider.
@@ -220,7 +220,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
 
     /**
      * Process all the {@link CustomizeOptions} from the {@link Component} annotation.
-     * @param component The {@link VueComponent} we generate for
+     * @param component The {@link IsVueComponent} we generate for
      * @param initBuilder The builder for our {@link VueFactory} init method
      * @param staticInitParameters The list of static parameters to pass when calling the init
      * method from a static context

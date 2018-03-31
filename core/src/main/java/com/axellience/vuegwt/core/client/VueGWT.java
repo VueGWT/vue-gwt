@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.core.client;
 
 import com.axellience.vuegwt.core.client.component.ComponentJavaConstructor;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.observer.VueGWTObserverManager;
 import com.axellience.vuegwt.core.client.observer.vuegwtobservers.CollectionObserver;
 import com.axellience.vuegwt.core.client.observer.vuegwtobservers.MapObserver;
@@ -30,7 +30,7 @@ public class VueGWT
     private static boolean isReady = false;
     private static LinkedList<Runnable> onReadyCallbacks = new LinkedList<>();
 
-    private static final Map<String, VueFactory<? extends VueComponent>> factories =
+    private static final Map<String, VueFactory<? extends IsVueComponent>> factories =
         new HashMap<>();
     private static final Map<String, Provider<?>> factoryProviders = new HashMap<>();
 
@@ -82,40 +82,40 @@ public class VueGWT
     /**
      * Create a {@link Vue} instance for the given Vue Component Class.
      * You can then call $mount on it to mount the instance.
-     * @param vueComponentClass The Class of the Component to create
-     * @param <T> The type of the {@link VueComponent}
+     * @param isVueComponentClass The Class of the Component to create
+     * @param <T> The type of the {@link IsVueComponent}
      * @return The created instance of our Component (not yet mounted)
      */
     @JsIgnore
-    public static <T extends VueComponent> T createInstance(Class<T> vueComponentClass)
+    public static <T extends IsVueComponent> T createInstance(Class<T> isVueComponentClass)
     {
-        return getFactory(vueComponentClass).create();
+        return getFactory(isVueComponentClass).create();
     }
 
     /**
-     * Return the {@link VueFactory} for the given {@link VueComponent} class.
-     * @param vueComponentClass The {@link VueComponent} class
-     * @param <T> The type of the {@link VueComponent}
+     * Return the {@link VueFactory} for the given {@link IsVueComponent} class.
+     * @param isVueComponentClass The {@link IsVueComponent} class
+     * @param <T> The type of the {@link IsVueComponent}
      * @return A {@link VueFactory} you can use to instantiate components
      */
     @JsIgnore
-    public static <T extends VueComponent> VueFactory<T> getFactory(Class<T> vueComponentClass)
+    public static <T extends IsVueComponent> VueFactory<T> getFactory(Class<T> isVueComponentClass)
     {
-        if (JsObject.class.equals(vueComponentClass))
+        if (JsObject.class.equals(isVueComponentClass))
         {
             throw new RuntimeException(
                 "You can't use the .class of a JsComponent to instantiate it. Please use MyComponentFactory.get() instead.");
         }
-        return (VueFactory<T>) getFactory(vueComponentClass.getCanonicalName());
+        return (VueFactory<T>) getFactory(isVueComponentClass.getCanonicalName());
     }
 
     /**
-     * Return the {@link VueFactory} for the given {@link VueComponent} fully qualified name.
-     * @param qualifiedName The fully qualified name of the {@link VueComponent} class
-     * @param <T> The type of the {@link VueComponent}
+     * Return the {@link VueFactory} for the given {@link IsVueComponent} fully qualified name.
+     * @param qualifiedName The fully qualified name of the {@link IsVueComponent} class
+     * @param <T> The type of the {@link IsVueComponent}
      * @return A {@link VueFactory} you can use to instantiate components
      */
-    public static <T extends VueComponent> VueFactory<T> getFactory(String qualifiedName)
+    public static <T extends IsVueComponent> VueFactory<T> getFactory(String qualifiedName)
     {
         if (factoryProviders.containsKey(qualifiedName))
             return (VueFactory<T>) factoryProviders.get(qualifiedName).get();
@@ -129,53 +129,53 @@ public class VueGWT
     }
 
     /**
-     * Return the {@link VueJsConstructor} for the given {@link VueComponent} class.
-     * @param vueComponentClass The {@link VueComponent} class
-     * @param <T> The type of the {@link VueComponent}
+     * Return the {@link VueJsConstructor} for the given {@link IsVueComponent} class.
+     * @param isVueComponentClass The {@link IsVueComponent} class
+     * @param <T> The type of the {@link IsVueComponent}
      * @return A {@link VueJsConstructor} you can use to instantiate components
      */
     @JsIgnore
-    public static <T extends VueComponent> VueJsConstructor<T> getJsConstructor(
-        Class<T> vueComponentClass)
+    public static <T extends IsVueComponent> VueJsConstructor<T> getJsConstructor(
+        Class<T> isVueComponentClass)
     {
-        return getFactory(vueComponentClass).getJsConstructor();
+        return getFactory(isVueComponentClass).getJsConstructor();
     }
 
     /**
-     * Return the {@link VueJsConstructor} for the given {@link VueComponent} fully qualified name.
-     * @param qualifiedName The fully qualified name of the {@link VueComponent} class
-     * @param <T> The type of the {@link VueComponent}
+     * Return the {@link VueJsConstructor} for the given {@link IsVueComponent} fully qualified name.
+     * @param qualifiedName The fully qualified name of the {@link IsVueComponent} class
+     * @param <T> The type of the {@link IsVueComponent}
      * @return A {@link VueJsConstructor} you can use to instantiate components
      */
-    public static <T extends VueComponent> VueJsConstructor<T> getJsConstructor(
+    public static <T extends IsVueComponent> VueJsConstructor<T> getJsConstructor(
         String qualifiedName)
     {
         return (VueJsConstructor<T>) getFactory(qualifiedName).getJsConstructor();
     }
 
     /**
-     * Return the Java Constructor of our VueComponent Java Class.
+     * Return the Java Constructor of our {@link IsVueComponent} Java Class.
      * This Constructor can be used to get the prototype of our Java Class and get the
      * VueComponent methods from it.
-     * @param vueComponentClass The {@link VueComponent} we want the constructor of
-     * @param <T> The type of the {@link VueComponent}
-     * @return The Java constructor of our {@link VueComponent}
+     * @param isVueComponentClass The {@link IsVueComponent} we want the constructor of
+     * @param <T> The type of the {@link IsVueComponent}
+     * @return The Java constructor of our {@link IsVueComponent}
      */
     @JsIgnore
-    public static <T extends VueComponent> ComponentJavaConstructor getJavaConstructor(
-        Class<T> vueComponentClass)
+    public static <T extends IsVueComponent> ComponentJavaConstructor getJavaConstructor(
+        Class<T> isVueComponentClass)
     {
-        return (ComponentJavaConstructor) Js.asConstructorFn(vueComponentClass);
+        return (ComponentJavaConstructor) Js.asConstructorFn(isVueComponentClass);
     }
 
     /**
-     * Register a {@link VueFactory} for a given {@link VueComponent} fully qualified name.
-     * @param qualifiedName The fully qualified name of the {@link VueComponent} class
+     * Register a {@link VueFactory} for a given {@link IsVueComponent} fully qualified name.
+     * @param qualifiedName The fully qualified name of the {@link IsVueComponent} class
      * @param vueFactory A {@link VueFactory} you can use to instantiate components
-     * @param <T> The type of the {@link VueComponent}
+     * @param <T> The type of the {@link IsVueComponent}
      */
     @JsIgnore
-    public static <T extends VueComponent> void register(String qualifiedName,
+    public static <T extends IsVueComponent> void register(String qualifiedName,
         VueFactory<T> vueFactory)
     {
         factories.put(qualifiedName, vueFactory);
@@ -183,8 +183,8 @@ public class VueGWT
 
     /**
      * Register a {@link Supplier} returning the {@link VueFactory} for a given {@link
-     * VueComponent}.
-     * @param qualifiedName The fully qualified name of the {@link VueComponent} class
+     * IsVueComponent}.
+     * @param qualifiedName The fully qualified name of the {@link IsVueComponent} class
      * @param vueFactoryProvider A static {@link Provider} which provides {@link VueFactory} that
      * you can use to instantiate components
      */
