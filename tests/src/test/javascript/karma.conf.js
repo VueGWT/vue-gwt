@@ -18,7 +18,7 @@ module.exports = function (config) {
 		],
 		exclude: ['karma.conf*.js'],
 		reporters: ['spec'],
-		port: 9876,
+		port: 9877,
 		browsers: ['ChromeHeadless'],
 		singleRun: false,
 		autoWatch: true,
