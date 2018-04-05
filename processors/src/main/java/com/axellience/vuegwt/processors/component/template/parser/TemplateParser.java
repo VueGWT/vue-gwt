@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.processing.Messager;
-import javax.lang.model.element.TypeElement;
 
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateScopedCssParser.ScopedCssResult;
@@ -64,7 +63,6 @@ public class TemplateParser
     private static Pattern VUE_ATTR_PATTERN = Pattern.compile("^(v-|:|@).*");
     private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
-    private TypeElement componentTypeElement;
     private TemplateParserContext context;
     private Messager messager;
     private TemplateParserLogger logger;
@@ -83,10 +81,9 @@ public class TemplateParser
      * @param messager Used to report errors in template during Annotation Processing
      * @return A {@link TemplateParserResult} containing the processed template and expressions
      */
-    public TemplateParserResult parseHtmlTemplate(TypeElement componentTypeElement, String htmlTemplate,
+    public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
             TemplateParserContext context, Messager messager)
     {
-        this.componentTypeElement = componentTypeElement;
         this.context = context;
         this.messager = messager;
         this.logger = new TemplateParserLogger(context, messager);
@@ -133,20 +130,26 @@ public class TemplateParser
             .forEach(outputDocument::remove);
     }
 
+    private static boolean isScopedStyleElement(Element element) {
+        return element != null && "style".equalsIgnoreCase(element.getName())
+                && element.getAttributes() != null && element.getAttributes().get("scoped") != null;
+    }
+
     private String processScopedCss(Source doc) {
         class Rslt { String scopedCss = ""; }
         final Rslt rslt = new Rslt();
         doc.getAllElements().stream()
-            .filter(element -> "style".equalsIgnoreCase(element.getName())
-                    && element.getAttributes() != null && element.getAttributes().get("scoped") != null
-                   )
+            .filter(TemplateParser::isScopedStyleElement)
             .peek(styleScoped -> {
                 String css = styleScoped.getContent().toString().trim();
                 if (!css.isEmpty()) {
                     TemplateScopedCssParser scopedCssParser = new TemplateScopedCssParser(messager);
-                    ScopedCssResult scopedCssResult = scopedCssParser.parse(componentTypeElement, css);
-                    context.getMandatoryAttributes().putAll(scopedCssResult.mandatoryAttributes);
-                    rslt.scopedCss = scopedCssResult.scopedCss;
+                    Optional<ScopedCssResult> scopedCssResult = scopedCssParser.parse(
+                            context.getComponentTypeElement(), css);
+                    if (scopedCssResult.isPresent()) {
+                        context.getMandatoryAttributes().putAll(scopedCssResult.get().mandatoryAttributes);
+                        rslt.scopedCss = scopedCssResult.get().scopedCss;
+                    }
                 }
             })
             .forEach(outputDocument::remove);

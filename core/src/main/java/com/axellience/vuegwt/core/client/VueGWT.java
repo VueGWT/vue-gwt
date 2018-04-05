@@ -87,11 +87,11 @@ public class VueGWT
 
     private static void injectScopedCss() {
         if (scopedCss.isEmpty()) return;
-        StringBuilder sb = new StringBuilder();
+        String all = "";
         for (Entry<String, String> i : scopedCss.entrySet()) {
-            sb.append(i.getValue());
+            all += i.getValue();
         }
-        injectCss(sb.toString());
+        injectCss(all);
     }
 
     @JsIgnore

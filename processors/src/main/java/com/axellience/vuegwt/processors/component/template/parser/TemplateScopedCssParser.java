@@ -3,6 +3,7 @@ package com.axellience.vuegwt.processors.component.template.parser;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Messager;
@@ -65,31 +66,27 @@ public class TemplateScopedCssParser {
         }
     }
 
-    public ScopedCssResult parse(TypeElement componentTypeElement, String css) {
-        ClassName componentTypeName = ClassName.get(componentTypeElement);
-        String scopedCss = "";
-        Map<String, String> mandatoryAttributes = new LinkedHashMap<>();
-        if (css != null && !css.isEmpty()) {
-            final String md5 = md5(componentTypeName.toString());
-            final String datav = "data-v-" + md5;
-            mandatoryAttributes.put(datav, null);
-            // UTF-8 is the fallback if neither a BOM nor @charset rule is present
-            final CascadingStyleSheet cssSheet = CSSReader.readFromString(css, StandardCharsets.UTF_8, ECSSVersion.CSS30);
-            if (cssSheet != null) {
-                CSSVisitor.visitCSS(cssSheet, new DefaultCSSVisitor() {
-                    @Override
-                    public void onBeginStyleRule(@Nonnull final CSSStyleRule aStyleRule) {
-                        ICommonsList<CSSSelector> selectors = aStyleRule.getAllSelectors();
-                        if (selectors != null) {
-                            for (CSSSelector sel : selectors) {
-                                sel.addMember(new CSSSelectorAttribute("", datav));
-                            }
-                        }
+    public Optional<ScopedCssResult> parse(TypeElement componentTypeElement, String css) {
+        if (css == null || css.isEmpty()) return Optional.empty();
+        final ClassName componentTypeName = ClassName.get(componentTypeElement);
+        final String md5 = md5(componentTypeName.toString());
+        final String datav = "data-v-" + md5;
+        // UTF-8 is the fallback if neither a BOM nor @charset rule is present
+        final CascadingStyleSheet cssSheet = CSSReader.readFromString(css, StandardCharsets.UTF_8, ECSSVersion.CSS30);
+        if (cssSheet == null) return Optional.empty();
+        CSSVisitor.visitCSS(cssSheet, new DefaultCSSVisitor() {
+            @Override
+            public void onBeginStyleRule(@Nonnull final CSSStyleRule aStyleRule) {
+                ICommonsList<CSSSelector> selectors = aStyleRule.getAllSelectors();
+                if (selectors != null) {
+                    for (CSSSelector sel : selectors) {
+                        sel.addMember(new CSSSelectorAttribute("", datav));
                     }
-                });
-                scopedCss = getCssAsString(cssSheet);
+                }
             }
-        }
-        return new ScopedCssResult(scopedCss, mandatoryAttributes);
+        });
+        Map<String, String> mandatoryAttributes = new LinkedHashMap<>();
+        mandatoryAttributes.put(datav, null);
+        return Optional.of(new ScopedCssResult(getCssAsString(cssSheet), mandatoryAttributes));
     }
 }

@@ -82,7 +82,6 @@ public class ComponentTemplateProcessor
 
         // Parse the template
         TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
-            componentTypeElement,
             optionalTemplateContent.get(),
             templateParserContext,
             messager);
