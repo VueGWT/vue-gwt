@@ -9,7 +9,6 @@ import com.axellience.vuegwt.processors.component.template.parser.variable.Local
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
 import elemental2.dom.Event;
-import jsinterop.base.JsPropertyMap;
 import net.htmlparser.jericho.Segment;
 
 import javax.lang.model.element.TypeElement;
@@ -57,8 +56,7 @@ public class TemplateParserContext
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".array");
 
         this.rootLayer = new ContextLayer();
-        this.rootLayer.addVariable(String.class, "_uid");
-        this.rootLayer.addVariable(JsPropertyMap.class, "$props");
+        this.rootLayer.addMethod("asVue");
 
         this.contextLayers.add(this.rootLayer);
     }
