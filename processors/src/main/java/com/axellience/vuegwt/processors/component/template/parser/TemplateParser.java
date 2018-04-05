@@ -1,6 +1,24 @@
 package com.axellience.vuegwt.processors.component.template.parser;
 
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.annotation.processing.Messager;
+
 import com.axellience.vuegwt.core.annotations.component.Prop;
+import com.axellience.vuegwt.processors.component.template.parser.TemplateScopedCssParser.ScopedCssResult;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponentProp;
@@ -19,6 +37,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
 import com.squareup.javapoet.TypeName;
+
 import jsinterop.base.Any;
 import net.htmlparser.jericho.Attribute;
 import net.htmlparser.jericho.Attributes;
@@ -29,20 +48,6 @@ import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.Tag;
-
-import javax.annotation.processing.Messager;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -59,6 +64,7 @@ public class TemplateParser
     private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
     private TemplateParserContext context;
+    private Messager messager;
     private TemplateParserLogger logger;
     private TemplateParserResult result;
 
@@ -76,9 +82,10 @@ public class TemplateParser
      * @return A {@link TemplateParserResult} containing the processed template and expressions
      */
     public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
-        TemplateParserContext context, Messager messager)
+            TemplateParserContext context, Messager messager)
     {
         this.context = context;
+        this.messager = messager;
         this.logger = new TemplateParserLogger(context, messager);
 
         initJerichoConfig(this.logger);
@@ -88,6 +95,7 @@ public class TemplateParser
 
         result = new TemplateParserResult(context);
         processImports(source);
+        result.setScopedCss(processScopedCss(source));
         source.getChildElements().forEach(this::processElement);
 
         result.setProcessedTemplate(outputDocument.toString());
@@ -122,6 +130,33 @@ public class TemplateParser
             .forEach(outputDocument::remove);
     }
 
+    private static boolean isScopedStyleElement(Element element) {
+        return element != null && "style".equalsIgnoreCase(element.getName())
+                && element.getAttributes() != null && element.getAttributes().get("scoped") != null;
+    }
+
+    private String processScopedCss(Source doc) {
+        class Rslt { String scopedCss = ""; }
+        final Rslt rslt = new Rslt();
+        doc.getAllElements().stream()
+            .filter(TemplateParser::isScopedStyleElement)
+            .peek(styleScoped -> {
+                String css = styleScoped.getContent().toString().trim();
+                if (!css.isEmpty()) {
+                    TemplateScopedCssParser scopedCssParser = new TemplateScopedCssParser(messager);
+                    Optional<ScopedCssResult> scopedCssResult = scopedCssParser.parse(
+                            context.getComponentTypeElement(), css);
+                    if (scopedCssResult.isPresent()) {
+                        context.getMandatoryAttributes().putAll(scopedCssResult.get().mandatoryAttributes);
+                        rslt.scopedCss = scopedCssResult.get().scopedCss;
+                    }
+                }
+            })
+            .forEach(outputDocument::remove);
+
+        return rslt.scopedCss;
+    }
+
     /**
      * Recursive method that will process the whole template DOM tree.
      * @param element Current element being processed
@@ -133,6 +168,18 @@ public class TemplateParser
         currentAttribute = null;
 
         Attributes attributes = element.getAttributes();
+        if (attributes != null) {
+            // see https://sourceforge.net/p/jerichohtml/discussion/350024/thread/501a7d05/
+            Map<String, String> attrs = context.getMandatoryAttributes();
+            if (!attrs.isEmpty()) {
+                for (Entry<String, String> i : attrs.entrySet()) {
+                    String v = i.getValue();
+                    if (v == null) outputDocument.insert(attributes.getBegin(), " " + i.getKey() + " ");
+                    else outputDocument.insert(attributes.getBegin(), " " + i.getKey() + "\"" + v + "\" ");
+                }
+            }
+        }
+
         Attribute vForAttribute = attributes != null ? attributes.get("v-for") : null;
         if (vForAttribute != null)
         {

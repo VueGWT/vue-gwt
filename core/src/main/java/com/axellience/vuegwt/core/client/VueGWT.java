@@ -1,5 +1,13 @@
 package com.axellience.vuegwt.core.client;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Supplier;
+
+import javax.inject.Provider;
+
 import com.axellience.vuegwt.core.client.component.ComponentJavaConstructor;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.observer.VueGWTObserverManager;
@@ -7,19 +15,15 @@ import com.axellience.vuegwt.core.client.observer.vuegwtobservers.CollectionObse
 import com.axellience.vuegwt.core.client.observer.vuegwtobservers.MapObserver;
 import com.axellience.vuegwt.core.client.vue.VueFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
+
 import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLStyleElement;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-
-import javax.inject.Provider;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * @author Adrien Baron
@@ -31,6 +35,8 @@ public class VueGWT
     private static LinkedList<Runnable> onReadyCallbacks = new LinkedList<>();
 
     private static final Map<String, Provider<?>> factoryProviders = new HashMap<>();
+
+    private static final Map<String, String> scopedCss = new HashMap<>();
 
     /**
      * Inject scripts necessary for Vue GWT to work.
@@ -75,6 +81,26 @@ public class VueGWT
         for (Runnable onReadyCbk : onReadyCallbacks)
             onReadyCbk.run();
         onReadyCallbacks.clear();
+
+        injectScopedCss();
+    }
+
+    private static void injectScopedCss() {
+        if (scopedCss.isEmpty()) return;
+        String all = "";
+        for (Entry<String, String> i : scopedCss.entrySet()) {
+            all += i.getValue();
+        }
+        injectCss(all);
+    }
+
+    @JsIgnore
+    public static void injectCss(String css) {
+        if (css == null || css.isEmpty()) return;
+        HTMLStyleElement styleElement = (HTMLStyleElement) DomGlobal.document.createElement("style");
+        styleElement.type = "text/css";
+        styleElement.textContent = css;
+        DomGlobal.document.head.appendChild(styleElement);
     }
 
     /**
@@ -174,6 +200,12 @@ public class VueGWT
     public static void register(String qualifiedName, Provider<?> vueFactoryProvider)
     {
         factoryProviders.put(qualifiedName, vueFactoryProvider);
+    }
+
+    @JsIgnore
+    public static void registerScopedCss(String qualifiedName, String css) {
+        if (css == null || css.isEmpty()) return;
+        scopedCss.put(qualifiedName, css);
     }
 
     /**

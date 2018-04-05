@@ -1,5 +1,39 @@
 package com.axellience.vuegwt.processors.component;
 
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentCount;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.hasTemplate;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isFieldVisibleInJS;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isMethodVisibleInJS;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentJsTypeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
+
+import java.lang.annotation.Annotation;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.Generated;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
+
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Emit;
@@ -30,39 +64,11 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
+
 import elemental2.core.Function;
 import elemental2.core.JsArray;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
-
-import javax.annotation.Generated;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic.Kind;
-import java.lang.annotation.Annotation;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.*;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentJsTypeName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
 
 /**
  * Generate a JsType wrapper for the user Java {@link IsVueComponent}.
@@ -94,9 +100,10 @@ public class ComponentJsTypeGenerator
     {
         // Template resource abstract class
         ClassName componentWithSuffixClassName = componentJsTypeName(component);
+        final boolean hasTemplate = hasTemplate(processingEnv, component);
 
         Builder componentJsTypeBuilder =
-            getComponentJsTypeBuilder(component, componentWithSuffixClassName);
+            getComponentJsTypeBuilder(component, componentWithSuffixClassName, hasTemplate);
 
         // Initialize Options getter builder
         MethodSpec.Builder optionsBuilder = getOptionsMethodBuilder(component);
@@ -119,7 +126,7 @@ public class ComponentJsTypeGenerator
         createCreatedHook(component, optionsBuilder, componentJsTypeBuilder, dependenciesBuilder);
 
         // Process the HTML template if there is one
-        if (hasTemplate(processingEnv, component))
+        if (hasTemplate)
         {
             componentTemplateProcessor.processComponentTemplate(component, componentJsTypeBuilder);
             optionsBuilder.addStatement(
@@ -143,7 +150,7 @@ public class ComponentJsTypeGenerator
      * @param jsTypeClassName The name of the generated JsType class
      * @return A Builder to build the class
      */
-    private Builder getComponentJsTypeBuilder(TypeElement component, ClassName jsTypeClassName)
+    private Builder getComponentJsTypeBuilder(TypeElement component, ClassName jsTypeClassName, boolean hasTemplate)
     {
         Builder componentJsTypeBuilder = TypeSpec
             .classBuilder(jsTypeClassName)
@@ -166,14 +173,30 @@ public class ComponentJsTypeGenerator
             .build());
 
         // Add a block that registers the VueFactory for the VueComponent
-        componentJsTypeBuilder.addStaticBlock(CodeBlock
-            .builder()
-            .addStatement("$T.onReady(() -> $T.register($S, () -> $T.get()))",
-                VueGWT.class,
-                VueGWT.class,
-                component.getQualifiedName(),
-                componentFactoryName(component))
-            .build());
+        if (hasTemplate) {
+            componentJsTypeBuilder.addStaticBlock(CodeBlock.builder()
+                    .add("$T.onReady(() -> {\n", VueGWT.class)
+                    .indent()
+                    .addStatement("$T.register($S, () -> $T.get())",
+                        VueGWT.class,
+                        component.getQualifiedName(),
+                        componentFactoryName(component))
+                    .addStatement("$T.registerScopedCss($S, $T.SCOPED_CSS)",
+                        VueGWT.class,
+                        component.getQualifiedName(),
+                        componentJsTypeName(component))
+                    .unindent()
+                    .addStatement("})")
+                    .build());
+        } else {
+            componentJsTypeBuilder.addStaticBlock(CodeBlock.builder()
+                    .addStatement("$T.onReady(() -> $T.register($S, () -> $T.get()))",
+                        VueGWT.class,
+                        VueGWT.class,
+                        component.getQualifiedName(),
+                        componentFactoryName(component))
+                    .build());
+        }
 
         return componentJsTypeBuilder;
     }
