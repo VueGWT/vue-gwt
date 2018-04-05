@@ -1,5 +1,13 @@
 package com.axellience.vuegwt.processors.component.template.parser.context;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.lang.model.element.TypeElement;
+
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.tools.JsUtils;
 import com.axellience.vuegwt.core.client.tools.VForExpressionUtil;
@@ -8,16 +16,10 @@ import com.axellience.vuegwt.processors.component.template.parser.context.localc
 import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
+
 import elemental2.dom.Event;
 import jsinterop.base.JsPropertyMap;
 import net.htmlparser.jericho.Segment;
-
-import javax.lang.model.element.TypeElement;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Context of the parser.
@@ -38,6 +40,9 @@ public class TemplateParserContext
     private Map<String, String> methodNameToFullyQualifiedName = new HashMap<>();
 
     private Segment currentSegment;
+
+    /** In some cases mandatory attributes must be added to each element during template parsing, for example to support scoped styles */
+    private final Map<String, String> mandatoryAttributes = new HashMap<>();
 
     /**
      * Build the context based on a given {@link IsVueComponent} Class.
@@ -265,4 +270,9 @@ public class TemplateParserContext
     {
         return componentTypeElement;
     }
+
+    public Map<String, String> getMandatoryAttributes() {
+        return mandatoryAttributes;
+    }
+
 }

@@ -1,11 +1,11 @@
 package com.axellience.vuegwt.processors.component.template.parser.result;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Result of a template parsing.
@@ -14,6 +14,8 @@ import java.util.List;
 public class TemplateParserResult
 {
     private String processedTemplate;
+    private String scopedCss = "";
+
     private final List<TemplateExpression> expressions = new LinkedList<>();
     private final TemplateParserContext context;
     private final String templateName;
@@ -85,4 +87,13 @@ public class TemplateParserResult
     {
         return templateName;
     }
+
+    public String getScopedCss() {
+        return scopedCss;
+    }
+
+    public void setScopedCss(String scopedCss) {
+        this.scopedCss = scopedCss;
+    }
+
 }
