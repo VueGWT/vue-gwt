@@ -5,7 +5,7 @@ import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.tests.client.common.Todo;
 
-@Component(hasTemplate = false)
+@Component
 public class EmitTypesChildComponent implements IsVueComponent, HasCreated
 {
     @Override
