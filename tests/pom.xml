@@ -12,7 +12,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>vue-gwt-tests</artifactId>
-	<packaging>jar</packaging>
+	<packaging>gwt-app</packaging>
 	<name>Vue GWT Tests</name>
 	<description>Tests suite for Vue GWT</description>
 
@@ -63,8 +63,16 @@
 				<configuration>
 					<moduleName>com.axellience.vuegwt.tests.VueGwtTests</moduleName>
 					<compilerArgs>
-						<compilerArg>-generateJsInteropExports</compilerArg>
+						<arg>-generateJsInteropExports</arg>
 					</compilerArgs>
+					<failOnError>true</failOnError>
+					<useCompilerArgsForTests>true</useCompilerArgsForTests>
+					<codeserverArgs>
+						<arg>-generateJsInteropExports</arg>
+					</codeserverArgs>
+					<devmodeArgs>
+						<arg>-generateJsInteropExports</arg>
+					</devmodeArgs>
 				</configuration>
 				<executions>
 					<execution>
