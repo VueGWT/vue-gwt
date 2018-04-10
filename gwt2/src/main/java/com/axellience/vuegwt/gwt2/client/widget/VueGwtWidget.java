@@ -63,6 +63,6 @@ public class VueGwtWidget<T extends IsVueComponent> extends Widget
     {
         HTMLDivElement vueElement = (HTMLDivElement) DomGlobal.document.createElement("div");
         getElement().appendChild(Js.cast(vueElement));
-        vueComponentInstance.asVue().$mount(vueElement);
+        vueComponentInstance.vue().$mount(vueElement);
     }
 }

@@ -17,6 +17,6 @@ public class ButtonCounterComponent implements IsVueComponent
     @JsMethod
     protected void increment() {
         this.counter++;
-        asVue().$emit("increment");
+        vue().$emit("increment");
     }
 }

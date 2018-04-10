@@ -78,7 +78,7 @@ public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
 
     @Override
     public VNode render(VNodeBuilder builder) {
-        return builder.el("h" + this.level, asVue().$slots().get("default"));
+        return builder.el("h" + this.level, vue().$slots().get("default"));
     }
 }
 ```
@@ -243,14 +243,14 @@ public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
     @Override
     public VNode render(VNodeBuilder builder) {
         String text =
-            getChildrenTextContent(asVue().$slots().get("default")).trim().replaceAll(" ", "-");
+            getChildrenTextContent(vue().$slots().get("default")).trim().replaceAll(" ", "-");
 
         String headingId = camelCasePattern.replace(text, "$1-$2").toLowerCase();
 
         return builder.el("h" + this.level,
             builder.el("a",
                 VNodeData.get().attr("name", headingId).attr("href", "#" + headingId),
-                asVue().$slots().get("default")));
+                vue().$slots().get("default")));
     }
 
     private String getChildrenTextContent(JsArray<VNode> children) {
@@ -383,17 +383,17 @@ vNodeData.on("keyup", (param) -> {
 
 ### Slots
 
-You can access static slot contents as Arrays of VNodes from [`asVue().$slots()`](https://vuejs.org/v2/api/#vm-slots):
+You can access static slot contents as Arrays of VNodes from [`vue().$slots()`](https://vuejs.org/v2/api/#vm-slots):
 
 ```java
 @Override
 public VNode render(VNodeBuilder builder) {
   // `<div><slot></slot></div>`
-  return builder.el("div", asVue().$slots().get("default"));
+  return builder.el("div", vue().$slots().get("default"));
 }
 ```
 
-And access scoped slots as functions that return VNodes from [`asVue().$scopedSlots()`](https://vuejs.org/v2/api/#vm-scopedSlots):
+And access scoped slots as functions that return VNodes from [`vue().$scopedSlots()`](https://vuejs.org/v2/api/#vm-scopedSlots):
 
 ```java
 @Override
@@ -401,7 +401,7 @@ public VNode render(VNodeBuilder builder) {
   // `<div><slot></slot></div>`
   return builder.el(
       "div",
-      asVue().$scopedSlots().get("default").execute(JsObject.of("text", this.msg))
+      vue().$scopedSlots().get("default").execute(JsObject.of("text", this.msg))
   );
 }
 ```

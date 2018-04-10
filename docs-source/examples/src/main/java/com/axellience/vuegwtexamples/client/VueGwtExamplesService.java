@@ -58,7 +58,7 @@ public class VueGwtExamplesService
                 (VueJsConstructor<IsVueComponent>) ((JsPropertyMap) DomGlobal.window).get(
                     "FullJsComponent");
             IsVueComponent myComponent = vueClass.instantiate();
-            myComponent.asVue().$mount("#fullJsComponent");
+            myComponent.vue().$mount("#fullJsComponent");
         }
 
         ExampleInjector exampleInjector = DaggerExampleInjector.builder().build();

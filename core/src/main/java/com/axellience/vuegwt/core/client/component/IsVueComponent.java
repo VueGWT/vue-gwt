@@ -13,7 +13,7 @@ import jsinterop.base.Js;
 public interface IsVueComponent
 {
     @JsOverlay
-    default VueComponent asVue() {
+    default VueComponent vue() {
         return Js.cast(this);
     }
 }

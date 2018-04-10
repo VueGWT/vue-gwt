@@ -11,11 +11,11 @@ public class EmitTypesChildComponent implements IsVueComponent, HasCreated
     @Override
     public void created()
     {
-        asVue().$emit("int", 10);
-        asVue().$emit("integer", (Integer) 10);
-        asVue().$emit("boolean", false);
-        asVue().$emit("double", (double) 12);
-        asVue().$emit("float", (float) 12.5);
-        asVue().$emit("todo", new Todo("Hello World"));
+        vue().$emit("int", 10);
+        vue().$emit("integer", (Integer) 10);
+        vue().$emit("boolean", false);
+        vue().$emit("double", (double) 12);
+        vue().$emit("float", (float) 12.5);
+        vue().$emit("todo", new Todo("Hello World"));
     }
 }

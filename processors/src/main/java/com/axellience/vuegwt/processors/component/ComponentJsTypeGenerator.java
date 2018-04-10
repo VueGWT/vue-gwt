@@ -1,39 +1,5 @@
 package com.axellience.vuegwt.processors.component;
 
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentCount;
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.hasTemplate;
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isFieldVisibleInJS;
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isMethodVisibleInJS;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentJsTypeName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
-
-import java.lang.annotation.Annotation;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.annotation.Generated;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic.Kind;
-
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Emit;
@@ -64,11 +30,39 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
-
 import elemental2.core.Function;
 import elemental2.core.JsArray;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
+
+import javax.annotation.Generated;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
+import java.lang.annotation.Annotation;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.*;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentJsTypeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
 
 /**
  * Generate a JsType wrapper for the user Java {@link IsVueComponent}.
@@ -598,7 +592,7 @@ public class ComponentJsTypeGenerator
     {
         ClassName dependenciesName = componentInjectedDependenciesName(component);
         createdMethodBuilder.addStatement(
-            "$T dependencies = ($T) asVue().$L.getProvider($T.class).get()",
+            "$T dependencies = ($T) vue().$L.getProvider($T.class).get()",
             dependenciesName,
             dependenciesName,
             "$options()",
@@ -744,14 +738,14 @@ public class ComponentJsTypeGenerator
         String methodName = "$emit";
         if (methodCallParameters != null && !"".equals(methodCallParameters))
         {
-            proxyMethodBuilder.addStatement("asVue().$L($S, $L)",
+            proxyMethodBuilder.addStatement("vue().$L($S, $L)",
                 methodName,
                 methodToEventName(originalMethod),
                 methodCallParameters);
         }
         else
         {
-            proxyMethodBuilder.addStatement("asVue().$L($S)",
+            proxyMethodBuilder.addStatement("vue().$L($S)",
                 methodName,
                 methodToEventName(originalMethod));
         }

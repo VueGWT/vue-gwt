@@ -33,7 +33,7 @@ VueJsConstructor vueJsConstructor = ((JsPropertyMap<VueJsConstructor>) DomGlobal
 // We can then manipulate it exactly like
 // our VueJsConstructor generated from our Java Components
 IsVueComponent myFullJsComponent = vueJsConstructor.instantiate();
-myFullJsComponent.asVue().$mount("#fullJsComponent");
+myFullJsComponent.vue().$mount("#fullJsComponent");
 ```
 
 And here it is live:
@@ -94,7 +94,7 @@ So we can do:
 
 ```java
 FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentFactory.get().create();
-myComponent.asVue().$mount("#fullJsWithMethodComponent");
+myComponent.vue().$mount("#fullJsWithMethodComponent");
 JsTools.log(myComponent.value); // 10
 JsTools.log(myComponent.multiplyBy2(25)); // 50
 myComponent.value = 15; // Change the value in the instance of our Component

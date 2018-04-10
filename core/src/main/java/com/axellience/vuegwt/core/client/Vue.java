@@ -39,7 +39,7 @@ public abstract class Vue
     public static <T extends IsVueComponent> T attach(String element, Class<T> isVueComponentClass)
     {
         T vueInstance = createInstance(isVueComponentClass);
-        vueInstance.asVue().$mount(element);
+        vueInstance.vue().$mount(element);
         return vueInstance;
     }
 
@@ -54,7 +54,7 @@ public abstract class Vue
     public static <T extends IsVueComponent> T attach(String element, VueFactory<T> vueFactory)
     {
         T vueInstance = vueFactory.create();
-        vueInstance.asVue().$mount(element);
+        vueInstance.vue().$mount(element);
         return vueInstance;
     }
 
@@ -69,7 +69,7 @@ public abstract class Vue
     public static <T extends IsVueComponent> T attach(Element element, Class<T> isVueComponentClass)
     {
         T vueInstance = createInstance(isVueComponentClass);
-        vueInstance.asVue().$mount(element);
+        vueInstance.vue().$mount(element);
         return vueInstance;
     }
 
@@ -84,7 +84,7 @@ public abstract class Vue
     public static <T extends IsVueComponent> T attach(Element element, VueFactory<T> vueFactory)
     {
         T vueInstance = vueFactory.create();
-        vueInstance.asVue().$mount(element);
+        vueInstance.vue().$mount(element);
         return vueInstance;
     }
 

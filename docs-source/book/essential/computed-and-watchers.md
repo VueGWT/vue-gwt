@@ -230,7 +230,7 @@ public class JohnSnowComponent implements IsVueComponent {
 In addition to the `watch` option, you can also use the imperative [vm.$watch API](https://vuejs.org/v2/api/#vm-watch).
 This allow you to watch non `JsInterop` properties:
 ```java
-asVue().$watch(
+vue().$watch(
     () -> this.todo.getText(),
     (newValue, oldValue) -> {
         // Do something

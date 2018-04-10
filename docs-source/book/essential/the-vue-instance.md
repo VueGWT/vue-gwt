@@ -193,7 +193,7 @@ In addition to data properties, Vue instances expose a number of useful instance
 These properties and methods are prefixed with `$` to differentiate them from proxied data properties.
 
 In Vue GWT these methods and properties are defined in `VueComponent`, usually with the same name.
-Because your Components implements `IsVueComponent` you can access them in your Components using the `asVue()` method.
+Because your Components implements `IsVueComponent` you can access them in your Components using the `vue()` method.
 
 For example:
 
@@ -206,11 +206,11 @@ public class DemoComponent implements IsVueComponent, HasCreated {
     public void created() {
         this.todo = new Todo();
         
-        if (asVue().$data.get("todo") == this.todo) {
+        if (vue().$data.get("todo") == this.todo) {
             // true
         }
         
-        asVue().$watch(() -> this.todo, (newValue, oldValue) -> {
+        vue().$watch(() -> this.todo, (newValue, oldValue) -> {
             // Todo has changed!
         });
     }
