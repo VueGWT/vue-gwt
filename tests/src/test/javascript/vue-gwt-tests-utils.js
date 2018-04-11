@@ -1,3 +1,5 @@
+import {expect} from "chai";
+
 class VueGwtTestsUtils {
 	constructor() {
 		this.onReadyPromise = new Promise((onSuccess) => {
@@ -21,6 +23,24 @@ class VueGwtTestsUtils {
 		document.body.appendChild(div);
 		const ComponentConstructor = this.getComponentConstructor(testComponentName);
 		return new ComponentConstructor({el: div});
+	}
+
+	clearComponent(vm) {
+		vm.$destroy();
+		document.body.removeChild(vm.$el);
+	}
+
+	onNextTick(testFunction) {
+		return new Promise((resolve, reject) => {
+			Vue.nextTick(() => {
+				try {
+					testFunction();
+					resolve();
+				} catch (e) {
+					reject(e);
+				}
+			});
+		});
 	}
 }
 
