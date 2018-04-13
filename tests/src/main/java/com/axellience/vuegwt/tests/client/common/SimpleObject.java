@@ -12,6 +12,7 @@ public class SimpleObject {
     this.stringProperty = null;
   }
 
+  @JsMethod
   public String getStringProperty() {
     return stringProperty;
   }
