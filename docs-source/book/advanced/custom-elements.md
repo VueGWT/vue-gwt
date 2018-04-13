@@ -34,7 +34,7 @@ public class AnimalSelectorComponent implements IsVueComponent {
 
     @JsMethod
     public void selectAnimal(Event event) {
-        asVue().$emit("animal-selected", ((HTMLInputElement) event.target).value);
+        vue().$emit("animal-selected", ((HTMLInputElement) event.target).value);
     }
 }
 ```

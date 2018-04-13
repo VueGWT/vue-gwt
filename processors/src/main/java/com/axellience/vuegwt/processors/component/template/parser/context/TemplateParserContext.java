@@ -61,7 +61,7 @@ public class TemplateParserContext
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".array");
 
         this.rootLayer = new ContextLayer();
-        this.rootLayer.addMethod("asVue");
+        this.rootLayer.addMethod("vue");
 
         this.contextLayers.add(this.rootLayer);
     }

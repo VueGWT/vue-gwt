@@ -28,14 +28,14 @@ public class AnchoredHeadingComponent implements IsVueComponent, HasRender
     public VNode render(VNodeBuilder builder)
     {
         String text =
-            getChildrenTextContent(asVue().$slots().get("default")).trim().replaceAll(" ", "-");
+            getChildrenTextContent(vue().$slots().get("default")).trim().replaceAll(" ", "-");
 
         String headingId = camelCasePattern.replace(text, "$1-$2").toLowerCase();
 
         return builder.el("h" + this.level,
             builder.el("a",
                 VNodeData.get().attr("name", headingId).attr("href", "#" + headingId),
-                asVue().$slots().get("default")));
+                vue().$slots().get("default")));
     }
 
     private String getChildrenTextContent(JsArray<VNode> children)

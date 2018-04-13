@@ -457,7 +457,7 @@ public class ButtonCounterComponent implements IsVueComponent {
     public void increment() {
         this.counter++;
         // When incrementing, we fire an event.
-        asVue().$emit("increment");
+        vue().$emit("increment");
     }
 }
 ```
@@ -507,7 +507,7 @@ public class ButtonCounterComponent implements IsVueComponent {
     public void increment() {
         this.counter++;
         // Pass the current value of the counter with the event.
-        asVue().$emit("increment", this.counter);
+        vue().$emit("increment", this.counter);
     }
 }
 ```
@@ -562,14 +562,14 @@ public class EmitAnnotationComponent implements IsVueComponent {
     @JsMethod
     public void doSomething() {
         DomGlobal.console.log("Doing something");
-        // Implicit call to asVue().$emit("do-something")
+        // Implicit call to vue().$emit("do-something")
     }
 
     @Emit
     @JsMethod
     public void doSomethingWithValue(int value) {
         DomGlobal.console.log("Doing something with a value");
-        // Implicit call to asVue().$emit("do-something-with-value", value)
+        // Implicit call to vue().$emit("do-something-with-value", value)
     }
 
 
@@ -577,7 +577,7 @@ public class EmitAnnotationComponent implements IsVueComponent {
     @JsMethod
     public void doSomethingWithValueAndCustomName(int value) {
         DomGlobal.console.log("Doing something");
-        // Implicit call to asVue().$emit("custom-event-name", value)
+        // Implicit call to vue().$emit("custom-event-name", value)
     }
 }
 ```
@@ -620,7 +620,7 @@ is expanded into:
 For the child component to update `foo`'s value, it needs to explicitly emit an event instead of mutating the prop:
 
 ```java
-asVue().$emit('update:foo', newValue);
+vue().$emit('update:foo', newValue);
 ```
 
 ### Form Input Components using Custom Events
@@ -913,7 +913,7 @@ To achieve this you have to assign a reference ID to the child component using `
 public class ParentComponent implements IsVueComponent, HasCreated {
     @Override
     public void created() {
-        UserProfileComponent userProfileComponent = asVue().$refs.get("profile");
+        UserProfileComponent userProfileComponent = vue().$refs.get("profile");
     }
 }
 ```
