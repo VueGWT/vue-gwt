@@ -4,28 +4,28 @@ import {
   onNextTick
 } from '../../vue-gwt-tests-utils'
 
-describe('Data.spec', () => {
-  let vm;
+describe('data', () => {
+  let component;
 
   beforeEach(() => onGwtReady().then(() => {
-    vm = createAndMountComponent(
+    component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.basic.data.DataTestComponent');
   }));
 
   afterEach(() => {
-    destroyComponent(vm);
+    destroyComponent(component);
   });
 
   describe('byteData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#byte-data').innerText;
+      const domValue = component.$el.querySelector('#byte-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.byteData = 127;
+      component.byteData = 127;
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#byte-data').innerText;
+        const domValue = component.$el.querySelector('#byte-data').innerText;
         expect(domValue).to.equal('127');
       })
     });
@@ -33,14 +33,14 @@ describe('Data.spec', () => {
 
   describe('shortData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#short-data').innerText;
+      const domValue = component.$el.querySelector('#short-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.shortData = 6;
+      component.shortData = 6;
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#short-data').innerText;
+        const domValue = component.$el.querySelector('#short-data').innerText;
         expect(domValue).to.equal('6');
       });
     });
@@ -48,14 +48,14 @@ describe('Data.spec', () => {
 
   describe('intData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#int-data').innerText;
+      const domValue = component.$el.querySelector('#int-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.intData = 6;
+      component.intData = 6;
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#int-data').innerText;
+        const domValue = component.$el.querySelector('#int-data').innerText;
         expect(domValue).to.equal('6');
       });
     });
@@ -63,14 +63,14 @@ describe('Data.spec', () => {
 
   describe('longData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#long-data').innerText;
+      const domValue = component.$el.querySelector('#long-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.longData = 6;
+      component.longData = 6;
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#long-data').innerText;
+        const domValue = component.$el.querySelector('#long-data').innerText;
         expect(domValue).to.equal('6');
       });
     });
@@ -78,14 +78,14 @@ describe('Data.spec', () => {
 
   describe('floatData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#float-data').innerText;
+      const domValue = component.$el.querySelector('#float-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.floatData = 6.6;
+      component.floatData = 6.6;
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#float-data').innerText;
+        const domValue = component.$el.querySelector('#float-data').innerText;
         expect(domValue).to.equal('6.6');
       });
     });
@@ -93,14 +93,14 @@ describe('Data.spec', () => {
 
   describe('doubleData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#double-data').innerText;
+      const domValue = component.$el.querySelector('#double-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.doubleData = 6.6;
+      component.doubleData = 6.6;
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#double-data').innerText;
+        const domValue = component.$el.querySelector('#double-data').innerText;
         expect(domValue).to.equal('6.6');
       });
     });
@@ -108,14 +108,14 @@ describe('Data.spec', () => {
 
   describe('booleanData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#boolean-data').innerText;
+      const domValue = component.$el.querySelector('#boolean-data').innerText;
       expect(domValue).to.equal('false');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.booleanData = true;
+      component.booleanData = true;
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#boolean-data').innerText;
+        const domValue = component.$el.querySelector('#boolean-data').innerText;
         expect(domValue).to.equal('true');
       });
     });
@@ -123,14 +123,14 @@ describe('Data.spec', () => {
 
   describe('charData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#char-data').innerText;
+      const domValue = component.$el.querySelector('#char-data').innerText;
       expect(domValue).to.equal('a');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.charData = 'v';
+      component.charData = 'v';
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#char-data').innerText;
+        const domValue = component.$el.querySelector('#char-data').innerText;
         expect(domValue).to.equal('v');
       });
     });
@@ -138,22 +138,25 @@ describe('Data.spec', () => {
 
   describe('charArrayData', () => {
     it('should be displayed as string in the DOM', () => {
-      const domValue = vm.$el.querySelector('#char-array-data').innerText;
+      const domValue = component.$el.querySelector(
+          '#char-array-data').innerText;
       expect(domValue).to.equal('abc');
     });
   });
 
   describe('byteObjectData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#byte-object-data').innerText;
+      const domValue = component.$el.querySelector(
+          '#byte-object-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.byteObjectData = 127;
+      component.byteObjectData = 127;
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#byte-object-data').innerText;
+        const domValue = component.$el.querySelector(
+            '#byte-object-data').innerText;
         expect(domValue).to.equal('127');
       });
     });
@@ -161,15 +164,17 @@ describe('Data.spec', () => {
 
   describe('shortObjectData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#short-object-data').innerText;
+      const domValue = component.$el.querySelector(
+          '#short-object-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.shortObjectData = 6;
+      component.shortObjectData = 6;
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#short-object-data').innerText;
+        const domValue = component.$el.querySelector(
+            '#short-object-data').innerText;
         expect(domValue).to.equal('6');
       });
     });
@@ -177,15 +182,15 @@ describe('Data.spec', () => {
 
   describe('integerData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#integer-data').innerText;
+      const domValue = component.$el.querySelector('#integer-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.integerData = 6;
+      component.integerData = 6;
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#integer-data').innerText;
+        const domValue = component.$el.querySelector('#integer-data').innerText;
         expect(domValue).to.equal('6');
       });
     });
@@ -193,15 +198,17 @@ describe('Data.spec', () => {
 
   describe('longObjectData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#long-object-data').innerText;
+      const domValue = component.$el.querySelector(
+          '#long-object-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.longObjectData = 6;
+      component.longObjectData = 6;
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#long-object-data').innerText;
+        const domValue = component.$el.querySelector(
+            '#long-object-data').innerText;
         expect(domValue).to.equal('6');
       });
     });
@@ -209,15 +216,17 @@ describe('Data.spec', () => {
 
   describe('floatObjectData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#float-object-data').innerText;
+      const domValue = component.$el.querySelector(
+          '#float-object-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.floatObjectData = 6.6;
+      component.floatObjectData = 6.6;
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#float-object-data').innerText;
+        const domValue = component.$el.querySelector(
+            '#float-object-data').innerText;
         expect(domValue).to.equal('6.6');
       });
     });
@@ -225,15 +234,17 @@ describe('Data.spec', () => {
 
   describe('doubleObjectData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#double-object-data').innerText;
+      const domValue = component.$el.querySelector(
+          '#double-object-data').innerText;
       expect(domValue).to.equal('0');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.doubleObjectData = 6.6;
+      component.doubleObjectData = 6.6;
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#double-object-data').innerText;
+        const domValue = component.$el.querySelector(
+            '#double-object-data').innerText;
         expect(domValue).to.equal('6.6');
       });
     });
@@ -241,15 +252,16 @@ describe('Data.spec', () => {
 
   describe('characterData', () => {
     it('should have its default value in the DOM at start', () => {
-      const domValue = vm.$el.querySelector('#character-data').innerText;
+      const domValue = component.$el.querySelector('#character-data').innerText;
       expect(domValue).to.equal('a');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.characterData = 'v';
+      component.characterData = 'v';
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#character-data').innerText;
+        const domValue = component.$el.querySelector(
+            '#character-data').innerText;
         expect(domValue).to.equal('v');
       });
     });
@@ -257,15 +269,15 @@ describe('Data.spec', () => {
 
   describe('stringData', () => {
     it('should be displayed as empty string when its value is null', () => {
-      const domValue = vm.$el.querySelector('#string-data').innerText;
+      const domValue = component.$el.querySelector('#string-data').innerText;
       expect(domValue).to.equal('');
     });
 
     it('should update its DOM element when it changes', () => {
-      vm.stringData = 'a value';
+      component.stringData = 'a value';
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#string-data').innerText;
+        const domValue = component.$el.querySelector('#string-data').innerText;
         expect(domValue).to.equal('a value');
       });
     });
@@ -273,25 +285,28 @@ describe('Data.spec', () => {
 
   describe('simpleObjectData', () => {
     it('should be displayed as empty string when its value is null', () => {
-      const domValue = vm.$el.querySelector('#simple-object-data').innerText;
+      const domValue = component.$el.querySelector(
+          '#simple-object-data').innerText;
       expect(domValue).to.equal('');
     });
 
     it('should be displayed as empty string when its property is null', () => {
-      vm.initSimpleObject();
+      component.initSimpleObject();
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#simple-object-data').innerText;
+        const domValue = component.$el.querySelector(
+            '#simple-object-data').innerText;
         expect(domValue).to.equal('');
       });
     });
 
     it('should be displayed as empty string when its property is null', () => {
-      vm.initSimpleObject();
-      vm.simpleObjectData.setStringProperty("a value");
+      component.initSimpleObject();
+      component.simpleObjectData.setStringProperty("a value");
 
       return onNextTick(() => {
-        const domValue = vm.$el.querySelector('#simple-object-data').innerText;
+        const domValue = component.$el.querySelector(
+            '#simple-object-data').innerText;
         expect(domValue).to.equal('a value');
       });
     });
@@ -299,15 +314,15 @@ describe('Data.spec', () => {
 
   describe('attributeValueData', () => {
     it('should not be displayed in the DOM if its value is null', () => {
-      const element = vm.$el.querySelector('#data-attribute-element');
+      const element = component.$el.querySelector('#data-attribute-element');
       expect(element.hasAttribute('data-value')).to.be.false;
     });
 
     it('should be displayed in the DOM if its value is not null', () => {
-      vm.attributeValueData = 'a value';
+      component.attributeValueData = 'a value';
 
       return onNextTick(() => {
-        const element = vm.$el.querySelector('#data-attribute-element');
+        const element = component.$el.querySelector('#data-attribute-element');
         expect(element.getAttribute('data-value')).to.equal('a value');
       });
     });
