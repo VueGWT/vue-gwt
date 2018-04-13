@@ -12,7 +12,7 @@ public class ComputedTestComponent implements IsVueComponent {
   String data = null;
 
   @Computed
-  public String getComputedData() {
+  public String getComputedProperty() {
     return data == null ? null : "#" + data + "#";
   }
 }
