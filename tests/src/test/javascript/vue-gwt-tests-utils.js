@@ -1,47 +1,36 @@
 import {expect} from "chai";
 
-class VueGwtTestsUtils {
-	constructor() {
-		this.onReadyPromise = new Promise((onSuccess) => {
-			if (!window.onVueGwtTestsReady)
-				window.onVueGwtTestsReady = [];
-			window.onVueGwtTestsReady.push(onSuccess);
+const gwtReadyPromise = new Promise((onSuccess) => {
+	if (!window.onVueGwtTestsReady)
+		window.onVueGwtTestsReady = [];
+	window.onVueGwtTestsReady.push(onSuccess);
+});
+
+export const onGwtReady = function () {
+	return gwtReadyPromise;
+};
+
+export const createAndMountComponent = function (qualifiedName) {
+	const div = document.createElement("div");
+	document.body.appendChild(div);
+	const ComponentConstructor = window.VueGWT.getJsConstructor(qualifiedName);
+	return new ComponentConstructor({el: div});
+};
+
+export const destroyComponent = function (vm) {
+	vm.$destroy();
+	document.body.removeChild(vm.$el);
+};
+
+export const onNextTick = function (testFunction) {
+	return new Promise((resolve, reject) => {
+		Vue.nextTick(() => {
+			try {
+				testFunction();
+				resolve();
+			} catch (e) {
+				reject(e);
+			}
 		});
-	}
-
-	initForPackage(rootPackage) {
-		this.rootPackage = rootPackage;
-		return this.onReadyPromise;
-	}
-
-	getComponentConstructor(testComponentName) {
-		return window.VueGWT.getJsConstructor(`${this.rootPackage}.${testComponentName}`);
-	}
-
-	createAndMountComponent(testComponentName) {
-		const div = document.createElement("div");
-		document.body.appendChild(div);
-		const ComponentConstructor = this.getComponentConstructor(testComponentName);
-		return new ComponentConstructor({el: div});
-	}
-
-	clearComponent(vm) {
-		vm.$destroy();
-		document.body.removeChild(vm.$el);
-	}
-
-	onNextTick(testFunction) {
-		return new Promise((resolve, reject) => {
-			Vue.nextTick(() => {
-				try {
-					testFunction();
-					resolve();
-				} catch (e) {
-					reject(e);
-				}
-			});
-		});
-	}
-}
-
-export const vueGwtTests = new VueGwtTestsUtils();
+	});
+};
