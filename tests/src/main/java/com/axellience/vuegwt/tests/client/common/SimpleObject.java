@@ -21,4 +21,9 @@ public class SimpleObject {
   public void setStringProperty(String stringProperty) {
     this.stringProperty = stringProperty;
   }
+
+  @Override
+  public String toString() {
+    return stringProperty == null ? "" : stringProperty;
+  }
 }
