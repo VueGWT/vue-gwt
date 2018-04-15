@@ -17,18 +17,18 @@ describe('@Watch', () => {
   });
 
   it('should be called with correct parameters when the data change', () => {
-    component.changeWatchedData("value");
+    component.changeWatchedData('value');
 
     return onNextTick(() => {
       expect(component.oldValue).to.be.null;
       expect(component.newValue).to.be.not.null;
-      expect(component.newValue.getStringProperty()).to.equal("value");
+      expect(component.newValue.getStringProperty()).to.equal('value');
     })
     .then(() => {
       component.changeWatchedData(null);
       return onNextTick(() => {
         expect(component.oldValue).to.be.not.null;
-        expect(component.oldValue.getStringProperty()).to.equal("value");
+        expect(component.oldValue.getStringProperty()).to.equal('value');
         expect(component.newValue).to.be.null;
       })
     });
