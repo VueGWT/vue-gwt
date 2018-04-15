@@ -31,4 +31,13 @@
   <!-- using data in HTML element attribute -->
   <div id='data-attribute-element' :data-value='attributeValueData'></div>
 
+  <!-- displaying data with line breaks in '{{ ... }' -->
+  <div id='data-with-line-breaks'>{{
+
+              dataWithLineBreaks
+
+    .getStringProperty()
+    }}
+  </div>
+
 </div>

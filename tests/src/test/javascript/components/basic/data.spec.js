@@ -128,7 +128,7 @@ describe('data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.charData = 'v';
+      component.assignVToCharData();
       return onNextTick(() => {
         const domValue = component.$el.querySelector('#char-data').innerText;
         expect(domValue).to.equal('v');
@@ -324,6 +324,17 @@ describe('data', () => {
       return onNextTick(() => {
         const element = component.$el.querySelector('#data-attribute-element');
         expect(element.getAttribute('data-value')).to.equal('a value');
+      });
+    });
+  });
+
+  describe('dataWithWhiteSpaces', () => {
+    it('should ignore white spaces', () => {
+      component.dataWithLineBreaks.setStringProperty('a value');
+
+      return onNextTick(() => {
+        const domValue = component.$el.querySelector('#data-with-line-breaks').innerText;
+        expect(domValue).to.equals('a value');
       });
     });
   });

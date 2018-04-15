@@ -67,8 +67,16 @@ public class DataTestComponent implements IsVueComponent {
   @JsProperty
   String attributeValueData = null;
 
+  @JsProperty
+  SimpleObject dataWithLineBreaks = new SimpleObject();
+
   @JsMethod
   public void initSimpleObject() {
     simpleObjectData = new SimpleObject();
+  }
+
+  @JsMethod
+  public void assignVToCharData() {
+    charData = 'v';
   }
 }
