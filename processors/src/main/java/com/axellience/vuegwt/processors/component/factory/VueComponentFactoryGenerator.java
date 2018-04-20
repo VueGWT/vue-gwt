@@ -26,6 +26,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -53,8 +54,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         elements = processingEnv.getElementUtils();
     }
 
-    public void generate(TypeElement component,
-        boolean hasInjectedDependencies)
+    public void generate(TypeElement component, boolean hasInjectedDependencies)
     {
         this.hasInjectedDependencies = hasInjectedDependencies;
         super.generate(component);
@@ -165,8 +165,16 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             staticInitParameters.add(CodeBlock.of("() -> $T.get()", factory));
 
             Element localComponentElement = ((DeclaredType) localComponent).asElement();
+            Component componentAnnotation = localComponentElement.getAnnotation(Component.class);
+            if (componentAnnotation == null)
+            {
+                printError("Missing @Component annotation on imported component: "
+                    + localComponent.toString(), component);
+                return;
+            }
+
             String tagName = componentToTagName(localComponentElement.getSimpleName().toString(),
-                localComponentElement.getAnnotation(Component.class));
+                componentAnnotation);
             initBuilder.addStatement(
                 "components.set($S, render -> render.accept($L.get().getJsConstructor()))",
                 tagName,
@@ -258,5 +266,11 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             parameterName,
             "customizeOptions",
             "componentOptions");
+    }
+
+    private void printError(String message, TypeElement component)
+    {
+        messager.printMessage(Kind.ERROR,
+            message + " In VueComponent: " + component.getQualifiedName());
     }
 }
