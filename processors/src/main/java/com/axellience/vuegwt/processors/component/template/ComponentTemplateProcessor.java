@@ -173,6 +173,7 @@ public class ComponentTemplateProcessor
         if (componentAnnotation == null)
             return;
 
+        processLocalComponentClass(localComponents, componentTypeElement);
         getComponentLocalComponents(elementUtils, componentTypeElement)
             .stream()
             .map(DeclaredType.class::cast)
