@@ -122,7 +122,7 @@ public class GeneratorsNameUtil
      */
     public static String componentToTagName(String componentClassName, Component componentAnnotation)
     {
-        if (!"".equals(componentAnnotation.name()))
+        if (componentAnnotation != null && !"".equals(componentAnnotation.name()))
             return componentAnnotation.name();
 
         // Drop "Component" at the end of the class name

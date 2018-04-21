@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.processors.component.factory;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.CustomizeOptions;
@@ -166,9 +167,10 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
 
             Element localComponentElement = ((DeclaredType) localComponent).asElement();
             Component componentAnnotation = localComponentElement.getAnnotation(Component.class);
-            if (componentAnnotation == null)
+            JsComponent jsComponentAnnotation = localComponentElement.getAnnotation(JsComponent.class);
+            if (componentAnnotation == null && jsComponentAnnotation == null)
             {
-                printError("Missing @Component annotation on imported component: "
+                printError("Missing @Component or @JsComponent annotation on imported component: "
                     + localComponent.toString(), component);
                 return;
             }

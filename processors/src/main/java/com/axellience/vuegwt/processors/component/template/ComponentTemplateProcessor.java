@@ -2,6 +2,7 @@ package com.axellience.vuegwt.processors.component.template;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
@@ -171,6 +172,8 @@ public class ComponentTemplateProcessor
         TypeElement componentTypeElement)
     {
         Component componentAnnotation = componentTypeElement.getAnnotation(Component.class);
+        if (componentAnnotation == null)
+            return;
 
         processLocalComponentClass(localComponents, componentTypeElement);
         getComponentLocalComponents(elementUtils, componentTypeElement)
@@ -196,10 +199,11 @@ public class ComponentTemplateProcessor
         TypeElement localComponentType)
     {
         Component componentAnnotation = localComponentType.getAnnotation(Component.class);
-        if (componentAnnotation == null)
+        JsComponent jsComponentAnnotation = localComponentType.getAnnotation(JsComponent.class);
+        if (componentAnnotation == null && jsComponentAnnotation == null)
         {
             messager.printMessage(Kind.ERROR,
-                "Missing @Component annotation on imported component: "
+                "Missing @Component or @JsComponent annotation on imported component: "
                     + localComponentType.toString());
             return;
         }
