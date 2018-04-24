@@ -1,32 +1,8 @@
 package com.axellience.vuegwt.processors.component.template;
 
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentToTagName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
-
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic.Kind;
-import javax.tools.FileObject;
-import javax.tools.StandardLocation;
-
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
@@ -41,6 +17,30 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
+
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
+import javax.tools.FileObject;
+import javax.tools.StandardLocation;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentToTagName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 
 /**
  * Process the HTML template for a given {@link IsVueComponent}.
@@ -86,9 +86,11 @@ public class ComponentTemplateProcessor
             templateParserContext,
             messager);
 
-        FieldSpec fldScoped = FieldSpec.builder(String.class, "SCOPED_CSS")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                .initializer("$S", templateParserResult.getScopedCss()).build();
+        FieldSpec fldScoped = FieldSpec
+            .builder(String.class, "SCOPED_CSS")
+            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+            .initializer("$S", templateParserResult.getScopedCss())
+            .build();
         componentJsTypeBuilder.addField(fldScoped);
 
         // Add expressions from the template to JsType and compile template
@@ -173,6 +175,7 @@ public class ComponentTemplateProcessor
         if (componentAnnotation == null)
             return;
 
+        processLocalComponentClass(localComponents, componentTypeElement);
         getComponentLocalComponents(elementUtils, componentTypeElement)
             .stream()
             .map(DeclaredType.class::cast)
@@ -196,6 +199,15 @@ public class ComponentTemplateProcessor
         TypeElement localComponentType)
     {
         Component componentAnnotation = localComponentType.getAnnotation(Component.class);
+        JsComponent jsComponentAnnotation = localComponentType.getAnnotation(JsComponent.class);
+        if (componentAnnotation == null && jsComponentAnnotation == null)
+        {
+            messager.printMessage(Kind.ERROR,
+                "Missing @Component or @JsComponent annotation on imported component: "
+                    + localComponentType.toString());
+            return;
+        }
+
         String localComponentTagName =
             componentToTagName(localComponentType.getSimpleName().toString(), componentAnnotation);
 
