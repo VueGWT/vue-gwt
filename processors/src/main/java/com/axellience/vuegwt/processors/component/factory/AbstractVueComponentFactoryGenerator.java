@@ -87,7 +87,7 @@ public abstract class AbstractVueComponentFactoryGenerator
             .superclass(ParameterizedTypeName.get(ClassName.get(VueFactory.class),
                 ClassName.get(component)))
             .addAnnotation(Singleton.class)
-            .addJavadoc("VueFactory for Component {@link $S}",
+            .addJavadoc("VueFactory for Component {@link $L}",
                 component.getQualifiedName().toString())
             .addAnnotation(AnnotationSpec
                 .builder(Generated.class)
