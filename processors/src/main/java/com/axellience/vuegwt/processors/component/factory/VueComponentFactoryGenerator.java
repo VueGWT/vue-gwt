@@ -7,7 +7,7 @@ import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsAsyncProvider;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.processors.utils.GeneratorsNameUtil;
@@ -39,7 +39,7 @@ import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.get
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.*;
 
 /**
- * Generate {@link VueFactory} from the user {@link IsVueComponent} classes annotated by {@link
+ * Generate {@link VueComponentFactory} from the user {@link IsVueComponent} classes annotated by {@link
  * Component}.
  * @author Adrien Baron
  */
@@ -76,7 +76,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         initBuilder.addStatement("$T<$T> componentOptions = $T.getOptions()",
             VueComponentOptions.class,
             component.asType(),
-            componentJsTypeName(component));
+            componentExposedTypeName(component));
         processCustomizeOptions(component, initBuilder, initParametersCall);
 
         // Extend the parent Component
@@ -231,7 +231,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
     /**
      * Process all the {@link CustomizeOptions} from the {@link Component} annotation.
      * @param component The {@link IsVueComponent} we generate for
-     * @param initBuilder The builder for our {@link VueFactory} init method
+     * @param initBuilder The builder for our {@link VueComponentFactory} init method
      * @param staticInitParameters The list of static parameters to pass when calling the init
      * method from a static context
      */
@@ -249,7 +249,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
      * of this class should be created with our factory and used to customize our
      * {@link VueComponentOptions} before passing them to Vue.
      * @param customizeOptions The {@link CustomizeOptions} we are generating for
-     * @param initBuilder The builder for our {@link VueFactory} init method
+     * @param initBuilder The builder for our {@link VueComponentFactory} init method
      * @param staticInitParameters The list of static parameters to pass when calling the init
      * method from a static context
      */

@@ -138,12 +138,12 @@ public class VNodeBuilder {
     public VNode el(Class<IsVueComponent> isVueComponentClass, VNodeData data, Object... children) { ... }
 
     /**
-     * Create a VNode with the {@link IsVueComponent} of the given {@link VueFactory}
-     * @param vueFactory {@link VueFactory} for the Component we want
+     * Create a VNode with the {@link IsVueComponent} of the given {@link VueComponentFactory}
+     * @param vueFactory {@link VueComponentFactory} for the Component we want
      * @param children Children
      * @return a new VNode of this Component
      */
-    public VNode el(VueFactory<IsVueComponent> vueFactory, Object... children) { ... }
+    public VNode el(VueComponentFactory<IsVueComponent> vueFactory, Object... children) { ... }
 
     /**
      * Create a VNode with the {@link IsVueComponent} of the given {@link VueJsConstructor}

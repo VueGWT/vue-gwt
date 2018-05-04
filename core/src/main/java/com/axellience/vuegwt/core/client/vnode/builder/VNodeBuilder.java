@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.VNodeData;
-import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 
 /**
@@ -77,26 +77,26 @@ public class VNodeBuilder
     }
 
     /**
-     * Create a VNode with the {@link IsVueComponent} of the given {@link VueFactory}
-     * @param vueFactory {@link VueFactory} for the Component we want
+     * Create a VNode with the {@link IsVueComponent} of the given {@link VueComponentFactory}
+     * @param vueFactory {@link VueComponentFactory} for the Component we want
      * @param children Children
      * @param <T> The type of the {@link IsVueComponent}
      * @return a new VNode of this Component
      */
-    public <T extends IsVueComponent> VNode el(VueFactory<T> vueFactory, Object... children)
+    public <T extends IsVueComponent> VNode el(VueComponentFactory<T> vueFactory, Object... children)
     {
         return el(vueFactory.getJsConstructor(), children, null);
     }
 
     /**
-     * Create a VNode with the {@link IsVueComponent} of the given {@link VueFactory}
-     * @param vueFactory {@link VueFactory} for the Component we want
+     * Create a VNode with the {@link IsVueComponent} of the given {@link VueComponentFactory}
+     * @param vueFactory {@link VueComponentFactory} for the Component we want
      * @param data Information for the new VNode (attributes...)
      * @param children Children
      * @param <T> The type of the {@link IsVueComponent}
      * @return a new VNode of this Component
      */
-    public <T extends IsVueComponent> VNode el(VueFactory<T> vueFactory, VNodeData data, Object... children)
+    public <T extends IsVueComponent> VNode el(VueComponentFactory<T> vueFactory, VNodeData data, Object... children)
     {
         return el(vueFactory.getJsConstructor(), data, children);
     }

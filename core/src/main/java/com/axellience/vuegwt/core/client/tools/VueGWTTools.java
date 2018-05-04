@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.core.client.tools;
 
-import com.axellience.vuegwt.core.client.component.ComponentJavaPrototype;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import elemental2.core.Function;
@@ -16,23 +15,23 @@ public class VueGWTTools
 {
     /**
      * Copy a Java class prototype to a VueComponent declaration. This allows
-     * VueComponent created by Vue to pass as an instance of the VueComponent
-     * class they implement.
+     * VueComponent created by Vue to pass as an instance of the {@link IsVueComponent}
+     * class they represent.
      * @param extendedVueJsConstructor The Vue.js constructor function to extend
-     * @param componentJavaPrototype The VueComponent class JS prototype to
+     * @param javaComponentPrototype The {@link IsVueComponent} class JS prototype to
      * extend with
      * @param <T> The type of the VueComponent
      */
     public static <T extends IsVueComponent> void extendVueConstructorWithJavaPrototype(
         VueJsConstructor<T> extendedVueJsConstructor,
-        ComponentJavaPrototype<T> componentJavaPrototype)
+        JsPropertyMap<Object> javaComponentPrototype)
     {
         JsPropertyMap vueProto =
             (JsPropertyMap) ((JsPropertyMap) extendedVueJsConstructor).get("prototype");
         JsObject vueProtoJsObject = ((JsObject) vueProto);
-        componentJavaPrototype.forEach(protoProp -> {
+        javaComponentPrototype.forEach(protoProp -> {
             if (!vueProtoJsObject.hasOwnProperty(protoProp))
-                vueProto.set(protoProp, componentJavaPrototype.get(protoProp));
+                vueProto.set(protoProp, javaComponentPrototype.get(protoProp));
         });
     }
 

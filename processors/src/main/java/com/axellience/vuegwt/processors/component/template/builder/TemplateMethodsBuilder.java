@@ -22,19 +22,19 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getUnusableB
 public class TemplateMethodsBuilder
 {
     /**
-     * Add Template methods to @{@link IsVueComponent} JsType based on the result of the template parser.
-     * @param componentJsTypeBuilder Builder for the JsType class
+     * Add Template methods to @{@link IsVueComponent} ExposedType based on the result of the template parser.
+     * @param componentExposedTypeBuilder Builder for the ExposedType class
      * @param templateParserResult The result of the HTML template parsed by {@link TemplateParser}
      * render function
      */
-    public void addTemplateMethodsToComponentJsType(Builder componentJsTypeBuilder,
+    public void addTemplateMethodsToComponentExposedType(Builder componentExposedTypeBuilder,
         TemplateParserResult templateParserResult)
     {
         // Compile the resulting HTML template String
-        compileTemplateString(componentJsTypeBuilder, templateParserResult.getProcessedTemplate());
+        compileTemplateString(componentExposedTypeBuilder, templateParserResult.getProcessedTemplate());
 
         // Process the java expressions from the template
-        processTemplateExpressions(componentJsTypeBuilder, templateParserResult);
+        processTemplateExpressions(componentExposedTypeBuilder, templateParserResult);
     }
 
     /**

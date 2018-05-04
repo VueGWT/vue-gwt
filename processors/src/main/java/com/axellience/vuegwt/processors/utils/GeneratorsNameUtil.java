@@ -20,21 +20,21 @@ import javax.lang.model.type.TypeMirror;
  */
 public class GeneratorsNameUtil
 {
-    private static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
+    private static String COMPONENT_EXPOSED_TYPE_SUFFIX = "ExposedType";
     private static String COMPONENT_INJECTED_DEPENDENCIES_SUFFIX = "InjectedDependencies";
 
     private static String COMPONENT_FACTORY_SUFFIX = "Factory";
 
     private static String DIRECTIVE_OPTIONS_SUFFIX = "Options";
 
-    public static ClassName componentJsTypeName(TypeElement component)
+    public static ClassName componentExposedTypeName(TypeElement component)
     {
-        return nameWithSuffix(component, COMPONENT_JS_TYPE_SUFFIX);
+        return nameWithSuffix(component, COMPONENT_EXPOSED_TYPE_SUFFIX);
     }
 
-    public static ClassName componentJsTypeName(ClassName component)
+    public static ClassName componentExposedTypeName(ClassName component)
     {
-        return nameWithSuffix(component, COMPONENT_JS_TYPE_SUFFIX);
+        return nameWithSuffix(component, COMPONENT_EXPOSED_TYPE_SUFFIX);
     }
 
     public static ClassName componentInjectedDependenciesName(TypeElement component)

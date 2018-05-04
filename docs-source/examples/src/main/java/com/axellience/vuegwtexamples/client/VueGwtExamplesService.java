@@ -3,7 +3,7 @@ package com.axellience.vuegwtexamples.client;
 import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
-import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwtexamples.client.examples.bindinlinestyle.BindInlineStyleComponent;
 import com.axellience.vuegwtexamples.client.examples.buttonplusone.ButtonPlusOneComponent;
@@ -107,15 +107,15 @@ public class VueGwtExamplesService
 
     private static void addExample(String exampleId, Class<? extends IsVueComponent> exampleVueClass)
     {
-        addExample(exampleId, VueGWT.getFactory(exampleVueClass));
+        addExample(exampleId, VueGWT.getVueComponentFactory(exampleVueClass));
     }
 
-    private static void addExample(String exampleId, VueFactory exampleVueFactory)
+    private static void addExample(String exampleId, VueComponentFactory exampleVueComponentFactory)
     {
         // If we find the containing div for this example, we instantiate it
         if (DomGlobal.document.getElementById(exampleId) != null)
         {
-            IsVueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVueFactory);
+            IsVueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVueComponentFactory);
             ((JsPropertyMap) DomGlobal.window).set(exampleId, exampleInstance);
         }
     }

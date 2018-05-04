@@ -15,8 +15,8 @@ As a convention, we often use the variable `vm` (short for ViewModel) to refer t
 
 ## Factory
 
-Vue GWT generate a `VueFactory` for each of your Vue Components using annotation processing.
-Using this generated `VueFactory` we can generate several instance of our Vue Component:
+Vue GWT generate a `VueComponentFactory` for each of your Vue Components using annotation processing.
+Using this generated `VueComponentFactory` we can generate several instance of our Vue Component:
 
 ```java
 DemoComponentFactory demoFactory = DemoComponentFactory.get();
