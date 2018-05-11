@@ -1,0 +1,7 @@
+<ul>
+  <li id='class-a' v-bind:class='map("class-a", hasClassA)'></li>
+  <li id='class-a-b' :class='map(e("class-a", hasClassA), e("class-b", hasClassB))'></li>
+  <li id='computed-class-a-b' :class='computedABClasses'></li>
+  <li id='static-class' class='static-class' :class='map("class-a", hasClassA)'></li>
+  <li id='array-class' :class='array("class-c", map("class-a", hasClassA))'></li>
+</ul>

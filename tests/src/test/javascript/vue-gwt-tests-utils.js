@@ -35,3 +35,7 @@ export const onNextTick = function (testFunction) {
     });
   });
 };
+
+export const getElement = function (component, query) {
+  return component.$el.querySelector(query);
+};
