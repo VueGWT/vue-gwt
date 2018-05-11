@@ -18,15 +18,15 @@ describe('@Computed', () => {
 
   it('should work correctly at start', () => {
     expect(component.$el.innerText).to.equal('');
-    expect(component.$el.hasAttribute("data-value")).to.be.false;
+    expect(component.$el.hasAttribute('data-value')).to.be.false;
   });
 
   it('should change its value when a depending value changes', () => {
-    component.data = "test value";
+    component.data = 'test value';
 
     return onNextTick(() => {
       expect(component.$el.innerText).to.equal('#test value#');
-      expect(component.$el.getAttribute("data-value")).to.equal('#test value#')
+      expect(component.$el.getAttribute('data-value')).to.equal('#test value#')
     });
   });
 });

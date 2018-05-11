@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 import {
-  createAndMountComponent, destroyComponent, onGwtReady,
+  createAndMountComponent, destroyComponent, getElement, onGwtReady,
   onNextTick
 } from '../../vue-gwt-tests-utils'
 
@@ -17,10 +17,10 @@ describe('@Prop', () => {
   });
 
   it('should have correct value at start', () => {
-    const optionalPropDomValue = component.$el.querySelector(
-        "#optional-prop").innerText;
-    const requiredPropDomValue = component.$el.querySelector(
-        "#required-prop").innerText;
+    const optionalPropDomValue = getElement(component,
+        '#optional-prop').innerText;
+    const requiredPropDomValue = getElement(component,
+        '#required-prop').innerText;
 
     expect(optionalPropDomValue).to.equal('6');
     expect(requiredPropDomValue).to.equal('');
@@ -28,13 +28,13 @@ describe('@Prop', () => {
 
   it('should have correct value when its passed value changes', () => {
     component.optionalPropParent = 16;
-    component.requiredPropParent.setStringProperty("value");
+    component.requiredPropParent.setStringProperty('value');
 
     return onNextTick(() => {
-      const optionalPropDomValue = component.$el.querySelector(
-          "#optional-prop").innerText;
-      const requiredPropDomValue = component.$el.querySelector(
-          "#required-prop").innerText;
+      const optionalPropDomValue = getElement(component,
+          '#optional-prop').innerText;
+      const requiredPropDomValue = getElement(component,
+          '#required-prop').innerText;
 
       expect(optionalPropDomValue).to.equal('16');
       expect(requiredPropDomValue).to.equal('value');

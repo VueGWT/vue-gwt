@@ -12,7 +12,7 @@ describe('@PropValidator', () => {
 
   beforeEach(() => onGwtReady().then(() => {
     chai.use(spies);
-    chai.spy.on(console, "error");
+    chai.spy.on(console, 'error');
 
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorParentTestComponent');

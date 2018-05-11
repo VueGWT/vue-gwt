@@ -4,7 +4,7 @@ import {
   onNextTick
 } from '../../vue-gwt-tests-utils'
 
-describe('class binding', () => {
+describe('Class binding', () => {
   let component;
 
   beforeEach(() => onGwtReady().then(() => {
