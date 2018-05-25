@@ -175,7 +175,7 @@ public class CanHideComponent implements IsVueComponent {
 }
 ```
 
-As you can see bellow the `div` is created if the property `visible` of the Component instance is set to `true`.
+As you can see below the `div` is created if the property `visible` of the Component instance is set to `true`.
 
 {% raw %}
 <div class="example-container" data-name="canHideComponent">
