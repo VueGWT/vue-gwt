@@ -30,10 +30,21 @@ describe('@PropValidator', () => {
     });
   });
 
-  it('should fire an error if the value is incorrect', () => {
-    component.validatedPropParent = 106;
-    return onNextTick(() => {
-      expect(console.error).to.have.been.called.once;
-    });
+  it('should fire an error if the value is incorrect in dev mode', () => {
+    if (Vue.config.productionTip === true) {
+      component.validatedPropParent = 106;
+      return onNextTick(() => {
+        expect(console.error).to.have.been.called.once;
+      });
+    }
+  });
+
+  it('should not fire an error if the value is incorrect in production mode', () => {
+    if (Vue.config.productionTip === false) {
+      component.validatedPropParent = 106;
+      return onNextTick(() => {
+        expect(console.error).to.not.have.been.called();
+      });
+    }
   });
 });
