@@ -126,13 +126,13 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final <T extends IsVueComponent> T $ref(String refName)
+    public final <T> T $ref(String refName)
     {
         return ((JsPropertyMap<T>) $refs).get(refName);
     }
 
     @JsOverlay
-    public final <T extends IsVueComponent> JsArray<T> $refArray(String refName)
+    public final <T> JsArray<T> $refArray(String refName)
     {
         return ((JsPropertyMap<JsArray<T>>) $refs).get(refName);
     }
