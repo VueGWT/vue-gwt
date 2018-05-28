@@ -90,9 +90,9 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final Element $el()
+    public final <T extends Element> T $el()
     {
-        return $el;
+        return (T) $el;
     }
 
     @JsOverlay
