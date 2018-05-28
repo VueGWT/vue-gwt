@@ -868,7 +868,7 @@ If you want to keep the switched-out components in memory so that you can preser
 
 Check out more details on `<keep-alive>` in the [API reference](https://vuejs.org/v2/api/#keep-alive).
 
-## Misc
+## Misc {#misc}
 
 ### Authoring Reusable Components
 
