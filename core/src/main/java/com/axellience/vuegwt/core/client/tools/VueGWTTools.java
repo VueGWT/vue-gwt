@@ -96,4 +96,14 @@ public class VueGWTTools
     {
         return expressionValue == null ? null : expressionValue + "";
     }
+
+    /**
+     * Convert a char[] to a String.
+     * @param expressionValue The value of the expression from the template
+     * @return Null if passed null, the value to String otherwise
+     */
+    public static String templateExpressionToString(char[] expressionValue)
+    {
+        return expressionValue == null ? null : String.valueOf(expressionValue);
+    }
 }
