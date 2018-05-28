@@ -40,7 +40,7 @@ public class VueGwtWidget<T extends IsVueComponent> extends Widget
      * 
      * @return the component instance.
      */
-    public T vue()
+    public T getComponent()
     {
         return vueComponentInstance;
     }
