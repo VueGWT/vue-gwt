@@ -189,6 +189,7 @@ public class VueGWT
      * This Constructor can be used to get the prototype of our Java Class and get the
      * VueComponent methods from it.
      * @param componentQualifiedName The fully qualified name of the {@link IsVueComponent} class
+     * @param <T> The type of the {@link IsVueComponent}
      * @return The Java constructor of our {@link IsVueComponent}
      */
     public static <T extends IsVueComponent> ComponentExposedTypeConstructorFn<T> getComponentExposedTypeConstructorFn(

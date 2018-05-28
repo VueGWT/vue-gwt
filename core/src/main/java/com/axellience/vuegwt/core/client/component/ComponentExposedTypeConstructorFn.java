@@ -19,7 +19,7 @@ public interface ComponentExposedTypeConstructorFn<T extends IsVueComponent>
 {
     /**
      * Return the ExportedType Java class JS prototype.
-     * @return
+     * @return The JS prototype of the ComponentExposedType class
      */
     @JsProperty
     JsPropertyMap<Object> getPrototype();
