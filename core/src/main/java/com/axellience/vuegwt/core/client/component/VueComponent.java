@@ -138,7 +138,7 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final boolean $refIsArray(String refName)
+    public final boolean $isRefArray(String refName)
     {
         return ((JsPropertyMap<Object>) $refs).get(refName) instanceof JsArray;
     }
@@ -198,7 +198,7 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final boolean $listenerIsArray(String key)
+    public final boolean $isListenerArray(String key)
     {
         return ((JsPropertyMap<Object>) $listeners).get(key) instanceof JsArray;
     }

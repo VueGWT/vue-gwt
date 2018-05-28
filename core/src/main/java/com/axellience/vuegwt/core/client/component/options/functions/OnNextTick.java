@@ -10,5 +10,5 @@ import jsinterop.annotations.JsFunction;
 @FunctionalInterface
 public interface OnNextTick
 {
-    Object onNextTick();
+    void onNextTick();
 }

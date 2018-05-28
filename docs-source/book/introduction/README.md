@@ -175,7 +175,7 @@ public class CanHideComponent implements IsVueComponent {
 }
 ```
 
-As you can see bellow the `div` is created if the property `visible` of the Component instance is set to `true`.
+As you can see below the `div` is created if the property `visible` of the Component instance is set to `true`.
 
 {% raw %}
 <div class="example-container" data-name="canHideComponent">
@@ -325,7 +325,7 @@ Changing the value of our Java property will change the value of input:
 
 <p class="warning-panel">
     It's important to note that for now in Vue GWT only <code>JsInterop</code> properties can be used directly in <code>v-model</code>.
-    <a href="../forms.html">Check here to see why and get solutions</a>.
+    <a href="../essential/forms.html">Check here to see why and get solutions</a>.
 </p>
 
 A real world application is never just one Component, let's see how to **[compose Components together](README.md#composing-with-components)**.

@@ -2,7 +2,7 @@ package com.axellience.vuegwt.gwt2.client.widget;
 
 import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
-import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,14 +25,14 @@ public class VueGwtWidget<T extends IsVueComponent> extends Widget
         vueComponentInstance = vueJsConstructor.instantiate();
     }
 
-    public VueGwtWidget(VueFactory<T> vueFactory)
+    public VueGwtWidget(VueComponentFactory<T> vueFactory)
     {
         this(vueFactory.getJsConstructor());
     }
 
     public VueGwtWidget(Class<T> vueClass)
     {
-        this(VueGWT.getFactory(vueClass));
+        this(VueGWT.getVueComponentFactory(vueClass));
     }
 
     /**

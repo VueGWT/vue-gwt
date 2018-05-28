@@ -88,7 +88,7 @@ We don't need to provide their implementations, they will come from the JS Compo
 * You only need to declare what you want to interact with in the Class.
 If you don't need to call some methods or access some attributes from Java, you don't have to declare them.
 
-Because of the `@JsComponent` annotation, Vue GWT generates a `VueFactory` class for us, just like with our Java components.
+Because of the `@JsComponent` annotation, Vue GWT generates a `VueComponentFactory` class for us, just like with our Java components.
 
 So we can do:
 

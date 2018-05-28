@@ -16,7 +16,7 @@ import jsinterop.base.JsPropertyMap;
 /**
  * A Java representation of a Vue.js Constructor.
  * Vue.js Constructor are JavaScript Function obtained when calling VueComponent.extend().
- * All the {@link Component} and {@link JsComponent} get a generated {@link VueFactory} that wraps a
+ * All the {@link Component} and {@link JsComponent} get a generated {@link VueComponentFactory} that wraps a
  * {@link VueJsConstructor}.
  * @author Adrien Baron
  */
@@ -37,7 +37,7 @@ public interface VueJsConstructor<T extends IsVueComponent>
         componentOptions.addAllProviders(getOptions().getProviders());
         VueJsConstructor<K> extendedVueJsConstructor = extend(componentOptions);
         VueGWTTools.extendVueConstructorWithJavaPrototype(extendedVueJsConstructor,
-            componentOptions.getComponentJavaPrototype());
+            componentOptions.getComponentExportedTypePrototype());
 
         return extendedVueJsConstructor;
     }

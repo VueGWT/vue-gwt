@@ -8,7 +8,7 @@ import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.core.client.jsnative.jsfunctions.JsRunnable;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
 import com.axellience.vuegwt.core.client.vue.VueConfig;
-import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import elemental2.dom.Element;
 import jsinterop.annotations.JsMethod;
@@ -51,7 +51,7 @@ public abstract class Vue
      * @return The created and attached instance of our Component
      */
     @JsOverlay
-    public static <T extends IsVueComponent> T attach(String element, VueFactory<T> vueFactory)
+    public static <T extends IsVueComponent> T attach(String element, VueComponentFactory<T> vueFactory)
     {
         T vueInstance = vueFactory.create();
         vueInstance.vue().$mount(element);
@@ -81,7 +81,7 @@ public abstract class Vue
      * @return The created and attached instance of our Component
      */
     @JsOverlay
-    public static <T extends IsVueComponent> T attach(Element element, VueFactory<T> vueFactory)
+    public static <T extends IsVueComponent> T attach(Element element, VueComponentFactory<T> vueFactory)
     {
         T vueInstance = vueFactory.create();
         vueInstance.vue().$mount(element);
@@ -97,7 +97,7 @@ public abstract class Vue
     @JsOverlay
     public static <T extends IsVueComponent> void component(String id, Class<T> isVueComponentClass)
     {
-        component(id, VueGWT.getFactory(isVueComponentClass));
+        component(id, VueGWT.getVueComponentFactory(isVueComponentClass));
     }
 
     /**
@@ -107,7 +107,7 @@ public abstract class Vue
      * @param <T> {@link IsVueComponent} we want to attach
      */
     @JsOverlay
-    public static <T extends IsVueComponent> void component(String id, VueFactory<T> vueFactory)
+    public static <T extends IsVueComponent> void component(String id, VueComponentFactory<T> vueFactory)
     {
         component(id, vueFactory.getJsConstructor());
     }
@@ -130,7 +130,7 @@ public abstract class Vue
     {
         VueJsConstructor<T> extendedVueJsConstructor = extend(componentOptions);
         VueGWTTools.extendVueConstructorWithJavaPrototype(extendedVueJsConstructor,
-            componentOptions.getComponentJavaPrototype());
+            componentOptions.getComponentExportedTypePrototype());
 
         return extendedVueJsConstructor;
     }
@@ -144,7 +144,7 @@ public abstract class Vue
 
     @JsOverlay
     public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
-        String componentTag, VueFactory<T> vueFactory)
+        String componentTag, VueComponentFactory<T> vueFactory)
     {
         return Vue.customElement(componentTag, vueFactory, new CustomElementOptions<>());
     }
@@ -160,12 +160,12 @@ public abstract class Vue
     public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
         String componentTag, Class<T> isVueComponentClass, CustomElementOptions<T> options)
     {
-        return Vue.customElement(componentTag, VueGWT.getFactory(isVueComponentClass), options);
+        return Vue.customElement(componentTag, VueGWT.getVueComponentFactory(isVueComponentClass), options);
     }
 
     @JsOverlay
     public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
-        String componentTag, VueFactory<T> vueFactory, CustomElementOptions<T> options)
+        String componentTag, VueComponentFactory<T> vueFactory, CustomElementOptions<T> options)
     {
         return Vue.customElement(componentTag, vueFactory.getJsConstructor(), options);
     }

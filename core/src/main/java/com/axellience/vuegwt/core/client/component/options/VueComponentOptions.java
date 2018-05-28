@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.core.client.component.options;
 
-import com.axellience.vuegwt.core.client.component.ComponentJavaPrototype;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedOptions;
@@ -35,23 +34,22 @@ import static elemental2.core.Global.JSON;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class VueComponentOptions<T extends IsVueComponent> extends JsObject implements JsPropertyMap
+public class VueComponentOptions<T extends IsVueComponent> implements JsPropertyMap
 {
-    private ComponentJavaPrototype<T> componentJavaPrototype;
+    private JsPropertyMap<Object> componentExportedTypePrototype;
     private Map<String, Provider<?>> dependenciesProvider;
-    private JsPropertyMap dataFields;
 
     /**
-     * Set the Java Prototype on this {@link VueComponentOptions}.
+     * Set the JS Prototype of the ExportedType Java Class represented by this {@link VueComponentOptions}.
      * This prototype will be used to retrieve the java methods of our {@link IsVueComponent}.
-     * @param javaPrototype The {@link ComponentJavaPrototype} for this Component
+     * @param prototype The JS prototype of the ExportedType Java Class
      */
     @JsOverlay
-    public final void setComponentJavaPrototype(ComponentJavaPrototype<T> javaPrototype)
+    public final void setComponentExportedTypePrototype(JsPropertyMap<Object> prototype)
     {
-        this.componentJavaPrototype = javaPrototype;
+        this.componentExportedTypePrototype = prototype;
         // This must be set for Components extending Native JS Components
-        this.componentJavaPrototype.set("options", this);
+        this.componentExportedTypePrototype.set("options", this);
         this.initTemplateExpressions();
     }
 
@@ -91,15 +89,10 @@ public class VueComponentOptions<T extends IsVueComponent> extends JsObject impl
     @JsOverlay
     public final void initData(boolean useFactory, String... fieldNames)
     {
-        dataFields = JsPropertyMap.of();
+        JsPropertyMap<Object> dataFields = JsPropertyMap.of();
         for (String fieldName : fieldNames)
         {
-            // Get the default field value from the prototype if any
-            Object defaultValue = componentJavaPrototype.get(fieldName);
-            if (!Js.isTripleEqual(defaultValue, Js.undefined()))
-                dataFields.set(fieldName, defaultValue);
-            else
-                dataFields.set(fieldName, null);
+            dataFields.set(fieldName, null);
         }
 
         if (useFactory)
@@ -155,7 +148,7 @@ public class VueComponentOptions<T extends IsVueComponent> extends JsObject impl
             return;
         }
 
-        JsPropertyMap watchDefinition = JsPropertyMap.of();
+        JsPropertyMap<Object> watchDefinition = JsPropertyMap.of();
         watchDefinition.set("deep", true);
         watchDefinition.set("handler", getJavaComponentMethod(javaMethodName));
         addWatch(watchedPropertyName, watchDefinition);
@@ -196,17 +189,17 @@ public class VueComponentOptions<T extends IsVueComponent> extends JsObject impl
      * This will allow to receive data from the outside of our Component.
      * @param propName The name of the property
      * @param required Is the property required (mandatory)
-     * @param jsTypeName JS name of the type of this property, if not null we will ask Vue to type
+     * @param exposedTypeName JS name of the type of this property, if not null we will ask Vue to type
      * check based on it
      */
     @JsOverlay
-    public final void addJavaProp(String propName, boolean required, String jsTypeName)
+    public final void addJavaProp(String propName, boolean required, String exposedTypeName)
     {
         PropOptions propDefinition = new PropOptions();
         propDefinition.required = required;
 
-        if (jsTypeName != null)
-            propDefinition.type = ((JsPropertyMap<Object>) DomGlobal.window).get(jsTypeName);
+        if (exposedTypeName != null)
+            propDefinition.type = ((JsPropertyMap<Object>) DomGlobal.window).get(exposedTypeName);
 
         addProp(propName, propDefinition);
     }
@@ -243,7 +236,7 @@ public class VueComponentOptions<T extends IsVueComponent> extends JsObject impl
     @JsOverlay
     private Function getJavaComponentMethod(String javaMethodName)
     {
-        return (Function) componentJavaPrototype.get(javaMethodName);
+        return (Function) componentExportedTypePrototype.get(javaMethodName);
     }
 
     /**
@@ -251,9 +244,9 @@ public class VueComponentOptions<T extends IsVueComponent> extends JsObject impl
      * @return The prototype of our Component Java object
      */
     @JsOverlay
-    public final ComponentJavaPrototype<T> getComponentJavaPrototype()
+    public final JsPropertyMap<Object> getComponentExportedTypePrototype()
     {
-        return componentJavaPrototype;
+        return componentExportedTypePrototype;
     }
 
     @JsOverlay
