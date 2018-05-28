@@ -913,12 +913,12 @@ To achieve this you have to assign a reference ID to the child component using `
 public class ParentComponent implements IsVueComponent, HasCreated {
     @Override
     public void created() {
-        UserProfileComponent userProfileComponent = vue().$refs.get("profile");
+        UserProfileComponent userProfileComponent = vue().$ref("profile");
     }
 }
 ```
 
-When `ref` is used together with `v-for`, the ref you get will be an array containing the child components mirroring the data source.
+When `ref` is used together with `v-for`, the ref you get will be an array that you can get using `vue().$refArray("myRef")`.
 
 <p class="info-panel">
     <code>$refs</code> are only populated after the component has been rendered, and it is not reactive.
