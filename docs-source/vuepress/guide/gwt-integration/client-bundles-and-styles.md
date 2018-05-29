@@ -120,7 +120,7 @@ We can then simply use Vue `v-bind` directive to bind our style.
 
 #### Adding More Than One CSS Class
 
-You can add more than one CSS Class to your Components by using the [`array` builder](../js-interop/README.md#array):
+You can add more than one CSS Class to your Components by using the [`array` builder](js-interop.md#array):
 
 ```html
 <div v-bind:class="array(myStyle.red(), myStyle.bold())">

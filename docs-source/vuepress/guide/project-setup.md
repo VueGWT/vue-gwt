@@ -143,9 +143,9 @@ Open the Action window :
 
 Enter `Registry...` and enable `compiler.automake.allow.when.app.running`.
 
-![IntelliJ enable auto build when running](./assets/images/intellij-enable-autobuild-running.png)
+![IntelliJ enable auto build when running](../assets/images/intellij-enable-autobuild-running.png)
 
-Congratulation, you are good to go! **[Let's start using Vue GWT](introduction/README.md)**
+Congratulation, you are good to go! **[Let's start using Vue GWT](getting-started.md)**
 
 ### Eclipse
 
@@ -209,9 +209,9 @@ First install the `m2e-apt` plugin:
 
 Then you need to enable annotation processing for your project in the `m2e-apt` project settings:
 
-![Enabling Annotation processing in Eclipse](./assets/images/eclipse-enable-annotation-processing.png)
+![Enabling Annotation processing in Eclipse](../assets/images/eclipse-enable-annotation-processing.png)
 
-Congratulation, you are good to go! **[Let's start using Vue GWT](introduction/README.md)**
+Congratulation, you are good to go! **[Let's start using Vue GWT](getting-started.md)**
 
 #### NetBeans
 

@@ -13,7 +13,7 @@ In addition to strings, the expressions can also evaluate to objects or arrays.
 ### `map` Syntax
 
 Vue.js supports passing JS object literals in the template.
-As Vue GWT expressions must be Java, you can use the [`map` builder](../js-interop/README.md#map).
+As Vue GWT expressions must be Java, you can use the [`map` builder](../gwt-integration/js-interop.md#map).
 
 We can pass the result from `map` to `v-bind:class` to dynamically toggle classes:
 
@@ -55,7 +55,7 @@ It will render:
 When `isActive` or `hasError` changes, the class list will be updated accordingly.
 For example, if `hasError` becomes `true`, the class list will become `"static active text-danger"`.
 
-You can also pass a [`JsObject`](../js-interop/README.md#js-object) Object with keys/values:
+You can also pass a [`JsObject`](../gwt-integration/js-interop.md#js-object) Object with keys/values:
 
 ```html
 <div v-bind:class="classObject"></div>

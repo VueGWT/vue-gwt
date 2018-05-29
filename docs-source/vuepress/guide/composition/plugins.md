@@ -16,7 +16,7 @@ If you start to have a lot of dependencies you might have to start concatenating
 ### Options and Configuration
 
 Most plugins have options or configuration objects.
-You will have to either write the JsInterop classes for those, or manipulate directly [JsObject](../js-interop/README.md#js-object) and [JsArray](../js-interop/README.md#js-array) to build the required objects.
+You will have to either write the JsInterop classes for those, or manipulate directly [JsObject](../gwt-integration/js-interop.md#js-object) and [JsArray](../gwt-integration/js-interop.md#js-array) to build the required objects.
 
 In the future we will probably have something to convert TypeScript definitions to Java JsInterop objects, but for now this has to be done manually.
 
