@@ -1068,7 +1068,7 @@ The <code>v-for</code> directive requires a special syntax in the form of <code>
 <span class="hljs-tag">&lt;/<span class="hljs-name">ol</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleTodoListComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleTodoListComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span>, <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@JsProperty</span> List&lt;Todo&gt; todos = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
 
     <span class="hljs-meta">@Override</span>
@@ -1095,7 +1095,7 @@ The <code>v-for</code> directive requires a special syntax in the form of <code>
 <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VForWithIndexComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VForWithIndexComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span>, <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@JsProperty</span> String parentMessage = <span class="hljs-string">&quot;Message from parent&quot;</span>;
     <span class="hljs-meta">@JsProperty</span> List&lt;Todo&gt; todos = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
 
@@ -1137,7 +1137,7 @@ This tells Vue GWT that you are iterating on an <code>Object</code> and not an r
 <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VForOnObjectComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VForOnObjectComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span>, <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@JsProperty</span> JsObject&lt;Object&gt; myObject = <span class="hljs-keyword">new</span> JsObject&lt;&gt;();
 
     <span class="hljs-meta">@Override</span>
@@ -1292,7 +1292,7 @@ In this case, you can create a computed property that returns the filtered or so
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvenNumbersComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvenNumbersComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> List&lt;Integer&gt; numbers = Arrays.asList(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>);
 
     <span class="hljs-meta">@Computed</span>
@@ -1313,7 +1313,7 @@ In this case, you can create a computed property that returns the filtered or so
 ...
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvenNumbersComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvenNumbersComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-comment">// No @Computed annotation</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Integer&gt; <span class="hljs-title">getEven</span><span class="hljs-params">(List&lt;Integer&gt; numbers)</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.numbers.stream().filter(number -&gt; number % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>).collect(Collectors.toList());
@@ -1363,7 +1363,7 @@ In this case, you can create a computed property that returns the filtered or so
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"2.6","depth":1,"next":{"title":"Event Handling","level":"2.7","depth":1,"path":"essential/events.md","ref":"essential/events.md","articles":[]},"previous":{"title":"Conditional Rendering","level":"2.5","depth":1,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/list.md","mtime":"2018-01-18T09:01:12.010Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List Rendering","level":"2.6","depth":1,"next":{"title":"Event Handling","level":"2.7","depth":1,"path":"essential/events.md","ref":"essential/events.md","articles":[]},"previous":{"title":"Conditional Rendering","level":"2.5","depth":1,"path":"essential/conditional.md","ref":"essential/conditional.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/list.md","mtime":"2018-05-29T08:22:17.651Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-05-29T08:30:53.417Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

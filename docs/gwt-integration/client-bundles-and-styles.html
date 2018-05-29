@@ -1072,7 +1072,7 @@ This means that Vue GWT is compatible with GWT 2.x <code>ClientBundles</code>.</
 In this component we add a computed property for our <code>KittenClientBundle</code>.
 This will expose the bundle to the Template.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KittenComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KittenComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Computed</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> KittenClientBundle <span class="hljs-title">getMyKittenBundle</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> KittenClientBundle.INSTANCE;
@@ -1127,7 +1127,7 @@ So if you try to use <code>myStyle.bob()</code> in your template, and this style
 <p>Let&apos;s use our style in a small Component.
 As with the <code>ClientBundle</code>, we can use a computed method to expose our Style.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MelisandreComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MelisandreComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Computed</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> MelisandreComponentStyle <span class="hljs-title">getMyStyle</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> MelisandreComponentClientBundle.INSTANCE.melisandreComponentStyle();
@@ -1149,7 +1149,7 @@ As with the <code>ClientBundle</code>, we can use a computed method to expose ou
 <p>You can apply a Style conditionally.
 First we add a boolean in our <code>MelisandreComponent</code>:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MelisandreComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MelisandreComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">boolean</span> isRed = <span class="hljs-keyword">true</span>;
 
     <span class="hljs-meta">@Computed</span>
@@ -1223,7 +1223,7 @@ First we add a boolean in our <code>MelisandreComponent</code>:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Client Bundles and Styles","level":"5.1","depth":1,"next":{"title":"Client Bundles","level":"5.1.1","depth":2,"anchor":"#client-bundles","path":"gwt-integration/client-bundles-and-styles.md","ref":"gwt-integration/client-bundles-and-styles.md#client-bundles","articles":[]},"previous":{"title":"Plugins","level":"4.4","depth":1,"path":"composition/plugins.md","ref":"composition/plugins.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/client-bundles-and-styles.md","mtime":"2017-12-02T15:31:27.418Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Client Bundles and Styles","level":"5.1","depth":1,"next":{"title":"Client Bundles","level":"5.1.1","depth":2,"anchor":"#client-bundles","path":"gwt-integration/client-bundles-and-styles.md","ref":"gwt-integration/client-bundles-and-styles.md#client-bundles","articles":[]},"previous":{"title":"Plugins","level":"4.4","depth":1,"path":"composition/plugins.md","ref":"composition/plugins.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"gwt-integration/client-bundles-and-styles.md","mtime":"2018-05-29T08:22:17.653Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-05-29T08:30:53.417Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

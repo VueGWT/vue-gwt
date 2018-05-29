@@ -1097,7 +1097,7 @@ That&apos;s where you can use the <strong>render function</strong>, a closer-to-
 </span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span>
     <span class="hljs-meta">@Prop</span>(required = <span class="hljs-keyword">true</span>)
     Integer level;
@@ -1107,14 +1107,14 @@ That&apos;s where you can use the <strong>render function</strong>, a closer-to-
 It&apos;s not only verbose, but we&apos;re duplicating <code>&lt;slot&gt;&lt;/slot&gt;</code> for every heading level and will have to do the same when we add the anchor element.</p>
 <p>While templates work great for most components, it&apos;s clear that this isn&apos;t one of them. So let&apos;s try rewriting it with a <code>render</code> function:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(hasTemplate = <span class="hljs-keyword">false</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasRender</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span>, <span class="hljs-title">HasRender</span> </span>{
     <span class="hljs-meta">@JsProperty</span>
     <span class="hljs-meta">@Prop</span>(required = <span class="hljs-keyword">true</span>)
     <span class="hljs-keyword">public</span> Integer level;
 
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">render</span><span class="hljs-params">(VNodeBuilder builder)</span> </span>{
-        <span class="hljs-keyword">return</span> builder.el(<span class="hljs-string">&quot;h&quot;</span> + <span class="hljs-keyword">this</span>.level, <span class="hljs-keyword">this</span>.$slots().get(<span class="hljs-string">&quot;default&quot;</span>));
+        <span class="hljs-keyword">return</span> builder.el(<span class="hljs-string">&quot;h&quot;</span> + <span class="hljs-keyword">this</span>.level, vue().$slots().get(<span class="hljs-string">&quot;default&quot;</span>));
     }
 }
 </code></pre>
@@ -1160,24 +1160,24 @@ Here is the <code>VNodeBuilder</code> class:</p>
 
 
     <span class="hljs-comment">/**
-     * Create a VNode with the given {<span class="hljs-doctag">@link</span> VueComponent}
-     * <span class="hljs-doctag">@param</span> vueComponentClass Class for the {<span class="hljs-doctag">@link</span> VueComponent} we want
+     * Create a VNode with the given {<span class="hljs-doctag">@link</span> IsVueComponent}
+     * <span class="hljs-doctag">@param</span> isVueComponentClass Class for the {<span class="hljs-doctag">@link</span> IsVueComponent} we want
      * <span class="hljs-doctag">@param</span> data Information for the new VNode (attributes...)
      * <span class="hljs-doctag">@param</span> children Children
      * <span class="hljs-doctag">@return</span> a new VNode of this Component
      */</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">el</span><span class="hljs-params">(Class&lt;VueComponent&gt; vueComponentClass, VNodeData data, Object... children)</span> </span>{ ... }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">el</span><span class="hljs-params">(Class&lt;IsVueComponent&gt; isVueComponentClass, VNodeData data, Object... children)</span> </span>{ ... }
 
     <span class="hljs-comment">/**
-     * Create a VNode with the {<span class="hljs-doctag">@link</span> VueComponent} of the given {<span class="hljs-doctag">@link</span> VueFactory}
-     * <span class="hljs-doctag">@param</span> vueFactory {<span class="hljs-doctag">@link</span> VueFactory} for the Component we want
+     * Create a VNode with the {<span class="hljs-doctag">@link</span> IsVueComponent} of the given {<span class="hljs-doctag">@link</span> VueComponentFactory}
+     * <span class="hljs-doctag">@param</span> vueFactory {<span class="hljs-doctag">@link</span> VueComponentFactory} for the Component we want
      * <span class="hljs-doctag">@param</span> children Children
      * <span class="hljs-doctag">@return</span> a new VNode of this Component
      */</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">el</span><span class="hljs-params">(VueFactory&lt;VueComponent&gt; vueFactory, Object... children)</span> </span>{ ... }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">el</span><span class="hljs-params">(VueComponentFactory&lt;IsVueComponent&gt; vueFactory, Object... children)</span> </span>{ ... }
 
     <span class="hljs-comment">/**
-     * Create a VNode with the {<span class="hljs-doctag">@link</span> VueComponent} of the given {<span class="hljs-doctag">@link</span> VueJsConstructor}
+     * Create a VNode with the {<span class="hljs-doctag">@link</span> IsVueComponent} of the given {<span class="hljs-doctag">@link</span> VueJsConstructor}
      * <span class="hljs-doctag">@param</span> vueJsConstructor {<span class="hljs-doctag">@link</span> VueJsConstructor} for the Component we want
      * <span class="hljs-doctag">@param</span> children Children
      * <span class="hljs-doctag">@return</span> a new VNode of this Component
@@ -1255,7 +1255,7 @@ This object also allows you to bind normal HTML attributes as well as DOM proper
 <h3 id="complete-example">Complete Example</h3>
 <p>With this knowledge, we can now finish the component we started:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(hasTemplate = <span class="hljs-keyword">false</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasRender</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnchoredHeadingComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span>, <span class="hljs-title">HasRender</span> </span>{
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> RegExp camelCasePattern = RegExp.compile(<span class="hljs-string">&quot;([a-z])([A-Z]+)&quot;</span>, <span class="hljs-string">&quot;g&quot;</span>);
 
     <span class="hljs-meta">@JsProperty</span>
@@ -1265,14 +1265,14 @@ This object also allows you to bind normal HTML attributes as well as DOM proper
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">render</span><span class="hljs-params">(VNodeBuilder builder)</span> </span>{
         String text =
-            getChildrenTextContent(<span class="hljs-keyword">this</span>.$slots().get(<span class="hljs-string">&quot;default&quot;</span>)).trim().replaceAll(<span class="hljs-string">&quot; &quot;</span>, <span class="hljs-string">&quot;-&quot;</span>);
+            getChildrenTextContent(vue().$slots().get(<span class="hljs-string">&quot;default&quot;</span>)).trim().replaceAll(<span class="hljs-string">&quot; &quot;</span>, <span class="hljs-string">&quot;-&quot;</span>);
 
         String headingId = camelCasePattern.replace(text, <span class="hljs-string">&quot;$1-$2&quot;</span>).toLowerCase();
 
         <span class="hljs-keyword">return</span> builder.el(<span class="hljs-string">&quot;h&quot;</span> + <span class="hljs-keyword">this</span>.level,
             builder.el(<span class="hljs-string">&quot;a&quot;</span>,
                 VNodeData.get().attr(<span class="hljs-string">&quot;name&quot;</span>, headingId).attr(<span class="hljs-string">&quot;href&quot;</span>, <span class="hljs-string">&quot;#&quot;</span> + headingId),
-                <span class="hljs-keyword">this</span>.$slots().get(<span class="hljs-string">&quot;default&quot;</span>)));
+                vue().$slots().get(<span class="hljs-string">&quot;default&quot;</span>)));
     }
 
     <span class="hljs-function"><span class="hljs-keyword">private</span> String <span class="hljs-title">getChildrenTextContent</span><span class="hljs-params">(JsArray&lt;VNode&gt; children)</span> </span>{
@@ -1415,20 +1415,20 @@ For example, in a template using <code>v-if</code> and <code>v-for</code>:</p>
 }
 </code></pre>
 <h3 id="slots">Slots</h3>
-<p>You can access static slot contents as Arrays of VNodes from <a href="https://vuejs.org/v2/api/#vm-slots" target="_blank"><code>this.$slots</code></a>:</p>
+<p>You can access static slot contents as Arrays of VNodes from <a href="https://vuejs.org/v2/api/#vm-slots" target="_blank"><code>vue().$slots()</code></a>:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Override</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">render</span><span class="hljs-params">(VNodeBuilder builder)</span> </span>{
   <span class="hljs-comment">// `&lt;div&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/div&gt;`</span>
-  <span class="hljs-keyword">return</span> builder.el(<span class="hljs-string">&quot;div&quot;</span>, <span class="hljs-keyword">this</span>.$slots().get(<span class="hljs-string">&quot;default&quot;</span>));
+  <span class="hljs-keyword">return</span> builder.el(<span class="hljs-string">&quot;div&quot;</span>, vue().$slots().get(<span class="hljs-string">&quot;default&quot;</span>));
 }
 </code></pre>
-<p>And access scoped slots as functions that return VNodes from <a href="https://vuejs.org/v2/api/#vm-scopedSlots" target="_blank"><code>this.$scopedSlots</code></a>:</p>
+<p>And access scoped slots as functions that return VNodes from <a href="https://vuejs.org/v2/api/#vm-scopedSlots" target="_blank"><code>vue().$scopedSlots()</code></a>:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Override</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> VNode <span class="hljs-title">render</span><span class="hljs-params">(VNodeBuilder builder)</span> </span>{
   <span class="hljs-comment">// `&lt;div&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/div&gt;`</span>
   <span class="hljs-keyword">return</span> builder.el(
       <span class="hljs-string">&quot;div&quot;</span>,
-      <span class="hljs-keyword">this</span>.$scopedSlots().get(<span class="hljs-string">&quot;default&quot;</span>).execute(JsObject.of(<span class="hljs-string">&quot;text&quot;</span>, <span class="hljs-keyword">this</span>.msg))
+      vue().$scopedSlots().get(<span class="hljs-string">&quot;default&quot;</span>).execute(JsObject.of(<span class="hljs-string">&quot;text&quot;</span>, <span class="hljs-keyword">this</span>.msg))
   );
 }
 </code></pre>
@@ -1488,7 +1488,7 @@ If you are curious about how Vue.js compile templates you can <a href="https://v
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Render Function","level":"4.3","depth":1,"next":{"title":"Basics","level":"4.3.1","depth":2,"anchor":"#basics","path":"composition/render-function.md","ref":"composition/render-function.md#basics","articles":[]},"previous":{"title":"Custom Directives","level":"4.2","depth":1,"path":"composition/custom-directives.md","ref":"composition/custom-directives.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"composition/render-function.md","mtime":"2018-01-18T09:01:12.007Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Render Function","level":"4.3","depth":1,"next":{"title":"Basics","level":"4.3.1","depth":2,"anchor":"#basics","path":"composition/render-function.md","ref":"composition/render-function.md#basics","articles":[]},"previous":{"title":"Custom Directives","level":"4.2","depth":1,"path":"composition/custom-directives.md","ref":"composition/custom-directives.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"composition/render-function.md","mtime":"2018-05-29T08:22:17.647Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-05-29T08:30:53.417Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

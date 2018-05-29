@@ -1065,14 +1065,14 @@ In some cases, they may also appear as a native HTML element extended with the s
 <h3 id="registration">Registration</h3>
 <p>We already saw how to define a Component in Vue GWT.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyChildComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyChildComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
 }
 </code></pre>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>A custom child component!<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
 </code></pre>
 <p>You can make a component available in the scope of another Component by passing it to the <code>components</code> annotation option:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {MyChildComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
 }
 </code></pre>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
@@ -1130,7 +1130,7 @@ A workaround is to use the <code>is</code> special attribute:</p>
 <p>Vue GWT manage this for you and pass a function so that all your Components have separate data models.</p>
 <p>When parsing your the Component class we build a <code>dataObject</code> Object for you. For example a Component like this:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StarkComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StarkComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> String winter;
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">boolean</span> is;
     <span class="hljs-meta">@JsProperty</span> String coming;
@@ -1155,7 +1155,7 @@ So the <code>data</code> function passed to Vue.js looks like this:</p>
 The same <code>dataObject</code> instance will be passed to all your instance of your Component and their data model will be shared.</p>
 <p>Here is a working example:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(useFactory = <span class="hljs-keyword">false</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SharedDataModelComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SharedDataModelComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>;
 }
 </code></pre>
@@ -1189,7 +1189,7 @@ Data can be passed down to child components using <strong>props</strong>.</p>
 <p>A prop is a custom attribute for passing information from parent components.
 A child component needs to explicitly declare the props it expects to receive using the <code>@Prop</code> annotation:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     <span class="hljs-keyword">public</span> String message;
@@ -1201,7 +1201,7 @@ A child component needs to explicitly declare the props it expects to receive us
 <h3 id="camelcase-vs-kebab-case">camelCase vs. kebab-case</h3>
 <p>HTML attributes are case-insensitive, so when using non-string templates, camelCased prop names need to use their kebab-case (hyphen-delimited) equivalents:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     String myMessage;
@@ -1252,7 +1252,7 @@ If you do, Vue will warn you in the console.</p>
 <p>The proper answer to these use cases are:</p>
 <p><span>1.</span> Define a local data property that uses the prop&apos;s initial value as its initial value:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span>, <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     <span class="hljs-keyword">public</span> String initialCounter;
@@ -1267,7 +1267,7 @@ If you do, Vue will warn you in the console.</p>
 </code></pre>
 <p><span>2.</span> Define a computed property that is computed from the prop&apos;s value:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     <span class="hljs-keyword">public</span> String size;
@@ -1292,7 +1292,7 @@ If you want this behavior you can pass <code>checkType</code> to true to your <c
 <p>It is also possible to have a custom validation method for your properties.
 For this you can use the <code>@PropValidator</code> annotation like this:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WhiteWalkerArmyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WhiteWalkerArmyComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     <span class="hljs-keyword">int</span> armyCount;
@@ -1310,7 +1310,7 @@ This value will be set whenever the value has not been set by the parent.
 This mean whenever the Parent didn&apos;t add the property on the element in it&apos;s template.</p>
 <p>To set this default value, you must create a method that returns it and annotate it with <code>@PropDefault</code>:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PropDefaultValueComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PropDefaultValueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     String stringProp;
@@ -1372,14 +1372,14 @@ This is where Vue&apos;s custom event system comes in.</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&quot;increment&quot;</span>&gt;</span>{{ counter }}<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>;
 
     <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.counter++;
         <span class="hljs-comment">// When incrementing, we fire an event.</span>
-        <span class="hljs-keyword">this</span>.$emit(<span class="hljs-string">&quot;increment&quot;</span>);
+        vue().$emit(<span class="hljs-string">&quot;increment&quot;</span>);
     }
 }
 </code></pre>
@@ -1390,7 +1390,7 @@ This is where Vue&apos;s custom event system comes in.</p>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {ButtonCounterComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterWithEventComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterWithEventComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> total = <span class="hljs-number">0</span>;
 
     <span class="hljs-meta">@JsMethod</span>
@@ -1411,14 +1411,14 @@ All it does is report information about its own activity, just in case a parent 
 This value will be passed to the method that catch the event in the parent.</p>
 <p>For example, let&apos;s change our counter component to pass the value of it&apos;s counter.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ButtonCounterComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>;
 
     <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">this</span>.counter++;
         <span class="hljs-comment">// Pass the current value of the counter with the event.</span>
-        <span class="hljs-keyword">this</span>.$emit(<span class="hljs-string">&quot;increment&quot;</span>, <span class="hljs-keyword">this</span>.counter);
+        vue().$emit(<span class="hljs-string">&quot;increment&quot;</span>, <span class="hljs-keyword">this</span>.counter);
     }
 }
 </code></pre>
@@ -1431,7 +1431,7 @@ This value will be passed to the method that catch the event in the parent.</p>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {ButtonCounterComponent.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterWithEventComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterWithEventComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">int</span> total = <span class="hljs-number">0</span>;
 
     <span class="hljs-comment">// But we can now get the value of the event as parameter</span>
@@ -1455,19 +1455,19 @@ In that case, you must cast $event to it&apos;s type, so that Vue GWT knows what
 <p>If you want a method to automatically emit an event each time it&apos;s called you can also use the <code>@Emit</code> annotation.
 It works similarly to the one from <a href="https://github.com/kaorun343/vue-property-decorator" target="_blank">vue-property-decorator</a>.</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EmitAnnotationComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EmitAnnotationComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Emit</span>
     <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doSomething</span><span class="hljs-params">()</span> </span>{
         DomGlobal.console.log(<span class="hljs-string">&quot;Doing something&quot;</span>);
-        <span class="hljs-comment">// Implicit call to this.$emit(&quot;do-something&quot;)</span>
+        <span class="hljs-comment">// Implicit call to vue().$emit(&quot;do-something&quot;)</span>
     }
 
     <span class="hljs-meta">@Emit</span>
     <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doSomethingWithValue</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span> </span>{
         DomGlobal.console.log(<span class="hljs-string">&quot;Doing something with a value&quot;</span>);
-        <span class="hljs-comment">// Implicit call to this.$emit(&quot;do-something-with-value&quot;, value)</span>
+        <span class="hljs-comment">// Implicit call to vue().$emit(&quot;do-something-with-value&quot;, value)</span>
     }
 
 
@@ -1475,7 +1475,7 @@ It works similarly to the one from <a href="https://github.com/kaorun343/vue-pro
     <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doSomethingWithValueAndCustomName</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span> </span>{
         DomGlobal.console.log(<span class="hljs-string">&quot;Doing something&quot;</span>);
-        <span class="hljs-comment">// Implicit call to this.$emit(&quot;custom-event-name&quot;, value)</span>
+        <span class="hljs-comment">// Implicit call to vue().$emit(&quot;custom-event-name&quot;, value)</span>
     }
 }
 </code></pre>
@@ -1502,7 +1502,7 @@ What we need to change is <strong>making the code in the child that affects pare
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">comp</span> <span class="hljs-attr">:foo</span>=<span class="hljs-string">&quot;bar&quot;</span> @<span class="hljs-attr">update:foo</span>=<span class="hljs-string">&quot;val =&gt; bar = val&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">comp</span>&gt;</span>
 </code></pre>
 <p>For the child component to update <code>foo</code>&apos;s value, it needs to explicitly emit an event instead of mutating the prop:</p>
-<pre><code class="lang-java"><span class="hljs-keyword">this</span>.$emit(<span class="hljs-string">&apos;update:foo&apos;</span>, newValue);
+<pre><code class="lang-java">vue().$emit(<span class="hljs-string">&apos;update:foo&apos;</span>, newValue);
 </code></pre>
 <h3 id="form-input-components-using-custom-events">Form Input Components using Custom Events</h3>
 <p>Custom events can also be used to create custom inputs that work with <code>v-model</code>. Remember:</p>
@@ -1569,7 +1569,7 @@ A simple rule of thumb for component scope is:</p>
 The parent&apos;s template is not aware of the state of a child component.</p>
 <p>If you need to bind child-scope directives on a component root node, you should do so in the child component&apos;s own template:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> <span class="hljs-keyword">boolean</span> someChildProperty;
 }
 </code></pre>
@@ -1660,7 +1660,7 @@ This is not yet supported by Vue GWT.</p>
 <h2 id="dynamic-components">Dynamic Components </h2>
 <p>You can use the same mount point and dynamically switch between multiple components using the reserved <code>&lt;component&gt;</code> element and dynamically bind to its <code>is</code> attribute:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = { TargaryenComponent.class, StarkComponent.class, LannisterComponent.class })
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HousesComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HousesComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@JsProperty</span> String currentHouse = <span class="hljs-string">&quot;targaryen&quot;</span>;
 }
 </code></pre>
@@ -1677,7 +1677,7 @@ This is not yet supported by Vue GWT.</p>
 <span class="hljs-tag">&lt;/<span class="hljs-name">keep-alive</span>&gt;</span>
 </code></pre>
 <p>Check out more details on <code>&lt;keep-alive&gt;</code> in the <a href="https://vuejs.org/v2/api/#keep-alive" target="_blank">API reference</a>.</p>
-<h2 id="misc">Misc</h2>
+<h2 id="misc">Misc </h2>
 <h3 id="authoring-reusable-components">Authoring Reusable Components</h3>
 <p>When authoring components, it&apos;s good to keep in mind whether you intend to reuse it somewhere else later.
 It&apos;s OK for one-off components to be tightly coupled, but reusable components should define a clean public interface and make no assumptions about the context it&apos;s used in.</p>
@@ -1709,14 +1709,14 @@ To achieve this you have to assign a reference ID to the child component using <
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = UserProfileComponent.class)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span>, <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">created</span><span class="hljs-params">()</span> </span>{
-        UserProfileComponent userProfileComponent = <span class="hljs-keyword">this</span>.$refs.get(<span class="hljs-string">&quot;profile&quot;</span>);
+        UserProfileComponent userProfileComponent = vue().$ref(<span class="hljs-string">&quot;profile&quot;</span>);
     }
 }
 </code></pre>
-<p>When <code>ref</code> is used together with <code>v-for</code>, the ref you get will be an array containing the child components mirroring the data source.</p>
+<p>When <code>ref</code> is used together with <code>v-for</code>, the ref you get will be an array that you can get using <code>vue().$refArray(&quot;myRef&quot;)</code>.</p>
 <p class="info-panel">
     <code>$refs</code> are only populated after the component has been rendered, and it is not reactive.
     It is only meant as an escape hatch for direct child manipulation - you should avoid using <code>$refs</code> in templates or computed properties.
@@ -1741,7 +1741,7 @@ However, they can only do so with the <code>name</code> option:</p>
 <p>A component like the above will result in a &quot;max stack size exceeded&quot; error, so make sure recursive invocation is conditional (i.e. uses a <code>v-if</code> that will eventually be <code>false</code>).</p>
 <p>Bellow is an example recursive component:</p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(name = <span class="hljs-string">&quot;recursive&quot;</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RecursiveComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RecursiveComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span>, <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     Integer counter;
@@ -1844,7 +1844,7 @@ In these cases, you can ensure that it&apos;s only evaluated once and then cache
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Composing with Components","level":"2.9","depth":1,"next":{"title":"Using Components","level":"2.9.1","depth":2,"anchor":"#using-components","path":"essential/components.md","ref":"essential/components.md#using-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2018-01-18T09:01:12.008Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Composing with Components","level":"2.9","depth":1,"next":{"title":"Using Components","level":"2.9.1","depth":2,"anchor":"#using-components","path":"essential/components.md","ref":"essential/components.md#using-components","articles":[]},"previous":{"title":"Form Input Bindings","level":"2.8","depth":1,"path":"essential/forms.md","ref":"essential/forms.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/components.md","mtime":"2018-05-29T08:22:17.648Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-05-29T08:30:53.417Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

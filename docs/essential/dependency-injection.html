@@ -1086,7 +1086,7 @@ It&apos;s not possible to use injected constructor parameters as Java constructo
 <p>
 
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GotQuotesComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HasCreated</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GotQuotesComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span>, <span class="hljs-title">HasCreated</span> </span>{
     <span class="hljs-meta">@JsProperty</span> GotQuote quote;
     <span class="hljs-meta">@Inject</span> GotQuotesService gotQuotesService;
 
@@ -1163,7 +1163,7 @@ If <code>GotQuotesComponentFactory</code> doesn&apos;t exist, then check your an
 All the Components used in the template and declared in <code>components</code> will be injected.</p>
 <h3 id="rootcomponent">RootComponent</h3>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = {Child1Component.class, Child2Component.class})
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{}
 </code></pre>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-comment">&lt;!-- Create 10 instances of Child1Component --&gt;</span>
@@ -1173,7 +1173,7 @@ All the Components used in the template and declared in <code>components</code> 
 </code></pre>
 <h3 id="child1component">Child1Component</h3>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>(components = GrandChild1Component.class)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Child1Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Child1Component</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Inject</span> MyService myService;
 }
 </code></pre>
@@ -1183,14 +1183,14 @@ All the Components used in the template and declared in <code>components</code> 
 </code></pre>
 <h3 id="child2component">Child2Component</h3>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Child2Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Child2Component</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Inject</span> MyService myService;
     <span class="hljs-meta">@Inject</span> AnotherService anotherService;
 }
 </code></pre>
 <h3 id="grandchild1component">GrandChild1Component</h3>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GrandChild1Component</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GrandChild1Component</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Inject</span> AnotherService anotherService;
 }
 </code></pre>
@@ -1268,7 +1268,7 @@ When used in the templates, the instances will automatically be injected.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Dependency Injection","level":"2.10","depth":1,"next":{"title":"Why Dependency Injection?","level":"2.10.1","depth":2,"anchor":"#why-dependency-injection","path":"essential/dependency-injection.md","ref":"essential/dependency-injection.md#why-dependency-injection","articles":[]},"previous":{"title":"Dynamic Components","level":"2.9.6","depth":2,"anchor":"#dynamic-components","path":"essential/components.md","ref":"essential/components.md#dynamic-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/dependency-injection.md","mtime":"2018-01-18T09:01:12.010Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Dependency Injection","level":"2.10","depth":1,"next":{"title":"Why Dependency Injection?","level":"2.10.1","depth":2,"anchor":"#why-dependency-injection","path":"essential/dependency-injection.md","ref":"essential/dependency-injection.md#why-dependency-injection","articles":[]},"previous":{"title":"Dynamic Components","level":"2.9.6","depth":2,"anchor":"#dynamic-components","path":"essential/components.md","ref":"essential/components.md#dynamic-components","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"essential/dependency-injection.md","mtime":"2018-05-29T08:22:17.649Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-05-29T08:30:53.417Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

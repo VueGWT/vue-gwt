@@ -1070,14 +1070,14 @@ Vue GWT integrates a <a href="https://github.com/adrienbaron/vue-custom-element"
 <p>Let&apos;s say you have a Vue GWT component called <code>AnimalSelectorComponent</code>.
 It let&apos;s a user with a given name select an animal, and emits an event each time an animal is selected. </p>
 <pre><code class="lang-java"><span class="hljs-meta">@Component</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnimalSelectorComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">VueComponent</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnimalSelectorComponent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IsVueComponent</span> </span>{
     <span class="hljs-meta">@Prop</span>
     <span class="hljs-meta">@JsProperty</span>
     String userName;
 
     <span class="hljs-meta">@JsMethod</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">selectAnimal</span><span class="hljs-params">(Event event)</span> </span>{
-        <span class="hljs-keyword">this</span>.$emit(<span class="hljs-string">&quot;animal-selected&quot;</span>, ((HTMLInputElement) event.target).value);
+        vue().$emit(<span class="hljs-string">&quot;animal-selected&quot;</span>, ((HTMLInputElement) event.target).value);
     }
 }
 </code></pre>
@@ -1223,7 +1223,7 @@ For example with this <code>DemoSlotsComponent.html</code> template:</p>
 
 <h2 id="manipulating-our-custom-element">Manipulating our Custom Element</h2>
 <h3 id="creating-instances-programmatically">Creating Instances Programmatically</h3>
-<p>The <code>createInstance</code> method returns a <code>VueCustomElementType&lt;T extends IsVueComponent&gt;</code>.
+<p>The <code>customElement</code> method returns a <code>VueCustomElementType&lt;T extends IsVueComponent&gt;</code>.
 This object can be used to create instances of your Custom Element easily.</p>
 <pre><code class="lang-java">VueCustomElementType&lt;AnimalSelectorComponent&gt; animalSelectorElementType =
             Vue.customElement(<span class="hljs-string">&quot;animal-selector&quot;</span>, AnimalSelectorComponent.class);
@@ -1240,11 +1240,11 @@ DomGlobal.document.body.appendChild(myElement);
 <p>From your Custom Element instance you can access the underlying Vue Component.
 This will work no matter how your Custom Element instance is created.</p>
 <pre><code class="lang-java">VueCustomElement&lt;AnimalSelectorComponent&gt; animalSelectorElement = Js.cast(DomGlobal.document.createElement(<span class="hljs-string">&quot;animal-selector&quot;</span>));
-AnimalSelectorComponent animalSelectorComponent = myElement.getVueComponent();
+AnimalSelectorComponent animalSelectorComponent = myElement.getComponent();
 <span class="hljs-comment">// Access any public property, or call any public method on animalSelectorComponent.</span>
 
 VueCustomElement&lt;TodoComponent&gt; todoElement = Js.cast(DomGlobal.document.getElementById(<span class="hljs-string">&quot;myTodo&quot;</span>));
-TodoComponent todoComponent = todoElement.getVueComponent();
+TodoComponent todoComponent = todoElement.getComponent();
 <span class="hljs-comment">// Access any public property, or call any public method on todoComponent.</span>
 </code></pre>
 <h4 id="from-javascript">From JavaScript</h4>
@@ -1314,7 +1314,7 @@ Vue.customElement(<span class="hljs-string">&quot;animal-selector&quot;</span>, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Custom Elements (Web Components)","level":"8.1","depth":1,"next":{"title":"Integrating With JS Components","level":"8.2","depth":1,"path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md","articles":[{"title":"Using JS Components in Java","level":"8.2.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},{"title":"Using our Java Components in JS","level":"8.2.2","depth":2,"anchor":"#using-java-components-in-js","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-java-components-in-js","articles":[]}]},"previous":{"title":"Routing","level":"7.1","depth":1,"path":"scaling-up/routing.md","ref":"scaling-up/routing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/custom-elements.md","mtime":"2017-12-02T16:27:14.987Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-28T17:44:18.729Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Custom Elements (Web Components)","level":"8.1","depth":1,"next":{"title":"Integrating With JS Components","level":"8.2","depth":1,"path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md","articles":[{"title":"Using JS Components in Java","level":"8.2.1","depth":2,"anchor":"#using-js-components-in-java","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-js-components-in-java","articles":[]},{"title":"Using our Java Components in JS","level":"8.2.2","depth":2,"anchor":"#using-java-components-in-js","path":"advanced/integrating-with-js-components.md","ref":"advanced/integrating-with-js-components.md#using-java-components-in-js","articles":[]}]},"previous":{"title":"Routing","level":"7.1","depth":1,"path":"scaling-up/routing.md","ref":"scaling-up/routing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include","toggle-chapters"],"pluginsConfig":{"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":true},"include":{},"toggle-chapters":{},"highlight":{},"search":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"advanced/custom-elements.md","mtime":"2018-05-29T08:22:17.644Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-05-29T08:30:53.417Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
