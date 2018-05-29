@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.client.vnode;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import elemental2.core.JsArray;
 import elemental2.dom.Element;
 import jsinterop.annotations.JsOverlay;
@@ -20,10 +20,10 @@ public final class VNode
     @JsProperty protected String text;
     @JsProperty protected Element elm;
     @JsProperty protected String ns;
-    @JsProperty protected VueComponent context;
+    @JsProperty protected IsVueComponent context;
     @JsProperty protected Object key;
     @JsProperty protected VNodeComponentOptions componentOptions;
-    @JsProperty protected VueComponent componentInstance;
+    @JsProperty protected IsVueComponent componentInstance;
     @JsProperty protected VNode parent;
     @JsProperty protected boolean raw;
     @JsProperty protected boolean isStatic;
@@ -119,13 +119,13 @@ public final class VNode
     }
 
     @JsOverlay
-    public final VueComponent getContext()
+    public final <T extends IsVueComponent> T getContext()
     {
-        return context;
+        return (T) context;
     }
 
     @JsOverlay
-    public final VNode setContext(VueComponent context)
+    public final <T extends IsVueComponent> VNode setContext(T context)
     {
         this.context = context;
         return this;
@@ -158,13 +158,13 @@ public final class VNode
     }
 
     @JsOverlay
-    public final VueComponent getComponentInstance()
+    public final <T extends IsVueComponent> T getComponentInstance()
     {
-        return componentInstance;
+        return (T) componentInstance;
     }
 
     @JsOverlay
-    public final VNode setComponentInstance(VueComponent componentInstance)
+    public final <T extends IsVueComponent> VNode setComponentInstance(T componentInstance)
     {
         this.componentInstance = componentInstance;
         return this;

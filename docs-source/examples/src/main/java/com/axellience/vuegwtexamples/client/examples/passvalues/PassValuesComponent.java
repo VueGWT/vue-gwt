@@ -2,11 +2,11 @@ package com.axellience.vuegwtexamples.client.examples.passvalues;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Prop;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import jsinterop.annotations.JsProperty;
 
 @Component
-public class PassValuesComponent extends VueComponent
+public class PassValuesComponent implements IsVueComponent
 {
     @Prop
     @JsProperty

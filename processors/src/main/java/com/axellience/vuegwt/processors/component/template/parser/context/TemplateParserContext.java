@@ -1,6 +1,14 @@
 package com.axellience.vuegwt.processors.component.template.parser.context;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.lang.model.element.TypeElement;
+
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.tools.JsUtils;
 import com.axellience.vuegwt.core.client.tools.VForExpressionUtil;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
@@ -8,16 +16,9 @@ import com.axellience.vuegwt.processors.component.template.parser.context.localc
 import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
-import elemental2.dom.Event;
-import jsinterop.base.JsPropertyMap;
-import net.htmlparser.jericho.Segment;
 
-import javax.lang.model.element.TypeElement;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import elemental2.dom.Event;
+import net.htmlparser.jericho.Segment;
 
 /**
  * Context of the parser.
@@ -39,9 +40,12 @@ public class TemplateParserContext
 
     private Segment currentSegment;
 
+    /** In some cases mandatory attributes must be added to each element during template parsing, for example to support scoped styles */
+    private final Map<String, String> mandatoryAttributes = new HashMap<>();
+
     /**
-     * Build the context based on a given {@link VueComponent} Class.
-     * @param componentTypeElement The {@link VueComponent} class we process in this context
+     * Build the context based on a given {@link IsVueComponent} Class.
+     * @param componentTypeElement The {@link IsVueComponent} class we process in this context
      * @param localComponents Components registered locally, used to check property bindings
      */
     public TemplateParserContext(TypeElement componentTypeElement, LocalComponents localComponents)
@@ -57,8 +61,7 @@ public class TemplateParserContext
         this.addStaticImport(JsUtils.class.getCanonicalName() + ".array");
 
         this.rootLayer = new ContextLayer();
-        this.rootLayer.addVariable(String.class, "_uid");
-        this.rootLayer.addVariable(JsPropertyMap.class, "$props");
+        this.rootLayer.addMethod("vue");
 
         this.contextLayers.add(this.rootLayer);
     }
@@ -247,9 +250,9 @@ public class TemplateParserContext
     }
 
     /**
-     * Simple getter for the currently processed {@link VueComponent} Template name.
+     * Simple getter for the currently processed {@link IsVueComponent} Template name.
      * Used for debugging.
-     * @return The currently process {@link VueComponent} Template name
+     * @return The currently process {@link IsVueComponent} Template name
      */
     public String getTemplateName()
     {
@@ -265,4 +268,9 @@ public class TemplateParserContext
     {
         return componentTypeElement;
     }
+
+    public Map<String, String> getMandatoryAttributes() {
+        return mandatoryAttributes;
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.annotations.component;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.core.client.directive.VueDirective;
 
@@ -29,9 +29,9 @@ public @interface Component
 
     /**
      * Components to register on this component instance
-     * @return This list of {@link VueComponent} to register on this Component
+     * @return This list of {@link IsVueComponent} to register on this Component
      */
-    Class<? extends VueComponent>[] components() default {};
+    Class<? extends IsVueComponent>[] components() default {};
 
     /**
      * Directives to register on this component instance

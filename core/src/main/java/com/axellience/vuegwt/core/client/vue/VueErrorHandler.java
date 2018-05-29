@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.client.vue;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import elemental2.core.JsObject;
 import jsinterop.annotations.JsFunction;
 
@@ -11,5 +11,5 @@ import jsinterop.annotations.JsFunction;
 @FunctionalInterface
 public interface VueErrorHandler
 {
-    void action(JsObject err, VueComponent vue, String info);
+    void action(JsObject err, IsVueComponent vue, String info);
 }

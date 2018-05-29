@@ -3,6 +3,7 @@ package com.axellience.vuegwt.core.client.vue;
 import elemental2.core.JsArray;
 import elemental2.core.JsString;
 import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
@@ -11,7 +12,7 @@ import jsinterop.base.JsPropertyMap;
 /**
  * @author Adrien Baron
  */
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class VueConfig
 {
     @JsProperty protected boolean silent;

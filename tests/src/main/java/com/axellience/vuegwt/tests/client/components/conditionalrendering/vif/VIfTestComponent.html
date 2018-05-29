@@ -1,0 +1,22 @@
+<div>
+  <template v-if='ifCondition'>
+    <span id='if-element'></span>
+  </template>
+
+  <template v-if='ifCondition'>
+    <span id='if-else--if-element'></span>
+  </template>
+  <template v-else>
+    <span id='if-else--else-element'></span>
+  </template>
+
+  <template v-if='ifCondition'>
+    <span id='if-else-if--if-element'></span>
+  </template>
+  <template v-else-if='elseIfCondition'>
+    <span id='if-else-if--else-if-element'></span>
+  </template>
+  <template v-else>
+    <span id='if-else-if--else-element'></span>
+  </template>
+</div>

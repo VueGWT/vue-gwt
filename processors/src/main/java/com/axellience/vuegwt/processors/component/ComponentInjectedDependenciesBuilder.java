@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.processors.component;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -10,6 +10,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
+import javax.annotation.Generated;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.tools.Diagnostic.Kind;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,13 +33,13 @@ import static com.axellience.vuegwt.processors.utils.InjectedDependenciesUtil.ge
 import static com.axellience.vuegwt.processors.utils.InjectedDependenciesUtil.hasInjectAnnotation;
 
 /**
- * Build a class used to inject dependencies of a given {@link VueComponent}.
+ * Build a class used to inject dependencies of a given {@link IsVueComponent}.
  * @author Adrien Baron
  */
 public class ComponentInjectedDependenciesBuilder
 {
     private final Messager messager;
-    private final Builder componentInjectedDependenciesBuilder;
+    private final Builder builder;
 
     private final List<String> injectedFieldsName = new LinkedList<>();
     private final Map<String, List<String>> injectedParametersByMethod = new HashMap<>();
@@ -50,23 +52,31 @@ public class ComponentInjectedDependenciesBuilder
         // Template resource abstract class
         ClassName componentInjectedDependenciesName = componentInjectedDependenciesName(component);
 
-        componentInjectedDependenciesBuilder =
-            TypeSpec.classBuilder(componentInjectedDependenciesName).addModifiers(Modifier.PUBLIC);
+        builder = TypeSpec
+            .classBuilder(componentInjectedDependenciesName)
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(AnnotationSpec
+                .builder(Generated.class)
+                .addMember("value",
+                    "$S",
+                    ComponentInjectedDependenciesBuilder.class.getCanonicalName())
+                .addMember("date", "$S", new Date().toString())
+                .addMember("comments", "$S", "https://github.com/Axellience/vue-gwt")
+                .build());
 
         processInjectedFields(component);
         processInjectedMethods(component);
 
         if (hasInjectedDependencies())
         {
-            componentInjectedDependenciesBuilder.addMethod(MethodSpec
+            builder.addMethod(MethodSpec
                 .constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Inject.class)
                 .build());
 
             // Generate the file
-            GeneratorsUtil.toJavaFile(processingEnvironment.getFiler(),
-                componentInjectedDependenciesBuilder,
+            GeneratorsUtil.toJavaFile(processingEnvironment.getFiler(), builder,
                 componentInjectedDependenciesName(component),
                 component);
         }
@@ -74,7 +84,7 @@ public class ComponentInjectedDependenciesBuilder
 
     /**
      * Process all the injected fields from our Component.
-     * @param component The {@link VueComponent} we are processing
+     * @param component The {@link IsVueComponent} we are processing
      */
     private void processInjectedFields(TypeElement component)
     {
@@ -87,7 +97,7 @@ public class ComponentInjectedDependenciesBuilder
 
     /**
      * Process all the injected methods from our Component.
-     * @param component The {@link VueComponent} we are processing
+     * @param component The {@link IsVueComponent} we are processing
      */
     private void processInjectedMethods(TypeElement component)
     {
@@ -192,7 +202,7 @@ public class ComponentInjectedDependenciesBuilder
             fieldBuilder.addAnnotation(Inject.class);
 
         // And add field
-        componentInjectedDependenciesBuilder.addField(fieldBuilder.build());
+        builder.addField(fieldBuilder.build());
     }
 
     /**
@@ -204,12 +214,12 @@ public class ComponentInjectedDependenciesBuilder
         return !injectedFieldsName.isEmpty() || !injectedParametersByMethod.isEmpty();
     }
 
-    public List<String> getInjectedFieldsName()
+    List<String> getInjectedFieldsName()
     {
         return injectedFieldsName;
     }
 
-    public Map<String, List<String>> getInjectedParametersByMethod()
+    Map<String, List<String>> getInjectedParametersByMethod()
     {
         return injectedParametersByMethod;
     }

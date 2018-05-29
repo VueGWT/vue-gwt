@@ -1,257 +1,259 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-		xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.axellience</groupId>
-	<artifactId>vue-gwt-parent</artifactId>
-	<version>1.0-beta-7</version>
-	<packaging>pom</packaging>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.axellience</groupId>
+  <artifactId>vue-gwt-parent</artifactId>
+  <version>1.0-beta-8</version>
+  <packaging>pom</packaging>
 
-	<name>Vue GWT Parent</name>
-	<description>Let you use Vue.js Components in GWT application and code Vue.js Components in
-		Java
-	</description>
-	<url>https://github.com/Axellience/vue-gwt</url>
+  <name>Vue GWT Parent</name>
+  <description>Let you use Vue.js Components in GWT application and code Vue.js Components in
+    Java
+  </description>
+  <url>https://github.com/Axellience/vue-gwt</url>
 
-	<licenses>
-		<license>
-			<name>MIT License</name>
-			<url>http://www.opensource.org/licenses/mit-license.php</url>
-		</license>
-	</licenses>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+    </license>
+  </licenses>
 
-	<developers>
-		<developer>
-			<name>Adrien Baron</name>
-			<email>adrien.baron@axellience.com</email>
-			<organization>Axellience</organization>
-			<organizationUrl>http://www.genmymodel.com</organizationUrl>
-		</developer>
-	</developers>
+  <developers>
+    <developer>
+      <name>Adrien Baron</name>
+      <email>adrien.baron@axellience.com</email>
+      <organization>Axellience</organization>
+      <organizationUrl>http://www.genmymodel.com</organizationUrl>
+    </developer>
+  </developers>
 
-	<modules>
-		<module>core</module>
-		<module>gwt2</module>
-		<module>processors</module>
-	</modules>
+  <modules>
+    <module>core</module>
+    <module>gwt2</module>
+    <module>processors</module>
+    <module>tests</module>
+  </modules>
 
-	<scm>
-		<connection>scm:git:git://github.com/Axellience/vue-gwt.git</connection>
-		<developerConnection>scm:git:ssh://github.com:Axellience/vue-gwt.git</developerConnection>
-		<url>https://github.com/Axellience/vue-gwt/tree/master</url>
-	</scm>
+  <scm>
+    <connection>scm:git:git://github.com/Axellience/vue-gwt.git</connection>
+    <developerConnection>scm:git:ssh://github.com:Axellience/vue-gwt.git</developerConnection>
+    <url>https://github.com/Axellience/vue-gwt/tree/master</url>
+  </scm>
 
-	<properties>
-		<!-- Plugins -->
-		<plugin.version.gwt.maven>1.0-rc-9</plugin.version.gwt.maven>
+  <properties>
+    <!-- Plugins -->
+    <plugin.version.gwt.maven>1.0-rc-9</plugin.version.gwt.maven>
 
-		<!-- Dependencies -->
-		<gwt.version>2.8.2</gwt.version>
-		<jsinterop.version>1.0.2</jsinterop.version>
-		<jsinterop-base.version>1.0.0-RC1</jsinterop-base.version>
-		<elemental.version>1.0.0-RC1</elemental.version>
+    <!-- Dependencies -->
+    <gwt.version>2.8.2</gwt.version>
+    <jsinterop.version>1.0.2</jsinterop.version>
+    <jsinterop-base.version>1.0.0-RC1</jsinterop-base.version>
+    <elemental.version>1.0.0-RC1</elemental.version>
 
-		<javapoet.version>1.9.0</javapoet.version>
-		<jericho.version>3.4</jericho.version>
-		<javaparser.version>3.0.1</javaparser.version>
-		<auto-service.version>1.0-rc4</auto-service.version>
+    <javapoet.version>1.9.0</javapoet.version>
+    <jericho.version>3.4</jericho.version>
+    <javaparser.version>3.0.1</javaparser.version>
+    <auto-service.version>1.0-rc4</auto-service.version>
+    <ph-css.version>6.1.0</ph-css.version>
 
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
 
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-	<dependencyManagement>
-		<dependencies>
+  <dependencyManagement>
+    <dependencies>
 
-			<!-- Vue GWT -->
-			<dependency>
-				<groupId>com.axellience</groupId>
-				<artifactId>vue-gwt</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.axellience</groupId>
-				<artifactId>vue-gwt-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.axellience</groupId>
-				<artifactId>vue-gwt-generators</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+      <!-- Vue GWT -->
+      <dependency>
+        <groupId>com.axellience</groupId>
+        <artifactId>vue-gwt</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.axellience</groupId>
+        <artifactId>vue-gwt-processors</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
-			<!-- GWT dependencies -->
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt</artifactId>
-				<version>${gwt.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.google.jsinterop</groupId>
-				<artifactId>base</artifactId>
-				<version>${jsinterop-base.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.elemental2</groupId>
-				<artifactId>elemental2-core</artifactId>
-				<version>${elemental.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.elemental2</groupId>
-				<artifactId>elemental2-dom</artifactId>
-				<version>${elemental.version}</version>
-			</dependency>
+      <!-- GWT dependencies -->
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt</artifactId>
+        <version>${gwt.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.jsinterop</groupId>
+        <artifactId>base</artifactId>
+        <version>${jsinterop-base.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-core</artifactId>
+        <version>${elemental.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-dom</artifactId>
+        <version>${elemental.version}</version>
+      </dependency>
 
-			<!-- Annotation Processors -->
-			<dependency>
-				<groupId>com.google.auto.service</groupId>
-				<artifactId>auto-service</artifactId>
-				<version>${auto-service.version}</version>
-			</dependency>
+      <!-- Annotation Processors -->
+      <dependency>
+        <groupId>com.google.auto.service</groupId>
+        <artifactId>auto-service</artifactId>
+        <version>${auto-service.version}</version>
+      </dependency>
 
-			<!-- Injection -->
-			<dependency>
-				<groupId>javax.inject</groupId>
-				<artifactId>javax.inject</artifactId>
-				<version>1</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.inject</groupId>
-				<artifactId>javax.inject</artifactId>
-				<version>1</version>
-				<classifier>sources</classifier>
-			</dependency>
+      <!-- Injection -->
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+        <classifier>sources</classifier>
+      </dependency>
 
-			<!-- Template parsing -->
-			<dependency>
-				<groupId>com.squareup</groupId>
-				<artifactId>javapoet</artifactId>
-				<version>${javapoet.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>net.htmlparser.jericho</groupId>
-				<artifactId>jericho-html</artifactId>
-				<version>${jericho.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.github.javaparser</groupId>
-				<artifactId>javaparser-core</artifactId>
-				<version>${javaparser.version}</version>
-			</dependency>
+      <!-- Template parsing -->
+      <dependency>
+        <groupId>com.squareup</groupId>
+        <artifactId>javapoet</artifactId>
+        <version>${javapoet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.htmlparser.jericho</groupId>
+        <artifactId>jericho-html</artifactId>
+        <version>${jericho.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.javaparser</groupId>
+        <artifactId>javaparser-core</artifactId>
+        <version>${javaparser.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.helger</groupId>
+        <artifactId>ph-css</artifactId>
+        <version>${ph-css.version}</version>
+      </dependency>
 
-		</dependencies>
-	</dependencyManagement>
+    </dependencies>
+  </dependencyManagement>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>net.ltgt.gwt.maven</groupId>
-					<artifactId>gwt-maven-plugin</artifactId>
-					<version>${plugin.version.gwt.maven}</version>
-					<extensions>true</extensions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>net.ltgt.gwt.maven</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>
+          <version>${plugin.version.gwt.maven}</version>
+          <extensions>true</extensions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
 
-		<plugins>
-			<!-- Include Java source -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+    <plugins>
+      <!-- Include Java source -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
-			<plugin>
-				<groupId>com.amashchenko.maven.plugin</groupId>
-				<artifactId>gitflow-maven-plugin</artifactId>
-				<version>1.9.0</version>
-				<configuration>
-					<pushRemote>false</pushRemote>
-					<skipTestProject>true</skipTestProject>
-					<skipFeatureVersion>true</skipFeatureVersion>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+      <plugin>
+        <groupId>com.amashchenko.maven.plugin</groupId>
+        <artifactId>gitflow-maven-plugin</artifactId>
+        <version>1.9.0</version>
+        <configuration>
+          <pushRemote>false</pushRemote>
+          <skipTestProject>true</skipTestProject>
+          <skipFeatureVersion>true</skipFeatureVersion>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<!-- Include Java doc -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.4</version>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <!-- Include Java doc -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.4</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
 
-					<!-- Signing plugin -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+          <!-- Signing plugin -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
 
-					<!-- Sonatype -->
-					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.7</version>
-						<extensions>true</extensions>
-						<configuration>
-							<serverId>ossrh</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+          <!-- Sonatype -->
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.7</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

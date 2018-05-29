@@ -28,7 +28,7 @@ This will expose the bundle to the Template.
 
 ```java
 @Component
-public class KittenComponent extends VueComponent {
+public class KittenComponent implements IsVueComponent {
     @Computed
     public KittenClientBundle getMyKittenBundle() {
         return KittenClientBundle.INSTANCE;
@@ -106,7 +106,7 @@ As with the `ClientBundle`, we can use a computed method to expose our Style.
 
 ```java
 @Component
-public class MelisandreComponent extends VueComponent {
+public class MelisandreComponent implements IsVueComponent {
     @Computed
     public MelisandreComponentStyle getMyStyle() {
         return MelisandreComponentClientBundle.INSTANCE.melisandreComponentStyle();
@@ -139,7 +139,7 @@ First we add a boolean in our `MelisandreComponent`:
 
 ```java
 @Component
-public class MelisandreComponent extends VueComponent {
+public class MelisandreComponent implements IsVueComponent {
     @JsProperty boolean isRed = true;
     
     @Computed

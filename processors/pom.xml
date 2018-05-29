@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.axellience</groupId>
-		<artifactId>vue-gwt-parent</artifactId>
-		<version>1.0-beta-7</version>
-	</parent>
+  <parent>
+    <groupId>com.axellience</groupId>
+    <artifactId>vue-gwt-parent</artifactId>
+    <version>1.0-beta-8</version>
+  </parent>
 
-	<artifactId>vue-gwt-processors</artifactId>
-	<name>Vue GWT Processors</name>
-	<description>Annotation Processors for Vue GWT</description>
-	<packaging>jar</packaging>
+  <artifactId>vue-gwt-processors</artifactId>
+  <name>Vue GWT Processors</name>
+  <description>Annotation Processors for Vue GWT</description>
+  <packaging>jar</packaging>
 
-	<dependencies>
+  <dependencies>
 
-		<!-- Vue GWT -->
-		<dependency>
-			<groupId>com.axellience</groupId>
-			<artifactId>vue-gwt</artifactId>
-		</dependency>
+    <!-- Vue GWT -->
+    <dependency>
+      <groupId>com.axellience</groupId>
+      <artifactId>vue-gwt</artifactId>
+    </dependency>
 
-		<!-- Annotation Processors -->
-		<dependency>
-			<groupId>net.htmlparser.jericho</groupId>
-			<artifactId>jericho-html</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.auto.service</groupId>
-			<artifactId>auto-service</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup</groupId>
-			<artifactId>javapoet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.javaparser</groupId>
-			<artifactId>javaparser-core</artifactId>
-		</dependency>
-
-	</dependencies>
+    <!-- Annotation Processors -->
+    <dependency>
+      <groupId>net.htmlparser.jericho</groupId>
+      <artifactId>jericho-html</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auto.service</groupId>
+      <artifactId>auto-service</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup</groupId>
+      <artifactId>javapoet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.helger</groupId>
+      <artifactId>ph-css</artifactId>
+    </dependency>
+    
+  </dependencies>
 </project>

@@ -1223,7 +1223,7 @@ For example with this <code>DemoSlotsComponent.html</code> template:</p>
 
 <h2 id="manipulating-our-custom-element">Manipulating our Custom Element</h2>
 <h3 id="creating-instances-programmatically">Creating Instances Programmatically</h3>
-<p>The <code>createInstance</code> method returns a <code>VueCustomElementType&lt;T extends VueComponent&gt;</code>.
+<p>The <code>createInstance</code> method returns a <code>VueCustomElementType&lt;T extends IsVueComponent&gt;</code>.
 This object can be used to create instances of your Custom Element easily.</p>
 <pre><code class="lang-java">VueCustomElementType&lt;AnimalSelectorComponent&gt; animalSelectorElementType =
             Vue.customElement(<span class="hljs-string">&quot;animal-selector&quot;</span>, AnimalSelectorComponent.class);
@@ -1253,7 +1253,7 @@ TodoComponent todoComponent = todoElement.getVueComponent();
 </code></pre>
 <p>Keep in mind that only the JsInterop properties and methods from your Component will be visible in JavaScript.</p>
 <h2 id="available-options">Available Options</h2>
-<p><code>Vue.customElement</code> takes an optional third argument of type <code>CustomElementOptions&lt;T extends VueComponent&gt;</code>.</p>
+<p><code>Vue.customElement</code> takes an optional third argument of type <code>CustomElementOptions&lt;T extends IsVueComponent&gt;</code>.</p>
 <p>Here are the available options:</p>
 <ul>
 <li><code>constructorCallback(element)</code>: Called when your Custom Element is constructed</li>

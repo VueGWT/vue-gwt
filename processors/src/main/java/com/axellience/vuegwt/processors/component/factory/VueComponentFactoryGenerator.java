@@ -1,12 +1,13 @@
 package com.axellience.vuegwt.processors.component.factory;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.client.Vue;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.CustomizeOptions;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
-import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsAsyncProvider;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.processors.utils.GeneratorsNameUtil;
@@ -26,6 +27,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +39,7 @@ import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.get
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.*;
 
 /**
- * Generate {@link VueFactory} from the user {@link VueComponent} classes annotated by {@link
+ * Generate {@link VueComponentFactory} from the user {@link IsVueComponent} classes annotated by {@link
  * Component}.
  * @author Adrien Baron
  */
@@ -53,8 +55,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         elements = processingEnv.getElementUtils();
     }
 
-    public void generate(TypeElement component,
-        boolean hasInjectedDependencies)
+    public void generate(TypeElement component, boolean hasInjectedDependencies)
     {
         this.hasInjectedDependencies = hasInjectedDependencies;
         super.generate(component);
@@ -75,7 +76,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
         initBuilder.addStatement("$T<$T> componentOptions = $T.getOptions()",
             VueComponentOptions.class,
             component.asType(),
-            componentJsTypeName(component));
+            componentExposedTypeName(component));
         processCustomizeOptions(component, initBuilder, initParametersCall);
 
         // Extend the parent Component
@@ -112,7 +113,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
     }
 
     /**
-     * Register the {@link VueComponent} dependencies provider.
+     * Register the {@link IsVueComponent} dependencies provider.
      * <br>
      * For each instance of our VueComponent, we will create a Java instance of dependencies using
      * this provider.
@@ -165,8 +166,17 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             staticInitParameters.add(CodeBlock.of("() -> $T.get()", factory));
 
             Element localComponentElement = ((DeclaredType) localComponent).asElement();
+            Component componentAnnotation = localComponentElement.getAnnotation(Component.class);
+            JsComponent jsComponentAnnotation = localComponentElement.getAnnotation(JsComponent.class);
+            if (componentAnnotation == null && jsComponentAnnotation == null)
+            {
+                printError("Missing @Component or @JsComponent annotation on imported component: "
+                    + localComponent.toString(), component);
+                return;
+            }
+
             String tagName = componentToTagName(localComponentElement.getSimpleName().toString(),
-                localComponentElement.getAnnotation(Component.class));
+                componentAnnotation);
             initBuilder.addStatement(
                 "components.set($S, render -> render.accept($L.get().getJsConstructor()))",
                 tagName,
@@ -220,8 +230,8 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
 
     /**
      * Process all the {@link CustomizeOptions} from the {@link Component} annotation.
-     * @param component The {@link VueComponent} we generate for
-     * @param initBuilder The builder for our {@link VueFactory} init method
+     * @param component The {@link IsVueComponent} we generate for
+     * @param initBuilder The builder for our {@link VueComponentFactory} init method
      * @param staticInitParameters The list of static parameters to pass when calling the init
      * method from a static context
      */
@@ -239,7 +249,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
      * of this class should be created with our factory and used to customize our
      * {@link VueComponentOptions} before passing them to Vue.
      * @param customizeOptions The {@link CustomizeOptions} we are generating for
-     * @param initBuilder The builder for our {@link VueFactory} init method
+     * @param initBuilder The builder for our {@link VueComponentFactory} init method
      * @param staticInitParameters The list of static parameters to pass when calling the init
      * method from a static context
      */
@@ -258,5 +268,11 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
             parameterName,
             "customizeOptions",
             "componentOptions");
+    }
+
+    private void printError(String message, TypeElement component)
+    {
+        messager.printMessage(Kind.ERROR,
+            message + " In VueComponent: " + component.getQualifiedName());
     }
 }

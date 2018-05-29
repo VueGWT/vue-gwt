@@ -3,7 +3,7 @@ package com.axellience.vuegwt.processors.utils;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Emit;
 import com.axellience.vuegwt.core.annotations.component.Prop;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.directive.VueDirective;
 import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.ClassName;
@@ -20,21 +20,21 @@ import javax.lang.model.type.TypeMirror;
  */
 public class GeneratorsNameUtil
 {
-    private static String COMPONENT_JS_TYPE_SUFFIX = "JsType";
+    private static String COMPONENT_EXPOSED_TYPE_SUFFIX = "ExposedType";
     private static String COMPONENT_INJECTED_DEPENDENCIES_SUFFIX = "InjectedDependencies";
 
     private static String COMPONENT_FACTORY_SUFFIX = "Factory";
 
     private static String DIRECTIVE_OPTIONS_SUFFIX = "Options";
 
-    public static ClassName componentJsTypeName(TypeElement component)
+    public static ClassName componentExposedTypeName(TypeElement component)
     {
-        return nameWithSuffix(component, COMPONENT_JS_TYPE_SUFFIX);
+        return nameWithSuffix(component, COMPONENT_EXPOSED_TYPE_SUFFIX);
     }
 
-    public static ClassName componentJsTypeName(ClassName component)
+    public static ClassName componentExposedTypeName(ClassName component)
     {
-        return nameWithSuffix(component, COMPONENT_JS_TYPE_SUFFIX);
+        return nameWithSuffix(component, COMPONENT_EXPOSED_TYPE_SUFFIX);
     }
 
     public static ClassName componentInjectedDependenciesName(TypeElement component)
@@ -116,13 +116,13 @@ public class GeneratorsNameUtil
      * Return the default name to register a component based on it's class name.
      * The name of the tag is the name of the component converted to kebab-case.
      * If the component class ends with "Component", this part is ignored.
-     * @param componentClassName The Class name of the {@link VueComponent} we want the name of
-     * @param componentAnnotation The {@link Component} annotation for the {@link VueComponent} we want the name of
+     * @param componentClassName The Class name of the {@link IsVueComponent} we want the name of
+     * @param componentAnnotation The {@link Component} annotation for the {@link IsVueComponent} we want the name of
      * @return The name of the component as kebab case
      */
     public static String componentToTagName(String componentClassName, Component componentAnnotation)
     {
-        if (!"".equals(componentAnnotation.name()))
+        if (componentAnnotation != null && !"".equals(componentAnnotation.name()))
             return componentAnnotation.name();
 
         // Drop "Component" at the end of the class name

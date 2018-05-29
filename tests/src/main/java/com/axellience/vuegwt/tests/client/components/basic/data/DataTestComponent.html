@@ -1,0 +1,43 @@
+<div>
+
+  <!-- displaying primitive type data -->
+  <ul>
+    <li id='byte-data'>{{ byteData }}</li>
+    <li id='short-data'>{{ shortData }}</li>
+    <li id='int-data'>{{ intData }}</li>
+    <li id='long-data'>{{ longData }}</li>
+    <li id='float-data'>{{ floatData }}</li>
+    <li id='double-data'>{{ doubleData }}</li>
+    <li id='boolean-data'>{{ booleanData }}</li>
+    <li id='char-data'>{{ charData }}</li>
+    <li id='char-array-data'>{{ charArrayData }}</li>
+  </ul>
+
+  <!-- displaying object data -->
+  <ul>
+    <li id='byte-object-data'>{{ byteObjectData }}</li>
+    <li id='short-object-data'>{{ shortObjectData }}</li>
+    <li id='integer-data'>{{ integerData }}</li>
+    <li id='long-object-data'>{{ longObjectData }}</li>
+    <li id='float-object-data'>{{ floatObjectData }}</li>
+    <li id='double-object-data'>{{ doubleObjectData }}</li>
+    <li id='character-data'>{{ characterData }}</li>
+    <li id='string-data'>{{ stringData }}</li>
+    <li id='simple-object-data'>
+      {{ simpleObjectData == null ? "" : simpleObjectData.getStringProperty() }}
+    </li>
+  </ul>
+
+  <!-- using data in HTML element attribute -->
+  <div id='data-attribute-element' :data-value='attributeValueData'></div>
+
+  <!-- displaying data with line breaks in '{{ ... }' -->
+  <div id='data-with-line-breaks'>{{
+
+              dataWithLineBreaks
+
+    .getStringProperty()
+    }}
+  </div>
+
+</div>

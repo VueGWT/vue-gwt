@@ -2,11 +2,11 @@ package com.axellience.vuegwtexamples.client.examples.emitannotation;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Emit;
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import jsinterop.annotations.JsMethod;
 
 @Component
-public class EmitAnnotationComponent extends VueComponent
+public class EmitAnnotationComponent implements IsVueComponent
 {
     @Emit
     @JsMethod

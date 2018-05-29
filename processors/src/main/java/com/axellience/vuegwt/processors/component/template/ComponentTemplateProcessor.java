@@ -2,9 +2,10 @@ package com.axellience.vuegwt.processors.component.template;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.component.Prop;
-import com.axellience.vuegwt.core.client.component.VueComponent;
-import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
+import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
 import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
@@ -13,6 +14,8 @@ import com.axellience.vuegwt.processors.component.template.parser.context.localc
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
 
@@ -20,6 +23,7 @@ import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -40,7 +44,7 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedP
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 
 /**
- * Process the HTML template for a given {@link VueComponent}.
+ * Process the HTML template for a given {@link IsVueComponent}.
  * @author Adrien Baron
  */
 public class ComponentTemplateProcessor
@@ -57,7 +61,7 @@ public class ComponentTemplateProcessor
     }
 
     public void processComponentTemplate(TypeElement componentTypeElement,
-        Builder componentJsTypeBuilder)
+        Builder componentExposedTypeBuilder)
     {
         ClassName componentTypeName = ClassName.get(componentTypeElement);
         Optional<String> optionalTemplateContent =
@@ -83,16 +87,18 @@ public class ComponentTemplateProcessor
             templateParserContext,
             messager);
 
-        // Add expressions from the template to JsType and compile template
+        registerScopedCss(componentExposedTypeBuilder, templateParserResult);
+
+        // Add expressions from the template to ExposedType and compile template
         TemplateMethodsBuilder templateMethodsBuilder = new TemplateMethodsBuilder();
-        templateMethodsBuilder.addTemplateMethodsToComponentJsType(componentJsTypeBuilder,
+        templateMethodsBuilder.addTemplateMethodsToComponentExposedType(componentExposedTypeBuilder,
             templateParserResult);
     }
 
     /**
-     * Process the ComponentJsType class to register all the fields and methods visible in
+     * Process the ComponentExposedType class to register all the fields and methods visible in
      * the context.
-     * TODO: Improve this method by putting things together with {@link ComponentJsTypeGenerator}
+     * TODO: Improve this method by putting things together with {@link ComponentExposedTypeGenerator}
      * @param componentTypeElement The class to process
      */
     private void registerFieldsAndMethodsInContext(TemplateParserContext templateParserContext,
@@ -165,6 +171,7 @@ public class ComponentTemplateProcessor
         if (componentAnnotation == null)
             return;
 
+        processLocalComponentClass(localComponents, componentTypeElement);
         getComponentLocalComponents(elementUtils, componentTypeElement)
             .stream()
             .map(DeclaredType.class::cast)
@@ -188,6 +195,15 @@ public class ComponentTemplateProcessor
         TypeElement localComponentType)
     {
         Component componentAnnotation = localComponentType.getAnnotation(Component.class);
+        JsComponent jsComponentAnnotation = localComponentType.getAnnotation(JsComponent.class);
+        if (componentAnnotation == null && jsComponentAnnotation == null)
+        {
+            messager.printMessage(Kind.ERROR,
+                "Missing @Component or @JsComponent annotation on imported component: "
+                    + localComponentType.toString());
+            return;
+        }
+
         String localComponentTagName =
             componentToTagName(localComponentType.getSimpleName().toString(), componentAnnotation);
 
@@ -221,7 +237,7 @@ public class ComponentTemplateProcessor
             messager.printMessage(Kind.ERROR,
                 "Couldn't find template for component: "
                     + componentTypeName.simpleName()
-                    + ". Check our setup guide for help. On Eclipse add !vue-gwt-resources on your project in Properties > Maven > Active Maven Profile",
+                    + ". Make sure you included src/main/java in your Resources. Check our setup guide for help.",
                 componentTypeElement);
             return Optional.empty();
         }
@@ -236,10 +252,22 @@ public class ComponentTemplateProcessor
             messager.printMessage(Kind.ERROR,
                 "Failed to open template file for component: "
                     + componentTypeName.simpleName()
-                    + ". Check our setup guide for help. On Eclipse add !vue-gwt-resources on your project in Properties > Maven > Active Maven Profile",
+                    + ". Make sure you included src/main/java in your Resources. Check our setup guide for help.",
                 componentTypeElement);
             return Optional.empty();
         }
+    }
+
+    private void registerScopedCss(Builder componentExposedTypeBuilder,
+        TemplateParserResult templateParserResult)
+    {
+        String scopedCss = templateParserResult.getScopedCss();
+        componentExposedTypeBuilder.addMethod(MethodSpec
+            .methodBuilder("getScopedCss")
+            .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+            .returns(ParameterizedTypeName.get(String.class))
+            .addStatement("return $S", scopedCss)
+            .build());
     }
 
     private static String slashify(String s)

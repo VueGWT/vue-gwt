@@ -78,7 +78,7 @@ This is a common and powerful pattern:
 ```
 ```java
 @Component
-public class StylishComponent extends VueComponent {
+public class StylishComponent implements IsVueComponent {
     @JsProperty boolean isActive = true;
     @JsProperty Error error = null;
 
@@ -199,7 +199,7 @@ It is often a good idea to bind to a style object directly so that the template 
 ```
 ```java
 @Component
-public class StylishComponent extends VueComponent implements HasCreated {
+public class StylishComponent implements IsVueComponent, HasCreated {
     @JsProperty JsObject<String> styleObject;
 
     @Override

@@ -28,11 +28,12 @@ Let's try see how to instantiate it in Java:
 
 ```java
 // First, we get the VueJsConstructor from Window
-VueJsConstructor vueJsConstructor = (VueJsConstructor) JsTools.getWindow().get("FullJsComponent");
+VueJsConstructor vueJsConstructor = ((JsPropertyMap<VueJsConstructor>) DomGlobal.window).get("FullJsComponent");
+
 // We can then manipulate it exactly like
 // our VueJsConstructor generated from our Java Components
-VueComponent myFullJsComponent = vueJsConstructor.instantiate();
-myFullJsComponent.$mount("#fullJsComponent");
+IsVueComponent myFullJsComponent = vueJsConstructor.instantiate();
+myFullJsComponent.vue().$mount("#fullJsComponent");
 ```
 
 And here it is live:
@@ -42,8 +43,6 @@ And here it is live:
     <span id="fullJsComponent"></span>
 </div>
 {% endraw %}
-
-Easy, right?
 
 ### Declaring our JS Component Interface
 
@@ -73,7 +72,7 @@ Let's do it for our `FullJsWithMethodsComponent`:
 ```java
 @JsComponent("FullJsWithMethodsComponent")
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public class FullJsWithMethodsComponent extends VueComponent {
+public class FullJsWithMethodsComponent implements IsVueComponent {
     public int value;
 
     public native int multiplyBy2(int value);
@@ -89,13 +88,13 @@ We don't need to provide their implementations, they will come from the JS Compo
 * You only need to declare what you want to interact with in the Class.
 If you don't need to call some methods or access some attributes from Java, you don't have to declare them.
 
-Because of the `@JsComponent` annotation, Vue GWT generates a `VueFactory` class for us, just like with our Java components.
+Because of the `@JsComponent` annotation, Vue GWT generates a `VueComponentFactory` class for us, just like with our Java components.
 
 So we can do:
 
 ```java
 FullJsWithMethodsComponent myComponent = FullJsWithMethodsComponentFactory.get().create();
-myComponent.$mount("#fullJsWithMethodComponent");
+myComponent.vue().$mount("#fullJsWithMethodComponent");
 JsTools.log(myComponent.value); // 10
 JsTools.log(myComponent.multiplyBy2(25)); // 50
 myComponent.value = 15; // Change the value in the instance of our Component
@@ -126,7 +125,7 @@ The only change is you have to tell GWT that the instance is an `Object` and not
 ```java
 @JsComponent("VueChartJs.Line")
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class AbstractVueLineChartComponent extends VueComponent
+public class AbstractVueLineChartComponent implements IsVueComponent
 ```
 
 ### Using Our JS Component in a Java One

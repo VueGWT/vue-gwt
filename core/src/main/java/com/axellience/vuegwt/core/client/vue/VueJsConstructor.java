@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.client.vue;
 
-import com.axellience.vuegwt.core.client.component.VueComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
@@ -16,12 +16,12 @@ import jsinterop.base.JsPropertyMap;
 /**
  * A Java representation of a Vue.js Constructor.
  * Vue.js Constructor are JavaScript Function obtained when calling VueComponent.extend().
- * All the {@link Component} and {@link JsComponent} get a generated {@link VueFactory} that wraps a
+ * All the {@link Component} and {@link JsComponent} get a generated {@link VueComponentFactory} that wraps a
  * {@link VueJsConstructor}.
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public interface VueJsConstructor<T extends VueComponent>
+public interface VueJsConstructor<T extends IsVueComponent>
 {
     <K extends T> VueJsConstructor<K> extend(VueComponentOptions<K> vueComponentOptions);
 
@@ -37,7 +37,7 @@ public interface VueJsConstructor<T extends VueComponent>
         componentOptions.addAllProviders(getOptions().getProviders());
         VueJsConstructor<K> extendedVueJsConstructor = extend(componentOptions);
         VueGWTTools.extendVueConstructorWithJavaPrototype(extendedVueJsConstructor,
-            componentOptions.getComponentJavaPrototype());
+            componentOptions.getComponentExportedTypePrototype());
 
         return extendedVueJsConstructor;
     }

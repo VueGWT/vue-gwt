@@ -19,7 +19,7 @@ We already saw how to define a Component in Vue GWT.
 
 ```java
 @Component
-public class MyChildComponent extends VueComponent {
+public class MyChildComponent implements IsVueComponent {
 }
 ```
 
@@ -31,7 +31,7 @@ You can make a component available in the scope of another Component by passing 
 
 ```java
 @Component(components = {MyChildComponent.class})
-public class ParentComponent extends VueComponent {
+public class ParentComponent implements IsVueComponent {
 }
 ```
 
@@ -117,7 +117,7 @@ When parsing your the Component class we build a `dataObject` Object for you. Fo
 
 ```java
 @Component
-public class StarkComponent extends VueComponent {
+public class StarkComponent implements IsVueComponent {
     @JsProperty String winter;
     @JsProperty boolean is;
     @JsProperty String coming;
@@ -151,7 +151,7 @@ Here is a working example:
 
 ```java
 @Component(useFactory = false)
-public class SharedDataModelComponent extends VueComponent {
+public class SharedDataModelComponent implements IsVueComponent {
     @JsProperty int counter = 0;
 }
 ```
@@ -198,7 +198,7 @@ A child component needs to explicitly declare the props it expects to receive us
 
 ```java
 @Component
-public class ChildComponent extends VueComponent {
+public class ChildComponent implements IsVueComponent {
     @Prop
     @JsProperty
     public String message;
@@ -217,7 +217,7 @@ HTML attributes are case-insensitive, so when using non-string templates, camelC
 
 ```java
 @Component
-public class ChildComponent extends VueComponent {
+public class ChildComponent implements IsVueComponent {
     @Prop
     @JsProperty
     String myMessage;
@@ -290,7 +290,7 @@ The proper answer to these use cases are:
 
 ```java
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent implements IsVueComponent, HasCreated {
     @Prop
     @JsProperty
     public String initialCounter;
@@ -308,7 +308,7 @@ public class MyComponent extends VueComponent implements HasCreated {
 
 ```java
 @Component
-public class MyComponent extends VueComponent {
+public class MyComponent implements IsVueComponent {
     @Prop
     @JsProperty
     public String size;
@@ -340,7 +340,7 @@ For this you can use the `@PropValidator` annotation like this:
 
 ```java
 @Component
-public class WhiteWalkerArmyComponent extends VueComponent {
+public class WhiteWalkerArmyComponent implements IsVueComponent {
     @Prop
     @JsProperty
     int armyCount;
@@ -363,7 +363,7 @@ To set this default value, you must create a method that returns it and annotate
 
 ```java
 @Component
-public class PropDefaultValueComponent extends VueComponent {
+public class PropDefaultValueComponent implements IsVueComponent {
     @Prop
     @JsProperty
     String stringProp;
@@ -450,14 +450,14 @@ Here's an example:
 
 ```java
 @Component
-public class ButtonCounterComponent extends VueComponent {
+public class ButtonCounterComponent implements IsVueComponent {
     @JsProperty int counter = 0;
 
     @JsMethod
     public void increment() {
         this.counter++;
         // When incrementing, we fire an event.
-        this.$emit("increment");
+        vue().$emit("increment");
     }
 }
 ```
@@ -472,7 +472,7 @@ public class ButtonCounterComponent extends VueComponent {
 
 ```java
 @Component(components = {ButtonCounterComponent.class})
-public class CounterWithEventComponent extends VueComponent {
+public class CounterWithEventComponent implements IsVueComponent {
     @JsProperty int total = 0;
 
     @JsMethod
@@ -500,14 +500,14 @@ For example, let's change our counter component to pass the value of it's counte
 
 ```java
 @Component
-public class ButtonCounterComponent extends VueComponent {
+public class ButtonCounterComponent implements IsVueComponent {
     @JsProperty int counter = 0;
 
     @JsMethod
     public void increment() {
         this.counter++;
         // Pass the current value of the counter with the event.
-        this.$emit("increment", this.counter);
+        vue().$emit("increment", this.counter);
     }
 }
 ```
@@ -525,7 +525,7 @@ We can now get this value in the parent:
 
 ```java
 @Component(components = {ButtonCounterComponent.class})
-public class CounterWithEventComponent extends VueComponent {
+public class CounterWithEventComponent implements IsVueComponent {
     @JsProperty int total = 0;
 
     // But we can now get the value of the event as parameter
@@ -557,19 +557,19 @@ It works similarly to the one from [vue-property-decorator](https://github.com/k
 
 ```java
 @Component
-public class EmitAnnotationComponent extends VueComponent {
+public class EmitAnnotationComponent implements IsVueComponent {
     @Emit
     @JsMethod
     public void doSomething() {
         DomGlobal.console.log("Doing something");
-        // Implicit call to this.$emit("do-something")
+        // Implicit call to vue().$emit("do-something")
     }
 
     @Emit
     @JsMethod
     public void doSomethingWithValue(int value) {
         DomGlobal.console.log("Doing something with a value");
-        // Implicit call to this.$emit("do-something-with-value", value)
+        // Implicit call to vue().$emit("do-something-with-value", value)
     }
 
 
@@ -577,7 +577,7 @@ public class EmitAnnotationComponent extends VueComponent {
     @JsMethod
     public void doSomethingWithValueAndCustomName(int value) {
         DomGlobal.console.log("Doing something");
-        // Implicit call to this.$emit("custom-event-name", value)
+        // Implicit call to vue().$emit("custom-event-name", value)
     }
 }
 ```
@@ -620,7 +620,7 @@ is expanded into:
 For the child component to update `foo`'s value, it needs to explicitly emit an event instead of mutating the prop:
 
 ```java
-this.$emit('update:foo', newValue);
+vue().$emit('update:foo', newValue);
 ```
 
 ### Form Input Components using Custom Events
@@ -718,7 +718,7 @@ If you need to bind child-scope directives on a component root node, you should 
 
 ```java
 @Component
-public class ChildComponent extends VueComponent {
+public class ChildComponent implements IsVueComponent {
     @JsProperty boolean someChildProperty;
 }
 ```
@@ -843,7 +843,7 @@ You can use the same mount point and dynamically switch between multiple compone
 
 ```java
 @Component(components = { TargaryenComponent.class, StarkComponent.class, LannisterComponent.class })
-public class HousesComponent extends VueComponent {
+public class HousesComponent implements IsVueComponent {
     @JsProperty String currentHouse = "targaryen";
 }
 ```
@@ -868,7 +868,7 @@ If you want to keep the switched-out components in memory so that you can preser
 
 Check out more details on `<keep-alive>` in the [API reference](https://vuejs.org/v2/api/#keep-alive).
 
-## Misc
+## Misc {#misc}
 
 ### Authoring Reusable Components
 
@@ -910,15 +910,15 @@ To achieve this you have to assign a reference ID to the child component using `
 
 ```java
 @Component(components = UserProfileComponent.class)
-public class ParentComponent extends VueComponent implements HasCreated {
+public class ParentComponent implements IsVueComponent, HasCreated {
     @Override
     public void created() {
-        UserProfileComponent userProfileComponent = this.$refs.get("profile");
+        UserProfileComponent userProfileComponent = vue().$ref("profile");
     }
 }
 ```
 
-When `ref` is used together with `v-for`, the ref you get will be an array containing the child components mirroring the data source.
+When `ref` is used together with `v-for`, the ref you get will be an array that you can get using `vue().$refArray("myRef")`.
 
 <p class="info-panel">
     <code>$refs</code> are only populated after the component has been rendered, and it is not reactive.
@@ -961,7 +961,7 @@ Bellow is an example recursive component:
 
 ```java
 @Component(name = "recursive")
-public class RecursiveComponent extends VueComponent implements HasCreated {
+public class RecursiveComponent implements IsVueComponent, HasCreated {
     @Prop
     @JsProperty
     Integer counter;

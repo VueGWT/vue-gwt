@@ -2,12 +2,13 @@ package com.axellience.vuegwt.core.client.observer;
 
 import com.axellience.vuegwt.core.client.observer.functions.VueObserveArray;
 import com.axellience.vuegwt.core.client.observer.functions.VueWalk;
+import com.axellience.vuegwt.core.client.tools.VueGWTTools;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
-import elemental2.dom.HTMLScriptElement;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
+import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 
 import java.util.HashMap;
@@ -22,7 +23,6 @@ import java.util.Map;
  * This class let you inject your own observers.
  * @author Adrien Baron
  */
-@JsType(namespace = "VueGWT")
 public class VueGWTObserverManager
 {
     private static VueGWTObserverManager INSTANCE;
@@ -34,7 +34,8 @@ public class VueGWTObserverManager
 
     public static VueGWTObserverManager get()
     {
-        if (INSTANCE == null) {
+        if (INSTANCE == null)
+        {
             INSTANCE = new VueGWTObserverManager();
             INSTANCE.captureVueObserver();
         }
@@ -156,11 +157,9 @@ public class VueGWTObserverManager
      */
     private void captureVueObserver()
     {
-        HTMLScriptElement scriptElement =
-            (HTMLScriptElement) DomGlobal.document.createElement("script");
-        scriptElement.text =
-            "new Vue({created: function () {VueGWT.VueGWTObserverManager.get().customizeVueObserverPrototype(this.$data.__ob__.__proto__);}});";
-        DomGlobal.document.body.appendChild(scriptElement);
+        JsConstructorFn vueConstructor =
+            ((JsPropertyMap<JsConstructorFn>) DomGlobal.window).get("Vue");
+        vueConstructor.construct(new CaptureComponentDefinition());
     }
 
     /**
@@ -186,7 +185,7 @@ public class VueGWTObserverManager
             cache = initClassPropertiesCache(object, className);
         }
 
-        JsPropertyMap javaObjectPropertyMap = ((JsPropertyMap) object);
+        JsPropertyMap<Object> javaObjectPropertyMap = ((JsPropertyMap<Object>) object);
         cache.forEach((key, value) -> {
             if (!object.hasOwnProperty(key))
                 javaObjectPropertyMap.set(key, value);
@@ -213,5 +212,17 @@ public class VueGWTObserverManager
     {
         return Js.isTripleEqual(value, null) || (!"function".equals(Js.typeof(value))
                                                      && !"object".equals(Js.typeof(value)));
+    }
+
+    private static class CaptureComponentDefinition
+    {
+        @JsMethod
+        public void created()
+        {
+            VueGWTObserverManager
+                .get()
+                .customizeVueObserverPrototype(VueGWTTools.getDeepValue(this,
+                    "$data.__ob__.__proto__"));
+        }
     }
 }

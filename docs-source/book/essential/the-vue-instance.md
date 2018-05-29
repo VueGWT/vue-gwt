@@ -15,8 +15,8 @@ As a convention, we often use the variable `vm` (short for ViewModel) to refer t
 
 ## Factory
 
-Vue GWT generate a `VueFactory` for each of your `VueComponent` using annotation processing. 
-Using this generated `VueFactory` we can generate several instance of our `VueComponent`:
+Vue GWT generate a `VueComponentFactory` for each of your Vue Components using annotation processing.
+Using this generated `VueComponentFactory` we can generate several instance of our Vue Component:
 
 ```java
 DemoComponentFactory demoFactory = DemoComponentFactory.get();
@@ -31,7 +31,7 @@ vm3.$mount("#myContainer3");
 
 Although it is possible to create extended instances imperatively, most of the time it is recommended to compose them declaratively in templates as custom elements.
 For now, you just need to know that all Vue components are essentially extended Vue instances.
-Vue GWT configure those instance for you, but in the browser they really are just regular Vue instance.
+Vue GWT configure those instance for you, but in the browser they really are just regular Vue instances.
 
 ## Observation
 
@@ -40,12 +40,12 @@ Let's talk a little about how Vue.js deals with observation.
 ### @Component to Vue.js Data Model
 
 In Vue.js you pass all the data you want to observe as the `data` option of your Vue constructor.
-This `data` object is built for you by Vue GWT based on the public properties of your Java Class.
+This `data` object is built for you by Vue GWT based on the `@JsProperty` of your Java Class.
 
 For example this Vue Component:
 ```java
 @Component
-public class DemoComponent extends VueComponent {
+public class DemoComponent implements IsVueComponent {
     @JsProperty Todo todo;
 }
 ```
@@ -100,7 +100,7 @@ public class Todo {
 }
 
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent implements IsVueComponent, HasCreated {
     @JsProperty todo;
     
     @Override
@@ -150,7 +150,7 @@ public class Todo {
 
 // The text property will be observable in your Component
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent implements IsVueComponent, HasCreated {
     @JsProperty todo;
     
     @Override
@@ -173,7 +173,7 @@ public class Todo {
 }
 
 @Component
-public class MyComponent extends VueComponent implements HasCreated {
+public class MyComponent implements IsVueComponent, HasCreated {
     @JsProperty todo;
     
     @Override
@@ -193,24 +193,24 @@ In addition to data properties, Vue instances expose a number of useful instance
 These properties and methods are prefixed with `$` to differentiate them from proxied data properties.
 
 In Vue GWT these methods and properties are defined in `VueComponent`, usually with the same name.
-Because your Components inherits from `VueComponent` you can simply access them in your Components.
+Because your Components implements `IsVueComponent` you can access them in your Components using the `vue()` method.
 
 For example:
 
 ```java
 @Component
-public class DemoComponent extends VueComponent implements HasCreated {
+public class DemoComponent implements IsVueComponent, HasCreated {
     @JsProperty Todo todo;
     
     @Override
     public void created() {
         this.todo = new Todo();
         
-        if (this.$data.get("todo") == this.todo) {
+        if (vue().$data.get("todo") == this.todo) {
             // true
         }
         
-        this.$watch(() -> this.todo, (newValue, oldValue) -> {
+        vue().$watch(() -> this.todo, (newValue, oldValue) -> {
             // Todo has changed!
         });
     }
@@ -227,7 +227,7 @@ For example, the [`mounted`](https://vuejs.org/v2/api/#mounted) hook is called a
 
 ```java
 @Component
-public class DemoComponent extends VueComponent implements HasMounted {
+public class DemoComponent implements IsVueComponent, HasMounted {
     @JsProperty Todo todo;
     
     @Override

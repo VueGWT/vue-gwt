@@ -57,7 +57,7 @@ When you get started with a component that just generates a heading based on the
 
 ```java
 @Component
-public class AnchoredHeadingComponent extends VueComponent {
+public class AnchoredHeadingComponent implements IsVueComponent {
     @JsProperty
     @Prop(required = true)
     Integer level;
@@ -71,14 +71,14 @@ While templates work great for most components, it's clear that this isn't one o
 
 ```java
 @Component(hasTemplate = false)
-public class AnchoredHeadingComponent extends VueComponent implements HasRender {
+public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
     @JsProperty
     @Prop(required = true)
     public Integer level;
 
     @Override
     public VNode render(VNodeBuilder builder) {
-        return builder.el("h" + this.level, this.$slots().get("default"));
+        return builder.el("h" + this.level, vue().$slots().get("default"));
     }
 }
 ```
@@ -129,24 +129,24 @@ public class VNodeBuilder {
 
 
     /**
-     * Create a VNode with the given {@link VueComponent}
-     * @param vueComponentClass Class for the {@link VueComponent} we want
+     * Create a VNode with the given {@link IsVueComponent}
+     * @param isVueComponentClass Class for the {@link IsVueComponent} we want
      * @param data Information for the new VNode (attributes...)
      * @param children Children
      * @return a new VNode of this Component
      */
-    public VNode el(Class<VueComponent> vueComponentClass, VNodeData data, Object... children) { ... }
+    public VNode el(Class<IsVueComponent> isVueComponentClass, VNodeData data, Object... children) { ... }
 
     /**
-     * Create a VNode with the {@link VueComponent} of the given {@link VueFactory}
-     * @param vueFactory {@link VueFactory} for the Component we want
+     * Create a VNode with the {@link IsVueComponent} of the given {@link VueComponentFactory}
+     * @param vueFactory {@link VueComponentFactory} for the Component we want
      * @param children Children
      * @return a new VNode of this Component
      */
-    public VNode el(VueFactory<VueComponent> vueFactory, Object... children) { ... }
+    public VNode el(VueComponentFactory<IsVueComponent> vueFactory, Object... children) { ... }
 
     /**
-     * Create a VNode with the {@link VueComponent} of the given {@link VueJsConstructor}
+     * Create a VNode with the {@link IsVueComponent} of the given {@link VueJsConstructor}
      * @param vueJsConstructor {@link VueJsConstructor} for the Component we want
      * @param children Children
      * @return a new VNode of this Component
@@ -233,7 +233,7 @@ With this knowledge, we can now finish the component we started:
 
 ```java
 @Component(hasTemplate = false)
-public class AnchoredHeadingComponent extends VueComponent implements HasRender {
+public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
 
     @JsProperty
@@ -243,14 +243,14 @@ public class AnchoredHeadingComponent extends VueComponent implements HasRender 
     @Override
     public VNode render(VNodeBuilder builder) {
         String text =
-            getChildrenTextContent(this.$slots().get("default")).trim().replaceAll(" ", "-");
+            getChildrenTextContent(vue().$slots().get("default")).trim().replaceAll(" ", "-");
 
         String headingId = camelCasePattern.replace(text, "$1-$2").toLowerCase();
 
         return builder.el("h" + this.level,
             builder.el("a",
                 VNodeData.get().attr("name", headingId).attr("href", "#" + headingId),
-                this.$slots().get("default")));
+                vue().$slots().get("default")));
     }
 
     private String getChildrenTextContent(JsArray<VNode> children) {
@@ -383,17 +383,17 @@ vNodeData.on("keyup", (param) -> {
 
 ### Slots
 
-You can access static slot contents as Arrays of VNodes from [`this.$slots`](https://vuejs.org/v2/api/#vm-slots):
+You can access static slot contents as Arrays of VNodes from [`vue().$slots()`](https://vuejs.org/v2/api/#vm-slots):
 
 ```java
 @Override
 public VNode render(VNodeBuilder builder) {
   // `<div><slot></slot></div>`
-  return builder.el("div", this.$slots().get("default"));
+  return builder.el("div", vue().$slots().get("default"));
 }
 ```
 
-And access scoped slots as functions that return VNodes from [`this.$scopedSlots`](https://vuejs.org/v2/api/#vm-scopedSlots):
+And access scoped slots as functions that return VNodes from [`vue().$scopedSlots()`](https://vuejs.org/v2/api/#vm-scopedSlots):
 
 ```java
 @Override
@@ -401,7 +401,7 @@ public VNode render(VNodeBuilder builder) {
   // `<div><slot></slot></div>`
   return builder.el(
       "div",
-      this.$scopedSlots().get("default").execute(JsObject.of("text", this.msg))
+      vue().$scopedSlots().get("default").execute(JsObject.of("text", this.msg))
   );
 }
 ```
