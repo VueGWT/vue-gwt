@@ -10,7 +10,7 @@ export default ({
       oldMounted();
 
     const gwtScript = document.createElement("script");
-    gwtScript.src = "/scripts/VueGwtExamples.nocache.js";
+    gwtScript.src = "/resources/scripts/VueGwtExamples.nocache.js";
     document.body.appendChild(gwtScript);
   };
 
