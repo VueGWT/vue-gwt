@@ -8,9 +8,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/document-register-element/1.7.0/document-register-element.js"></script>
     <script src="VueGwtExamples/VueGwtExamples.nocache.js"></script>
-
-    <!-- Vue JS Framework -->
-    <script src="https://unpkg.com/vue@2.5.16/dist/vue.js"></script>
 </head>
 <body>
 <div class="row">
@@ -136,62 +133,6 @@
         <div id="treeComponent"></div>
     </div>
 </div>
-
-<script>
-	window.FullJsComponent = Vue.extend({
-		template: "<div>I Come In Peace From the JS World.</div>"
-	});
-	window.FullJsWithMethodsComponent = Vue.extend({
-		template: "<div>My Value: {{ value }}. My Value x2: {{ multiplyBy2(value) }}</div>",
-		data: function () {
-			return {
-				value: 10
-			}
-		},
-		methods: {
-			multiplyBy2: function (value) {
-				return value * 2;
-			}
-		}
-	});
-	window.ParentJsComponent = Vue.extend({
-		data: function () {
-			return {
-				parentMessage: "This is a message from the Parent"
-			};
-		},
-		methods: {
-			parentMultiplyBy2: function (value) {
-				return value * 2;
-			}
-		},
-		computed: {
-			parentComputed: function () {
-				return "Computed Message | " + this.parentMessage;
-			}
-		}
-	});
-	Vue.component("pass-values-js", {
-		props: ["myInt",
-			"myBool",
-			"myDouble",
-			"myFloat",
-			"myLong",
-			"wrappedInteger",
-			"wrappedBoolean",
-			"wrappedDouble",
-			"wrappedFloat",
-			"wrappedLong"
-		],
-		template: `<ul>
-            <li>int: {{ myInt + 5 }} | Integer: {{ wrappedInteger + 5 }}</li>
-            <li>boolean: {{ !myBool }} | Boolean: {{ !wrappedBoolean }}</li>
-            <li>double: {{ myDouble + 5 }} | Double: {{ wrappedDouble + 5 }}</li>
-            <li>long: {{ myLong + 5 }} | Long: {{ wrappedLong + 5 }}</li>
-            <li>float: {{ myFloat + 0.5 }} | Float: {{ wrappedFloat + 0.5 }}</li>
-        </ul>`
-	})
-</script>
 
 </body>
 </html>

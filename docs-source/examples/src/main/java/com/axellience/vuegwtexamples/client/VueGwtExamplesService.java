@@ -105,17 +105,17 @@ public class VueGwtExamplesService
         addExample("passValues", ParentPassValuesComponent.class);
     }
 
-    private static void addExample(String exampleId, Class<? extends IsVueComponent> exampleVueClass)
+    private static <T extends IsVueComponent> void addExample(String exampleId, Class<T> exampleVueClass)
     {
         addExample(exampleId, VueGWT.getVueComponentFactory(exampleVueClass));
     }
 
-    private static void addExample(String exampleId, VueComponentFactory exampleVueComponentFactory)
+    private static <T extends IsVueComponent> void addExample(String exampleId, VueComponentFactory<T> exampleVueComponentFactory)
     {
         // If we find the containing div for this example, we instantiate it
         if (DomGlobal.document.getElementById(exampleId) != null)
         {
-            IsVueComponent exampleInstance = Vue.attach("#" + exampleId, exampleVueComponentFactory);
+            T exampleInstance = Vue.attach("#" + exampleId, exampleVueComponentFactory);
             ((JsPropertyMap) DomGlobal.window).set(exampleId, exampleInstance);
         }
     }
