@@ -3,6 +3,9 @@ module.exports = {
   description: 'Vue Components written in Java',
   base: "/vue-gwt/",
   themeConfig: {
+    repo: 'axellience/vue-gwt',
+    editLinks: true,
+    editLinkText: 'Help us improve this page!',
     nav: [
       {text: 'Home', link: '/'},
       {text: 'Guide', link: '/guide/'}
