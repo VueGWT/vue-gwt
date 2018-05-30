@@ -1,3 +1,7 @@
+---
+sidebarDepth: 1
+---
+
 # Composing with Components
 
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/components.html) and has been adapted for Vue GWT.*
