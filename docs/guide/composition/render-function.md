@@ -292,7 +292,7 @@ public VNode render(VNodeBuilder builder) {
 
 ## Replacing Template Features with Plain Java
 
-### `v-if` and `v-for`
+### v-if and v-for
 
 Wherever something can be easily accomplished in plain JavaScript, Vue render functions do not provide a proprietary alternative.
 For example, in a template using `v-if` and `v-for`:
