@@ -77,6 +77,10 @@ You can also use `of` as the delimiter instead of `in`, so that it is closer to 
 <li v-for="Todo todo of todos">
 ```
 
+::: warning
+To avoid gotchas with Java Collection observation, you should read about [Java Collection Observation](reactivity-system.md#java-collections-observation).
+:::
+
 ### Template `v-for`
 
 Similar to template `v-if`, you can also use a `<template>` tag with `v-for` to render a block of multiple elements. For example:
@@ -250,57 +254,6 @@ This special attribute is a rough equivalent to `track-by` in 1.x, but it works 
 It is recommended to provide a `key` with `v-for` whenever possible, unless the iterated DOM content is simple, or you are intentionally relying on the default behavior for performance gains.
 
 Since it's a generic mechanism for Vue to identify nodes, the `key` also has other uses that are not specifically tied to `v-for`, as we will see later in the guide.
-
-## Array Change Detection
-
-### Mutation Methods
-
-Vue wraps an observed JS array's mutation methods so they will also trigger view updates.
-The wrapped methods are:
-
-- `push()`
-- `pop()`
-- `shift()`
-- `unshift()`
-- `splice()`
-- `sort()`
-- `reverse()`
-
-You can open the console and play with the previous examples' `items` array by calling their mutation methods.
-For example: `simpleTodoListComponent.todos.shift()`.
-
-### Replacing an Array
-
-Mutation methods, as the name suggests, mutate the original array they are called on.
-In comparison, there are also non-mutating methods, e.g. `filter()`, `concat()` and `slice()`, which do not mutate the original array but **always return a new array**.
-When working with non-mutating methods, you can just replace the old array with the new one:
-
-```java
-this.todos = this.todos.filter(todo -> !todo.isDone());
-```
-
-You might think this will cause Vue to throw away the existing DOM and re-render the entire list - luckily, that is not the case.
-Vue implements some smart heuristics to maximize DOM element reuse, so replacing an array with another array containing overlapping objects is a very efficient operation.
-
-### Caveats
-
-Due to limitations in JavaScript, Vue **cannot** detect the following changes to an array:
-
-1. When you directly set an item with the index, e.g. `this.todos.set(indexOfItem, newValue)`
-2. When you modify the length of the array, e.g. `this.todos.length = newLength`
-
-To overcome caveat 1, both of the following will accomplish the same as `this.todos.set(indexOfItem, newValue)`, but will also trigger state updates in the reactivity system:
-
-```java
-this.todos.splice(indexOfItem, 1, newValue);
-```
-
-To deal with caveat 2, you can use `splice`:
-
-```java
-this.todos.splice(newLength);
-```
-
 
 ## Displaying Filtered/Sorted Results
 

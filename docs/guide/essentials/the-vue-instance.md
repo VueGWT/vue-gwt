@@ -2,9 +2,9 @@
 
 *This page comes from the [official Vue.js documentation](https://vuejs.org/v2/guide/instance.html) and has been adapted for Vue GWT.*
 
-## The `vm`
+## Creating a Vue Instance
 
-Every Vue vm is bootstrapped by creating a **root Vue instance**, for example with the `Vue.attach()` method:
+Every Vue application starts by creating a new **root Vue instance**, for example with the `Vue.attach()` method:
 
 ```java
 DemoComponent vm = Vue.attach("#container", DemoComponent.class);
@@ -13,31 +13,7 @@ DemoComponent vm = Vue.attach("#container", DemoComponent.class);
 Although not strictly associated with the [MVVM pattern](https://en.wikipedia.org/wiki/Model_View_ViewModel), Vue's design was partly inspired by it.
 As a convention, we often use the variable `vm` (short for ViewModel) to refer to our Vue instances.
 
-## Factory
-
-Vue GWT generate a `VueComponentFactory` for each of your Vue Components using annotation processing.
-Using this generated `VueComponentFactory` we can generate several instance of our Vue Component:
-
-```java
-DemoComponentFactory demoFactory = DemoComponentFactory.get();
-
-DemoComponent vm1 = demoFactory.create();
-DemoComponent vm2 = demoFactory.create();
-DemoComponent vm3 = demoFactory.create();
-vm1.$mount("#myContainer1");
-vm2.$mount("#myContainer2");
-vm3.$mount("#myContainer3");
-```
-
-Although it is possible to create extended instances imperatively, most of the time it is recommended to compose them declaratively in templates as custom elements.
-For now, you just need to know that all Vue components are essentially extended Vue instances.
-Vue GWT configure those instance for you, but in the browser they really are just regular Vue instances.
-
-## Observation
-
-Let's talk a little about how Vue.js deals with observation.
-
-### @Component to Vue.js Data Model
+## @Component to Vue.js Data Model
 
 In Vue.js you pass all the data you want to observe as the `data` option of your Vue constructor.
 This `data` object is built for you by Vue GWT based on the `@JsProperty` of your Java Class.
@@ -50,15 +26,15 @@ public class DemoComponent implements IsVueComponent {
 }
 ```
 
-Will have the following `data` object in it's Vue options:
+Will have the following `data` object in it's Vue.js options:
 ```js
 var data = {todo: null};
 ```
 
 Each Vue instance **proxies** all the properties found in its `data` object.
+When the values of those properties change, the view will "react", updating to match the new values.
 
-So Vue.js will automatically be warned whenever you set `this.todo`.
-It will then recursively observe all the properties of the Object you set on this property.
+So Vue.js will automatically be warned whenever you set teh value of a `@JsProperty` and recursively observe all the properties of the Object you set on it.
 
 For example if somewhere in your component you do:
 ```java
@@ -82,110 +58,9 @@ public class Todo {
 
 Then `this.todo.text` is automatically observed.
 
-
-### ⚠️ Important Note on Vue GWT Observation
-In Vue.js only these proxied (observed) properties are **reactive**.
-If you attach a new property to the JS instance after it has been created, it will not trigger any view updates.
-
-When you add your Objects to your Component all their properties **must** already be set in the JS world.
-This means that they must have a value set, even if null before being set in your Component.
-
-In this case the `text` property **WON'T** be observed:
-```java
-public class Todo {
-    private String text;
-    public Todo() {}
-    
-    public void setText(String text) { this.text = text; }
-}
-
-@Component
-public class MyComponent implements IsVueComponent, HasCreated {
-    @JsProperty todo;
-    
-    @Override
-    public void created() {
-        todo = new Todo();
-        todo.setText("Bob"); // Won't update the Vue :(
-    }
-}
-```
-
-But in these cases it will **WILL**:
-```java
-// Any of those
-public class Todo {
-    private String text = null;
-    ...
-}
-
-public class Todo {
-    private String text;
-    public Todo() {
-        this.text = null;
-    }
-    ...
-}
-
-public class Todo {
-    private String text = "Default Value";
-    ...
-}
-
-public class Todo {
-    private String text;
-    public Todo() {
-        this.text = "Default Value";
-    }
-    ...
-}
-
-public class Todo {
-    private String text;
-    public Todo(String defaultText) {
-        this.text = defaultText;
-    }
-    ...
-}
-
-// The text property will be observable in your Component
-@Component
-public class MyComponent implements IsVueComponent, HasCreated {
-    @JsProperty todo;
-    
-    @Override
-    public void created() {
-        todo = new Todo();
-        todo.setText("Bob"); // Will update the Vue! 
-    }
-}
-```
-
-If you don't have the control over the Java class, you can also set a value before attaching your object to your Component data model.
-
-```java
-// This class comes from some library, I can't change it! How do I make text reactive?
-public class Todo {
-    private String text;
-    public Todo() {}
-    
-    public void setText(String text) { this.text = text; }
-}
-
-@Component
-public class MyComponent implements IsVueComponent, HasCreated {
-    @JsProperty todo;
-    
-    @Override
-    public void created() {
-        Todo myTodo = new Todo(); // We store in a local variable
-        myTodo.setText("Bob"); // We set the value, this define the property
-        
-        this.todo = myTodo; // We attach myTodo, it starts being observed, Bob displays in the Vue!
-        todo.setText("Mickael"); // Will update the Vue to Mickael! 
-    }
-}
-```
+::: warning
+To avoid gotchas in Vue GWT, make sure to read about the [Reactivity System](reactivity-system.md).
+:::
 
 ## Component Properties and Methods
 

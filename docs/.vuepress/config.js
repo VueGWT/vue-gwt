@@ -30,6 +30,8 @@ module.exports = {
           title: 'Essentials',
           collapsable: false,
           children: [
+            'essentials/the-vue-instance',
+            'essentials/reactivity-system',
             'essentials/template-syntax',
             'essentials/computed-and-watchers',
             'essentials/class-and-style',
