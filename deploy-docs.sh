@@ -3,20 +3,15 @@
 # abort on errors
 set -e
 
-echo "-> Build examples"
-cd docs/examples
-mvn clean package
-cd .. # go back in docs
-
-echo "-> Copy built examples to VuePress"
-rm .vuepress/public/resources/scripts/*
-cp examples/target/vue-gwt-examples-*/VueGwtExamples/* .vuepress/public/resources/scripts/
+cd docs
 
 echo "-> Build VuePress"
 vuepress build
 
 # navigate into the build output directory
 cd .vuepress/dist
+
+echo "-> Deploy VuePress doc"
 
 git init
 git add -A
