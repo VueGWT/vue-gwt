@@ -4,6 +4,7 @@ module.exports = {
   base: "/vue-gwt/",
   themeConfig: {
     repo: 'axellience/vue-gwt',
+    docsDir: 'docs',
     editLinks: true,
     editLinkText: 'Help us improve this page!',
     nav: [
