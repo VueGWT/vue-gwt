@@ -7,6 +7,10 @@ module.exports = {
     docsDir: 'docs',
     editLinks: true,
     editLinkText: 'Help us improve this page!',
+    algolia: {
+      apiKey: '808fd9f88b8a6b9fe8cc8ceb619a2b0b',
+      indexName: 'vue_gwt'
+    },
     nav: [
       {text: 'Home', link: '/'},
       {text: 'Guide', link: '/guide/'}
