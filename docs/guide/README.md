@@ -20,13 +20,21 @@ It lets you write Vue.js components in Java.
 * You have **GWT app**, and you want **easy to write views** with **2 way data binding**.
 * You have a **Vue app** and you need to **use a Java library in some Components**.
 
+## GWT?
+
+[GWT](http://www.gwtproject.org/) or Google Web Toolkit is a **Java to JavaScript Compiler** created by **Google**.
+It outputs pure ES5, and doesn't require anything special in the browser to run.
+You can see it as TypeScript on steroids.
+
+Some of the biggest Google projects are built with GWT, such as [Google Docs](https://www.google.com/docs/about/), [Inbox](https://inbox.google.com/) and [AdWords](https://adwords.google.com/home/).
+
 ## Let's do this!
 
-When you are ready, you can get started with by **[setting it up on your project](./project-setup.md)**.
+When you are ready, you can get started with by **[setting Vue GWT up on your project](./project-setup.md)**.
 
-<p class="info-panel">
-    We are looking for feedback and contributions.
-    If you use it on a project, please <a href="https://gitter.im/Axellience/vue-gwt" target="_blank">let us know how it goes</a>.
-</p>
+::: tip INFO
+We are looking for feedback.
+If you use Vue GWT on a project, please [let us know how it goes](https://gitter.im/Axellience/vue-gwt).
+:::
 
 *This documentation was last updated for [Vue.js v2.5.16](https://github.com/vuejs/vue/releases/tag/v2.5.16) and Vue GWT 1.0-beta-8*
