@@ -33,11 +33,8 @@ buildNumber.properties
 .settings
 .factorypath
 
-### Gitbook
-docs-source/book/_book
-docs-source/book/node_modules
-docs-source/book/scripts
-docs-source/book/resources/scripts
+### VuePress
+docs/.vuepress/dist
 
 ### Utils out
 utils/out
