@@ -1,3 +1,7 @@
+---
+sidebarDepth: 1
+---
+
 # Dependency Injection
 
 ## Why Dependency Injection?
