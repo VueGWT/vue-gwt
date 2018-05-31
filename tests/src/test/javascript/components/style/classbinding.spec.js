@@ -1,7 +1,10 @@
 import {expect} from 'chai'
 import {
-  createAndMountComponent, destroyComponent, getElement, onGwtReady,
-  onNextTick
+  createAndMountComponent,
+  destroyComponent,
+  getElement,
+  onGwtReady,
+  nextTick
 } from '../../vue-gwt-tests-utils'
 
 describe('Class binding', () => {
@@ -21,7 +24,7 @@ describe('Class binding', () => {
     expect(classAElement.getAttribute('class')).to.be.empty;
 
     component.hasClassA = true;
-    return onNextTick(() => {
+    return nextTick().then(() => {
       expect(classAElement.getAttribute('class')).to.equal('class-a');
     });
   });
@@ -31,16 +34,18 @@ describe('Class binding', () => {
     expect(classABElement.getAttribute('class')).to.be.empty;
 
     component.hasClassB = true;
-    return onNextTick(() => {
+    return nextTick()
+    .then(() => {
       const classValue = classABElement.getAttribute('class');
       expect(classValue).to.equal('class-b');
-    }).then(() => {
+
       component.hasClassA = true;
-      return onNextTick(() => {
-        const classValue = classABElement.getAttribute('class');
-        expect(classValue).to.have.string('class-a');
-        expect(classValue).to.have.string('class-b');
-      });
+      return nextTick();
+    })
+    .then(() => {
+      const classValue = classABElement.getAttribute('class');
+      expect(classValue).to.have.string('class-a');
+      expect(classValue).to.have.string('class-b');
     });
   });
 
@@ -50,16 +55,18 @@ describe('Class binding', () => {
     expect(computedClassABElement.getAttribute('class')).to.be.empty;
 
     component.hasClassB = true;
-    return onNextTick(() => {
+    return nextTick()
+    .then(() => {
       const classValue = computedClassABElement.getAttribute('class');
       expect(classValue).to.equal('class-b');
-    }).then(() => {
+
       component.hasClassA = true;
-      return onNextTick(() => {
-        const classValue = computedClassABElement.getAttribute('class');
-        expect(classValue).to.have.string('class-a');
-        expect(classValue).to.have.string('class-b');
-      });
+      return nextTick();
+    })
+    .then(() => {
+      const classValue = computedClassABElement.getAttribute('class');
+      expect(classValue).to.have.string('class-a');
+      expect(classValue).to.have.string('class-b');
     });
   });
 
@@ -68,7 +75,7 @@ describe('Class binding', () => {
     expect(staticClassElement.getAttribute('class')).to.equal('static-class');
 
     component.hasClassA = true;
-    return onNextTick(() => {
+    return nextTick().then(() => {
       const classValue = staticClassElement.getAttribute('class');
       expect(classValue).to.have.string('static-class');
       expect(classValue).to.have.string('class-a');
@@ -80,7 +87,7 @@ describe('Class binding', () => {
     expect(arrayClassElement.getAttribute('class')).to.equal('class-c');
 
     component.hasClassA = true;
-    return onNextTick(() => {
+    return nextTick().then(() => {
       const classValue = arrayClassElement.getAttribute('class');
       expect(classValue).to.have.string('class-c');
       expect(classValue).to.have.string('class-a');

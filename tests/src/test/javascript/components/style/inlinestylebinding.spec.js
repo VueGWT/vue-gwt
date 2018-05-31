@@ -1,7 +1,10 @@
 import {expect} from 'chai'
 import {
-  createAndMountComponent, destroyComponent, getElement, onGwtReady,
-  onNextTick
+  createAndMountComponent,
+  destroyComponent,
+  getElement,
+  onGwtReady,
+  nextTick
 } from '../../vue-gwt-tests-utils'
 
 describe('Inline style binding', () => {
@@ -21,7 +24,7 @@ describe('Inline style binding', () => {
     expect(element.getAttribute('style')).to.equal('color: black;');
 
     component.color = 'white';
-    return onNextTick(() => {
+    return nextTick().then(() => {
       expect(element.getAttribute('style')).to.equal('color: white;');
     });
   });
@@ -34,7 +37,7 @@ describe('Inline style binding', () => {
 
     component.color = 'white';
     component.fontSize = 14;
-    return onNextTick(() => {
+    return nextTick().then(() => {
       const styleAttribute = element.getAttribute('style');
       expect(styleAttribute).to.have.string('color: white;');
       expect(styleAttribute).to.have.string('font-size: 14px;');

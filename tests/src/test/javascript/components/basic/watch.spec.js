@@ -1,7 +1,9 @@
 import {expect} from 'chai'
 import {
-  createAndMountComponent, destroyComponent, onGwtReady,
-  onNextTick
+  createAndMountComponent,
+  destroyComponent,
+  onGwtReady,
+  nextTick
 } from '../../vue-gwt-tests-utils'
 
 describe('@Watch', () => {
@@ -19,18 +21,19 @@ describe('@Watch', () => {
   it('should be called with correct parameters when the data change', () => {
     component.changeWatchedData('value');
 
-    return onNextTick(() => {
+    return nextTick()
+    .then(() => {
       expect(component.oldValue).to.be.null;
       expect(component.newValue).to.be.not.null;
       expect(component.newValue.getStringProperty()).to.equal('value');
+
+      component.changeWatchedData(null);
+      return nextTick();
     })
     .then(() => {
-      component.changeWatchedData(null);
-      return onNextTick(() => {
-        expect(component.oldValue).to.be.not.null;
-        expect(component.oldValue.getStringProperty()).to.equal('value');
-        expect(component.newValue).to.be.null;
-      })
-    });
+      expect(component.oldValue).to.be.not.null;
+      expect(component.oldValue.getStringProperty()).to.equal('value');
+      expect(component.newValue).to.be.null;
+    })
   });
 });

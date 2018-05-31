@@ -1,7 +1,10 @@
 import {expect} from 'chai'
 import {
-  createAndMountComponent, destroyComponent, getElement, onGwtReady,
-  onNextTick
+  createAndMountComponent,
+  destroyComponent,
+  getElement,
+  onGwtReady,
+  nextTick
 } from '../../vue-gwt-tests-utils'
 
 describe('@Prop', () => {
@@ -30,7 +33,7 @@ describe('@Prop', () => {
     component.optionalPropParent = 16;
     component.requiredPropParent.setStringProperty('value');
 
-    return onNextTick(() => {
+    return nextTick().then(() => {
       const optionalPropDomValue = getElement(component,
           '#optional-prop').innerText;
       const requiredPropDomValue = getElement(component,
