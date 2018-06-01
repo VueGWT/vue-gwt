@@ -54,12 +54,12 @@ We can do:
 VueGwtWidget<DemoComponent> vueGwtWidget = new VueGwtWidget<>(DemoComponent.class);
 RootPanel.get("childComponentAttachPoint").add(vueGwtWidget);
 
-vueGwtWidget.vue().increaseCounter();
+vueGwtWidget.getComponent().increaseCounter();
 ```
 
 ## Cleaning Up
 If you don't need your `VueGwtWidget` anymore, you can destroy it's Vue instance by calling:
 
 ```java
-vueGwtWidget.vue().$destroy();
+vueGwtWidget.getComponent().vue().$destroy();
 ```
