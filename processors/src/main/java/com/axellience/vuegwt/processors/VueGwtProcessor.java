@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.directive.Directive;
 import com.axellience.vuegwt.processors.component.ComponentInjectedDependenciesBuilder;
-import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
+import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
 import com.axellience.vuegwt.processors.component.factory.VueComponentFactoryGenerator;
 import com.axellience.vuegwt.processors.component.factory.VueJsComponentFactoryGenerator;
 import com.axellience.vuegwt.processors.directive.VueDirectiveOptionsGenerator;
@@ -66,8 +66,8 @@ public class VueGwtProcessor extends AbstractProcessor
         Set<? extends Element> componentElements =
             roundEnv.getElementsAnnotatedWith(Component.class);
 
-        ComponentJsTypeGenerator componentJsTypeGenerator =
-            new ComponentJsTypeGenerator(processingEnv);
+        ComponentExposedTypeGenerator componentExposedTypeGenerator =
+            new ComponentExposedTypeGenerator(processingEnv);
         VueComponentFactoryGenerator vueFactoryGenerator =
             new VueComponentFactoryGenerator(processingEnv);
 
@@ -77,7 +77,7 @@ public class VueGwtProcessor extends AbstractProcessor
                 new ComponentInjectedDependenciesBuilder(processingEnv, componentType);
             vueFactoryGenerator.generate(componentType,
                 dependenciesBuilder.hasInjectedDependencies());
-            componentJsTypeGenerator.generate(componentType, dependenciesBuilder);
+            componentExposedTypeGenerator.generate(componentType, dependenciesBuilder);
         }
     }
 

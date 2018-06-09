@@ -1,27 +1,41 @@
-class VueGwtTestsUtils {
-	constructor() {
-		this.onReadyPromise = new Promise((onSuccess) => {
-			if (!window.onVueGwtTestsReady)
-				window.onVueGwtTestsReady = [];
-			window.onVueGwtTestsReady.push(onSuccess);
-		});
-	}
+import {expect} from "chai";
 
-	initForPackage(rootPackage) {
-		this.rootPackage = rootPackage;
-		return this.onReadyPromise;
-	}
+const gwtReadyPromise = new Promise((onSuccess) => {
+  if (!window.onVueGwtTestsReady) {
+    window.onVueGwtTestsReady = [];
+  }
+  window.onVueGwtTestsReady.push(onSuccess);
+});
 
-	getComponentConstructor(testComponentName) {
-		return window.VueGWT.getJsConstructor(`${this.rootPackage}.${testComponentName}`);
-	}
+export const onGwtReady = function () {
+  return gwtReadyPromise;
+};
 
-	createAndMountComponent(testComponentName) {
-		const div = document.createElement("div");
-		document.body.appendChild(div);
-		const ComponentConstructor = this.getComponentConstructor(testComponentName);
-		return new ComponentConstructor({el: div});
-	}
-}
+export const createAndMountComponent = function (qualifiedName) {
+  const div = document.createElement("div");
+  document.body.appendChild(div);
+  const ComponentConstructor = window.VueGWT.getJsConstructor(qualifiedName);
+  return new ComponentConstructor({el: div});
+};
 
-export const vueGwtTests = new VueGwtTestsUtils();
+export const destroyComponent = function (component) {
+  component.$destroy();
+  document.body.removeChild(component.$el);
+};
+
+export const onNextTick = function (testFunction) {
+  return new Promise((resolve, reject) => {
+    Vue.nextTick(() => {
+      try {
+        testFunction();
+        resolve();
+      } catch (e) {
+        reject(e);
+      }
+    });
+  });
+};
+
+export const getElement = function (component, query) {
+  return component.$el.querySelector(query);
+};

@@ -5,7 +5,7 @@ import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
-import com.axellience.vuegwt.processors.component.ComponentJsTypeGenerator;
+import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
 import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
@@ -14,7 +14,8 @@ import com.axellience.vuegwt.processors.component.template.parser.context.localc
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
 
@@ -60,7 +61,7 @@ public class ComponentTemplateProcessor
     }
 
     public void processComponentTemplate(TypeElement componentTypeElement,
-        Builder componentJsTypeBuilder)
+        Builder componentExposedTypeBuilder)
     {
         ClassName componentTypeName = ClassName.get(componentTypeElement);
         Optional<String> optionalTemplateContent =
@@ -86,23 +87,18 @@ public class ComponentTemplateProcessor
             templateParserContext,
             messager);
 
-        FieldSpec fldScoped = FieldSpec
-            .builder(String.class, "SCOPED_CSS")
-            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-            .initializer("$S", templateParserResult.getScopedCss())
-            .build();
-        componentJsTypeBuilder.addField(fldScoped);
+        registerScopedCss(componentExposedTypeBuilder, templateParserResult);
 
-        // Add expressions from the template to JsType and compile template
+        // Add expressions from the template to ExposedType and compile template
         TemplateMethodsBuilder templateMethodsBuilder = new TemplateMethodsBuilder();
-        templateMethodsBuilder.addTemplateMethodsToComponentJsType(componentJsTypeBuilder,
+        templateMethodsBuilder.addTemplateMethodsToComponentExposedType(componentExposedTypeBuilder,
             templateParserResult);
     }
 
     /**
-     * Process the ComponentJsType class to register all the fields and methods visible in
+     * Process the ComponentExposedType class to register all the fields and methods visible in
      * the context.
-     * TODO: Improve this method by putting things together with {@link ComponentJsTypeGenerator}
+     * TODO: Improve this method by putting things together with {@link ComponentExposedTypeGenerator}
      * @param componentTypeElement The class to process
      */
     private void registerFieldsAndMethodsInContext(TemplateParserContext templateParserContext,
@@ -260,6 +256,18 @@ public class ComponentTemplateProcessor
                 componentTypeElement);
             return Optional.empty();
         }
+    }
+
+    private void registerScopedCss(Builder componentExposedTypeBuilder,
+        TemplateParserResult templateParserResult)
+    {
+        String scopedCss = templateParserResult.getScopedCss();
+        componentExposedTypeBuilder.addMethod(MethodSpec
+            .methodBuilder("getScopedCss")
+            .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+            .returns(ParameterizedTypeName.get(String.class))
+            .addStatement("return $S", scopedCss)
+            .build());
     }
 
     private static String slashify(String s)

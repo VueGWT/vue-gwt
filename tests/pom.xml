@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.axellience</groupId>
 		<artifactId>vue-gwt-parent</artifactId>
-		<version>1.0-beta-8-SNAPSHOT</version>
+		<version>1.0-beta-9-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -31,10 +31,12 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Annotation Processors -->

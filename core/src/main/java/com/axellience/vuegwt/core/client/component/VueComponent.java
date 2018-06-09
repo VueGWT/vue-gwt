@@ -90,9 +90,9 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final Element $el()
+    public final <T extends Element> T $el()
     {
-        return $el;
+        return (T) $el;
     }
 
     @JsOverlay
@@ -126,19 +126,19 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final <T extends IsVueComponent> T $ref(String refName)
+    public final <T> T $ref(String refName)
     {
         return ((JsPropertyMap<T>) $refs).get(refName);
     }
 
     @JsOverlay
-    public final <T extends IsVueComponent> JsArray<T> $refArray(String refName)
+    public final <T> JsArray<T> $refArray(String refName)
     {
         return ((JsPropertyMap<JsArray<T>>) $refs).get(refName);
     }
 
     @JsOverlay
-    public final boolean $refIsArray(String refName)
+    public final boolean $isRefArray(String refName)
     {
         return ((JsPropertyMap<Object>) $refs).get(refName) instanceof JsArray;
     }
@@ -198,7 +198,7 @@ public abstract class VueComponent
     }
 
     @JsOverlay
-    public final boolean $listenerIsArray(String key)
+    public final boolean $isListenerArray(String key)
     {
         return ((JsPropertyMap<Object>) $listeners).get(key) instanceof JsArray;
     }

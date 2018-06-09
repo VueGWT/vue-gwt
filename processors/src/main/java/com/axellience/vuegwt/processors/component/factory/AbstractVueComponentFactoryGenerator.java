@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
-import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.squareup.javapoet.AnnotationSpec;
@@ -27,10 +27,12 @@ import javax.lang.model.element.TypeElement;
 import java.util.Date;
 import java.util.List;
 
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.hasTemplate;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentExposedTypeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
 
 /**
- * Abstract class to generate {@link VueFactory} from the user {@link IsVueComponent} classes.
+ * Abstract class to generate {@link VueComponentFactory} from the user {@link IsVueComponent} classes.
  * It is inherited by {@link VueComponentFactoryGenerator} which generate for {@link Component}
  * annotated class and {@link VueJsComponentFactoryGenerator} which generate for {@link
  * JsComponent} annotated class.
@@ -40,17 +42,19 @@ public abstract class AbstractVueComponentFactoryGenerator
 {
     private static final String INSTANCE_PROP = "INSTANCE";
 
+    private final ProcessingEnvironment processingEnv;
     private final Filer filer;
     final Messager messager;
 
     AbstractVueComponentFactoryGenerator(ProcessingEnvironment processingEnv)
     {
+        this.processingEnv = processingEnv;
         this.filer = processingEnv.getFiler();
         this.messager = processingEnv.getMessager();
     }
 
     /**
-     * Generate our {@link VueFactory} class.
+     * Generate our {@link VueComponentFactory} class.
      * @param component The {@link IsVueComponent} class to generate {@link VueComponentOptions} from
      */
     public void generate(TypeElement component)
@@ -61,7 +65,10 @@ public abstract class AbstractVueComponentFactoryGenerator
 
         createProperties(vueFactoryClassName, vueFactoryBuilder);
         List<CodeBlock> staticInitParameters = createInitMethod(component, vueFactoryBuilder);
-        createStaticGetMethod(vueFactoryClassName, vueFactoryBuilder, staticInitParameters);
+        createStaticGetMethod(component,
+            vueFactoryClassName,
+            vueFactoryBuilder,
+            staticInitParameters);
 
         vueFactoryBuilder.addMethod(MethodSpec
             .constructorBuilder()
@@ -74,9 +81,9 @@ public abstract class AbstractVueComponentFactoryGenerator
     }
 
     /**
-     * Create the builder to build our {@link VueFactory} class.
+     * Create the builder to build our {@link VueComponentFactory} class.
      * @param component The Component we generate for
-     * @param vueFactoryClassName The type name of our generated {@link VueFactory}
+     * @param vueFactoryClassName The type name of our generated {@link VueComponentFactory}
      * @return A Class Builder
      */
     private Builder createFactoryBuilderClass(TypeElement component, ClassName vueFactoryClassName)
@@ -84,10 +91,10 @@ public abstract class AbstractVueComponentFactoryGenerator
         return TypeSpec
             .classBuilder(vueFactoryClassName)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-            .superclass(ParameterizedTypeName.get(ClassName.get(VueFactory.class),
+            .superclass(ParameterizedTypeName.get(ClassName.get(VueComponentFactory.class),
                 ClassName.get(component)))
             .addAnnotation(Singleton.class)
-            .addJavadoc("VueFactory for Component {@link $S}",
+            .addJavadoc("VueComponentFactory for Component {@link $L}",
                 component.getQualifiedName().toString())
             .addAnnotation(AnnotationSpec
                 .builder(Generated.class)
@@ -100,7 +107,7 @@ public abstract class AbstractVueComponentFactoryGenerator
     /**
      * Create the method that init the wrapped {@link VueJsConstructor}
      * @param component The Component we generate for
-     * @param vueFactoryClassBuilder The builder of the VueFactory we are generating
+     * @param vueFactoryClassBuilder The builder of the VueComponentFactory we are generating
      * @return The list of parameters call to pass when call the created init method from the static
      * get method (when the Factory is not injected)
      */
@@ -108,9 +115,9 @@ public abstract class AbstractVueComponentFactoryGenerator
         Builder vueFactoryClassBuilder);
 
     /**
-     * Create the static properties used in our {@link VueFactory}.
-     * @param vueFactoryType The generated type name for our {@link VueFactory}
-     * @param vueFactoryBuilder The builder to create our {@link VueFactory} class
+     * Create the static properties used in our {@link VueComponentFactory}.
+     * @param vueFactoryType The generated type name for our {@link VueComponentFactory}
+     * @param vueFactoryBuilder The builder to create our {@link VueComponentFactory} class
      */
     private void createProperties(ClassName vueFactoryType, Builder vueFactoryBuilder)
     {
@@ -122,13 +129,13 @@ public abstract class AbstractVueComponentFactoryGenerator
     /**
      * Create a static get method that can be used to retrieve an instance of our Factory.
      * Factory retrieved using this method do NOT support injection.
-     * @param vueFactoryClassName The type name of our generated {@link VueFactory}
-     * @param vueFactoryBuilder The builder to create our {@link VueFactory} class
+     * @param component The Component we generate for
+     * @param vueFactoryClassName The type name of our generated {@link VueComponentFactory}
+     * @param vueFactoryBuilder The builder to create our {@link VueComponentFactory} class
      * @param staticInitParameters Parameters from the init method when called on static
-     * initialization (when the factory is not injected)
      */
-    private void createStaticGetMethod(ClassName vueFactoryClassName, Builder vueFactoryBuilder,
-        List<CodeBlock> staticInitParameters)
+    private void createStaticGetMethod(TypeElement component, ClassName vueFactoryClassName,
+        Builder vueFactoryBuilder, List<CodeBlock> staticInitParameters)
     {
         MethodSpec.Builder getBuilder = MethodSpec
             .methodBuilder("get")
@@ -138,6 +145,14 @@ public abstract class AbstractVueComponentFactoryGenerator
         getBuilder.beginControlFlow("if ($L == null)", INSTANCE_PROP);
 
         getBuilder.addStatement("$L = new $T()", INSTANCE_PROP, vueFactoryClassName);
+
+        if (hasTemplate(processingEnv, component))
+        {
+            getBuilder.addStatement("$L.injectComponentCss($T.getScopedCss())",
+                INSTANCE_PROP,
+                componentExposedTypeName(component));
+        }
+
         getBuilder.addCode("$L.init(", INSTANCE_PROP);
         boolean isFirst = true;
         for (CodeBlock staticInitParameter : staticInitParameters)

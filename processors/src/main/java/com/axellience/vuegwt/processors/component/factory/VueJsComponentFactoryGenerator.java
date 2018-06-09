@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
-import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Generate {@link VueFactory} from the user {@link IsVueComponent} classes
+ * Generate {@link VueComponentFactory} from the user {@link IsVueComponent} classes
  * annotated by {@link
  * JsComponent}.
  * @author Adrien Baron

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axellience</groupId>
   <artifactId>vue-gwt-parent</artifactId>
-  <version>1.0-beta-8-SNAPSHOT</version>
+  <version>1.0-beta-9-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Vue GWT Parent</name>
@@ -60,6 +60,12 @@
     <javaparser.version>3.0.1</javaparser.version>
     <auto-service.version>1.0-rc4</auto-service.version>
     <ph-css.version>6.1.0</ph-css.version>
+
+    <junit.version>5.1.0</junit.version>
+    <junit-platform.version>1.1.0</junit-platform.version>
+    <opentest4j.version>1.0.0</opentest4j.version>
+    <testing-compile.version>0.15</testing-compile.version>
+    <maven.surefire.plugin.version>2.19</maven.surefire.plugin.version>
 
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -148,6 +154,33 @@
         <version>${ph-css.version}</version>
       </dependency>
 
+      <!-- Tests -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-commons</artifactId>
+        <version>${junit-platform.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>${opentest4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.testing.compile</groupId>
+        <artifactId>compile-testing</artifactId>
+        <version>${testing-compile.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -170,6 +203,23 @@
           <artifactId>gwt-maven-plugin</artifactId>
           <version>${plugin.version.gwt.maven}</version>
           <extensions>true</extensions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.surefire.plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.junit.platform</groupId>
+              <artifactId>junit-platform-surefire-provider</artifactId>
+              <version>${junit-platform.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.junit.jupiter</groupId>
+              <artifactId>junit-jupiter-engine</artifactId>
+              <version>${junit.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -1,22 +1,5 @@
 package com.axellience.vuegwt.processors.component.template.parser;
 
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import javax.annotation.processing.Messager;
-
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateScopedCssParser.ScopedCssResult;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
@@ -37,7 +20,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
 import com.squareup.javapoet.TypeName;
-
 import jsinterop.base.Any;
 import net.htmlparser.jericho.Attribute;
 import net.htmlparser.jericho.Attributes;
@@ -48,6 +30,22 @@ import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.Tag;
+
+import javax.annotation.processing.Messager;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -136,8 +134,8 @@ public class TemplateParser
     }
 
     private String processScopedCss(Source doc) {
-        class Rslt { String scopedCss = ""; }
-        final Rslt rslt = new Rslt();
+        final String[] scopedCss = new String[1];
+
         doc.getAllElements().stream()
             .filter(TemplateParser::isScopedStyleElement)
             .peek(styleScoped -> {
@@ -148,13 +146,13 @@ public class TemplateParser
                             context.getComponentTypeElement(), css);
                     if (scopedCssResult.isPresent()) {
                         context.getMandatoryAttributes().putAll(scopedCssResult.get().mandatoryAttributes);
-                        rslt.scopedCss = scopedCssResult.get().scopedCss;
+                        scopedCss[0] = scopedCssResult.get().scopedCss;
                     }
                 }
             })
             .forEach(outputDocument::remove);
 
-        return rslt.scopedCss;
+        return scopedCss[0];
     }
 
     /**

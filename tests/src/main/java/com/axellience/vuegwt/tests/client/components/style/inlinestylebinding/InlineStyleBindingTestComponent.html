@@ -1,0 +1,16 @@
+<ul>
+  <li id='map-single' v-bind:style='map("color", color)'>
+    Map single
+  </li>
+  <li id='map-multiple' :style='map(e("color", color), e("font-size", fontSize + "px"))'>
+    Map multiple
+  </li>
+  <li id='array-override'
+      :style='array(map("color", "white"), map(e("color", color), e("font-size", fontSize + "px")))'>
+    Based style overridden with array syntax
+  </li>
+  <li id='array-multiple-values'
+      :style='map("display", array("-webkit-box", "-ms-flexbox", "flex"))'>
+    Multiple values with array syntax
+  </li>
+</ul>

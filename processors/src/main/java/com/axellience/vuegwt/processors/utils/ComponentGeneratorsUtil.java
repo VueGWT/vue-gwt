@@ -8,7 +8,7 @@ import com.axellience.vuegwt.core.annotations.component.Watch;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
 import com.axellience.vuegwt.core.client.component.options.CustomizeOptions;
-import com.axellience.vuegwt.core.client.vue.VueFactory;
+import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -125,14 +125,14 @@ public class ComponentGeneratorsUtil
                     + variableElement.asType()
                     + " for variable "
                     + variableElement
-                    + ". If you are trying to inject a ComponentFactory inside a Component, please inject VueFactory<MyComponent> instead.");
+                    + ". If you are trying to inject a ComponentFactory inside a Component, please inject VueComponentFactory<MyComponent> instead.");
         }
 
         TypeName typeName = ClassName.get(variableElement.asType());
         if (typeName instanceof ParameterizedTypeName)
         {
             ParameterizedTypeName parameterizedTypeName = (ParameterizedTypeName) typeName;
-            if (parameterizedTypeName.rawType.equals(ClassName.get(VueFactory.class)))
+            if (parameterizedTypeName.rawType.equals(ClassName.get(VueComponentFactory.class)))
             {
                 return componentFactoryName((ClassName) parameterizedTypeName.typeArguments.get(0));
             }
@@ -227,7 +227,7 @@ public class ComponentGeneratorsUtil
         TypeElement component)
     {
         Component annotation = component.getAnnotation(Component.class);
-        if (!annotation.hasTemplate())
+        if (annotation == null || !annotation.hasTemplate())
             return false;
 
         if (component.getModifiers().contains(Modifier.ABSTRACT))
