@@ -1,5 +1,11 @@
 package com.axellience.vuegwt.processors.component.template;
 
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentToTagName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
+
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
@@ -18,7 +24,10 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
-
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -32,16 +41,6 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentToTagName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 
 /**
  * Process the HTML template for a given {@link IsVueComponent}.
@@ -227,18 +226,31 @@ public class ComponentTemplateProcessor
         TypeElement componentTypeElement)
     {
         String path = slashify(componentTypeName.reflectionName()) + ".html";
+        Optional<String> result = getTemplateContentAtLocation(path, StandardLocation.CLASS_OUTPUT);
+        if (result.isPresent())
+            return result;
+
+        result = getTemplateContentAtLocation(path, StandardLocation.CLASS_PATH);
+        if (result.isPresent())
+            return result;
+
+        messager.printMessage(Kind.ERROR,
+            "Couldn't find template for component: "
+                + componentTypeName.simpleName()
+                + ". Make sure you included src/main/java in your Resources. Check our setup guide for help.",
+            componentTypeElement);
+        return Optional.empty();
+    }
+
+    private Optional<String> getTemplateContentAtLocation(String path, StandardLocation location)
+    {
         FileObject resource;
         try
         {
-            resource = filer.getResource(StandardLocation.CLASS_OUTPUT, "", path);
+            resource = filer.getResource(location, "", path);
         }
-        catch (IOException e)
+        catch (IOException ignore)
         {
-            messager.printMessage(Kind.ERROR,
-                "Couldn't find template for component: "
-                    + componentTypeName.simpleName()
-                    + ". Make sure you included src/main/java in your Resources. Check our setup guide for help.",
-                componentTypeElement);
             return Optional.empty();
         }
 
@@ -249,11 +261,6 @@ public class ComponentTemplateProcessor
         }
         catch (IOException e)
         {
-            messager.printMessage(Kind.ERROR,
-                "Failed to open template file for component: "
-                    + componentTypeName.simpleName()
-                    + ". Make sure you included src/main/java in your Resources. Check our setup guide for help.",
-                componentTypeElement);
             return Optional.empty();
         }
     }

@@ -1,5 +1,8 @@
 package com.axellience.vuegwt.processors.component.template.parser;
 
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
+
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateScopedCssParser.ScopedCssResult;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
@@ -20,18 +23,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
 import com.squareup.javapoet.TypeName;
-import jsinterop.base.Any;
-import net.htmlparser.jericho.Attribute;
-import net.htmlparser.jericho.Attributes;
-import net.htmlparser.jericho.CharacterReference;
-import net.htmlparser.jericho.Config;
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.OutputDocument;
-import net.htmlparser.jericho.Segment;
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.Tag;
-
-import javax.annotation.processing.Messager;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,9 +34,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
+import javax.annotation.processing.Messager;
+import jsinterop.base.Any;
+import net.htmlparser.jericho.Attribute;
+import net.htmlparser.jericho.Attributes;
+import net.htmlparser.jericho.CharacterReference;
+import net.htmlparser.jericho.Config;
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Segment;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.Tag;
 
 /**
  * Parse an HTML Vue GWT template.
@@ -59,7 +58,7 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeTo
 public class TemplateParser
 {
     private static Pattern VUE_ATTR_PATTERN = Pattern.compile("^(v-|:|@).*");
-    private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}");
+    private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}", Pattern.DOTALL);
 
     private TemplateParserContext context;
     private Messager messager;
@@ -233,7 +232,7 @@ public class TemplateParser
             int start = matcher.start();
             int end = matcher.end();
             if (start > 0)
-                newText.append(elementText.substring(lastEnd, start));
+                newText.append(elementText, lastEnd, start);
 
             currentExpressionReturnType = TypeName.get(String.class);
             String expressionString = elementText.substring(start + 2, end - 2).trim();

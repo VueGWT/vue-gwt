@@ -1,5 +1,17 @@
 package com.axellience.vuegwt.processors.component;
 
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentCount;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.hasTemplate;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isFieldVisibleInJS;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isMethodVisibleInJS;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentExposedTypeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
+
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Emit;
@@ -20,6 +32,7 @@ import com.axellience.vuegwt.core.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.processors.component.template.ComponentTemplateProcessor;
+import com.axellience.vuegwt.processors.component.validators.DataFieldsValidator;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.squareup.javapoet.AnnotationSpec;
@@ -30,9 +43,13 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import elemental2.core.JsArray;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
-
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -40,27 +57,14 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
-import java.lang.annotation.Annotation;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.*;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentExposedTypeName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
-import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
 
 /**
  * Generate a ExposedType wrapper for the user Java {@link IsVueComponent}.
@@ -77,6 +81,7 @@ public class ComponentExposedTypeGenerator
     private final Messager messager;
     private final Elements elements;
     private final ComponentTemplateProcessor componentTemplateProcessor;
+    private final DataFieldsValidator dataFieldsValidator;
 
     public ComponentExposedTypeGenerator(ProcessingEnvironment processingEnvironment)
     {
@@ -85,6 +90,7 @@ public class ComponentExposedTypeGenerator
         messager = processingEnvironment.getMessager();
         elements = processingEnvironment.getElementUtils();
         componentTemplateProcessor = new ComponentTemplateProcessor(processingEnvironment);
+        dataFieldsValidator = new DataFieldsValidator(processingEnvironment.getTypeUtils(), elements, messager);
     }
 
     public void generate(TypeElement component,
@@ -156,7 +162,6 @@ public class ComponentExposedTypeGenerator
             .addAnnotation(AnnotationSpec
                 .builder(Generated.class)
                 .addMember("value", "$S", ComponentExposedTypeGenerator.class.getCanonicalName())
-                .addMember("date", "$S", new Date().toString())
                 .addMember("comments", "$S", "https://github.com/Axellience/vue-gwt")
                 .build());
 
@@ -229,21 +234,22 @@ public class ComponentExposedTypeGenerator
     {
         Component annotation = component.getAnnotation(Component.class);
 
-        List<String> fieldsName = ElementFilter
+        List<VariableElement> dataFields = ElementFilter
             .fieldsIn(component.getEnclosedElements())
             .stream()
             .filter(ComponentGeneratorsUtil::isFieldVisibleInJS)
             .filter(field -> field.getAnnotation(Prop.class) == null)
-            .map(field -> field.getSimpleName().toString())
             .collect(Collectors.toList());
 
-        if (fieldsName.isEmpty())
+        if (dataFields.isEmpty())
             return;
 
+        dataFields.forEach(dataFieldsValidator::validateComponentDataField);
+
         // Declare data fields
-        String fieldNamesParameters = fieldsName
+        String fieldNamesParameters = dataFields
             .stream()
-            .map(fieldName -> "\"" + fieldName + "\"")
+            .map(field -> "\"" + field.getSimpleName() + "\"")
             .collect(Collectors.joining(", "));
 
         optionsBuilder.addStatement("options.initData($L, $L)",
