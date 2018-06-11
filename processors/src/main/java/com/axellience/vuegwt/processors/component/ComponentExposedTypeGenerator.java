@@ -44,7 +44,6 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import elemental2.core.JsArray;
 import java.lang.annotation.Annotation;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -163,7 +162,6 @@ public class ComponentExposedTypeGenerator
             .addAnnotation(AnnotationSpec
                 .builder(Generated.class)
                 .addMember("value", "$S", ComponentExposedTypeGenerator.class.getCanonicalName())
-                .addMember("date", "$S", new Date().toString())
                 .addMember("comments", "$S", "https://github.com/Axellience/vue-gwt")
                 .build());
 
