@@ -6,28 +6,12 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componen
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 
-import com.axellience.vuegwt.core.annotations.component.Component;
-import com.axellience.vuegwt.core.annotations.component.Computed;
-import com.axellience.vuegwt.core.annotations.component.JsComponent;
-import com.axellience.vuegwt.core.annotations.component.Prop;
-import com.axellience.vuegwt.core.client.component.IsVueComponent;
-import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
-import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
-import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
-import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
-import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
-import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
-import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
-import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec.Builder;
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -41,6 +25,26 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
+
+import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.JsComponent;
+import com.axellience.vuegwt.core.annotations.component.Prop;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
+import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
+import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
+import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
+import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
+import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
+import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
+import com.github.javaparser.utils.Pair;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec.Builder;
 
 /**
  * Process the HTML template for a given {@link IsVueComponent}.
@@ -63,7 +67,7 @@ public class ComponentTemplateProcessor
         Builder componentExposedTypeBuilder)
     {
         ClassName componentTypeName = ClassName.get(componentTypeElement);
-        Optional<String> optionalTemplateContent =
+        Optional<Pair<String, URI>> optionalTemplateContent =
             getTemplateContent(componentTypeName, componentTypeElement);
 
         if (!optionalTemplateContent.isPresent())
@@ -82,9 +86,10 @@ public class ComponentTemplateProcessor
 
         // Parse the template
         TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
-            optionalTemplateContent.get(),
+            optionalTemplateContent.get().a,
             templateParserContext,
-            messager);
+            messager,
+            optionalTemplateContent.get().b);
 
         registerScopedCss(componentExposedTypeBuilder, templateParserResult);
 
@@ -222,11 +227,11 @@ public class ComponentTemplateProcessor
         });
     }
 
-    private Optional<String> getTemplateContent(ClassName componentTypeName,
+    private Optional<Pair<String, URI>> getTemplateContent(ClassName componentTypeName,
         TypeElement componentTypeElement)
     {
         String path = slashify(componentTypeName.reflectionName()) + ".html";
-        Optional<String> result = getTemplateContentAtLocation(path, StandardLocation.CLASS_OUTPUT);
+        Optional<Pair<String, URI>> result = getTemplateContentAtLocation(path, StandardLocation.CLASS_OUTPUT);
         if (result.isPresent())
             return result;
 
@@ -242,7 +247,7 @@ public class ComponentTemplateProcessor
         return Optional.empty();
     }
 
-    private Optional<String> getTemplateContentAtLocation(String path, StandardLocation location)
+    private Optional<Pair<String, URI>> getTemplateContentAtLocation(String path, StandardLocation location)
     {
         FileObject resource;
         try
@@ -257,7 +262,7 @@ public class ComponentTemplateProcessor
         // Get template content from HTML file
         try
         {
-            return Optional.of(resource.getCharContent(true).toString());
+            return Optional.of(new Pair<String, URI>(resource.getCharContent(true).toString(), resource.toUri()));
         }
         catch (IOException e)
         {
@@ -265,7 +270,7 @@ public class ComponentTemplateProcessor
         }
     }
 
-    private void registerScopedCss(Builder componentExposedTypeBuilder,
+    private static void registerScopedCss(Builder componentExposedTypeBuilder,
         TemplateParserResult templateParserResult)
     {
         String scopedCss = templateParserResult.getScopedCss();

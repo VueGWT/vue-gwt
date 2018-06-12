@@ -3,6 +3,21 @@ package com.axellience.vuegwt.processors.component.template.parser;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
 
+import java.net.URI;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.annotation.processing.Messager;
+
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateScopedCssParser.ScopedCssResult;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
@@ -23,18 +38,12 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.Type;
 import com.squareup.javapoet.TypeName;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-import javax.annotation.processing.Messager;
+
+import io.bit3.jsass.CompilationException;
+import io.bit3.jsass.Compiler;
+import io.bit3.jsass.Options;
+import io.bit3.jsass.Output;
+import io.bit3.jsass.context.StringContext;
 import jsinterop.base.Any;
 import net.htmlparser.jericho.Attribute;
 import net.htmlparser.jericho.Attributes;
@@ -64,6 +73,7 @@ public class TemplateParser
     private Messager messager;
     private TemplateParserLogger logger;
     private TemplateParserResult result;
+    private URI htmlTemplateUri;
 
     private Attribute currentAttribute;
     private LocalComponentProp currentProp;
@@ -79,11 +89,12 @@ public class TemplateParser
      * @return A {@link TemplateParserResult} containing the processed template and expressions
      */
     public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
-            TemplateParserContext context, Messager messager)
+            TemplateParserContext context, Messager messager, URI htmlTemplateUri)
     {
         this.context = context;
         this.messager = messager;
         this.logger = new TemplateParserLogger(context, messager);
+        this.htmlTemplateUri = htmlTemplateUri;
 
         initJerichoConfig(this.logger);
 
@@ -99,7 +110,7 @@ public class TemplateParser
         return result;
     }
 
-    private void initJerichoConfig(TemplateParserLogger logger)
+    private static void initJerichoConfig(TemplateParserLogger logger)
     {
         // Allow as many invalid character in attributes as possible
         Attributes.setDefaultMaxErrorCount(Integer.MAX_VALUE);
@@ -140,6 +151,10 @@ public class TemplateParser
             .peek(styleScoped -> {
                 String css = styleScoped.getContent().toString().trim();
                 if (!css.isEmpty()) {
+                    String lang = styleScoped.getAttributeValue("lang");
+                    if ("scss".equalsIgnoreCase(lang)) { // lang="scss"
+                        css = scssToCss(css);
+                    }
                     TemplateScopedCssParser scopedCssParser = new TemplateScopedCssParser(messager);
                     Optional<ScopedCssResult> scopedCssResult = scopedCssParser.parse(
                             context.getComponentTypeElement(), css);
@@ -152,6 +167,20 @@ public class TemplateParser
             .forEach(outputDocument::remove);
 
         return scopedCss[0];
+    }
+
+    private String scssToCss(String scss) {
+        Compiler compiler = new Compiler();
+        Options options = new Options();
+        try {
+          StringContext context = new StringContext(scss, this.htmlTemplateUri, null/*outputPath*/, options);
+          Output output = compiler.compile(context);
+          logger.debug("SCSS compiled successfully: " + output.getCss());
+          return output.getCss();
+        } catch (CompilationException e) {
+            logger.error("SCSS compile failed: " + e.getErrorText());
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -446,13 +475,13 @@ public class TemplateParser
             expressionString);
     }
 
-    private boolean isAttributeBinding(Attribute attribute)
+    private static boolean isAttributeBinding(Attribute attribute)
     {
         String attributeName = attribute.getKey().toLowerCase();
         return attributeName.startsWith(":") || attributeName.startsWith("v-bind:");
     }
 
-    private boolean isEventBinding(Attribute attribute)
+    private static boolean isEventBinding(Attribute attribute)
     {
         String attributeName = attribute.getKey().toLowerCase();
         return attributeName.startsWith("@") || attributeName.startsWith("v-on:");
@@ -571,7 +600,7 @@ public class TemplateParser
     {
         if (expression instanceof NodeWithType)
         {
-            NodeWithType nodeWithType = ((NodeWithType) expression);
+            NodeWithType<?, ?> nodeWithType = ((NodeWithType<?, ?>) expression);
             nodeWithType.setType(getQualifiedName(nodeWithType.getType()));
         }
 
