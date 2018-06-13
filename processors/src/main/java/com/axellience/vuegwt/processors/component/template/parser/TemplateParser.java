@@ -175,7 +175,6 @@ public class TemplateParser
         try {
           StringContext context = new StringContext(scss, this.htmlTemplateUri, null/*outputPath*/, options);
           Output output = compiler.compile(context);
-          logger.debug("SCSS compiled successfully: " + output.getCss());
           return output.getCss();
         } catch (CompilationException e) {
             logger.error("SCSS compile failed: " + e.getErrorText());
