@@ -3,20 +3,19 @@ package com.axellience.vuegwtexamples.client.examples.common;
 /**
  * @author Adrien Baron
  */
-public class Todo
-{
-    private String text;
+public class Todo {
 
-    public Todo(String s) {
-        this.text = s;
-    }
+  private String text;
 
-    public String getText() {
-        return text;
-    }
+  public Todo(String s) {
+    this.text = s;
+  }
 
-    public void setText(String text)
-    {
-        this.text = text;
-    }
+  public String getText() {
+    return text;
+  }
+
+  public void setText(String text) {
+    this.text = text;
+  }
 }

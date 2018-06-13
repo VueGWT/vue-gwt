@@ -7,16 +7,16 @@ import elemental2.core.JsArray;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-public class VueGwtTestsApp implements EntryPoint
-{
-    public void onModuleLoad()
-    {
-        VueGWT.init();
-        Window.onVueGwtTestsReady.forEach(Function::call);
-    }
+public class VueGwtTestsApp implements EntryPoint {
 
-    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "window")
-    private static class Window {
-        static JsArray<Function> onVueGwtTestsReady;
-    }
+  public void onModuleLoad() {
+    VueGWT.init();
+    Window.onVueGwtTestsReady.forEach(Function::call);
+  }
+
+  @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "window")
+  private static class Window {
+
+    static JsArray<Function> onVueGwtTestsReady;
+  }
 }

@@ -17,7 +17,8 @@ class DataFieldsValidatorTest {
     Compilation compilation =
         javac()
             .withProcessors(new VueGwtProcessor())
-            .compile(JavaFileObjects.forResource("validators/ModelWithListNoAnnotationComponent.java"));
+            .compile(
+                JavaFileObjects.forResource("validators/ModelWithListNoAnnotationComponent.java"));
 
     assertThat(compilation).hadWarningContaining("Collection with missing @JsProperty");
   }
@@ -28,7 +29,8 @@ class DataFieldsValidatorTest {
     Compilation compilation =
         javac()
             .withProcessors(new VueGwtProcessor())
-            .compile(JavaFileObjects.forResource("validators/ModelWithSetNoAnnotationComponent.java"));
+            .compile(
+                JavaFileObjects.forResource("validators/ModelWithSetNoAnnotationComponent.java"));
 
     assertThat(compilation).hadWarningContaining("Collection with missing @JsProperty");
   }
@@ -39,7 +41,8 @@ class DataFieldsValidatorTest {
     Compilation compilation =
         javac()
             .withProcessors(new VueGwtProcessor())
-            .compile(JavaFileObjects.forResource("validators/ModelWithMapNoAnnotationComponent.java"));
+            .compile(
+                JavaFileObjects.forResource("validators/ModelWithMapNoAnnotationComponent.java"));
 
     assertThat(compilation).hadWarningContaining("Collection with missing @JsProperty");
   }
@@ -50,9 +53,11 @@ class DataFieldsValidatorTest {
     Compilation compilation =
         javac()
             .withProcessors(new VueGwtProcessor())
-            .compile(JavaFileObjects.forResource("validators/ModelWithLinkedListWithAnnotationComponent.java"));
+            .compile(JavaFileObjects
+                .forResource("validators/ModelWithLinkedListWithAnnotationComponent.java"));
 
-    assertThat(compilation).hadWarningContaining("Specific Collection type used as Property type, you should use either Map, Set or List");
+    assertThat(compilation).hadWarningContaining(
+        "Specific Collection type used as Property type, you should use either Map, Set or List");
   }
 
   @Test
@@ -72,18 +77,21 @@ class DataFieldsValidatorTest {
     Compilation compilation =
         javac()
             .withProcessors(new VueGwtProcessor())
-            .compile(JavaFileObjects.forResource("validators/ModelWithTypeParametersComponent.java"));
+            .compile(
+                JavaFileObjects.forResource("validators/ModelWithTypeParametersComponent.java"));
 
     assertThat(compilation).hadWarningContaining("Collection with missing @JsProperty");
     System.out.println(compilation.errors());
   }
+
   @Test
   @DisplayName("should not throw a warning when using @SuppressWarnings")
   void ignoreListWithNoAnnotation() {
     Compilation compilation =
         javac()
             .withProcessors(new VueGwtProcessor())
-            .compile(JavaFileObjects.forResource("validators/IgnoreModelWithListNoAnnotationComponent.java"));
+            .compile(JavaFileObjects
+                .forResource("validators/IgnoreModelWithListNoAnnotationComponent.java"));
 
     assertThat(compilation).hadWarningCount(1);
   }

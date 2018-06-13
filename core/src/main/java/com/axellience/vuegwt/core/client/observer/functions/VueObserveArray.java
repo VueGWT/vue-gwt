@@ -5,7 +5,7 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface VueObserveArray
-{
-    <T> void observeArray(JsArray<T> objects);
+public interface VueObserveArray {
+
+  <T> void observeArray(JsArray<T> objects);
 }

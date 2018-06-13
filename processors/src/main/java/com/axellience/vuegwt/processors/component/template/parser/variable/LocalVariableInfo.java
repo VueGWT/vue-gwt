@@ -2,12 +2,12 @@ package com.axellience.vuegwt.processors.component.template.parser.variable;
 
 /**
  * Information about a local variable (for example a v-for loop variable).
+ *
  * @author Adrien Baron
  */
-public class LocalVariableInfo extends VariableInfo
-{
-    public LocalVariableInfo(String typeQualifiedName, String localName)
-    {
-        super(typeQualifiedName, localName);
-    }
+public class LocalVariableInfo extends VariableInfo {
+
+  public LocalVariableInfo(String typeQualifiedName, String localName) {
+    super(typeQualifiedName, localName);
+  }
 }

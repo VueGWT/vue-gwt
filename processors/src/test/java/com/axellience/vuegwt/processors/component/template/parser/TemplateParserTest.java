@@ -10,15 +10,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class TemplateParserTest {
+
   @Test
   @DisplayName("should compile a template expression with linebreaks inside")
   void modelWithListNoAnnotation() {
     Compilation compilation =
         javac()
             .withProcessors(new VueGwtProcessor())
-            .compile(JavaFileObjects.forResource("templateparser/MustacheExpressionComponent.java"));
+            .compile(
+                JavaFileObjects.forResource("templateparser/MustacheExpressionComponent.java"));
 
-    assertThat(compilation).generatedSourceFile("templateparser.MustacheExpressionComponentExposedType")
-        .containsElementsIn(JavaFileObjects.forResource("templateparser/compileresult/MustacheExpressionComponentExposedType.java"));
+    assertThat(compilation)
+        .generatedSourceFile("templateparser.MustacheExpressionComponentExposedType")
+        .containsElementsIn(JavaFileObjects.forResource(
+            "templateparser/compileresult/MustacheExpressionComponentExposedType.java"));
   }
 }

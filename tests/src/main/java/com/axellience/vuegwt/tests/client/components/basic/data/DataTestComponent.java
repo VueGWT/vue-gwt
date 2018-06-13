@@ -2,7 +2,6 @@ package com.axellience.vuegwt.tests.client.components.basic.data;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
-
 import com.axellience.vuegwt.tests.client.common.SimpleObject;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;

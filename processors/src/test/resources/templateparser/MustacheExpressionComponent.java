@@ -7,6 +7,7 @@ import jsinterop.annotations.JsProperty;
 
 @Component
 public class MustacheExpressionComponent implements IsVueComponent {
+
   @JsProperty
   SimpleObject simpleObject;
 }

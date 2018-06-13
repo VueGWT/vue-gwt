@@ -3,8 +3,8 @@ import {
   createAndMountComponent,
   destroyComponent,
   getElement,
-  onGwtReady,
-  nextTick
+  nextTick,
+  onGwtReady
 } from '../../vue-gwt-tests-utils'
 
 describe('@Prop', () => {

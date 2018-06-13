@@ -6,9 +6,9 @@ import jsinterop.annotations.JsMethod;
 /**
  * @author Adrien Baron
  */
-public interface HasBeforeMount
-{
-    @HookMethod
-    @JsMethod
-    void beforeMount();
+public interface HasBeforeMount {
+
+  @HookMethod
+  @JsMethod
+  void beforeMount();
 }

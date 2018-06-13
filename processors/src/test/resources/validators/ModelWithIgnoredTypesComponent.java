@@ -7,6 +7,7 @@ import validators.models.ModelWithIgnoredTypes;
 
 @Component(hasTemplate = false)
 public class ModelWithIgnoredTypesComponent implements IsVueComponent {
+
   @JsProperty
   ModelWithIgnoredTypes modelWithIgnoredTypes;
 }

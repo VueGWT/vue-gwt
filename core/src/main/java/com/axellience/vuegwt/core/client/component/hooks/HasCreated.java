@@ -6,9 +6,9 @@ import jsinterop.annotations.JsMethod;
 /**
  * @author Adrien Baron
  */
-public interface HasCreated
-{
-    @HookMethod
-    @JsMethod
-    void created();
+public interface HasCreated {
+
+  @HookMethod
+  @JsMethod
+  void created();
 }

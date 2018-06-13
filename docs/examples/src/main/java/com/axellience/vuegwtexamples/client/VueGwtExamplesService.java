@@ -48,75 +48,72 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
 
 @JsType(namespace = JsPackage.GLOBAL)
-public class VueGwtExamplesService
-{
-    public static void initExamples()
-    {
-        if (DomGlobal.document.getElementById("fullJsComponent") != null)
-        {
-            VueJsConstructor<IsVueComponent> vueClass =
-                (VueJsConstructor<IsVueComponent>) ((JsPropertyMap) DomGlobal.window).get(
-                    "FullJsComponent");
-            IsVueComponent myComponent = vueClass.instantiate();
-            myComponent.vue().$mount("#fullJsComponent");
-        }
+public class VueGwtExamplesService {
 
-        ExampleInjector exampleInjector = DaggerExampleInjector.builder().build();
-
-        addExample("simpleLinkComponent", SimpleLinkComponent.class);
-        addExample("emitAnnotation", ParentEmitAnnotationComponent.class);
-        addExample("linkComponent", LinkComponent.class);
-        addExample("canHideComponent", CanHideComponent.class);
-        addExample("simpleTodoListComponent", SimpleTodoListComponent.class);
-        addExample("exclamationComponent", ExclamationComponent.class);
-        addExample("messageComponent", MessageComponent.class);
-        addExample("parentComponent", ParentComponent.class);
-        addExample("todoListComponent", TodoListComponent.class);
-        addExample("melisandreComponent", MelisandreComponent.class);
-        addExample("kittenComponent", KittenComponent.class);
-        addExample("reverseComponent", ReverseComponent.class);
-        addExample("vForWithIndexComponent", VForWithIndexComponent.class);
-        addExample("vForWithRangeComponent", VForWithRangeComponent.class);
-        addExample("vForOnObjectComponent", VForOnObjectComponent.class);
-        addExample("vForOnObjectWithKeyComponent", VForOnObjectWithKeyComponent.class);
-        addExample("vForOnObjectWithKeyAndIndexComponent", VForOnObjectWithKeyAndIndexComponent.class);
-        addExample("evenNumbersComponent", EvenNumbersComponent.class);
-        addExample("bindInlineStyleComponent", BindInlineStyleComponent.class);
-        addExample("buttonPlusOneComponent", ButtonPlusOneComponent.class);
-        addExample("greetComponent", GreetComponent.class);
-        addExample("hiWhatComponent", HiWhatComponent.class);
-        addExample("vOnWithDOMEventComponent", VOnWithDOMEventComponent.class);
-        addExample("todoTextComponent", TodoTextComponent.class);
-        addExample("todoTextComputedComponent", TodoTextComputedComponent.class);
-        addExample("sharedDataModelComponent1", SharedDataModelComponent.class);
-        addExample("sharedDataModelComponent2", SharedDataModelComponent.class);
-        addExample("sharedDataModelComponent3", SharedDataModelComponent.class);
-        addExample("counterWithEventComponent", CounterWithEventComponent.class);
-        addExample("treeComponent", TreeComponent.class);
-        addExample("recursiveComponent", RecursiveComponent.class);
-        addExample("focusDirectiveComponent", FocusDirectiveComponent.class);
-        addExample("renderAppComponent", RenderAppComponent.class);
-        addExample("extendJavaComponent", ChildComponent.class);
-        addExample("fullJsWithMethodsComponent", FullJsWithMethodsComponentFactory.get());
-        addExample("propDefaultValueComponent", ParentPropDefaultValueComponent.class);
-        addExample("gotQuotesComponent", exampleInjector.gotQuoteComponentFactory());
-        addExample("errorBoundary", ErrorBoundaryComponent.class);
-        addExample("extendJsComponent", ChildJavaComponent.class);
-        addExample("passValues", ParentPassValuesComponent.class);
+  public static void initExamples() {
+    if (DomGlobal.document.getElementById("fullJsComponent") != null) {
+      VueJsConstructor<IsVueComponent> vueClass =
+          (VueJsConstructor<IsVueComponent>) ((JsPropertyMap) DomGlobal.window).get(
+              "FullJsComponent");
+      IsVueComponent myComponent = vueClass.instantiate();
+      myComponent.vue().$mount("#fullJsComponent");
     }
 
-    private static <T extends IsVueComponent> void addExample(String exampleId, Class<T> exampleVueClass)
-    {
-        addExample(exampleId, VueGWT.getVueComponentFactory(exampleVueClass));
-    }
+    ExampleInjector exampleInjector = DaggerExampleInjector.builder().build();
 
-    private static <T extends IsVueComponent> void addExample(String exampleId, VueComponentFactory<T> exampleVueComponentFactory)
-    {
-        // If we find the containing div for this example, we instantiate it
-        if (DomGlobal.document.getElementById(exampleId) != null)
-        {
-            T exampleInstance = Vue.attach("#" + exampleId, exampleVueComponentFactory);
-            ((JsPropertyMap) DomGlobal.window).set(exampleId, exampleInstance);
-        }
+    addExample("simpleLinkComponent", SimpleLinkComponent.class);
+    addExample("emitAnnotation", ParentEmitAnnotationComponent.class);
+    addExample("linkComponent", LinkComponent.class);
+    addExample("canHideComponent", CanHideComponent.class);
+    addExample("simpleTodoListComponent", SimpleTodoListComponent.class);
+    addExample("exclamationComponent", ExclamationComponent.class);
+    addExample("messageComponent", MessageComponent.class);
+    addExample("parentComponent", ParentComponent.class);
+    addExample("todoListComponent", TodoListComponent.class);
+    addExample("melisandreComponent", MelisandreComponent.class);
+    addExample("kittenComponent", KittenComponent.class);
+    addExample("reverseComponent", ReverseComponent.class);
+    addExample("vForWithIndexComponent", VForWithIndexComponent.class);
+    addExample("vForWithRangeComponent", VForWithRangeComponent.class);
+    addExample("vForOnObjectComponent", VForOnObjectComponent.class);
+    addExample("vForOnObjectWithKeyComponent", VForOnObjectWithKeyComponent.class);
+    addExample("vForOnObjectWithKeyAndIndexComponent", VForOnObjectWithKeyAndIndexComponent.class);
+    addExample("evenNumbersComponent", EvenNumbersComponent.class);
+    addExample("bindInlineStyleComponent", BindInlineStyleComponent.class);
+    addExample("buttonPlusOneComponent", ButtonPlusOneComponent.class);
+    addExample("greetComponent", GreetComponent.class);
+    addExample("hiWhatComponent", HiWhatComponent.class);
+    addExample("vOnWithDOMEventComponent", VOnWithDOMEventComponent.class);
+    addExample("todoTextComponent", TodoTextComponent.class);
+    addExample("todoTextComputedComponent", TodoTextComputedComponent.class);
+    addExample("sharedDataModelComponent1", SharedDataModelComponent.class);
+    addExample("sharedDataModelComponent2", SharedDataModelComponent.class);
+    addExample("sharedDataModelComponent3", SharedDataModelComponent.class);
+    addExample("counterWithEventComponent", CounterWithEventComponent.class);
+    addExample("treeComponent", TreeComponent.class);
+    addExample("recursiveComponent", RecursiveComponent.class);
+    addExample("focusDirectiveComponent", FocusDirectiveComponent.class);
+    addExample("renderAppComponent", RenderAppComponent.class);
+    addExample("extendJavaComponent", ChildComponent.class);
+    addExample("fullJsWithMethodsComponent", FullJsWithMethodsComponentFactory.get());
+    addExample("propDefaultValueComponent", ParentPropDefaultValueComponent.class);
+    addExample("gotQuotesComponent", exampleInjector.gotQuoteComponentFactory());
+    addExample("errorBoundary", ErrorBoundaryComponent.class);
+    addExample("extendJsComponent", ChildJavaComponent.class);
+    addExample("passValues", ParentPassValuesComponent.class);
+  }
+
+  private static <T extends IsVueComponent> void addExample(String exampleId,
+      Class<T> exampleVueClass) {
+    addExample(exampleId, VueGWT.getVueComponentFactory(exampleVueClass));
+  }
+
+  private static <T extends IsVueComponent> void addExample(String exampleId,
+      VueComponentFactory<T> exampleVueComponentFactory) {
+    // If we find the containing div for this example, we instantiate it
+    if (DomGlobal.document.getElementById(exampleId) != null) {
+      T exampleInstance = Vue.attach("#" + exampleId, exampleVueComponentFactory);
+      ((JsPropertyMap) DomGlobal.window).set(exampleId, exampleInstance);
     }
+  }
 }

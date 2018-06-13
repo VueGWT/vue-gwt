@@ -7,6 +7,7 @@ import validators.models.ModelWithMapNoAnnotation;
 
 @Component(hasTemplate = false)
 public class ModelWithMapNoAnnotationComponent implements IsVueComponent {
+
   @JsProperty
   ModelWithMapNoAnnotation modelWithMapNoAnnotation;
 }

@@ -10,15 +10,14 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component(name = "recursive")
-public class RecursiveComponent implements IsVueComponent
-{
-    @Prop
-    @JsProperty
-    int counter;
+public class RecursiveComponent implements IsVueComponent {
 
-    @PropDefault("counter")
-    public int defaultCounter()
-    {
-        return 0;
-    }
+  @Prop
+  @JsProperty
+  int counter;
+
+  @PropDefault("counter")
+  public int defaultCounter() {
+    return 0;
+  }
 }

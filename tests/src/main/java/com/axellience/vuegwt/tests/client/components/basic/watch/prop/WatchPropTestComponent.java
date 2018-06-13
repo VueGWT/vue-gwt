@@ -10,6 +10,7 @@ import jsinterop.annotations.JsProperty;
 
 @Component
 public class WatchPropTestComponent implements IsVueComponent, HasCreated {
+
   @Prop
   @JsProperty
   SimpleObject watchedPropAnnotation;

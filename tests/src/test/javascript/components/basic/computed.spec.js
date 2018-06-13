@@ -2,8 +2,8 @@ import {expect} from 'chai'
 import {
   createAndMountComponent,
   destroyComponent,
-  onGwtReady,
-  nextTick
+  nextTick,
+  onGwtReady
 } from '../../vue-gwt-tests-utils'
 
 describe('@Computed', () => {

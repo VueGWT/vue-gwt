@@ -1,8 +1,8 @@
 package com.axellience.vuegwtexamples.client.examples.extendsjscomponent.parent;
 
-import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
@@ -12,12 +12,12 @@ import jsinterop.annotations.JsType;
  */
 @JsComponent("ParentJsComponent")
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
-public class ParentJsComponent implements IsVueComponent
-{
-    public String parentMessage;
+public class ParentJsComponent implements IsVueComponent {
 
-    public native int parentMultiplyBy2(int value);
+  public String parentMessage;
 
-    @Computed
-    public native String getParentComputed();
+  public native int parentMultiplyBy2(int value);
+
+  @Computed
+  public native String getParentComputed();
 }

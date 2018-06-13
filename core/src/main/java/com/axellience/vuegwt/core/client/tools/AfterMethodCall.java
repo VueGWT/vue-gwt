@@ -7,7 +7,7 @@ import jsinterop.annotations.JsFunction;
  */
 @FunctionalInterface
 @JsFunction
-public interface AfterMethodCall<T>
-{
-    void execute(T object, String methodName, Object result, Object[] arguments);
+public interface AfterMethodCall<T> {
+
+  void execute(T object, String methodName, Object result, Object[] arguments);
 }

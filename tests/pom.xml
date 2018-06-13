@@ -1,160 +1,160 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-		xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>com.axellience</groupId>
-		<artifactId>vue-gwt-parent</artifactId>
-		<version>1.0-beta-9-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>com.axellience</groupId>
+    <artifactId>vue-gwt-parent</artifactId>
+    <version>1.0-beta-9-SNAPSHOT</version>
+  </parent>
 
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>vue-gwt-tests</artifactId>
-	<packaging>gwt-app</packaging>
-	<name>Vue GWT Tests</name>
-	<description>Tests suite for Vue GWT</description>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>vue-gwt-tests</artifactId>
+  <packaging>gwt-app</packaging>
+  <name>Vue GWT Tests</name>
+  <description>Tests suite for Vue GWT</description>
 
-	<properties>
-		<frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
-		<node.version>v8.9.4</node.version>
-		<yarn.version>v1.4.1</yarn.version>
+  <properties>
+    <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
+    <node.version>v8.9.4</node.version>
+    <yarn.version>v1.4.1</yarn.version>
 
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
 
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-dev</artifactId>
-			<scope>provided</scope>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<!-- Annotation Processors -->
-		<dependency>
-			<groupId>com.google.auto.service</groupId>
-			<artifactId>auto-service</artifactId>
-		</dependency>
+    <!-- Annotation Processors -->
+    <dependency>
+      <groupId>com.google.auto.service</groupId>
+      <artifactId>auto-service</artifactId>
+    </dependency>
 
-		<!-- Vue GWT -->
-		<dependency>
-			<groupId>com.axellience</groupId>
-			<artifactId>vue-gwt</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.axellience</groupId>
-			<artifactId>vue-gwt-processors</artifactId>
-		</dependency>
-	</dependencies>
+    <!-- Vue GWT -->
+    <dependency>
+      <groupId>com.axellience</groupId>
+      <artifactId>vue-gwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.axellience</groupId>
+      <artifactId>vue-gwt-processors</artifactId>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>net.ltgt.gwt.maven</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<moduleName>com.axellience.vuegwt.tests.VueGwtTests</moduleName>
-					<compilerArgs>
-						<arg>-generateJsInteropExports</arg>
-					</compilerArgs>
-					<failOnError>true</failOnError>
-					<useCompilerArgsForTests>true</useCompilerArgsForTests>
-					<codeserverArgs>
-						<arg>-generateJsInteropExports</arg>
-					</codeserverArgs>
-					<devmodeArgs>
-						<arg>-generateJsInteropExports</arg>
-					</devmodeArgs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>compile-test-components</id>
-						<goals>
-							<goal>generate-module</goal>
-							<goal>compile</goal>
-						</goals>
-						<phase>test</phase>
-					</execution>
-				</executions>
-			</plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>net.ltgt.gwt.maven</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <moduleName>com.axellience.vuegwt.tests.VueGwtTests</moduleName>
+          <compilerArgs>
+            <arg>-generateJsInteropExports</arg>
+          </compilerArgs>
+          <failOnError>true</failOnError>
+          <useCompilerArgsForTests>true</useCompilerArgsForTests>
+          <codeserverArgs>
+            <arg>-generateJsInteropExports</arg>
+          </codeserverArgs>
+          <devmodeArgs>
+            <arg>-generateJsInteropExports</arg>
+          </devmodeArgs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>compile-test-components</id>
+            <goals>
+              <goal>generate-module</goal>
+              <goal>compile</goal>
+            </goals>
+            <phase>test</phase>
+          </execution>
+        </executions>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<compilerArgument>-parameters</compilerArgument>
-					<testCompilerArgument>-parameters</testCompilerArgument>
-					<useIncrementalCompilation>false</useIncrementalCompilation>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <compilerArgument>-parameters</compilerArgument>
+          <testCompilerArgument>-parameters</testCompilerArgument>
+          <useIncrementalCompilation>false</useIncrementalCompilation>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
 
-			<plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>${frontend-maven-plugin.version}</version>
-				<configuration>
-					<nodeVersion>${node.version}</nodeVersion>
-					<yarnVersion>${yarn.version}</yarnVersion>
-				</configuration>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend-maven-plugin.version}</version>
+        <configuration>
+          <nodeVersion>${node.version}</nodeVersion>
+          <yarnVersion>${yarn.version}</yarnVersion>
+        </configuration>
 
-				<executions>
-					<execution>
-						<id>install node and yarn</id>
-						<goals>
-							<goal>install-node-and-yarn</goal>
-						</goals>
-					</execution>
+        <executions>
+          <execution>
+            <id>install node and yarn</id>
+            <goals>
+              <goal>install-node-and-yarn</goal>
+            </goals>
+          </execution>
 
-					<execution>
-						<id>yarn install</id>
-						<goals>
-							<goal>yarn</goal>
-						</goals>
-					</execution>
+          <execution>
+            <id>yarn install</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+          </execution>
 
-					<execution>
-						<id>javascript tests</id>
-						<goals>
-							<goal>karma</goal>
-						</goals>
-						<configuration>
-							<karmaConfPath>src/test/javascript/karma.conf.ci.js</karmaConfPath>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+          <execution>
+            <id>javascript tests</id>
+            <goals>
+              <goal>karma</goal>
+            </goals>
+            <configuration>
+              <karmaConfPath>src/test/javascript/karma.conf.ci.js</karmaConfPath>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
-	<profiles>
-		<profile>
-			<id>vue-gwt-resources</id>
-			<activation>
-				<property>
-					<name>!m2e.version</name>
-				</property>
-			</activation>
-			<build>
-				<resources>
-					<resource>
-						<directory>src/main/java</directory>
-					</resource>
-				</resources>
-			</build>
-		</profile>
-	</profiles>
+  <profiles>
+    <profile>
+      <id>vue-gwt-resources</id>
+      <activation>
+        <property>
+          <name>!m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/java</directory>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+  </profiles>
 </project>
 

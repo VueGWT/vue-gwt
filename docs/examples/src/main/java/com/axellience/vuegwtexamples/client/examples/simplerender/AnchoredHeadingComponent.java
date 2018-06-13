@@ -16,34 +16,33 @@ import jsinterop.base.Js;
  * @author Adrien Baron
  */
 @Component
-public class AnchoredHeadingComponent implements IsVueComponent, HasRender
-{
-    private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
+public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
 
-    @JsProperty
-    @Prop(required = true)
-    int level;
+  private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
 
-    @Override
-    public VNode render(VNodeBuilder builder)
-    {
-        String text =
-            getChildrenTextContent(vue().$slots().get("default")).trim().replaceAll(" ", "-");
+  @JsProperty
+  @Prop(required = true)
+  int level;
 
-        String headingId = camelCasePattern.replace(text, "$1-$2").toLowerCase();
+  @Override
+  public VNode render(VNodeBuilder builder) {
+    String text =
+        getChildrenTextContent(vue().$slots().get("default")).trim().replaceAll(" ", "-");
 
-        return builder.el("h" + this.level,
-            builder.el("a",
-                VNodeData.get().attr("name", headingId).attr("href", "#" + headingId),
-                vue().$slots().get("default")));
-    }
+    String headingId = camelCasePattern.replace(text, "$1-$2").toLowerCase();
 
-    private String getChildrenTextContent(JsArray<VNode> children)
-    {
-        return ((JsArray<String>) Js.cast(children.map((child, index, array) -> {
-            if (child.getChildren() != null && child.getChildren().length > 0)
-                return getChildrenTextContent(child.getChildren());
-            return child.getText();
-        }))).join("");
-    }
+    return builder.el("h" + this.level,
+        builder.el("a",
+            VNodeData.get().attr("name", headingId).attr("href", "#" + headingId),
+            vue().$slots().get("default")));
+  }
+
+  private String getChildrenTextContent(JsArray<VNode> children) {
+    return ((JsArray<String>) Js.cast(children.map((child, index, array) -> {
+      if (child.getChildren() != null && child.getChildren().length > 0) {
+        return getChildrenTextContent(child.getChildren());
+      }
+      return child.getText();
+    }))).join("");
+  }
 }

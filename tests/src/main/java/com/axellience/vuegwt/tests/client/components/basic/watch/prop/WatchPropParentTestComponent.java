@@ -8,6 +8,7 @@ import jsinterop.annotations.JsProperty;
 
 @Component(components = WatchPropTestComponent.class)
 public class WatchPropParentTestComponent implements IsVueComponent {
+
   @JsProperty
   SimpleObject watchedPropAnnotation = null;
 

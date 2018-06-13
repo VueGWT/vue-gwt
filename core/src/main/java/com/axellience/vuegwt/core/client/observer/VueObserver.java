@@ -11,26 +11,28 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class VueObserver
-{
-    @JsProperty
-    private Dep dep;
+public class VueObserver {
 
-    public native <T> void observeArray(JsArray<T> array);
-    public native void observeArray(Object[] array);
+  @JsProperty
+  private Dep dep;
 
-    @JsOverlay
-    public final void observe(Object toObserve) {
-        observeArray(new JsArray<>(toObserve));
-    }
+  public native <T> void observeArray(JsArray<T> array);
 
-    @JsOverlay
-    public final void notifyDep() {
-        this.dep.notifySelf();
-    }
+  public native void observeArray(Object[] array);
 
-    private class Dep {
-        @JsMethod(name = "notify")
-        public native void notifySelf();
-    }
+  @JsOverlay
+  public final void observe(Object toObserve) {
+    observeArray(new JsArray<>(toObserve));
+  }
+
+  @JsOverlay
+  public final void notifyDep() {
+    this.dep.notifySelf();
+  }
+
+  private class Dep {
+
+    @JsMethod(name = "notify")
+    public native void notifySelf();
+  }
 }

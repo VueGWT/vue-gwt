@@ -364,7 +364,8 @@ describe('Watch', () => {
               expect(component.newValueAnnotationDeep).to.be.not.null;
               expect(component.newValueAnnotationDeep).to.equal('value');
 
-              parentComponent.watchedPropDeepAnnotation.setStringProperty('newValue');
+              parentComponent.watchedPropDeepAnnotation.setStringProperty(
+                  'newValue');
               return nextTick();
             })
             .then(() => {
@@ -430,7 +431,8 @@ describe('Watch', () => {
               expect(component.newValue$WatchStringProperty).to.be.not.null;
               expect(component.newValue$WatchStringProperty).to.equal('value');
 
-              parentComponent.watchedProp$WatchString.setStringProperty('newValue');
+              parentComponent.watchedProp$WatchString.setStringProperty(
+                  'newValue');
               return nextTick();
             })
             .then(() => {

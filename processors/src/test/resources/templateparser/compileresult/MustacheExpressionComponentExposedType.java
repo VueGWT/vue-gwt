@@ -9,6 +9,7 @@ package templateparser;
     name = "templateparser_MustacheExpressionComponent"
 )
 public class MustacheExpressionComponentExposedType extends MustacheExpressionComponent {
+
   @JsMethod
   @SuppressWarnings("unusable-by-js")
   public String exp$0() {

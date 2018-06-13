@@ -1,9 +1,10 @@
 package validators.models;
 
-import jsinterop.annotations.JsProperty;
 import java.util.List;
+import jsinterop.annotations.JsProperty;
 
 public class ModelWithTypeParameters {
+
   @JsProperty
   List<ModelWithListNoAnnotation> modelWithListNoAnnotationList;
 }

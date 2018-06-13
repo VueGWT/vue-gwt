@@ -2,38 +2,33 @@ package com.axellience.vuegwt.processors.component.template.parser.context.local
 
 import com.squareup.javapoet.TypeName;
 
-public class LocalComponentProp
-{
-    private String   propName;
-    private String   attributeName;
-    private TypeName type;
-    boolean          isRequired;
+public class LocalComponentProp {
 
-    LocalComponentProp(String propName, String attributeName, TypeName type, boolean isRequired)
-    {
-        this.propName = propName;
-        this.attributeName = attributeName;
-        this.type = type;
-        this.isRequired = isRequired;
-    }
+  private String propName;
+  private String attributeName;
+  private TypeName type;
+  boolean isRequired;
 
-    public String getPropName()
-    {
-        return propName;
-    }
+  LocalComponentProp(String propName, String attributeName, TypeName type, boolean isRequired) {
+    this.propName = propName;
+    this.attributeName = attributeName;
+    this.type = type;
+    this.isRequired = isRequired;
+  }
 
-    public String getAttributeName()
-    {
-        return attributeName;
-    }
+  public String getPropName() {
+    return propName;
+  }
 
-    public TypeName getType()
-    {
-        return type;
-    }
+  public String getAttributeName() {
+    return attributeName;
+  }
 
-    public boolean isRequired()
-    {
-        return isRequired;
-    }
+  public TypeName getType() {
+    return type;
+  }
+
+  public boolean isRequired() {
+    return isRequired;
+  }
 }

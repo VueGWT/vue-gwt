@@ -4,7 +4,7 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface VueWalk
-{
-    void walk(Object toMakeReactive);
+public interface VueWalk {
+
+  void walk(Object toMakeReactive);
 }

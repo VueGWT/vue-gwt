@@ -9,13 +9,13 @@ import jsinterop.annotations.JsProperty;
  * @author Adrien Baron
  */
 @Component
-public class MelisandreComponent implements IsVueComponent
-{
-    @JsProperty boolean isRed = true;
+public class MelisandreComponent implements IsVueComponent {
 
-    @Computed
-    public MelisandreComponentStyle getMyStyle()
-    {
-        return MelisandreComponentClientBundle.INSTANCE.melisandreComponentStyle();
-    }
+  @JsProperty
+  boolean isRed = true;
+
+  @Computed
+  public MelisandreComponentStyle getMyStyle() {
+    return MelisandreComponentClientBundle.INSTANCE.melisandreComponentStyle();
+  }
 }

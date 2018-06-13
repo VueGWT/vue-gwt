@@ -1,6 +1,6 @@
 window.FullJsComponent = Vue.extend({
-  render: function() {
-    with(this) {
+  render: function () {
+    with (this) {
       return _c('div', [_v("I Come In Peace From the JS World.")])
     }
   }
@@ -17,8 +17,8 @@ window.FullJsWithMethodsComponent = Vue.extend({
       return value * 2;
     }
   },
-  render: function() {
-    with(this) {
+  render: function () {
+    with (this) {
       return _c('div', [_v("My Value: " + _s(value) + ". My Value x2: " +
           _s(multiplyBy2(value)))])
     }
@@ -55,8 +55,8 @@ Vue.component("pass-values-js", {
     "wrappedFloat",
     "wrappedLong"
   ],
-  render: function() {
-    with(this) {
+  render: function () {
+    with (this) {
       return _c('ul', [_c('li', [_v("int: " + _s(myInt + 5) +
           " | Integer: " + _s(wrappedInteger + 5))]), _c('li', [
         _v("boolean: " + _s(!myBool) + " | Boolean: " +

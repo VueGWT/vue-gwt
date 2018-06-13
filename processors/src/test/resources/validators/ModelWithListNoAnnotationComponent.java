@@ -7,6 +7,7 @@ import validators.models.ModelWithListNoAnnotation;
 
 @Component(hasTemplate = false)
 public class ModelWithListNoAnnotationComponent implements IsVueComponent {
+
   @JsProperty
   ModelWithListNoAnnotation modelWithListNoAnnotation;
 }

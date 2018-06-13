@@ -7,6 +7,7 @@ import validators.models.ModelWithLinkedListWithAnnotation;
 
 @Component(hasTemplate = false)
 public class ModelWithLinkedListWithAnnotationComponent implements IsVueComponent {
+
   @JsProperty
   ModelWithLinkedListWithAnnotation modelWithLinkedListWithAnnotation;
 }

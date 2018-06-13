@@ -6,8 +6,8 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class VueObserverPrototype
-{
-    public VueObserveArray observeArray;
-    public VueWalk walk;
+public class VueObserverPrototype {
+
+  public VueObserveArray observeArray;
+  public VueWalk walk;
 }

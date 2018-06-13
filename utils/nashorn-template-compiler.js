@@ -1,10 +1,10 @@
-(function() {
-	'use strict';
-	global.process = {
-		env: {
-			NODE_ENV: "production"
-		}
-	};
+(function () {
+  'use strict';
+  global.process = {
+    env: {
+      NODE_ENV: "production"
+    }
+  };
 
-	global.compile = require('vue-template-compiler').compile;
+  global.compile = require('vue-template-compiler').compile;
 })();

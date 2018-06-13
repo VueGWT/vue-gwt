@@ -6,14 +6,15 @@ import jsinterop.annotations.JsType;
 
 /**
  * Definition of a property.
+ *
  * @author Adrien Baron
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class PropOptions
-{
-    public Object type;
-    public boolean required;
-    public Object validator;
-    @JsProperty(name = "default")
-    public Object defaultValue;
+public class PropOptions {
+
+  public Object type;
+  public boolean required;
+  public Object validator;
+  @JsProperty(name = "default")
+  public Object defaultValue;
 }

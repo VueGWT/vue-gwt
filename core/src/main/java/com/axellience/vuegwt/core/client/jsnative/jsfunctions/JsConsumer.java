@@ -7,7 +7,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface JsConsumer<T>
-{
-    void accept(T accept);
+public interface JsConsumer<T> {
+
+  void accept(T accept);
 }

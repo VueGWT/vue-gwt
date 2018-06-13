@@ -6,8 +6,9 @@ export default ({
 }) => {
   const oldMounted = options.mounted;
   options.mounted = function () {
-    if (oldMounted)
+    if (oldMounted) {
       oldMounted();
+    }
 
     const gwtScript = document.createElement("script");
     gwtScript.src = "/vue-gwt/resources/scripts/VueGwtExamples.nocache.js";
@@ -15,8 +16,9 @@ export default ({
   };
 
   router.afterHooks.push(function () {
-    if (typeof window === "undefined")
+    if (typeof window === "undefined") {
       return;
+    }
 
     if (window.VueGwtExamplesService) {
       VueGwtExamplesService.initExamples();

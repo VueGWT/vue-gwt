@@ -6,9 +6,9 @@ import jsinterop.annotations.JsMethod;
 /**
  * @author Adrien Baron
  */
-public interface HasBeforeCreate
-{
-    @HookMethod
-    @JsMethod
-    void beforeCreate();
+public interface HasBeforeCreate {
+
+  @HookMethod
+  @JsMethod
+  void beforeCreate();
 }
