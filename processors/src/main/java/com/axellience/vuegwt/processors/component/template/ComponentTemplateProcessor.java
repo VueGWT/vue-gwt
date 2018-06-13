@@ -39,7 +39,6 @@ import com.axellience.vuegwt.processors.component.template.parser.context.localc
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
-import com.github.javaparser.utils.Pair;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -67,7 +66,7 @@ public class ComponentTemplateProcessor
         Builder componentExposedTypeBuilder)
     {
         ClassName componentTypeName = ClassName.get(componentTypeElement);
-        Optional<Pair<String, URI>> optionalTemplateContent =
+        Optional<TemplateFileResource> optionalTemplateContent =
             getTemplateContent(componentTypeName, componentTypeElement);
 
         if (!optionalTemplateContent.isPresent())
@@ -86,10 +85,10 @@ public class ComponentTemplateProcessor
 
         // Parse the template
         TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
-            optionalTemplateContent.get().a,
+            optionalTemplateContent.get().content,
             templateParserContext,
             messager,
-            optionalTemplateContent.get().b);
+            optionalTemplateContent.get().uri);
 
         registerScopedCss(componentExposedTypeBuilder, templateParserResult);
 
@@ -227,11 +226,21 @@ public class ComponentTemplateProcessor
         });
     }
 
-    private Optional<Pair<String, URI>> getTemplateContent(ClassName componentTypeName,
+    private static class TemplateFileResource {
+        public final String content;
+        public final URI uri;
+
+        public TemplateFileResource(String content, URI uri) {
+            this.content = content;
+            this.uri = uri;
+        }
+    }
+
+    private Optional<TemplateFileResource> getTemplateContent(ClassName componentTypeName,
         TypeElement componentTypeElement)
     {
         String path = slashify(componentTypeName.reflectionName()) + ".html";
-        Optional<Pair<String, URI>> result = getTemplateContentAtLocation(path, StandardLocation.CLASS_OUTPUT);
+        Optional<TemplateFileResource> result = getTemplateContentAtLocation(path, StandardLocation.CLASS_OUTPUT);
         if (result.isPresent())
             return result;
 
@@ -247,7 +256,7 @@ public class ComponentTemplateProcessor
         return Optional.empty();
     }
 
-    private Optional<Pair<String, URI>> getTemplateContentAtLocation(String path, StandardLocation location)
+    private Optional<TemplateFileResource> getTemplateContentAtLocation(String path, StandardLocation location)
     {
         FileObject resource;
         try
@@ -262,7 +271,7 @@ public class ComponentTemplateProcessor
         // Get template content from HTML file
         try
         {
-            return Optional.of(new Pair<String, URI>(resource.getCharContent(true).toString(), resource.toUri()));
+            return Optional.of(new TemplateFileResource(resource.getCharContent(true).toString(), resource.toUri()));
         }
         catch (IOException e)
         {
