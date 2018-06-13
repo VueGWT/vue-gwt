@@ -1,7 +1,10 @@
 import {expect} from 'chai'
 import {
-  createAndMountComponent, destroyComponent, getElement, onGwtReady,
-  onNextTick
+  createAndMountComponent,
+  destroyComponent,
+  getElement,
+  nextTick,
+  onGwtReady
 } from '../../vue-gwt-tests-utils'
 
 describe('Scoped styling', () => {
@@ -18,22 +21,25 @@ describe('Scoped styling', () => {
 
   it('check non-boiling label has proper styling', () => {
     component.celsius = '22';
-    return onNextTick(() => {
+    return nextTick().then(() => {
       const element = getElement(component, '.relax');
       expect(element).to.exist;
-	  const c = window.getComputedStyle(element, null).getPropertyValue('color');
+      const c = window.getComputedStyle(element, null).getPropertyValue(
+          'color');
       expect(c).to.equal('rgb(0, 128, 0)'); // green
-      const b = window.getComputedStyle(element, null).getPropertyValue('border-radius');
-	  expect(b).to.equal('8px'); // 0.5em
+      const b = window.getComputedStyle(element, null).getPropertyValue(
+          'border-radius');
+      expect(b).to.equal('8px'); // 0.5em
     });
   });
 
   it('check boiling label has proper styling', () => {
     component.celsius = '101';
-    return onNextTick(() => {
-      const element = getElement(component, '.attention');	  
-	  expect(element).to.exist;
-	  const c = window.getComputedStyle(element, null).getPropertyValue('color');
+    return nextTick().then(() => {
+      const element = getElement(component, '.attention');
+      expect(element).to.exist;
+      const c = window.getComputedStyle(element, null).getPropertyValue(
+          'color');
       expect(c).to.equal('rgb(255, 0, 0)'); // red
     });
   });
