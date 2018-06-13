@@ -59,7 +59,8 @@
     <jericho.version>3.4</jericho.version>
     <javaparser.version>3.0.1</javaparser.version>
     <auto-service.version>1.0-rc4</auto-service.version>
-    <ph-css.version>6.1.0</ph-css.version>
+    <ph-css.version>6.1.1</ph-css.version>
+    <jsass.version>5.7.3</jsass.version>
 
     <junit.version>5.1.0</junit.version>
     <junit-platform.version>1.1.0</junit-platform.version>
@@ -152,6 +153,11 @@
         <groupId>com.helger</groupId>
         <artifactId>ph-css</artifactId>
         <version>${ph-css.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.bit3</groupId>
+        <artifactId>jsass</artifactId>
+        <version>${jsass.version}</version>
       </dependency>
 
       <!-- Tests -->

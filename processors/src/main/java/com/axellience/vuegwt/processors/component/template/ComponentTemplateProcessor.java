@@ -6,6 +6,26 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componen
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
+import javax.tools.FileObject;
+import javax.tools.StandardLocation;
+
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
@@ -24,23 +44,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic.Kind;
-import javax.tools.FileObject;
-import javax.tools.StandardLocation;
 
 /**
  * Process the HTML template for a given {@link IsVueComponent}.
@@ -63,7 +66,7 @@ public class ComponentTemplateProcessor
         Builder componentExposedTypeBuilder)
     {
         ClassName componentTypeName = ClassName.get(componentTypeElement);
-        Optional<String> optionalTemplateContent =
+        Optional<TemplateFileResource> optionalTemplateContent =
             getTemplateContent(componentTypeName, componentTypeElement);
 
         if (!optionalTemplateContent.isPresent())
@@ -82,9 +85,10 @@ public class ComponentTemplateProcessor
 
         // Parse the template
         TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
-            optionalTemplateContent.get(),
+            optionalTemplateContent.get().content,
             templateParserContext,
-            messager);
+            messager,
+            optionalTemplateContent.get().uri);
 
         registerScopedCss(componentExposedTypeBuilder, templateParserResult);
 
@@ -222,11 +226,21 @@ public class ComponentTemplateProcessor
         });
     }
 
-    private Optional<String> getTemplateContent(ClassName componentTypeName,
+    private static class TemplateFileResource {
+        public final String content;
+        public final URI uri;
+
+        public TemplateFileResource(String content, URI uri) {
+            this.content = content;
+            this.uri = uri;
+        }
+    }
+
+    private Optional<TemplateFileResource> getTemplateContent(ClassName componentTypeName,
         TypeElement componentTypeElement)
     {
         String path = slashify(componentTypeName.reflectionName()) + ".html";
-        Optional<String> result = getTemplateContentAtLocation(path, StandardLocation.CLASS_OUTPUT);
+        Optional<TemplateFileResource> result = getTemplateContentAtLocation(path, StandardLocation.CLASS_OUTPUT);
         if (result.isPresent())
             return result;
 
@@ -242,7 +256,7 @@ public class ComponentTemplateProcessor
         return Optional.empty();
     }
 
-    private Optional<String> getTemplateContentAtLocation(String path, StandardLocation location)
+    private Optional<TemplateFileResource> getTemplateContentAtLocation(String path, StandardLocation location)
     {
         FileObject resource;
         try
@@ -257,7 +271,7 @@ public class ComponentTemplateProcessor
         // Get template content from HTML file
         try
         {
-            return Optional.of(resource.getCharContent(true).toString());
+            return Optional.of(new TemplateFileResource(resource.getCharContent(true).toString(), resource.toUri()));
         }
         catch (IOException e)
         {
@@ -265,7 +279,7 @@ public class ComponentTemplateProcessor
         }
     }
 
-    private void registerScopedCss(Builder componentExposedTypeBuilder,
+    private static void registerScopedCss(Builder componentExposedTypeBuilder,
         TemplateParserResult templateParserResult)
     {
         String scopedCss = templateParserResult.getScopedCss();

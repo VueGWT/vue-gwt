@@ -44,6 +44,10 @@
       <groupId>com.helger</groupId>
       <artifactId>ph-css</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.bit3</groupId>
+      <artifactId>jsass</artifactId>
+    </dependency>
 
     <!-- Tests -->
     <dependency>
