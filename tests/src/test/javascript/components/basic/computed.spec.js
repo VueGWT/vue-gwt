@@ -1,7 +1,9 @@
 import {expect} from 'chai'
 import {
-  createAndMountComponent, destroyComponent, onGwtReady,
-  onNextTick
+  createAndMountComponent,
+  destroyComponent,
+  onGwtReady,
+  nextTick
 } from '../../vue-gwt-tests-utils'
 
 describe('@Computed', () => {
@@ -24,7 +26,7 @@ describe('@Computed', () => {
   it('should change its value when a depending value changes', () => {
     component.data = 'test value';
 
-    return onNextTick(() => {
+    return nextTick().then(() => {
       expect(component.$el.innerText).to.equal('#test value#');
       expect(component.$el.getAttribute('data-value')).to.equal('#test value#')
     });

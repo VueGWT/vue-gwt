@@ -4,7 +4,7 @@ import spies from 'chai-spies'
 
 import {
   createAndMountComponent, destroyComponent, onGwtReady,
-  onNextTick
+  nextTick
 } from '../../vue-gwt-tests-utils'
 
 describe('@PropValidator', () => {
@@ -25,7 +25,7 @@ describe('@PropValidator', () => {
 
   it('should not fire an error if the value is correct', () => {
     component.validatedPropParent = 6;
-    return onNextTick(() => {
+    return nextTick().then(() => {
       expect(console.error).to.not.have.been.called();
     });
   });
@@ -33,7 +33,7 @@ describe('@PropValidator', () => {
   it('should fire an error if the value is incorrect in dev mode', () => {
     if (Vue.config.productionTip === true) {
       component.validatedPropParent = 106;
-      return onNextTick(() => {
+      return nextTick().then(() => {
         expect(console.error).to.have.been.called.once;
       });
     }
@@ -42,7 +42,7 @@ describe('@PropValidator', () => {
   it('should not fire an error if the value is incorrect in production mode', () => {
     if (Vue.config.productionTip === false) {
       component.validatedPropParent = 106;
-      return onNextTick(() => {
+      return nextTick().then(() => {
         expect(console.error).to.not.have.been.called();
       });
     }

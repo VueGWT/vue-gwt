@@ -1,7 +1,10 @@
 import {expect} from 'chai'
 import {
-  createAndMountComponent, destroyComponent, getElement, onGwtReady,
-  onNextTick
+  createAndMountComponent,
+  destroyComponent,
+  getElement,
+  onGwtReady,
+  nextTick
 } from '../../vue-gwt-tests-utils'
 
 describe('v-show', () => {
@@ -25,7 +28,7 @@ describe('v-show', () => {
   it('should show its element if its condition is true', () => {
     const showElement = getElement(component, '#show-element');
     component.showCondition = true;
-    return onNextTick(() => {
+    return nextTick().then(() => {
       expect(showElement.style.display).to.be.empty;
     });
   });
