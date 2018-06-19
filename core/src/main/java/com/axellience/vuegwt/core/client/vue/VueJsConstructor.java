@@ -6,10 +6,10 @@ import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
-import elemental2.core.JsObject;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 
@@ -51,7 +51,7 @@ public interface VueJsConstructor<T extends IsVueComponent> {
     VueComponentOptions<T> options = getOptions();
     JsPropertyMap<VueComponentOptions> components = options.getComponents();
     if (components == null) {
-      components = (JsPropertyMap<VueComponentOptions>) new JsObject();
+      components = Js.cast(JsPropertyMap.of());
       options.setComponents(components);
     }
     return components;
@@ -62,7 +62,7 @@ public interface VueJsConstructor<T extends IsVueComponent> {
     VueComponentOptions<T> options = getOptions();
     JsPropertyMap<VueDirectiveOptions> directives = options.getDirectives();
     if (directives == null) {
-      directives = (JsPropertyMap<VueDirectiveOptions>) new JsObject();
+      directives = Js.cast(JsPropertyMap.of());
       options.setDirectives(directives);
     }
     return directives;

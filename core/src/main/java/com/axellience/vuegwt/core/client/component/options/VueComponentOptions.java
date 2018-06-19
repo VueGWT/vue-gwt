@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.core.client.component.options;
 
 import static elemental2.core.Global.JSON;
-
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedOptions;
@@ -10,7 +9,6 @@ import com.axellience.vuegwt.core.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
-import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,9 +38,9 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   private Map<String, Provider<?>> dependenciesProvider;
 
   /**
-   * Set the JS Prototype of the ExportedType Java Class represented by this {@link
-   * VueComponentOptions}. This prototype will be used to retrieve the java methods of our {@link
-   * IsVueComponent}.
+   * Set the JS Prototype of the ExportedType Java Class represented by this
+   * {@link VueComponentOptions}. This prototype will be used to retrieve the java methods of our
+   * {@link IsVueComponent}.
    *
    * @param prototype The JS prototype of the ExportedType Java Class
    */
@@ -95,7 +93,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
 
     if (useFactory) {
       String dataFieldsJSON = JSON.stringify(dataFields);
-      this.setData((DataFactory) () -> (JsPropertyMap) JSON.parse(dataFieldsJSON));
+      this.setData((DataFactory) () -> JSON.parse(dataFieldsJSON));
     } else {
       this.setData((DataFactory) () -> dataFields);
     }
@@ -107,7 +105,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    *
    * @param javaMethodName Name of the method in the {@link IsVueComponent}
    * @param computedPropertyName Name of the computed property in the Template and the
-   * ComponentOptions
+   *        ComponentOptions
    * @param kind Kind of the computed method (getter or setter)
    */
   @JsOverlay
@@ -183,7 +181,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    * @param propName The name of the property
    * @param required Is the property required (mandatory)
    * @param exposedTypeName JS name of the type of this property, if not null we will ask Vue to
-   * type check based on it
+   *        type check based on it
    */
   @JsOverlay
   public final void addJavaProp(String propName, boolean required, String exposedTypeName) {
@@ -266,11 +264,13 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
     return dependenciesProvider;
   }
 
-  /* ---------------------------------------------
-
-            Instance Properties and Methods
-
-    ---------------------------------------------*/
+  /*
+   * ---------------------------------------------
+   *
+   * Instance Properties and Methods
+   *
+   * ---------------------------------------------
+   */
   @JsProperty
   private Object data;
   @JsProperty
@@ -337,7 +337,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
       this.props = JsPropertyMap.of();
     }
 
-    ((JsPropertyMap) this.props).set(name, propOptions);
+    this.props.set(name, propOptions);
     return this;
   }
 
@@ -366,7 +366,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   @JsOverlay
   public final VueComponentOptions addComputedOptions(String name, ComputedOptions computed) {
     if (this.computed == null) {
-      this.computed = (JsPropertyMap<ComputedOptions>) new JsObject();
+      this.computed = Js.cast(JsPropertyMap.of());
     }
 
     this.computed.set(name, computed);
@@ -376,7 +376,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   @JsOverlay
   public final ComputedOptions getComputedOptions(String name) {
     if (this.computed == null) {
-      this.computed = (JsPropertyMap<ComputedOptions>) new JsObject();
+      this.computed = Js.cast(JsPropertyMap.of());
     }
 
     return this.computed.get(name);
@@ -396,7 +396,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   @JsOverlay
   public final VueComponentOptions addMethod(String name, Function method) {
     if (this.methods == null) {
-      this.methods = (JsPropertyMap<Function>) new JsObject();
+      this.methods = Js.cast(JsPropertyMap.of());
     }
 
     this.methods.set(name, method);
