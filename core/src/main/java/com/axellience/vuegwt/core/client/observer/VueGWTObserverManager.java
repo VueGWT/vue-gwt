@@ -2,17 +2,13 @@ package com.axellience.vuegwt.core.client.observer;
 
 import com.axellience.vuegwt.core.client.observer.functions.VueObserveArray;
 import com.axellience.vuegwt.core.client.observer.functions.VueWalk;
-import com.axellience.vuegwt.core.client.tools.VueGWTTools;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
-import elemental2.dom.DomGlobal;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
-import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -33,8 +29,9 @@ public class VueGWTObserverManager {
 
   public static VueGWTObserverManager get() {
     if (INSTANCE == null) {
-      INSTANCE = new VueGWTObserverManager();
-      INSTANCE.captureVueObserver();
+      VueGWTObserverManager instance = new VueGWTObserverManager();
+      instance.captureVueObserver();
+      INSTANCE = instance;
     }
 
     return INSTANCE;
@@ -153,8 +150,8 @@ public class VueGWTObserverManager {
    * Capture the Vue Observer by creating a Vue Instance on the fly
    */
   private void captureVueObserver() {
-    JsConstructorFn vueConstructor = ((JsPropertyMap<JsConstructorFn>) DomGlobal.window).get("Vue");
-    vueConstructor.construct(new CaptureComponentDefinition());
+    VueJsObserverGetter getter = new VueJsObserverGetter();
+    customizeVueObserverPrototype(getter.getVueJsObserverPrototype());
   }
 
   /**
@@ -199,14 +196,5 @@ public class VueGWTObserverManager {
   private boolean isDefaultValue(Object value) {
     return Js.isTripleEqual(value, null)
         || (!"function".equals(Js.typeof(value)) && !"object".equals(Js.typeof(value)));
-  }
-
-  private static class CaptureComponentDefinition {
-
-    @JsMethod
-    public void created() {
-      VueGWTObserverManager.get()
-          .customizeVueObserverPrototype(VueGWTTools.getDeepValue(this, "$data.__ob__.__proto__"));
-    }
   }
 }
