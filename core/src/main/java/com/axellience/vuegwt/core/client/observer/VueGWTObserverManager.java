@@ -33,8 +33,9 @@ public class VueGWTObserverManager {
 
   public static VueGWTObserverManager get() {
     if (INSTANCE == null) {
-      INSTANCE = new VueGWTObserverManager();
-      INSTANCE.captureVueObserver();
+      VueGWTObserverManager m = new VueGWTObserverManager();
+      m.captureVueObserver();
+      INSTANCE = m;
     }
 
     return INSTANCE;
@@ -45,7 +46,7 @@ public class VueGWTObserverManager {
    * or other object that might not be observable by the Vue observation mechanism.
    *
    * @param observer A {@link VueGWTObserver} that will be called for every object to potentially
-   * observe.
+   *        observe.
    */
   public void registerVueGWTObserver(VueGWTObserver observer) {
     observers.add(0, observer);
@@ -55,8 +56,8 @@ public class VueGWTObserverManager {
    * Will be called from JS by the Vue observer. This is called before Vue "walk" the properties of
    * the Object to make them reactive. If your object has it's own observation mechanism, or you
    * don't want Vue to make your properties reactive (for some reason), you should return true in
-   * your {@link VueGWTObserver}. You are then responsible to call notifyDep on your object {@link
-   * VueObserver} and propagate observation to the object property values.
+   * your {@link VueGWTObserver}. You are then responsible to call notifyDep on your object
+   * {@link VueObserver} and propagate observation to the object property values.
    *
    * @param object The object to potentially observe
    * @return true if we are observing and Vue shouldn't observe, false otherwise
@@ -96,8 +97,9 @@ public class VueGWTObserverManager {
   }
 
   /**
-   * Observe the given Object using Vue.js observer. Will call {@link
-   * VueGWTObserverManager#observeJavaObject} to check if we have to make properties reactive.
+   * Observe the given Object using Vue.js observer. Will call
+   * {@link VueGWTObserverManager#observeJavaObject} to check if we have to make properties
+   * reactive.
    *
    * @param object The object to observe
    */
@@ -118,10 +120,10 @@ public class VueGWTObserverManager {
   }
 
   /**
-   * Make all properties of the object reactive. It won't call {@link
-   * VueGWTObserverManager#observeJavaObject} and will call Vue.js native walk instead. You should
-   * only use this method if you are not propagating Vue.js observation but still want to make some
-   * objects reactive.
+   * Make all properties of the object reactive. It won't call
+   * {@link VueGWTObserverManager#observeJavaObject} and will call Vue.js native walk instead. You
+   * should only use this method if you are not propagating Vue.js observation but still want to
+   * make some objects reactive.
    *
    * @param object The object to make reactive
    */
@@ -152,17 +154,14 @@ public class VueGWTObserverManager {
    * Capture the Vue Observer by creating a Vue Instance on the fly
    */
   private void captureVueObserver() {
-    JsConstructorFn vueConstructor =
-        ((JsPropertyMap<JsConstructorFn>) DomGlobal.window).get("Vue");
+    JsConstructorFn vueConstructor = ((JsPropertyMap<JsConstructorFn>) DomGlobal.window).get("Vue");
     vueConstructor.construct(new CaptureComponentDefinition());
   }
 
   /**
    * Due to GWT optimizations, properties on java object defined like this are not observable in
-   * Vue.js when not running in dev mode:
-   * <br>
-   * private String myText = "Default text"; private int myInt = 0;
-   * <br>
+   * Vue.js when not running in dev mode: <br>
+   * private String myText = "Default text"; private int myInt = 0; <br>
    * This is because GWT define the default value on the prototype and don't define it on the
    * object. Therefore Vue.js don't see those properties when initializing it's observer. To fix the
    * issue, we manually look for those properties and set them explicitly on the object.
@@ -199,18 +198,16 @@ public class VueGWTObserverManager {
   }
 
   private boolean isDefaultValue(Object value) {
-    return Js.isTripleEqual(value, null) || (!"function".equals(Js.typeof(value))
-        && !"object".equals(Js.typeof(value)));
+    return Js.isTripleEqual(value, null)
+        || (!"function".equals(Js.typeof(value)) && !"object".equals(Js.typeof(value)));
   }
 
   private static class CaptureComponentDefinition {
 
     @JsMethod
     public void created() {
-      VueGWTObserverManager
-          .get()
-          .customizeVueObserverPrototype(VueGWTTools.getDeepValue(this,
-              "$data.__ob__.__proto__"));
+      VueGWTObserverManager.get()
+          .customizeVueObserverPrototype(VueGWTTools.getDeepValue(this, "$data.__ob__.__proto__"));
     }
   }
 }

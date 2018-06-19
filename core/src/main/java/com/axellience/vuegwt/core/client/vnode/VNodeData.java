@@ -2,11 +2,11 @@ package com.axellience.vuegwt.core.client.vnode;
 
 import com.axellience.vuegwt.core.client.component.options.functions.OnEvent;
 import elemental2.core.JsArray;
-import elemental2.core.JsObject;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -56,8 +56,7 @@ public class VNodeData {
   @JsProperty
   protected boolean keepAlive;
 
-  public VNodeData() {
-  }
+  public VNodeData() {}
 
   @JsOverlay
   public static VNodeData get() {
@@ -112,7 +111,7 @@ public class VNodeData {
   @JsOverlay
   public final VNodeData scopedSlot(String name, ScopedSlot scopedSlot) {
     if (this.scopedSlots == null) {
-      this.scopedSlots = (JsPropertyMap<ScopedSlot>) new JsObject();
+      this.scopedSlots = Js.cast(JsPropertyMap.of());
     }
 
     this.scopedSlots.set(name, scopedSlot);
