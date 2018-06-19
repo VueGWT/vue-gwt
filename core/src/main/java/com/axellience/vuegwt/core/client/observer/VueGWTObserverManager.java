@@ -33,9 +33,8 @@ public class VueGWTObserverManager {
 
   public static VueGWTObserverManager get() {
     if (INSTANCE == null) {
-      VueGWTObserverManager m = new VueGWTObserverManager();
-      m.captureVueObserver();
-      INSTANCE = m;
+      INSTANCE = new VueGWTObserverManager();
+      INSTANCE.captureVueObserver();
     }
 
     return INSTANCE;
