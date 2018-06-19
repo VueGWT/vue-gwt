@@ -63,7 +63,7 @@ public class ComponentTemplateProcessor {
   }
 
   public void processComponentTemplate(TypeElement componentTypeElement,
-      Builder componentExposedTypeBuilder) {
+      ComponentExposedTypeGenerator exposedTypeGenerator) {
     ClassName componentTypeName = ClassName.get(componentTypeElement);
     Optional<TemplateFileResource> optionalTemplateContent =
         getTemplateContent(componentTypeName, componentTypeElement);
@@ -90,11 +90,11 @@ public class ComponentTemplateProcessor {
         messager,
         optionalTemplateContent.get().uri);
 
-    registerScopedCss(componentExposedTypeBuilder, templateParserResult);
+    registerScopedCss(exposedTypeGenerator.getClassBuilder(), templateParserResult);
 
     // Add expressions from the template to ExposedType and compile template
     TemplateMethodsBuilder templateMethodsBuilder = new TemplateMethodsBuilder();
-    templateMethodsBuilder.addTemplateMethodsToComponentExposedType(componentExposedTypeBuilder,
+    templateMethodsBuilder.addTemplateMethodsToComponentExposedType(exposedTypeGenerator,
         templateParserResult);
   }
 

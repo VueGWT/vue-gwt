@@ -76,7 +76,7 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
     List<CodeBlock> initParametersCall = new LinkedList<>();
 
     // Get options
-    initBuilder.addStatement("$T<$T> componentOptions = $T.getOptions()",
+    initBuilder.addStatement("$T<$T> componentOptions = new $T().getOptions()",
         VueComponentOptions.class,
         component.asType(),
         componentExposedTypeName(component));

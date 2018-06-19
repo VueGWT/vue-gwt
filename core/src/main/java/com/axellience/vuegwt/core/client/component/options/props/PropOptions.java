@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.core.client.component.options.props;
 
+import elemental2.core.Function;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -14,7 +15,7 @@ public class PropOptions {
 
   public Object type;
   public boolean required;
-  public Object validator;
+  public Function validator;
   @JsProperty(name = "default")
-  public Object defaultValue;
+  public Function defaultValue;
 }

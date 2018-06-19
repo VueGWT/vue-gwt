@@ -1,6 +1,8 @@
 package com.axellience.vuegwt.core.client.component.options;
 
 import static elemental2.core.Global.JSON;
+import static jsinterop.base.Js.cast;
+
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedOptions;
@@ -15,9 +17,7 @@ import java.util.Map;
 import javax.inject.Provider;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -49,20 +49,6 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
     this.componentExportedTypePrototype = prototype;
     // This must be set for Components extending Native JS Components
     this.componentExportedTypePrototype.set("options", this);
-    this.initTemplateExpressions();
-  }
-
-  /**
-   * Add template expressions to this {@link VueComponentOptions}.
-   */
-  @JsOverlay
-  private void initTemplateExpressions() {
-    int i = 0;
-    Function templateMethod;
-    while ((templateMethod = getJavaComponentMethod("exp$" + i)) != null) {
-      addMethod("exp$" + i, templateMethod);
-      i++;
-    }
   }
 
   /**
@@ -72,10 +58,9 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    * @param staticRenderFnsStrings The static render functions
    */
   @JsOverlay
-  public final void initRenderFunctions(Function renderFunctionString,
-      Function[] staticRenderFnsStrings) {
+  public final void initRenderFunctions(Function renderFunctionString, Function[] staticRenderFnsStrings) {
     this.setRender(renderFunctionString);
-    this.setStaticRenderFns(Js.cast(staticRenderFnsStrings));
+    this.setStaticRenderFns(cast(staticRenderFnsStrings));
   }
 
   /**
@@ -103,13 +88,13 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    * Add a computed property to this ComponentOptions. If the computed has both a getter and a
    * setter, this will be called twice, once for each.
    *
-   * @param javaMethodName Name of the method in the {@link IsVueComponent}
+   * @param javaMethod Function pointer to the method in the {@link IsVueComponent}
    * @param computedPropertyName Name of the computed property in the Template and the
    *        ComponentOptions
    * @param kind Kind of the computed method (getter or setter)
    */
   @JsOverlay
-  public final void addJavaComputed(String javaMethodName, String computedPropertyName,
+  public final void addJavaComputed(Function javaMethod, String computedPropertyName,
       ComputedKind kind) {
     ComputedOptions computedDefinition = getComputedOptions(computedPropertyName);
     if (computedDefinition == null) {
@@ -117,61 +102,43 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
       addComputedOptions(computedPropertyName, computedDefinition);
     }
 
-    Object method = getJavaComponentMethod(javaMethodName);
     if (kind == ComputedKind.GETTER) {
-      computedDefinition.get = method;
+      computedDefinition.get = javaMethod;
     } else if (kind == ComputedKind.SETTER) {
-      computedDefinition.set = method;
+      computedDefinition.set = javaMethod;
     }
   }
 
   /**
    * Add a watch property to this Component Definition
    *
-   * @param javaMethodName Name of the method in the {@link IsVueComponent}
+   * @param javaMethod Function pointer to the method in the {@link IsVueComponent}
    * @param watchedPropertyName Name of the property name to watch in the data model
    * @param isDeep Is the watcher deep (will watch child properties)
    */
   @JsOverlay
-  public final void addJavaWatch(String javaMethodName, String watchedPropertyName,
+  public final void addJavaWatch(Function javaMethod, String watchedPropertyName,
       boolean isDeep) {
     if (!isDeep) {
-      addWatch(watchedPropertyName, getJavaComponentMethod(javaMethodName));
+      addWatch(watchedPropertyName, javaMethod);
       return;
     }
 
     JsPropertyMap<Object> watchDefinition = JsPropertyMap.of();
     watchDefinition.set("deep", true);
-    watchDefinition.set("handler", getJavaComponentMethod(javaMethodName));
+    watchDefinition.set("handler", javaMethod);
     addWatch(watchedPropertyName, watchDefinition);
   }
 
-  @JsOverlay
-  public final void addMethods(String... javaMethodNames) {
-    for (String javaMethodName : javaMethodNames) {
-      this.addMethod(javaMethodName, getJavaComponentMethod(javaMethodName));
-    }
-  }
-
   /**
    * Add the given lifecycle hook to the {@link VueComponentOptions}.
    *
    * @param hookName Name of the hook to add
+   * @param javaMethod Function pointer to the method in the {@link IsVueComponent}
    */
   @JsOverlay
-  public final void addHookMethod(String hookName) {
-    addHookMethod(hookName, hookName);
-  }
-
-  /**
-   * Add the given lifecycle hook to the {@link VueComponentOptions}.
-   *
-   * @param hookName Name of the hook to add
-   * @param javaMethodName Name of the java method for the hook
-   */
-  @JsOverlay
-  public final void addHookMethod(String hookName, String javaMethodName) {
-    set(hookName, getJavaComponentMethod(javaMethodName));
+  public final void addHookMethod(String hookName, Function javaMethod) {
+    set(hookName, javaMethod);
   }
 
   /**
@@ -198,36 +165,34 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   /**
    * Add a custom prop validator to validate a property
    *
-   * @param javaMethodName Name of the method in the {@link IsVueComponent}
+   * @param javaMethod Function pointer to the method in the {@link IsVueComponent}
    * @param propertyName The name of the property to validate
    */
   @JsOverlay
-  public final void addJavaPropValidator(String javaMethodName, String propertyName) {
-    PropOptions propDefinition = (PropOptions) props.get(propertyName);
-    propDefinition.validator = getJavaComponentMethod(javaMethodName);
+  public final void addJavaPropValidator(Function javaMethod, String propertyName) {
+    PropOptions propDefinition = getProps().get(propertyName);
+    propDefinition.validator = javaMethod;
   }
 
   /**
    * Add a custom prop validator to validate a property
    *
-   * @param javaMethodName Name of the method in the {@link IsVueComponent}
+   * @param javaMethod Function pointer to the method in the {@link IsVueComponent}
    * @param propertyName The name of the property to validate
    */
   @JsOverlay
-  public final void addJavaPropDefaultValue(String javaMethodName, String propertyName) {
-    PropOptions propDefinition = (PropOptions) props.get(propertyName);
-    propDefinition.defaultValue = getJavaComponentMethod(javaMethodName);
+  public final void addJavaPropDefaultValue(Function javaMethod, String propertyName) {
+    PropOptions propDefinition = getProps().get(propertyName);
+    propDefinition.defaultValue = javaMethod;
   }
 
-  /**
-   * Get the given java method from the {@link IsVueComponent}.
-   *
-   * @param javaMethodName Name of the Java method to retrieve
-   * @return The JS function that represent our Java method.
-   */
   @JsOverlay
-  private Function getJavaComponentMethod(String javaMethodName) {
-    return (Function) componentExportedTypePrototype.get(javaMethodName);
+  public final void registerTemplateMethods(Function... templateMethods) {
+    int count = 0;
+    for (Function templateMethod : templateMethods) {
+      this.addMethod("exp$" + count, templateMethod);
+      count++;
+    }
   }
 
   /**
@@ -271,264 +236,226 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    *
    * ---------------------------------------------
    */
-  @JsProperty
-  private Object data;
-  @JsProperty
-  private JsPropertyMap props;
-
-  @JsProperty
-  private JsPropertyMap propsData;
-  @JsProperty
-  private JsPropertyMap<ComputedOptions> computed;
-  @JsProperty
-  private JsPropertyMap<Function> methods;
-
-  @JsProperty
-  private JsPropertyMap watch;
-  @JsProperty
-  private Object el;
-
-  @JsProperty
-  private String template;
-  @JsProperty
-  private JsPropertyMap<VueDirectiveOptions> directives;
-
-  @JsProperty
-  private JsPropertyMap<VueComponentOptions> components;
-  @JsProperty
-  private IsVueComponent parent;
-
-  @JsProperty
-  private String name;
-
-  @JsProperty
-  private Function render;
-  @JsProperty
-  private JsArray<Function> staticRenderFns;
-
-  @JsProperty
-  private JsArray<Object> mixins;
-
   @JsOverlay
   public final Object getData() {
-    return data;
+    return get("data");
   }
 
   @JsOverlay
   public final VueComponentOptions setData(Object data) {
-    this.data = data;
+    set("data", data);
     return this;
   }
 
   @JsOverlay
-  public final JsPropertyMap getProps() {
-    return props;
+  public final JsPropertyMap<PropOptions> getProps() {
+    return cast(get("props"));
   }
 
   @JsOverlay
-  public final VueComponentOptions setProps(JsPropertyMap props) {
-    this.props = props;
+  public final VueComponentOptions setProps(JsPropertyMap<PropOptions> props) {
+    set("props", props);
     return this;
   }
 
   @JsOverlay
   public final VueComponentOptions addProp(String name, PropOptions propOptions) {
-    if (this.props == null) {
-      this.props = JsPropertyMap.of();
+    if (getProps() == null) {
+      setProps(cast(JsPropertyMap.of()));
     }
 
-    this.props.set(name, propOptions);
+    getProps().set(name, propOptions);
     return this;
   }
 
   @JsOverlay
   public final JsPropertyMap getPropsData() {
-    return propsData;
+    return (JsPropertyMap) get("propsData");
   }
 
   @JsOverlay
   public final VueComponentOptions setPropsData(JsPropertyMap propsData) {
-    this.propsData = propsData;
+    set("propsData", propsData);
     return this;
   }
 
   @JsOverlay
   public final JsPropertyMap<ComputedOptions> getComputed() {
-    return computed;
+    return cast(get("computed"));
   }
 
   @JsOverlay
   public final VueComponentOptions setComputed(JsPropertyMap<ComputedOptions> computed) {
-    this.computed = computed;
+    set("computed", computed);
     return this;
   }
 
   @JsOverlay
   public final VueComponentOptions addComputedOptions(String name, ComputedOptions computed) {
-    if (this.computed == null) {
-      this.computed = Js.cast(JsPropertyMap.of());
+    if (getComputed() == null) {
+      setComputed(cast(JsPropertyMap.of()));
     }
 
-    this.computed.set(name, computed);
+    getComputed().set(name, computed);
     return this;
   }
 
   @JsOverlay
   public final ComputedOptions getComputedOptions(String name) {
-    if (this.computed == null) {
-      this.computed = Js.cast(JsPropertyMap.of());
+    if (getComputed() == null) {
+      setComputed(cast(JsPropertyMap.of()));
     }
 
-    return this.computed.get(name);
+    return getComputed().get(name);
   }
 
   @JsOverlay
   public final JsPropertyMap<Function> getMethods() {
-    return methods;
+    return cast(get("methods"));
   }
 
   @JsOverlay
-  public final VueComponentOptions setMethods(JsPropertyMap methods) {
-    this.methods = methods;
+  public final VueComponentOptions setMethods(JsPropertyMap<Function> methods) {
+    set("methods", methods);
     return this;
   }
 
   @JsOverlay
   public final VueComponentOptions addMethod(String name, Function method) {
-    if (this.methods == null) {
-      this.methods = Js.cast(JsPropertyMap.of());
+    if (getMethods() == null) {
+      setMethods(cast(JsPropertyMap.of()));
     }
 
-    this.methods.set(name, method);
+    getMethods().set(name, method);
     return this;
   }
 
   @JsOverlay
   public final JsPropertyMap getWatch() {
-    return watch;
+    return (JsPropertyMap) get("watch");
   }
 
   @JsOverlay
   public final VueComponentOptions setWatch(JsPropertyMap watch) {
-    this.watch = watch;
+    set("watch", watch);
     return this;
   }
 
   @JsOverlay
   public final VueComponentOptions addWatch(String name, Object watcher) {
-    if (this.watch == null) {
-      this.watch = JsPropertyMap.of();
+    if (getWatch() == null) {
+      setWatch(JsPropertyMap.of());
     }
 
-    this.watch.set(name, watcher);
+    getWatch().set(name, watcher);
     return this;
   }
 
   @JsOverlay
   public final Object getEl() {
-    return el;
+    return get("el");
   }
 
   @JsOverlay
   public final void setEl(Object el) {
-    this.el = el;
+    set("el", el);
   }
 
   @JsOverlay
   public final String getTemplate() {
-    return template;
+    return (String) get("template");
   }
 
   @JsOverlay
   public final VueComponentOptions setTemplate(String template) {
-    this.template = template;
+    set("template", template);
     return this;
   }
 
   @JsOverlay
   public final JsArray<Function> getStaticRenderFns() {
-    return staticRenderFns;
+    return cast(get("staticRenderFns"));
   }
 
   @JsOverlay
   public final VueComponentOptions setStaticRenderFns(JsArray<Function> staticRenderFns) {
-    this.staticRenderFns = staticRenderFns;
+    set("staticRenderFns", staticRenderFns);
     return this;
   }
 
   @JsOverlay
   public final Function getRender() {
-    return render;
+    return (Function) get("render");
   }
 
   @JsOverlay
   public final VueComponentOptions setRender(Function render) {
-    this.render = render;
+    set("render", render);
     return this;
   }
 
   @JsOverlay
   public final JsPropertyMap<VueDirectiveOptions> getDirectives() {
-    return directives;
+    return cast(get("directives"));
   }
 
   @JsOverlay
   public final VueComponentOptions setDirectives(JsPropertyMap<VueDirectiveOptions> directives) {
-    this.directives = directives;
+    set("directives", directives);
     return this;
   }
 
   @JsOverlay
   public final JsPropertyMap<VueComponentOptions> getComponents() {
-    return components;
+    return cast(get("components"));
   }
 
   @JsOverlay
   public final VueComponentOptions setComponents(JsPropertyMap<VueComponentOptions> components) {
-    this.components = components;
+    set("components", components);
     return this;
   }
 
   @JsOverlay
   public final IsVueComponent getParent() {
-    return parent;
+    return (IsVueComponent) get("parent");
   }
 
   @JsOverlay
   public final VueComponentOptions setParent(IsVueComponent parent) {
-    this.parent = parent;
+    set("parent", parent);
     return this;
   }
 
   @JsOverlay
   public final String getName() {
-    return name;
+    return (String) get("name");
   }
 
   @JsOverlay
   public final VueComponentOptions setName(String name) {
-    this.name = name;
+    set("name", name);
     return this;
   }
 
   @JsOverlay
   public final JsArray<Object> getMixins() {
-    return mixins;
+    return cast(get("mixins"));
   }
 
   @JsOverlay
   public final VueComponentOptions addMixin(Object mixin) {
-    if (this.mixins == null) {
-      this.mixins = new JsArray<>();
+    if (getMixins() == null) {
+      setMixins(new JsArray<>());
     }
 
-    this.mixins.push(mixin);
+    getMixins().push(mixin);
     return this;
   }
 
   @JsOverlay
   public final VueComponentOptions setMixins(JsArray<Object> mixins) {
-    this.mixins = mixins;
+    set("mixins", mixins);
     return this;
   }
 }

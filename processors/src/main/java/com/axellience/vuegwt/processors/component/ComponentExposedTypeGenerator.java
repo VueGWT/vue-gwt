@@ -37,11 +37,13 @@ import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
+import elemental2.core.Function;
 import elemental2.core.JsArray;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
@@ -64,6 +66,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
@@ -83,6 +86,11 @@ public class ComponentExposedTypeGenerator {
   private final ComponentTemplateProcessor componentTemplateProcessor;
   private final DataFieldsValidator dataFieldsValidator;
 
+  private TypeElement component;
+  private Builder componentExposedTypeBuilder;
+  private MethodSpec.Builder optionsBuilder;
+  private Builder protoClassBuilder;
+
   public ComponentExposedTypeGenerator(ProcessingEnvironment processingEnvironment) {
     processingEnv = processingEnvironment;
     filer = processingEnvironment.getFiler();
@@ -98,38 +106,29 @@ public class ComponentExposedTypeGenerator {
     // Template resource abstract class
     ClassName componentWithSuffixClassName = componentExposedTypeName(component);
 
-    Builder componentExposedTypeBuilder =
-        getComponentExposedTypeBuilder(component, componentWithSuffixClassName);
+    this.component = component;
+    componentExposedTypeBuilder = createComponentExposedTypeBuilder(componentWithSuffixClassName);
+    protoClassBuilder = createProtoClassBuilder();
 
-    // Add the getter for the Factory
-    addGetFactoryMethod(component, componentExposedTypeBuilder);
+    createGetFactoryMethod();
 
-    // Initialize Options getter builder
-    MethodSpec.Builder optionsBuilder = getOptionsMethodBuilder(component);
-
-    Set<ExecutableElement> hookMethodsFromInterfaces = getHookMethodsFromInterfaces(component);
-    processData(component, optionsBuilder);
-    processProps(component, optionsBuilder);
-    processComputed(component, optionsBuilder, componentExposedTypeBuilder);
-    processWatchers(component, optionsBuilder, componentExposedTypeBuilder);
-    processPropValidators(component, optionsBuilder, componentExposedTypeBuilder);
-    processPropDefaultValues(component, optionsBuilder, componentExposedTypeBuilder);
-    processHooks(component, optionsBuilder, hookMethodsFromInterfaces);
-    processTemplateMethods(component,
-        optionsBuilder,
-        componentExposedTypeBuilder,
-        hookMethodsFromInterfaces);
-    processInvalidEmitMethods(component);
-    processRenderFunction(component, optionsBuilder, componentExposedTypeBuilder);
-    createCreatedHook(component,
-        optionsBuilder,
-        componentExposedTypeBuilder,
-        dependenciesBuilder);
+    optionsBuilder = createOptionsMethodBuilder();
+    Set<ExecutableElement> hookMethodsFromInterfaces = getHookMethodsFromInterfaces();
+    processData();
+    processProps();
+    processComputed();
+    processWatchers();
+    processPropValidators();
+    processPropDefaultValues();
+    processHooks(hookMethodsFromInterfaces);
+    processMethods(hookMethodsFromInterfaces);
+    processInvalidEmitMethods();
+    processRenderFunction();
+    createCreatedHook(dependenciesBuilder);
 
     // Process the HTML template if there is one
     if (hasTemplate(processingEnv, component)) {
-      componentTemplateProcessor.processComponentTemplate(component,
-          componentExposedTypeBuilder);
+      componentTemplateProcessor.processComponentTemplate(component, this);
       optionsBuilder.addStatement(
           "options.initRenderFunctions(getRenderFunction(), getStaticRenderFunctions())");
     }
@@ -137,6 +136,9 @@ public class ComponentExposedTypeGenerator {
     // Finish building Options getter
     optionsBuilder.addStatement("return options");
     componentExposedTypeBuilder.addMethod(optionsBuilder.build());
+
+    // Finish building proto
+    componentExposedTypeBuilder.addType(protoClassBuilder.build());
 
     // And generate our Java Class
     GeneratorsUtil.toJavaFile(filer,
@@ -148,13 +150,11 @@ public class ComponentExposedTypeGenerator {
   /**
    * Create and return the builder for the ExposedType of our {@link IsVueComponent}.
    *
-   * @param component The {@link IsVueComponent} we are generating for
    * @param exposedTypeClassName The name of the generated ExposedType class
    * @return A Builder to build the class
    */
-  private Builder getComponentExposedTypeBuilder(TypeElement component,
-      ClassName exposedTypeClassName) {
-    Builder componentExposedTypeBuilder = TypeSpec
+  private Builder createComponentExposedTypeBuilder(ClassName exposedTypeClassName) {
+    Builder exposedTypeBuilder = TypeSpec
         .classBuilder(exposedTypeClassName)
         .addModifiers(Modifier.PUBLIC)
         .superclass(TypeName.get(component.asType()))
@@ -167,22 +167,19 @@ public class ComponentExposedTypeGenerator {
     // Add @JsType annotation. This ensure this class is included.
     // As we use a class reference to use our Components, this class would be removed by GWT
     // tree shaking.
-    componentExposedTypeBuilder.addAnnotation(AnnotationSpec
+    exposedTypeBuilder.addAnnotation(AnnotationSpec
         .builder(JsType.class)
         .addMember("namespace", "$S", "VueGWTExposedTypesRepository")
         .addMember("name", "$S", component.getQualifiedName().toString().replaceAll("\\.", "_"))
         .build());
 
-    return componentExposedTypeBuilder;
+    return exposedTypeBuilder;
   }
 
   /**
    * Add a method to retrieve the Factory from the ExportedType
-   *
-   * @param component The {@link IsVueComponent} we are generating for
-   * @param componentExposedTypeBuilder Builder for the ExposedType class
    */
-  private void addGetFactoryMethod(TypeElement component, Builder componentExposedTypeBuilder) {
+  private void createGetFactoryMethod() {
     componentExposedTypeBuilder.addMethod(MethodSpec
         .methodBuilder("getVueComponentFactory")
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -193,23 +190,44 @@ public class ComponentExposedTypeGenerator {
   }
 
   /**
+   * Create and return the builder for the Proto of our {@link IsVueComponent}.
+   *
+   * @return A Builder to build the Proto class
+   */
+  private Builder createProtoClassBuilder() {
+    componentExposedTypeBuilder.addField(
+        FieldSpec.builder(ClassName.bestGuess("Proto"), "__proto__", Modifier.PUBLIC).build());
+
+    return TypeSpec
+        .classBuilder("Proto")
+        .addModifiers(Modifier.STATIC)
+        .addModifiers(Modifier.PRIVATE)
+        .addAnnotation(AnnotationSpec
+            .builder(JsType.class)
+            .addMember("isNative", "$L", true)
+            .addMember("namespace", "$T.GLOBAL", JsPackage.class)
+            .addMember("name", "$S", "Object")
+            .build());
+  }
+
+  /**
    * Create and return the builder for the method that creating the {@link VueComponentOptions} for
    * this {@link IsVueComponent}.
    *
-   * @param component The {@link IsVueComponent} we are generating for
    * @return A {@link MethodSpec.Builder} for the method that creates the {@link
    * VueComponentOptions}
    */
-  private MethodSpec.Builder getOptionsMethodBuilder(TypeElement component) {
+  private MethodSpec.Builder createOptionsMethodBuilder() {
     TypeName optionsTypeName =
         ParameterizedTypeName.get(ClassName.get(VueComponentOptions.class),
             ClassName.get(component));
 
     MethodSpec.Builder optionsMethodBuilder = MethodSpec
         .methodBuilder("getOptions")
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .addModifiers(Modifier.PUBLIC)
         .returns(optionsTypeName)
-        .addStatement("$T options = new $T()", optionsTypeName, optionsTypeName);
+        .addStatement("$T options = new $T()", optionsTypeName, optionsTypeName)
+        .addStatement("Proto p = this.__proto__");
 
     Component annotation = component.getAnnotation(Component.class);
 
@@ -227,12 +245,8 @@ public class ComponentExposedTypeGenerator {
 
   /**
    * Process data fields from the {@link IsVueComponent} Class.
-   *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
    */
-  private void processData(TypeElement component, MethodSpec.Builder optionsBuilder) {
+  private void processData() {
     Component annotation = component.getAnnotation(Component.class);
 
     List<VariableElement> dataFields = ElementFilter
@@ -261,12 +275,8 @@ public class ComponentExposedTypeGenerator {
 
   /**
    * Process Vue Props from the {@link IsVueComponent} Class.
-   *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
    */
-  private void processProps(TypeElement component, MethodSpec.Builder optionsBuilder) {
+  private void processProps() {
     ElementFilter
         .fieldsIn(component.getEnclosedElements())
         .stream()
@@ -291,14 +301,8 @@ public class ComponentExposedTypeGenerator {
 
   /**
    * Process computed properties from the Component Class.
-   *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
-   * @param componentExposedTypeBuilder Builder for the ExposedType class
    */
-  private void processComputed(TypeElement component, MethodSpec.Builder optionsBuilder,
-      Builder componentExposedTypeBuilder) {
+  private void processComputed() {
     getMethodsWithAnnotation(component, Computed.class).forEach(method -> {
       String methodName = method.getSimpleName().toString();
 
@@ -308,13 +312,13 @@ public class ComponentExposedTypeGenerator {
       }
 
       String propertyName = GeneratorsUtil.getComputedPropertyName(method);
-      optionsBuilder.addStatement("options.addJavaComputed($S, $S, $T.$L)",
+      optionsBuilder.addStatement("options.addJavaComputed(p.$L, $S, $T.$L)",
           methodName,
           propertyName,
           ComputedKind.class,
           kind);
 
-      addProxyExposedTypeMethodIfNecessary(componentExposedTypeBuilder, method);
+      exposeJavaMethodToJs(method);
     });
 
     addFieldsForComputedMethod(component, componentExposedTypeBuilder, new HashSet<>());
@@ -323,15 +327,10 @@ public class ComponentExposedTypeGenerator {
   /**
    * Process template methods for our {@link IsVueComponent} class.
    *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
-   * @param componentExposedTypeBuilder Builder for the ExposedType class
    * @param hookMethodsFromInterfaces Hook methods from the interface the {@link IsVueComponent}
    * implements
    */
-  private void processTemplateMethods(TypeElement component, MethodSpec.Builder optionsBuilder,
-      Builder componentExposedTypeBuilder, Set<ExecutableElement> hookMethodsFromInterfaces) {
+  private void processMethods(Set<ExecutableElement> hookMethodsFromInterfaces) {
     List<ExecutableElement> templateMethods = ElementFilter
         .methodsIn(component.getEnclosedElements())
         .stream()
@@ -339,16 +338,11 @@ public class ComponentExposedTypeGenerator {
         .filter(method -> !isHookMethod(component, method, hookMethodsFromInterfaces))
         .collect(Collectors.toList());
 
-    templateMethods.forEach(method -> addProxyExposedTypeMethodIfNecessary(
-        componentExposedTypeBuilder,
-        method));
-
-    // Declare methods in the component
-    String methodNamesParameters = templateMethods
-        .stream()
-        .map(method -> "\"" + method.getSimpleName() + "\"")
-        .collect(Collectors.joining(", "));
-    optionsBuilder.addStatement("options.addMethods($L)", methodNamesParameters);
+    templateMethods.forEach(method -> {
+      exposeJavaMethodToJs(method);
+      String methodName = method.getSimpleName().toString();
+      optionsBuilder.addStatement("options.addMethod($S, p.$L)", methodName, methodName);
+    });
   }
 
   /**
@@ -389,34 +383,24 @@ public class ComponentExposedTypeGenerator {
 
   /**
    * Process watchers from the Component Class.
-   *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
    */
-  private void processWatchers(TypeElement component, MethodSpec.Builder optionsBuilder,
-      Builder componentExposedTypeBuilder) {
+  private void processWatchers() {
     getMethodsWithAnnotation(component, Watch.class).forEach(method -> {
       Watch watch = method.getAnnotation(Watch.class);
 
-      optionsBuilder.addStatement("options.addJavaWatch($S, $S, $L)",
+      exposeJavaMethodToJs(method);
+
+      optionsBuilder.addStatement("options.addJavaWatch(p.$L, $S, $L)",
           method.getSimpleName().toString(),
           watch.value(),
           watch.isDeep());
-
-      addProxyExposedTypeMethodIfNecessary(componentExposedTypeBuilder, method);
     });
   }
 
   /**
    * Process prop validators from the Component Class.
-   *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
    */
-  private void processPropValidators(TypeElement component, MethodSpec.Builder optionsBuilder,
-      Builder componentExposedTypeBuilder) {
+  private void processPropValidators() {
     getMethodsWithAnnotation(component, PropValidator.class).forEach(method -> {
       PropValidator propValidator = method.getAnnotation(PropValidator.class);
 
@@ -426,62 +410,57 @@ public class ComponentExposedTypeGenerator {
             + " annotated with PropValidator must return a boolean.", component);
       }
 
+      exposeJavaMethodToJs(method);
+
       String propertyName = propValidator.value();
-      optionsBuilder.addStatement("options.addJavaPropValidator($S, $S)",
+      optionsBuilder.addStatement("options.addJavaPropValidator(p.$L, $S)",
           method.getSimpleName().toString(),
           propertyName);
-
-      addProxyExposedTypeMethodIfNecessary(componentExposedTypeBuilder, method);
     });
   }
 
   /**
    * Process prop default values from the Component Class.
-   *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
    */
-  private void processPropDefaultValues(TypeElement component, MethodSpec.Builder optionsBuilder,
-      Builder componentExposedTypeBuilder) {
+  private void processPropDefaultValues() {
     getMethodsWithAnnotation(component, PropDefault.class).forEach(method -> {
       PropDefault propValidator = method.getAnnotation(PropDefault.class);
 
+      exposeJavaMethodToJs(method);
+
       String propertyName = propValidator.value();
-      optionsBuilder.addStatement("options.addJavaPropDefaultValue($S, $S)",
+      optionsBuilder.addStatement("options.addJavaPropDefaultValue(p.$L, $S)",
           method.getSimpleName().toString(),
           propertyName);
-
-      addProxyExposedTypeMethodIfNecessary(componentExposedTypeBuilder, method);
     });
   }
 
   /**
    * Process hook methods from the Component Class.
    *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
    * @param hookMethodsFromInterfaces Hook methods from the interface the {@link IsVueComponent}
    * implements
    */
-  private void processHooks(TypeElement component, MethodSpec.Builder optionsBuilder,
-      Set<ExecutableElement> hookMethodsFromInterfaces) {
+  private void processHooks(Set<ExecutableElement> hookMethodsFromInterfaces) {
     ElementFilter
         .methodsIn(component.getEnclosedElements())
         .stream()
         .filter(method -> isHookMethod(component, method, hookMethodsFromInterfaces))
-        .forEach(method -> optionsBuilder.addStatement("options.addHookMethod($S)",
-            method.getSimpleName().toString()));
+        // Created hook is already added by createCreatedHook
+        .filter(method -> !"created".equals(method.getSimpleName().toString()))
+        .forEach(method -> {
+          exposeJavaMethodToJs(method);
+          String methodName = method.getSimpleName().toString();
+          optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", methodName, methodName);
+        });
   }
 
   /**
    * Return all hook methods from the implemented interfaces
    *
-   * @param component The Component
    * @return Hook methods that must be overridden in the Component
    */
-  private Set<ExecutableElement> getHookMethodsFromInterfaces(TypeElement component) {
+  private Set<ExecutableElement> getHookMethodsFromInterfaces() {
     return component
         .getInterfaces()
         .stream()
@@ -506,14 +485,8 @@ public class ComponentExposedTypeGenerator {
 
   /**
    * Process the render function from the Component Class if it has one.
-   *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
-   * @param componentExposedTypeBuilder Builder for the ExposedType class
    */
-  private void processRenderFunction(TypeElement component, MethodSpec.Builder optionsBuilder,
-      Builder componentExposedTypeBuilder) {
+  private void processRenderFunction() {
     if (!hasInterface(processingEnv, component.asType(), HasRender.class)) {
       return;
     }
@@ -526,8 +499,12 @@ public class ComponentExposedTypeGenerator {
         .addStatement("return super.render(new $T(createElementFunction))", VNodeBuilder.class)
         .build());
 
+    protoClassBuilder.addField(FieldSpec
+        .builder(Function.class, "vuegwt$render", Modifier.PUBLIC)
+        .build());
+
     // Register the render method
-    optionsBuilder.addStatement("options.addHookMethod($S, $S)", "render", "vuegwt$render");
+    optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", "render", "vuegwt$render");
   }
 
   /**
@@ -535,16 +512,10 @@ public class ComponentExposedTypeGenerator {
    * created. It will inject dependencies if any, and call the {@link
    * ComponentExposedTypeConstructorFn} on the newly created instance.
    *
-   * @param component {@link IsVueComponent} to process
-   * @param optionsBuilder A {@link MethodSpec.Builder} for the method that creates the {@link
-   * VueComponentOptions}
-   * @param componentExposedTypeBuilder Builder for the ExposedType class
    * @param dependenciesBuilder Builder for our component dependencies, needed here to inject the
    * dependencies in the instance
    */
-  private void createCreatedHook(TypeElement component, MethodSpec.Builder optionsBuilder,
-      Builder componentExposedTypeBuilder,
-      ComponentInjectedDependenciesBuilder dependenciesBuilder) {
+  private void createCreatedHook(ComponentInjectedDependenciesBuilder dependenciesBuilder) {
     String hasRunCreatedFlagName = "vuegwt$hrc_" + getSuperComponentCount(component);
     componentExposedTypeBuilder.addField(boolean.class, hasRunCreatedFlagName, Modifier.PUBLIC);
 
@@ -566,7 +537,10 @@ public class ComponentExposedTypeGenerator {
     componentExposedTypeBuilder.addMethod(createdMethodBuilder.build());
 
     // Register the hook
-    optionsBuilder.addStatement("options.addHookMethod($S, $S)", "created", "vuegwt$created");
+    protoClassBuilder.addField(FieldSpec
+        .builder(Function.class, "vuegwt$created", Modifier.PUBLIC)
+        .build());
+    optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", "created", "vuegwt$created");
   }
 
   /**
@@ -605,10 +579,8 @@ public class ComponentExposedTypeGenerator {
   /**
    * Emit an error message for every method annotated with {@link Emit} that are not also annotated
    * with {@link JsMethod}.
-   *
-   * @param component {@link IsVueComponent} to process
    */
-  private void processInvalidEmitMethods(TypeElement component) {
+  private void processInvalidEmitMethods() {
     ElementFilter
         .methodsIn(component.getEnclosedElements())
         .stream()
@@ -665,15 +637,28 @@ public class ComponentExposedTypeGenerator {
    * Generate a JsInterop proxy method for a {@link IsVueComponent} method. This proxy will keep the
    * same name in JS and can be therefore passed to Vue to configure our {@link IsVueComponent}.
    *
+   * @param originalMethod Method to proxify
+   */
+  private void exposeJavaMethodToJs(ExecutableElement originalMethod) {
+    Emit emitAnnotation = originalMethod.getAnnotation(Emit.class);
+    if (!isMethodVisibleInJS(originalMethod) || emitAnnotation != null) {
+      createProxyJsMethod(componentExposedTypeBuilder, originalMethod);
+    }
+
+    protoClassBuilder.addField(FieldSpec
+        .builder(Function.class, originalMethod.getSimpleName().toString(), Modifier.PUBLIC)
+        .build());
+  }
+
+  /**
+   * Generate a JsInterop proxy method for a {@link IsVueComponent} method.
+   *
    * @param componentExposedTypeBuilder Builder for the ExposedType class
    * @param originalMethod Method to proxify
    */
-  private void addProxyExposedTypeMethodIfNecessary(Builder componentExposedTypeBuilder,
+  private void createProxyJsMethod(Builder componentExposedTypeBuilder,
       ExecutableElement originalMethod) {
     Emit emitAnnotation = originalMethod.getAnnotation(Emit.class);
-    if (isMethodVisibleInJS(originalMethod) && emitAnnotation == null) {
-      return;
-    }
 
     MethodSpec.Builder proxyMethodBuilder = MethodSpec
         .methodBuilder(originalMethod.getSimpleName().toString())
@@ -807,5 +792,17 @@ public class ComponentExposedTypeGenerator {
   private void printError(String message, TypeElement component) {
     messager.printMessage(Kind.ERROR,
         message + " In VueComponent: " + component.getQualifiedName());
+  }
+
+  public Builder getClassBuilder() {
+    return componentExposedTypeBuilder;
+  }
+
+  public Builder getProtoClassBuilder() {
+    return protoClassBuilder;
+  }
+
+  public MethodSpec.Builder getOptionsBuilder() {
+    return optionsBuilder;
   }
 }
