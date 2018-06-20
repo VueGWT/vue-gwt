@@ -13,7 +13,7 @@ class MethodsBindingTest {
 
   @Test
   @DisplayName("should bind component methods to the option object")
-  void modelWithListNoAnnotation() {
+  void bindComponentMethodsToOptions() {
     Compilation compilation =
         javac()
             .withProcessors(new VueGwtProcessor())
