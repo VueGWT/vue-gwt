@@ -16,6 +16,12 @@ public class WatchPropParentTestComponent implements IsVueComponent {
   SimpleObject watchedPropDeepAnnotation = null;
 
   @JsProperty
+  String watchedDataImmediateAnnotation = "initialValue";
+
+  @JsProperty
+  SimpleObject watchedDataPropertyImmediateAnnotation = new SimpleObject("initialValue");
+
+  @JsProperty
   SimpleObject watchedProp$WatchString = null;
 
   @JsProperty

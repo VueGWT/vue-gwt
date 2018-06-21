@@ -122,6 +122,16 @@ describe('Watch', () => {
               expect(component.newValueAnnotationDeep).to.equal('newValue');
             });
           });
+
+      it('should be called on init when using immediate', () => {
+          expect(component.oldValueAnnotationImmediate).to.be.null;
+          expect(component.newValueAnnotationImmediate).to.equal('initialValue');
+      });
+
+      it('should be called on init when using immediate on property', () => {
+        expect(component.oldValueAnnotationPropertyImmediate).to.be.undefined;
+        expect(component.newValueAnnotationPropertyImmediate).to.equal('initialValue');
+      });
     });
 
     describe('$watch with string', () => {
@@ -510,6 +520,16 @@ describe('Watch', () => {
                   'newValue');
             });
           });
+
+      it('should be called on init when using immediate', () => {
+        expect(component.oldValueAnnotationImmediate).to.be.undefined;
+        expect(component.newValueAnnotationImmediate).to.equal('initialValue');
+      });
+
+      it('should be called on init when using immediate on property', () => {
+        expect(component.oldValueAnnotationPropertyImmediate).to.be.undefined;
+        expect(component.newValueAnnotationPropertyImmediate).to.equal('initialValue');
+      });
     });
   });
 });

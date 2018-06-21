@@ -36,6 +36,24 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   String oldValueAnnotationDeep;
 
   @JsProperty
+  String watchedDataImmediateAnnotation = "initialValue";
+
+  @JsProperty
+  String newValueAnnotationImmediate;
+
+  @JsProperty
+  String oldValueAnnotationImmediate;
+
+  @JsProperty
+  SimpleObject watchedDataPropertyImmediateAnnotation = new SimpleObject("initialValue");
+
+  @JsProperty
+  String newValueAnnotationPropertyImmediate;
+
+  @JsProperty
+  String oldValueAnnotationPropertyImmediate;
+
+  @JsProperty
   SimpleObject watchedData$WatchString = null;
 
   @JsProperty
@@ -110,6 +128,18 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   public void onWatchedDataDeepChange(SimpleObject newValue, SimpleObject oldValue) {
     this.newValueAnnotationDeep = newValue != null ? newValue.getStringProperty() : null;
     this.oldValueAnnotationDeep = oldValue != null ? oldValue.getStringProperty() : null;
+  }
+
+  @Watch(value = "watchedDataImmediateAnnotation", isImmediate = true)
+  public void onWatchedDataImmediateChange(String newValue, String oldValue) {
+    this.newValueAnnotationImmediate = newValue;
+    this.oldValueAnnotationImmediate = oldValue;
+  }
+
+  @Watch(value = "watchedDataPropertyImmediateAnnotation.stringProperty", isImmediate = true)
+  public void onWatchedDataPropertyImmediateChange(String newValue, String oldValue) {
+    this.newValueAnnotationPropertyImmediate = newValue;
+    this.oldValueAnnotationPropertyImmediate = oldValue;
   }
 
   @JsMethod
