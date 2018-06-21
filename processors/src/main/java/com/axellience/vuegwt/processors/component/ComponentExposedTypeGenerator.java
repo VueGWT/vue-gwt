@@ -390,10 +390,11 @@ public class ComponentExposedTypeGenerator {
 
       exposeJavaMethodToJs(method);
 
-      optionsBuilder.addStatement("options.addJavaWatch(p.$L, $S, $L)",
+      optionsBuilder.addStatement("options.addJavaWatch(p.$L, $S, $L, $L)",
           method.getSimpleName().toString(),
           watch.value(),
-          watch.isDeep());
+          watch.isDeep(),
+          watch.isImmediate());
     });
   }
 

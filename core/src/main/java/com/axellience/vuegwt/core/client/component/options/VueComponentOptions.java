@@ -115,18 +115,20 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    * @param javaMethod Function pointer to the method in the {@link IsVueComponent}
    * @param watchedPropertyName Name of the property name to watch in the data model
    * @param isDeep Is the watcher deep (will watch child properties)
+   * @param isImmediate Is the watcher immediate (will trigger on initial value)
    */
   @JsOverlay
   public final void addJavaWatch(Function javaMethod, String watchedPropertyName,
-      boolean isDeep) {
-    if (!isDeep) {
+      boolean isDeep, boolean isImmediate) {
+    if (!isDeep && !isImmediate) {
       addWatch(watchedPropertyName, javaMethod);
       return;
     }
 
     JsPropertyMap<Object> watchDefinition = JsPropertyMap.of();
-    watchDefinition.set("deep", true);
     watchDefinition.set("handler", javaMethod);
+    watchDefinition.set("deep", isDeep);
+    watchDefinition.set("immediate", isImmediate);
     addWatch(watchedPropertyName, watchDefinition);
   }
 

@@ -18,4 +18,6 @@ public @interface Watch {
   String value();
 
   boolean isDeep() default false;
+
+  boolean isImmediate() default false;
 }
