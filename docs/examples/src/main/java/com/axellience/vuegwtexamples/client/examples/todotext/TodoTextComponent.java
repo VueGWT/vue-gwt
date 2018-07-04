@@ -1,6 +1,7 @@
 package com.axellience.vuegwtexamples.client.examples.todotext;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
 import elemental2.dom.Event;
@@ -14,7 +15,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class TodoTextComponent implements IsVueComponent {
 
-  @JsProperty
+  @Data
   Todo todo = new Todo("Hello World!");
 
   @JsMethod

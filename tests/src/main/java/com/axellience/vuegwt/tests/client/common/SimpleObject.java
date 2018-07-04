@@ -6,7 +6,7 @@ import jsinterop.annotations.JsProperty;
 public class SimpleObject {
 
   @JsProperty
-  private String stringProperty;
+  public String stringProperty;
 
   public SimpleObject() {
     this.stringProperty = null;

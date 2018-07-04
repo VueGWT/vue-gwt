@@ -12,7 +12,7 @@ import elemental2.core.Function;
     namespace = "VueGWTExposedTypesRepository",
     name = "methods_MethodsBindingComponent"
 )
-public class MethodsBindingComponentExposedType extends MethodsBindingComponent {
+public class MethodsBindingComponentExposedType extends MethodsBindingComponent implements DataFieldsProvider {
 
   @JsMethod
   @SuppressWarnings("unusable-by-js")
@@ -32,9 +32,9 @@ public class MethodsBindingComponentExposedType extends MethodsBindingComponent 
     VueComponentOptions<MethodsBindingComponent> options = new VueComponentOptions<MethodsBindingComponent>();
     Proto p = this.__proto__;
     options.setComponentExportedTypePrototype(VueGWT.getComponentExposedTypeConstructorFn(MethodsBindingComponent.class).getPrototype());
-    options.initData(true, "simpleObject");
     options.addMethod("onClickMethod", p.onClickMethod);
     options.addHookMethod("created", p.vuegwt$created);
+    options.initData(true, this.vuegwt$getDataFieldsName());
     options.registerTemplateMethods(p.exp$0, p.exp$1);
     options.initRenderFunctions(getRenderFunction(), getStaticRenderFunctions());
     return options;

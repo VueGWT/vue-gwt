@@ -1,9 +1,9 @@
 package com.axellience.vuegwtexamples.client.examples.tree;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
-import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
@@ -11,7 +11,7 @@ import jsinterop.annotations.JsProperty;
 @Component(components = TreeFolderComponent.class)
 public class TreeComponent implements IsVueComponent, HasCreated {
 
-  @JsProperty
+  @Data
   Folder myFolder;
 
   @Override

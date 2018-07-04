@@ -1,15 +1,26 @@
 package com.axellience.vuegwt.tests.client.components.conditionalrendering.vif;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
-import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsMethod;
 
 @Component
 public class VIfTestComponent implements IsVueComponent {
 
-  @JsProperty
+  @Data
   boolean ifCondition = false;
 
-  @JsProperty
+  @Data
   boolean elseIfCondition = false;
+
+  @JsMethod
+  public void setIfCondition(boolean ifCondition) {
+    this.ifCondition = ifCondition;
+  }
+
+  @JsMethod
+  public void setElseIfCondition(boolean elseIfCondition) {
+    this.elseIfCondition = elseIfCondition;
+  }
 }

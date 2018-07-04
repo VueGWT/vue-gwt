@@ -3,8 +3,10 @@ package com.axellience.vuegwt.core.client.tools;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import elemental2.core.Function;
+import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import jsinterop.annotations.JsFunction;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -101,5 +103,11 @@ public class VueGWTTools {
    */
   public static String templateExpressionToString(char[] expressionValue) {
     return expressionValue == null ? null : String.valueOf(expressionValue);
+  }
+
+  public static boolean isObservableValue(JsPropertyMap<Object> value) {
+    return value != null &&
+        (JsArray.isArray(value) || "object".equals(Js.typeof(value))) &&
+        !value.has("_isVue");
   }
 }

@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.tests.client.components.basic.watch.data;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.annotations.component.Watch;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
@@ -11,7 +12,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class WatchDataTestComponent implements IsVueComponent, HasCreated {
 
-  @JsProperty
+  @Data
   SimpleObject watchedDataAnnotation = null;
 
   @JsProperty
@@ -26,7 +27,7 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   @JsProperty
   String oldValueAnnotationProperty;
 
-  @JsProperty
+  @Data
   SimpleObject watchedDataDeepAnnotation = null;
 
   @JsProperty
@@ -35,7 +36,7 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   @JsProperty
   String oldValueAnnotationDeep;
 
-  @JsProperty
+  @Data
   String watchedDataImmediateAnnotation = "initialValue";
 
   @JsProperty
@@ -44,7 +45,7 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   @JsProperty
   String oldValueAnnotationImmediate;
 
-  @JsProperty
+  @Data
   SimpleObject watchedDataPropertyImmediateAnnotation = new SimpleObject("initialValue");
 
   @JsProperty
@@ -53,22 +54,7 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   @JsProperty
   String oldValueAnnotationPropertyImmediate;
 
-  @JsProperty
-  SimpleObject watchedData$WatchString = null;
-
-  @JsProperty
-  SimpleObject newValue$WatchString;
-
-  @JsProperty
-  SimpleObject oldValue$WatchString;
-
-  @JsProperty
-  String newValue$WatchStringProperty;
-
-  @JsProperty
-  String oldValue$WatchStringProperty;
-
-  @JsProperty
+  @Data
   SimpleObject watchedData$WatchMethod = null;
 
   @JsProperty
@@ -85,15 +71,6 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
 
   @Override
   public void created() {
-    vue().$watch("watchedData$WatchString", (newValue, oldValue) -> {
-      this.newValue$WatchString = (SimpleObject) newValue;
-      this.oldValue$WatchString = (SimpleObject) oldValue;
-    });
-    vue().$watch("watchedData$WatchString.stringProperty", (newValue, oldValue) -> {
-      this.newValue$WatchStringProperty = (String) newValue;
-      this.oldValue$WatchStringProperty = (String) oldValue;
-    });
-
     vue().$watch(() -> watchedData$WatchMethod, (newValue, oldValue) -> {
       this.newValue$WatchMethod = newValue;
       this.oldValue$WatchMethod = oldValue;
@@ -163,16 +140,6 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   }
 
   @JsMethod
-  public void changeWatchedData$WatchString(String property) {
-    if (property == null) {
-      watchedData$WatchString = null;
-    } else {
-      watchedData$WatchString = new SimpleObject();
-      watchedData$WatchString.setStringProperty(property);
-    }
-  }
-
-  @JsMethod
   public void changeWatchedData$WatchMethod(String property) {
     if (property == null) {
       watchedData$WatchMethod = null;
@@ -180,5 +147,30 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
       watchedData$WatchMethod = new SimpleObject();
       watchedData$WatchMethod.setStringProperty(property);
     }
+  }
+
+  @JsMethod
+  public SimpleObject getWatchedDataAnnotation() {
+    return watchedDataAnnotation;
+  }
+
+  @JsMethod
+  public SimpleObject getWatchedDataDeepAnnotation() {
+    return watchedDataDeepAnnotation;
+  }
+
+  @JsMethod
+  public String getWatchedDataImmediateAnnotation() {
+    return watchedDataImmediateAnnotation;
+  }
+
+  @JsMethod
+  public SimpleObject getWatchedDataPropertyImmediateAnnotation() {
+    return watchedDataPropertyImmediateAnnotation;
+  }
+
+  @JsMethod
+  public SimpleObject getWatchedData$WatchMethod() {
+    return watchedData$WatchMethod;
   }
 }

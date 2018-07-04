@@ -14,10 +14,10 @@ describe('EventTypes.spec', () => {
   }));
 
   it("doesn't box primitive types", () => {
-    expect(vm.myInt).to.equal(10);
-    expect(vm.myBoolean).to.equal(false);
-    expect(vm.myDouble).to.equal(12);
-    expect(vm.myFloat).to.equal(12.5);
+    expect(vm.getMyInt()).to.equal(10);
+    expect(vm.getMyBoolean()).to.equal(false);
+    expect(vm.getMyDouble()).to.equal(12);
+    expect(vm.getMyFloat()).to.equal(12.5);
   });
 
   it("doesn't unbox boxed types", () => {
@@ -25,6 +25,6 @@ describe('EventTypes.spec', () => {
   });
 
   it("passes objects untouched", () => {
-    expect(vm.myTodo.text).to.equal("Hello World");
+    expect(vm.getMyTodo().text).to.equal("Hello World");
   });
 });

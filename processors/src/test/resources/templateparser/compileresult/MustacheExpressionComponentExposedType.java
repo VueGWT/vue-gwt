@@ -1,5 +1,7 @@
 package templateparser;
 
+import com.axellience.vuegwt.core.client.component.DataFieldsProvider;
+
 @Generated(
     value = "com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator",
     comments = "https://github.com/Axellience/vue-gwt"
@@ -8,7 +10,7 @@ package templateparser;
     namespace = "VueGWTExposedTypesRepository",
     name = "templateparser_MustacheExpressionComponent"
 )
-public class MustacheExpressionComponentExposedType extends MustacheExpressionComponent {
+public class MustacheExpressionComponentExposedType extends MustacheExpressionComponent implements DataFieldsProvider {
 
   @JsMethod
   @SuppressWarnings("unusable-by-js")

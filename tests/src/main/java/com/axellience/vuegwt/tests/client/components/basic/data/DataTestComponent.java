@@ -1,72 +1,72 @@
 package com.axellience.vuegwt.tests.client.components.basic.data;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.tests.client.common.SimpleObject;
 import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsProperty;
 
 @Component
 public class DataTestComponent implements IsVueComponent {
 
-  @JsProperty
+  @Data
   byte byteData = 0;
 
-  @JsProperty
+  @Data
   short shortData = 0;
 
-  @JsProperty
+  @Data
   int intData = 0;
 
-  @JsProperty
+  @Data
   long longData = 0L;
 
-  @JsProperty
+  @Data
   float floatData = 0f;
 
-  @JsProperty
+  @Data
   double doubleData = 0d;
 
-  @JsProperty
+  @Data
   boolean booleanData = false;
 
-  @JsProperty
+  @Data
   char charData = 'a';
 
-  @JsProperty
+  @Data
   char[] charArrayData = new char[]{'a', 'b', 'c'};
 
-  @JsProperty
+  @Data
   Byte byteObjectData = 0;
 
-  @JsProperty
+  @Data
   Short shortObjectData = 0;
 
-  @JsProperty
+  @Data
   Integer integerData = 0;
 
-  @JsProperty
+  @Data
   Long longObjectData = 0L;
 
-  @JsProperty
+  @Data
   Float floatObjectData = 0f;
 
-  @JsProperty
+  @Data
   Double doubleObjectData = 0d;
 
-  @JsProperty
+  @Data
   Character characterData = 'a';
 
-  @JsProperty
+  @Data
   String stringData = null;
 
-  @JsProperty
+  @Data
   SimpleObject simpleObjectData = null;
 
-  @JsProperty
+  @Data
   String attributeValueData = null;
 
-  @JsProperty
+  @Data
   SimpleObject dataWithLineBreaks = new SimpleObject();
 
   @JsMethod
@@ -77,5 +77,110 @@ public class DataTestComponent implements IsVueComponent {
   @JsMethod
   public void assignVToCharData() {
     charData = 'v';
+  }
+
+  @JsMethod
+  public void setByteData(byte byteData) {
+    this.byteData = byteData;
+  }
+
+  @JsMethod
+  public void setShortData(short shortData) {
+    this.shortData = shortData;
+  }
+
+  @JsMethod
+  public void setIntData(int intData) {
+    this.intData = intData;
+  }
+
+  @JsMethod
+  public void setLongData(long longData) {
+    this.longData = longData;
+  }
+
+  @JsMethod
+  public void setFloatData(float floatData) {
+    this.floatData = floatData;
+  }
+
+  @JsMethod
+  public void setDoubleData(double doubleData) {
+    this.doubleData = doubleData;
+  }
+
+  @JsMethod
+  public void setBooleanData(boolean booleanData) {
+    this.booleanData = booleanData;
+  }
+
+  @JsMethod
+  public void setCharData(char charData) {
+    this.charData = charData;
+  }
+
+  @JsMethod
+  public void setCharArrayData(char[] charArrayData) {
+    this.charArrayData = charArrayData;
+  }
+
+  @JsMethod
+  public void setByteObjectData(Byte byteObjectData) {
+    this.byteObjectData = byteObjectData;
+  }
+
+  @JsMethod
+  public void setShortObjectData(Short shortObjectData) {
+    this.shortObjectData = shortObjectData;
+  }
+
+  @JsMethod
+  public void setIntegerData(Integer integerData) {
+    this.integerData = integerData;
+  }
+
+  @JsMethod
+  public void setLongObjectData(Long longObjectData) {
+    this.longObjectData = longObjectData;
+  }
+
+  @JsMethod
+  public void setFloatObjectData(Float floatObjectData) {
+    this.floatObjectData = floatObjectData;
+  }
+
+  @JsMethod
+  public void setDoubleObjectData(Double doubleObjectData) {
+    this.doubleObjectData = doubleObjectData;
+  }
+
+  @JsMethod
+  public void setCharacterData(Character characterData) {
+    this.characterData = characterData;
+  }
+
+  @JsMethod
+  public void setStringData(String stringData) {
+    this.stringData = stringData;
+  }
+
+  @JsMethod
+  public void setSimpleObjectData(SimpleObject simpleObjectData) {
+    this.simpleObjectData = simpleObjectData;
+  }
+
+  @JsMethod
+  public void setAttributeValueData(String attributeValueData) {
+    this.attributeValueData = attributeValueData;
+  }
+
+  @JsMethod
+  public SimpleObject getSimpleObjectData() {
+    return simpleObjectData;
+  }
+
+  @JsMethod
+  public SimpleObject getDataWithLineBreaks() {
+    return dataWithLineBreaks;
   }
 }

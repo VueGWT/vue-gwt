@@ -12,7 +12,6 @@ import jsinterop.annotations.JsProperty;
 public class AnimalSelectorComponent implements IsVueComponent {
 
   @Prop
-  @JsProperty
   String userName;
 
   @JsMethod

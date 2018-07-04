@@ -26,7 +26,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.byteData = 127;
+      component.setByteData(127);
       return nextTick().then(() => {
         const domValue = getElement(component, '#byte-data').innerText;
         expect(domValue).to.equal('127');
@@ -41,7 +41,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.shortData = 6;
+      component.setShortData(6);
       return nextTick().then(() => {
         const domValue = getElement(component, '#short-data').innerText;
         expect(domValue).to.equal('6');
@@ -56,7 +56,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.intData = 6;
+      component.setIntData(6);
       return nextTick().then(() => {
         const domValue = getElement(component, '#int-data').innerText;
         expect(domValue).to.equal('6');
@@ -71,7 +71,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.longData = 6;
+      component.setLongData(6);
       return nextTick().then(() => {
         const domValue = getElement(component, '#long-data').innerText;
         expect(domValue).to.equal('6');
@@ -86,7 +86,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.floatData = 6.6;
+      component.setFloatData(6.6);
       return nextTick().then(() => {
         const domValue = getElement(component, '#float-data').innerText;
         expect(domValue).to.equal('6.6');
@@ -101,7 +101,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.doubleData = 6.6;
+      component.setDoubleData(6.6);
       return nextTick().then(() => {
         const domValue = getElement(component, '#double-data').innerText;
         expect(domValue).to.equal('6.6');
@@ -116,7 +116,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.booleanData = true;
+      component.setBooleanData(true);
       return nextTick().then(() => {
         const domValue = getElement(component, '#boolean-data').innerText;
         expect(domValue).to.equal('true');
@@ -153,7 +153,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.byteObjectData = 127;
+      component.setByteObjectData(127);
 
       return nextTick().then(() => {
         const domValue = getElement(component, '#byte-object-data').innerText;
@@ -169,7 +169,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.shortObjectData = 6;
+      component.setShortObjectData(6);
 
       return nextTick().then(() => {
         const domValue = getElement(component, '#short-object-data').innerText;
@@ -185,7 +185,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.integerData = 6;
+      component.setIntegerData(6);
 
       return nextTick().then(() => {
         const domValue = getElement(component, '#integer-data').innerText;
@@ -201,7 +201,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.longObjectData = 6;
+      component.setLongObjectData(6);
 
       return nextTick().then(() => {
         const domValue = getElement(component, '#long-object-data').innerText;
@@ -217,7 +217,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.floatObjectData = 6.6;
+      component.setFloatObjectData(6.6);
 
       return nextTick().then(() => {
         const domValue = getElement(component, '#float-object-data').innerText;
@@ -233,7 +233,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.doubleObjectData = 6.6;
+      component.setDoubleObjectData(6.6);
 
       return nextTick().then(() => {
         const domValue = getElement(component, '#double-object-data').innerText;
@@ -249,7 +249,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.characterData = 'v';
+      component.setCharacterData('v');
 
       return nextTick().then(() => {
         const domValue = getElement(component, '#character-data').innerText;
@@ -265,7 +265,7 @@ describe('Data', () => {
     });
 
     it('should update its DOM element when it changes', () => {
-      component.stringData = 'a value';
+      component.setStringData('a value');
 
       return nextTick().then(() => {
         const domValue = getElement(component, '#string-data').innerText;
@@ -289,9 +289,9 @@ describe('Data', () => {
       });
     });
 
-    it('should be displayed as empty string when its property is null', () => {
+    it('should be displayed the value when it has a value', () => {
       component.initSimpleObject();
-      component.simpleObjectData.setStringProperty('a value');
+      component.getSimpleObjectData().setStringProperty('a value');
 
       return nextTick().then(() => {
         const domValue = getElement(component, '#simple-object-data').innerText;
@@ -307,7 +307,7 @@ describe('Data', () => {
     });
 
     it('should be displayed in the DOM if its value is not null', () => {
-      component.attributeValueData = 'a value';
+      component.setAttributeValueData('a value');
 
       return nextTick().then(() => {
         const element = getElement(component, '#data-attribute-element');
@@ -318,7 +318,7 @@ describe('Data', () => {
 
   describe('dataWithWhiteSpaces', () => {
     it('should ignore white spaces', () => {
-      component.dataWithLineBreaks.setStringProperty('a value');
+      component.getDataWithLineBreaks().setStringProperty('a value');
 
       return nextTick().then(() => {
         const domValue = getElement(component,

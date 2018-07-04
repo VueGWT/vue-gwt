@@ -1,8 +1,8 @@
 package com.axellience.vuegwtexamples.client.examples.bindinlinestyle;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
-import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
@@ -10,8 +10,8 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class BindInlineStyleComponent implements IsVueComponent {
 
-  @JsProperty
+  @Data
   String activeColor = "red";
-  @JsProperty
+  @Data
   float fontSize = 20;
 }

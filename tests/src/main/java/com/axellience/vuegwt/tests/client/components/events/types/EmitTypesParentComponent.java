@@ -1,23 +1,23 @@
 package com.axellience.vuegwt.tests.client.components.events.types;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.tests.client.common.Todo;
 import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsProperty;
 
 @Component(components = {EmitTypesChildComponent.class})
 class EmitTypesParentComponent implements IsVueComponent {
 
-  @JsProperty
+  @Data
   public int myInt; // 10
-  @JsProperty
+  @Data
   public boolean myBoolean; // false
-  @JsProperty
+  @Data
   public double myDouble; // 12
-  @JsProperty
+  @Data
   public float myFloat; // 12.5
-  @JsProperty
+  @Data
   public Todo myTodo; // "Hello World"
 
   private Integer myInteger; // 10
@@ -60,5 +60,30 @@ class EmitTypesParentComponent implements IsVueComponent {
   @JsMethod
   public Integer getTestIntegerValue() {
     return 10;
+  }
+
+  @JsMethod
+  public int getMyInt() {
+    return myInt;
+  }
+
+  @JsMethod
+  public boolean getMyBoolean() {
+    return myBoolean;
+  }
+
+  @JsMethod
+  public double getMyDouble() {
+    return myDouble;
+  }
+
+  @JsMethod
+  public float getMyFloat() {
+    return myFloat;
+  }
+
+  @JsMethod
+  public Todo getMyTodo() {
+    return myTodo;
   }
 }

@@ -5,6 +5,7 @@ import com.axellience.vuegwt.core.client.component.options.functions.OnEvent;
 import com.axellience.vuegwt.core.client.component.options.functions.OnNextTick;
 import com.axellience.vuegwt.core.client.component.options.watch.ChangeTrigger;
 import com.axellience.vuegwt.core.client.component.options.watch.OnValueChange;
+import com.axellience.vuegwt.core.client.component.options.watch.WatchOptions;
 import com.axellience.vuegwt.core.client.component.options.watch.WatcherRegistration;
 import com.axellience.vuegwt.core.client.vnode.ScopedSlot;
 import com.axellience.vuegwt.core.client.vnode.VNode;
@@ -68,10 +69,9 @@ public abstract class VueComponent {
 
   // @formatter:off
   // Data
-  public native <T> WatcherRegistration $watch(String toWatch, OnValueChange<T> onValueChange);
+  public native <T> WatcherRegistration $watch(ChangeTrigger<T> changeTrigger, OnValueChange<T> onValueChange);
 
-  public native <T> WatcherRegistration $watch(ChangeTrigger<T> changeTrigger,
-      OnValueChange<T> onValueChange);
+  public native WatcherRegistration $watch(Function changeTrigger, Function onValueChange, WatchOptions watchOptions);
 
   public native <T> T $set(Object object, String key, T value);
 

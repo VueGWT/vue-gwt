@@ -499,13 +499,7 @@ public class TemplateParser {
       methodName = expressionString.substring(0, expressionString.length() - 2);
     }
 
-    // Just a method name/simple method call with no parameters
-    if (context.hasMethod(methodName)) {
-      return true;
-    }
-
-    // Just a variable
-    return context.findVariable(expressionString) != null;
+    return context.hasMethod(methodName);
   }
 
   /**
@@ -725,7 +719,7 @@ public class TemplateParser {
     if (variableInfo == null) {
       logger.error("Couldn't find variable/method \""
           + name
-          + "\". Make sure you didn't forget the @JsProperty/@JsMethod annotation.");
+          + "\". Make sure you didn't forget the @Data/@Prop annotation.");
     }
 
     if (variableInfo instanceof LocalVariableInfo) {

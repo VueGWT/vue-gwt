@@ -3,6 +3,7 @@ package com.axellience.vuegwtexamples.client.examples.errorboundary;
 import static com.axellience.vuegwt.core.client.tools.JsUtils.map;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasErrorCaptured;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
@@ -15,7 +16,7 @@ import jsinterop.base.JsPropertyMap;
 @Component
 public class ErrorBoundaryComponent implements IsVueComponent, HasErrorCaptured, HasRender {
 
-  @JsProperty
+  @Data
   JsPropertyMap error;
 
   @Override

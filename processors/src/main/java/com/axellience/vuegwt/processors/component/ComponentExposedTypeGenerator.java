@@ -14,6 +14,7 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.annotations.component.Emit;
 import com.axellience.vuegwt.core.annotations.component.HookMethod;
 import com.axellience.vuegwt.core.annotations.component.Prop;
@@ -22,11 +23,14 @@ import com.axellience.vuegwt.core.annotations.component.PropValidator;
 import com.axellience.vuegwt.core.annotations.component.Watch;
 import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.ComponentExposedTypeConstructorFn;
+import com.axellience.vuegwt.core.client.component.DataFieldsProvider;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedKind;
+import com.axellience.vuegwt.core.client.component.options.watch.WatchOptions;
+import com.axellience.vuegwt.core.client.tools.VueGWTTools;
 import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
@@ -68,6 +72,8 @@ import javax.tools.Diagnostic.Kind;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Generate a ExposedType wrapper for the user Java {@link IsVueComponent}. It will wrap any non
@@ -78,6 +84,9 @@ import jsinterop.annotations.JsType;
  * @author Adrien Baron
  */
 public class ComponentExposedTypeGenerator {
+
+  private static final String WATCHER_METHOD_PREFIX = "vuegwt_watcher$";
+  private static final String PROP_SETTER_PREFIX = "vuegwt_prop$";
 
   private final ProcessingEnvironment processingEnv;
   private final Filer filer;
@@ -90,6 +99,7 @@ public class ComponentExposedTypeGenerator {
   private Builder componentExposedTypeBuilder;
   private MethodSpec.Builder optionsBuilder;
   private Builder protoClassBuilder;
+  private Set<VariableElement> fieldsToMarkAsData;
 
   public ComponentExposedTypeGenerator(ProcessingEnvironment processingEnvironment) {
     processingEnv = processingEnvironment;
@@ -107,6 +117,7 @@ public class ComponentExposedTypeGenerator {
     ClassName componentWithSuffixClassName = componentExposedTypeName(component);
 
     this.component = component;
+    fieldsToMarkAsData = new HashSet<>();
     componentExposedTypeBuilder = createComponentExposedTypeBuilder(componentWithSuffixClassName);
     protoClassBuilder = createProtoClassBuilder();
 
@@ -117,7 +128,6 @@ public class ComponentExposedTypeGenerator {
     processData();
     processProps();
     processComputed();
-    processWatchers();
     processPropValidators();
     processPropDefaultValues();
     processHooks(hookMethodsFromInterfaces);
@@ -125,6 +135,7 @@ public class ComponentExposedTypeGenerator {
     processInvalidEmitMethods();
     processRenderFunction();
     createCreatedHook(dependenciesBuilder);
+    initComponentDataFields();
 
     // Process the HTML template if there is one
     if (hasTemplate(processingEnv, component)) {
@@ -158,6 +169,7 @@ public class ComponentExposedTypeGenerator {
         .classBuilder(exposedTypeClassName)
         .addModifiers(Modifier.PUBLIC)
         .superclass(TypeName.get(component.asType()))
+        .addSuperinterface(DataFieldsProvider.class)
         .addAnnotation(AnnotationSpec
             .builder(Generated.class)
             .addMember("value", "$S", ComponentExposedTypeGenerator.class.getCanonicalName())
@@ -247,13 +259,10 @@ public class ComponentExposedTypeGenerator {
    * Process data fields from the {@link IsVueComponent} Class.
    */
   private void processData() {
-    Component annotation = component.getAnnotation(Component.class);
-
     List<VariableElement> dataFields = ElementFilter
         .fieldsIn(component.getEnclosedElements())
         .stream()
-        .filter(ComponentGeneratorsUtil::isFieldVisibleInJS)
-        .filter(field -> field.getAnnotation(Prop.class) == null)
+        .filter(field -> field.getAnnotation(Data.class) != null)
         .collect(Collectors.toList());
 
     if (dataFields.isEmpty()) {
@@ -262,15 +271,37 @@ public class ComponentExposedTypeGenerator {
 
     dataFields.forEach(dataFieldsValidator::validateComponentDataField);
 
-    // Declare data fields
-    String fieldNamesParameters = dataFields
-        .stream()
-        .map(field -> "\"" + field.getSimpleName() + "\"")
-        .collect(Collectors.joining(", "));
+    this.fieldsToMarkAsData.addAll(dataFields);
+  }
 
-    optionsBuilder.addStatement("options.initData($L, $L)",
-        annotation.useFactory(),
-        fieldNamesParameters);
+  /**
+   * Create
+   */
+  private void initComponentDataFields() {
+    MethodSpec.Builder dataFieldsNameGetterBuilder = MethodSpec
+        .methodBuilder("vuegwt$markDataFields")
+        .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(Override.class);
+
+    fieldsToMarkAsData.forEach(field -> {
+      TypeName fieldType = TypeName.get(field.asType());
+      String value;
+      if (fieldType == TypeName.BOOLEAN) {
+        value = "false";
+      } else if (fieldType.isPrimitive()) {
+        value = "0";
+      } else {
+        value = "null";
+      }
+      dataFieldsNameGetterBuilder
+          .addStatement("this.$L = $L", field.getSimpleName().toString(), value);
+    });
+
+    componentExposedTypeBuilder.addMethod(dataFieldsNameGetterBuilder.build());
+
+    Component annotation = component.getAnnotation(Component.class);
+    optionsBuilder.addStatement("options.initData($L, this.$L())", annotation.useFactory(),
+        "vuegwt$getDataFieldsName");
   }
 
   /**
@@ -282,21 +313,59 @@ public class ComponentExposedTypeGenerator {
         .stream()
         .filter(field -> hasAnnotation(field, Prop.class))
         .forEach(field -> {
-          String fieldName = field.getSimpleName().toString();
+          String propName = field.getSimpleName().toString();
           Prop prop = field.getAnnotation(Prop.class);
 
-          if (!isFieldVisibleInJS(field)) {
-            printError("The field \""
-                    + fieldName
-                    + "\" annotated with @Prop must also be annotated with @JsProperty.",
+          if (isFieldVisibleInJS(field)) {
+            printError(
+                "@Prop should not be annotated with @JsProperty anymore starting Beta 9 on field: \""
+                    + propName + "\".",
                 component);
           }
 
+          // Mark prop field as Data
+          this.fieldsToMarkAsData.add(field);
+
           optionsBuilder.addStatement("options.addJavaProp($S, $L, $S)",
-              fieldName,
+              propName,
               prop.required(),
               prop.checkType() ? getNativeNameForJavaType(field.asType()) : null);
+
+          String propSetterMethodName = PROP_SETTER_PREFIX + propName;
+          createPropSetter(field, propName, propSetterMethodName);
+
+          optionsBuilder
+              .addStatement("options.addJavaWatch(p.$L, $S, false, true)", propSetterMethodName,
+                  propName);
         });
+  }
+
+  private void createPropSetter(VariableElement field, String propName,
+      String propSetterMethodName) {
+    TypeName type = TypeName.get(field.asType());
+
+    MethodSpec.Builder propSetterBuilder = MethodSpec.methodBuilder(propSetterMethodName)
+        .addAnnotation(JsMethod.class)
+        .addModifiers(Modifier.PRIVATE)
+        .addParameter(type, propName);
+
+    if (type.isPrimitive() || type.isBoxedPrimitive()) {
+      propSetterBuilder.addStatement("this.$L = $L", propName, propName);
+    } else {
+      propSetterBuilder
+          .addStatement("$T<Object> val = $T.asPropertyMap($L)", JsPropertyMap.class, Js.class,
+              propName)
+          .beginControlFlow("if (!$T.isObservableValue(val))", VueGWTTools.class)
+          .addStatement("this.$L = $L", propName, propName)
+          .addStatement("return")
+          .endControlFlow()
+          .addStatement("val.set(\"_isVue\", true)")
+          .addStatement("this.$L = $L", propName, propName)
+          .addStatement("val.delete(\"_isVue\")");
+    }
+
+    componentExposedTypeBuilder.addMethod(propSetterBuilder.build());
+    addMethodToProto(propSetterMethodName);
   }
 
   /**
@@ -318,10 +387,10 @@ public class ComponentExposedTypeGenerator {
           ComputedKind.class,
           kind);
 
-      exposeJavaMethodToJs(method);
+      exposeExistingJavaMethodToJs(method);
     });
 
-    addFieldsForComputedMethod(component, componentExposedTypeBuilder, new HashSet<>());
+    addFieldsForComputedMethod(component, new HashSet<>());
   }
 
   /**
@@ -339,7 +408,7 @@ public class ComponentExposedTypeGenerator {
         .collect(Collectors.toList());
 
     templateMethods.forEach(method -> {
-      exposeJavaMethodToJs(method);
+      exposeExistingJavaMethodToJs(method);
       String methodName = method.getSimpleName().toString();
       optionsBuilder.addStatement("options.addMethod($S, p.$L)", methodName, methodName);
     });
@@ -348,13 +417,10 @@ public class ComponentExposedTypeGenerator {
   /**
    * Add fields for computed methods so they are visible in the template
    *
-   * @param component {@link IsVueComponent} to process
-   * @param componentExposedTypeBuilder Builder for the ExposedType class
+   * @param component Component we are currently processing
    * @param alreadyDone Already processed computed properties (in case there is a getter and a
-   * setter, avoid creating the field twice).
    */
-  private void addFieldsForComputedMethod(TypeElement component,
-      Builder componentExposedTypeBuilder, Set<String> alreadyDone) {
+  private void addFieldsForComputedMethod(TypeElement component, Set<String> alreadyDone) {
     getMethodsWithAnnotation(component, Computed.class).forEach(method -> {
       String propertyName = GeneratorsUtil.getComputedPropertyName(method);
 
@@ -375,26 +441,47 @@ public class ComponentExposedTypeGenerator {
       alreadyDone.add(propertyName);
     });
 
-    getSuperComponentType(component).ifPresent(superComponent -> addFieldsForComputedMethod(
-        superComponent,
-        componentExposedTypeBuilder,
-        alreadyDone));
+    getSuperComponentType(component)
+        .ifPresent(superComponent -> addFieldsForComputedMethod(superComponent, alreadyDone));
   }
 
   /**
    * Process watchers from the Component Class.
+   *
+   * @param createdMethodBuilder Builder for the created hook method
    */
-  private void processWatchers() {
+  private void processWatchers(MethodSpec.Builder createdMethodBuilder) {
     getMethodsWithAnnotation(component, Watch.class).forEach(method -> {
       Watch watch = method.getAnnotation(Watch.class);
 
-      exposeJavaMethodToJs(method);
+      exposeExistingJavaMethodToJs(method);
 
-      optionsBuilder.addStatement("options.addJavaWatch(p.$L, $S, $L, $L)",
-          method.getSimpleName().toString(),
-          watch.value(),
-          watch.isDeep(),
-          watch.isImmediate());
+      String watchMethodName = method.getSimpleName().toString();
+      String watcherTriggerMethodName = WATCHER_METHOD_PREFIX + watchMethodName;
+
+      MethodSpec.Builder watcherMethodBuilder = MethodSpec
+          .methodBuilder(watcherTriggerMethodName)
+          .addModifiers(Modifier.PUBLIC)
+          .addAnnotation(JsMethod.class)
+          .returns(Object.class);
+
+      String[] valueSplit = watch.value().split("\\.");
+
+      String currentExpression = "";
+      for (int i = 0; i < valueSplit.length - 1; i++) {
+        currentExpression += valueSplit[i];
+        watcherMethodBuilder.addStatement("if ($L == null) return null", currentExpression);
+      }
+
+      watcherMethodBuilder.addStatement("return $L", watch.value());
+
+      componentExposedTypeBuilder.addMethod(watcherMethodBuilder.build());
+      addMethodToProto(watcherTriggerMethodName);
+
+      createdMethodBuilder
+          .addStatement("vue().$L(this.__proto__.$L, this.__proto__.$L, $T.of($L, $L))", "$watch",
+              watcherTriggerMethodName, watchMethodName, WatchOptions.class, watch.isDeep(),
+              watch.isImmediate());
     });
   }
 
@@ -411,7 +498,7 @@ public class ComponentExposedTypeGenerator {
             + " annotated with PropValidator must return a boolean.", component);
       }
 
-      exposeJavaMethodToJs(method);
+      exposeExistingJavaMethodToJs(method);
 
       String propertyName = propValidator.value();
       optionsBuilder.addStatement("options.addJavaPropValidator(p.$L, $S)",
@@ -427,7 +514,7 @@ public class ComponentExposedTypeGenerator {
     getMethodsWithAnnotation(component, PropDefault.class).forEach(method -> {
       PropDefault propValidator = method.getAnnotation(PropDefault.class);
 
-      exposeJavaMethodToJs(method);
+      exposeExistingJavaMethodToJs(method);
 
       String propertyName = propValidator.value();
       optionsBuilder.addStatement("options.addJavaPropDefaultValue(p.$L, $S)",
@@ -450,7 +537,7 @@ public class ComponentExposedTypeGenerator {
         // Created hook is already added by createCreatedHook
         .filter(method -> !"created".equals(method.getSimpleName().toString()))
         .forEach(method -> {
-          exposeJavaMethodToJs(method);
+          exposeExistingJavaMethodToJs(method);
           String methodName = method.getSimpleName().toString();
           optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", methodName, methodName);
         });
@@ -500,9 +587,7 @@ public class ComponentExposedTypeGenerator {
         .addStatement("return super.render(new $T(createElementFunction))", VNodeBuilder.class)
         .build());
 
-    protoClassBuilder.addField(FieldSpec
-        .builder(Function.class, "vuegwt$render", Modifier.PUBLIC)
-        .build());
+    addMethodToProto("vuegwt$render");
 
     // Register the render method
     optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", "render", "vuegwt$render");
@@ -525,11 +610,14 @@ public class ComponentExposedTypeGenerator {
 
     // Avoid infinite recursion in case calling the Java constructor calls Vue.js constructor
     // This can happen when extending an existing JS component
-    createdMethodBuilder.addStatement("if ($L) return", hasRunCreatedFlagName);
-    createdMethodBuilder.addStatement("$L = true", hasRunCreatedFlagName);
+    createdMethodBuilder
+        .addStatement("if ($L) return", hasRunCreatedFlagName)
+        .addStatement("$L = true", hasRunCreatedFlagName);
 
     injectDependencies(component, dependenciesBuilder, createdMethodBuilder);
     callConstructor(component, createdMethodBuilder);
+
+    processWatchers(createdMethodBuilder);
 
     if (hasInterface(processingEnv, component.asType(), HasCreated.class)) {
       createdMethodBuilder.addStatement("super.created()");
@@ -538,9 +626,7 @@ public class ComponentExposedTypeGenerator {
     componentExposedTypeBuilder.addMethod(createdMethodBuilder.build());
 
     // Register the hook
-    protoClassBuilder.addField(FieldSpec
-        .builder(Function.class, "vuegwt$created", Modifier.PUBLIC)
-        .build());
+    addMethodToProto("vuegwt$created");
     optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", "created", "vuegwt$created");
   }
 
@@ -640,14 +726,25 @@ public class ComponentExposedTypeGenerator {
    *
    * @param originalMethod Method to proxify
    */
-  private void exposeJavaMethodToJs(ExecutableElement originalMethod) {
+  private void exposeExistingJavaMethodToJs(ExecutableElement originalMethod) {
     Emit emitAnnotation = originalMethod.getAnnotation(Emit.class);
     if (!isMethodVisibleInJS(originalMethod) || emitAnnotation != null) {
       createProxyJsMethod(componentExposedTypeBuilder, originalMethod);
     }
 
+    addMethodToProto(originalMethod.getSimpleName().toString());
+  }
+
+  /**
+   * Add a method to the ExposedType proto. This allows referencing them as this.__proto__.myMethod
+   * to pass them to Vue.js. This way of referencing works both in GWT2 and Closure. The method MUST
+   * have the @JsMethod annotation for this to work.
+   *
+   * @param methodName Name of the method to add to the proto
+   */
+  public void addMethodToProto(String methodName) {
     protoClassBuilder.addField(FieldSpec
-        .builder(Function.class, originalMethod.getSimpleName().toString(), Modifier.PUBLIC)
+        .builder(Function.class, methodName, Modifier.PUBLIC)
         .build());
   }
 
@@ -792,15 +889,11 @@ public class ComponentExposedTypeGenerator {
 
   private void printError(String message, TypeElement component) {
     messager.printMessage(Kind.ERROR,
-        message + " In VueComponent: " + component.getQualifiedName());
+        message + " In VueComponent: " + component.getQualifiedName(), component);
   }
 
   public Builder getClassBuilder() {
     return componentExposedTypeBuilder;
-  }
-
-  public Builder getProtoClassBuilder() {
-    return protoClassBuilder;
   }
 
   public MethodSpec.Builder getOptionsBuilder() {

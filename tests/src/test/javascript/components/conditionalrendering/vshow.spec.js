@@ -27,7 +27,7 @@ describe('v-show', () => {
 
   it('should show its element if its condition is true', () => {
     const showElement = getElement(component, '#show-element');
-    component.showCondition = true;
+    component.setShowCondition(true);
     return nextTick().then(() => {
       expect(showElement.style.display).to.be.empty;
     });

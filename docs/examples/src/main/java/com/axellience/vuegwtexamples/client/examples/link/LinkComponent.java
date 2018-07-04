@@ -1,14 +1,14 @@
 package com.axellience.vuegwtexamples.client.examples.link;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
-import jsinterop.annotations.JsProperty;
 
 @Component
 public class LinkComponent implements IsVueComponent {
 
-  @JsProperty
+  @Data
   String linkName = "Hello Vue GWT!";
-  @JsProperty
+  @Data
   String linkTarget = "https://github.com/Axellience/vue-gwt";
 }

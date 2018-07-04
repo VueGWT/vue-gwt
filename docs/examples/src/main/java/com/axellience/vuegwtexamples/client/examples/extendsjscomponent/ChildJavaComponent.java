@@ -2,9 +2,9 @@ package com.axellience.vuegwtexamples.client.examples.extendsjscomponent;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwtexamples.client.examples.extendsjscomponent.parent.ParentJsComponent;
 import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
@@ -12,7 +12,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class ChildJavaComponent extends ParentJsComponent {
 
-  @JsProperty
+  @Data
   int childValue = 10;
 
   @JsMethod

@@ -2,9 +2,9 @@ package com.axellience.vuegwtexamples.client.examples.extendjavacomponent;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsProperty;
 
 /**
  * @author Adrien Baron
@@ -12,7 +12,7 @@ import jsinterop.annotations.JsProperty;
 @Component
 public class ChildComponent extends ParentComponent implements HasCreated {
 
-  @JsProperty
+  @Data
   int childValue;
 
   @Override

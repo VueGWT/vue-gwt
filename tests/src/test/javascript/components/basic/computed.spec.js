@@ -24,7 +24,7 @@ describe('@Computed', () => {
   });
 
   it('should change its value when a depending value changes', () => {
-    component.data = 'test value';
+    component.setData('test value');
 
     return nextTick().then(() => {
       expect(component.$el.innerText).to.equal('#test value#');

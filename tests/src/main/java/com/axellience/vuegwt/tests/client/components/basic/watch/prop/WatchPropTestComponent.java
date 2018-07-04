@@ -12,7 +12,6 @@ import jsinterop.annotations.JsProperty;
 public class WatchPropTestComponent implements IsVueComponent, HasCreated {
 
   @Prop
-  @JsProperty
   SimpleObject watchedPropAnnotation;
 
   @JsProperty
@@ -28,7 +27,6 @@ public class WatchPropTestComponent implements IsVueComponent, HasCreated {
   String oldValueAnnotationProperty;
 
   @Prop
-  @JsProperty
   SimpleObject watchedPropDeepAnnotation = null;
 
   @JsProperty
@@ -38,7 +36,6 @@ public class WatchPropTestComponent implements IsVueComponent, HasCreated {
   String oldValueAnnotationDeep;
 
   @Prop
-  @JsProperty
   String watchedDataImmediateAnnotation;
 
   @JsProperty
@@ -48,7 +45,6 @@ public class WatchPropTestComponent implements IsVueComponent, HasCreated {
   String oldValueAnnotationImmediate;
 
   @Prop
-  @JsProperty
   SimpleObject watchedDataPropertyImmediateAnnotation;
 
   @JsProperty
@@ -58,23 +54,6 @@ public class WatchPropTestComponent implements IsVueComponent, HasCreated {
   String oldValueAnnotationPropertyImmediate;
 
   @Prop
-  @JsProperty
-  SimpleObject watchedPropWatchString;
-
-  @JsProperty
-  SimpleObject newValue$WatchString;
-
-  @JsProperty
-  SimpleObject oldValue$WatchString;
-
-  @JsProperty
-  String newValue$WatchStringProperty;
-
-  @JsProperty
-  String oldValue$WatchStringProperty;
-
-  @Prop
-  @JsProperty
   SimpleObject watchedPropWatchMethod;
 
   @JsProperty
@@ -91,15 +70,6 @@ public class WatchPropTestComponent implements IsVueComponent, HasCreated {
 
   @Override
   public void created() {
-    vue().$watch("watchedPropWatchString", (newValue, oldValue) -> {
-      this.newValue$WatchString = (SimpleObject) newValue;
-      this.oldValue$WatchString = (SimpleObject) oldValue;
-    });
-    vue().$watch("watchedPropWatchString.stringProperty", (newValue, oldValue) -> {
-      this.newValue$WatchStringProperty = (String) newValue;
-      this.oldValue$WatchStringProperty = (String) oldValue;
-    });
-
     vue().$watch(() -> watchedPropWatchMethod, (newValue, oldValue) -> {
       this.newValue$WatchMethod = newValue;
       this.oldValue$WatchMethod = oldValue;
@@ -119,13 +89,13 @@ public class WatchPropTestComponent implements IsVueComponent, HasCreated {
   }
 
   @Watch("watchedPropAnnotation")
-  public void onwatchedPropChange(SimpleObject newValue, SimpleObject oldValue) {
+  public void onWatchedPropChange(SimpleObject newValue, SimpleObject oldValue) {
     this.newValueAnnotation = newValue;
     this.oldValueAnnotation = oldValue;
   }
 
   @Watch("watchedPropAnnotation.stringProperty")
-  public void onwatchedPropPropertyChange(String newValue, String oldValue) {
+  public void onWatchedPropPropertyChange(String newValue, String oldValue) {
     this.newValueAnnotationProperty = newValue;
     this.oldValueAnnotationProperty = oldValue;
   }

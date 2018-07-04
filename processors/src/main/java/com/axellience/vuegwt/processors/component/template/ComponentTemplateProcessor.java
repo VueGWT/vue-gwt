@@ -6,28 +6,9 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componen
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic.Kind;
-import javax.tools.FileObject;
-import javax.tools.StandardLocation;
-
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
@@ -44,6 +25,24 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
+import java.io.IOException;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
+import javax.tools.FileObject;
+import javax.tools.StandardLocation;
 
 /**
  * Process the HTML template for a given {@link IsVueComponent}.
@@ -111,7 +110,8 @@ public class ComponentTemplateProcessor {
     ElementFilter
         .fieldsIn(componentTypeElement.getEnclosedElements())
         .stream()
-        .filter(ComponentGeneratorsUtil::isFieldVisibleInJS)
+        .filter(field -> field.getAnnotation(Data.class) != null
+            || field.getAnnotation(Prop.class) != null)
         .forEach(field -> {
           String name = field.getSimpleName().toString();
           if (alreadyDoneVariable.contains(name)) {

@@ -1,6 +1,7 @@
 package com.axellience.vuegwtexamples.client.examples.vforonobjectwithkey;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -13,7 +14,7 @@ import jsinterop.base.JsPropertyMap;
 @Component
 public class VForOnObjectWithKeyComponent implements IsVueComponent, HasCreated {
 
-  @JsProperty
+  @Data
   JsPropertyMap<Object> myObject;
 
   @Override

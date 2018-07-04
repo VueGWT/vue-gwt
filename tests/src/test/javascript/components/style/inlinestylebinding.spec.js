@@ -23,7 +23,7 @@ describe('Inline style binding', () => {
     const element = getElement(component, '#map-single');
     expect(element.getAttribute('style')).to.equal('color: black;');
 
-    component.color = 'white';
+    component.setColor('white');
     return nextTick().then(() => {
       expect(element.getAttribute('style')).to.equal('color: white;');
     });
@@ -35,8 +35,8 @@ describe('Inline style binding', () => {
     expect(styleAttribute).to.have.string('color: black;');
     expect(styleAttribute).to.have.string('font-size: 12px;');
 
-    component.color = 'white';
-    component.fontSize = 14;
+    component.setColor('white');
+    component.setFontSize(14);
     return nextTick().then(() => {
       const styleAttribute = element.getAttribute('style');
       expect(styleAttribute).to.have.string('color: white;');

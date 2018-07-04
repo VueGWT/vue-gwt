@@ -30,8 +30,8 @@ describe('@Prop', () => {
   });
 
   it('should have correct value when its passed value changes', () => {
-    component.optionalPropParent = 16;
-    component.requiredPropParent.setStringProperty('value');
+    component.setOptionalPropParent(16);
+    component.getRequiredPropParent().setStringProperty('value');
 
     return nextTick().then(() => {
       const optionalPropDomValue = getElement(component,
@@ -42,5 +42,9 @@ describe('@Prop', () => {
       expect(optionalPropDomValue).to.equal('16');
       expect(requiredPropDomValue).to.equal('value');
     });
+  });
+
+  it('should not be observed if original value wasn\'t', () => {
+    expect(component.getNonObservedObject().__ob__).to.be.undefined;
   });
 });

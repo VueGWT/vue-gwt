@@ -12,7 +12,6 @@ import com.axellience.vuegwt.processors.component.template.parser.TemplateParser
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import elemental2.core.Function;
 import java.util.stream.Collectors;
@@ -178,10 +177,6 @@ public class TemplateMethodsBuilder {
     }
 
     exposedTypeGenerator.getClassBuilder().addMethod(templateExpressionMethodBuilder.build());
-
-    exposedTypeGenerator.getProtoClassBuilder()
-        .addField(FieldSpec
-            .builder(Function.class, expression.getId(), Modifier.PUBLIC)
-            .build());
+    exposedTypeGenerator.addMethodToProto(expression.getId());
   }
 }

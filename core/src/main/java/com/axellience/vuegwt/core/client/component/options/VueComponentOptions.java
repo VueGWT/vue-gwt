@@ -14,6 +14,7 @@ import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import javax.inject.Provider;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -70,7 +71,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    * @param fieldNames Name of the data fields in the object
    */
   @JsOverlay
-  public final void initData(boolean useFactory, String... fieldNames) {
+  public final void initData(boolean useFactory, Set<String> fieldNames) {
     JsPropertyMap<Object> dataFields = JsPropertyMap.of();
     for (String fieldName : fieldNames) {
       dataFields.set(fieldName, null);

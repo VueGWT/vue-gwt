@@ -20,7 +20,6 @@ public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
 
   private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
 
-  @JsProperty
   @Prop(required = true)
   int level;
 

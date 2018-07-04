@@ -1,6 +1,7 @@
 package com.axellience.vuegwtexamples.client.examples.todolist;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwtexamples.client.examples.common.Todo;
@@ -11,6 +12,7 @@ import jsinterop.annotations.JsProperty;
 @Component(components = TodoComponent.class)
 public class TodoListComponent implements IsVueComponent, HasCreated {
 
+  @Data
   @JsProperty
   List<Todo> todos = new LinkedList<>();
 

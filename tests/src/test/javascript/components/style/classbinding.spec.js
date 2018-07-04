@@ -23,7 +23,7 @@ describe('Class binding', () => {
     const classAElement = getElement(component, "#class-a");
     expect(classAElement.getAttribute('class')).to.be.empty;
 
-    component.hasClassA = true;
+    component.setHasClassA(true);
     return nextTick().then(() => {
       expect(classAElement.getAttribute('class')).to.equal('class-a');
     });
@@ -33,13 +33,13 @@ describe('Class binding', () => {
     const classABElement = getElement(component, "#class-a-b");
     expect(classABElement.getAttribute('class')).to.be.empty;
 
-    component.hasClassB = true;
+    component.setHasClassB(true);
     return nextTick()
     .then(() => {
       const classValue = classABElement.getAttribute('class');
       expect(classValue).to.equal('class-b');
 
-      component.hasClassA = true;
+      component.setHasClassA(true);
       return nextTick();
     })
     .then(() => {
@@ -54,13 +54,13 @@ describe('Class binding', () => {
         "#computed-class-a-b");
     expect(computedClassABElement.getAttribute('class')).to.be.empty;
 
-    component.hasClassB = true;
+    component.setHasClassB(true);
     return nextTick()
     .then(() => {
       const classValue = computedClassABElement.getAttribute('class');
       expect(classValue).to.equal('class-b');
 
-      component.hasClassA = true;
+      component.setHasClassA(true);
       return nextTick();
     })
     .then(() => {
@@ -74,7 +74,7 @@ describe('Class binding', () => {
     const staticClassElement = getElement(component, "#static-class");
     expect(staticClassElement.getAttribute('class')).to.equal('static-class');
 
-    component.hasClassA = true;
+    component.setHasClassA(true);
     return nextTick().then(() => {
       const classValue = staticClassElement.getAttribute('class');
       expect(classValue).to.have.string('static-class');
@@ -86,7 +86,7 @@ describe('Class binding', () => {
     const arrayClassElement = getElement(component, "#array-class");
     expect(arrayClassElement.getAttribute('class')).to.equal('class-c');
 
-    component.hasClassA = true;
+    component.setHasClassA(true);
     return nextTick().then(() => {
       const classValue = arrayClassElement.getAttribute('class');
       expect(classValue).to.have.string('class-c');

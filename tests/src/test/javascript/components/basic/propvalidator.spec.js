@@ -25,7 +25,7 @@ describe('@PropValidator', () => {
   });
 
   it('should not fire an error if the value is correct', () => {
-    component.validatedPropParent = 6;
+    component.setValidatedPropParent(6);
     return nextTick().then(() => {
       expect(console.error).to.not.have.been.called();
     });
@@ -33,7 +33,7 @@ describe('@PropValidator', () => {
 
   it('should fire an error if the value is incorrect in dev mode', () => {
     if (Vue.config.productionTip === true) {
-      component.validatedPropParent = 106;
+      component.setValidatedPropParent(106);
       return nextTick().then(() => {
         expect(console.error).to.have.been.called.once;
       });
@@ -43,7 +43,7 @@ describe('@PropValidator', () => {
   it('should not fire an error if the value is incorrect in production mode',
       () => {
         if (Vue.config.productionTip === false) {
-          component.validatedPropParent = 106;
+          component.setValidatedPropParent(106);
           return nextTick().then(() => {
             expect(console.error).to.not.have.been.called();
           });

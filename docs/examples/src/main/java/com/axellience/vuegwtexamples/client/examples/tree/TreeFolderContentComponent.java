@@ -13,6 +13,5 @@ import jsinterop.annotations.JsProperty;
 public class TreeFolderContentComponent implements IsVueComponent {
 
   @Prop
-  @JsProperty
   public JsArray<Folder> content;
 }
