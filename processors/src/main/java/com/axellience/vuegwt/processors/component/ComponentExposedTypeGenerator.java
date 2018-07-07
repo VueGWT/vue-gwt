@@ -210,6 +210,7 @@ public class ComponentExposedTypeGenerator {
 
     return TypeSpec
         .classBuilder("Proto")
+        .addSuperinterface(ParameterizedTypeName.get(JsPropertyMap.class, Object.class))
         .addModifiers(Modifier.STATIC)
         .addModifiers(Modifier.PRIVATE)
         .addAnnotation(AnnotationSpec
@@ -246,7 +247,7 @@ public class ComponentExposedTypeGenerator {
     }
 
     optionsMethodBuilder.addStatement(
-        "options.setComponentExportedTypePrototype($T.getComponentExposedTypeConstructorFn($T.class).getPrototype())",
+        "options.setComponentExportedTypePrototype(p)",
         VueGWT.class,
         component);
 
@@ -719,8 +720,8 @@ public class ComponentExposedTypeGenerator {
    */
   private void callConstructor(TypeElement component, MethodSpec.Builder createdMethodBuilder) {
     createdMethodBuilder.addStatement(
-        "$T.getComponentExposedTypeConstructorFn($T.class).initComponentInstanceProperties(this)",
-        VueGWT.class,
+        "$T.initComponentInstanceFields(this, new $T())",
+        VueGWTTools.class,
         component);
   }
 

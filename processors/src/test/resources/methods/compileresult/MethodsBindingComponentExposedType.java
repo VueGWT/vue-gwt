@@ -1,8 +1,8 @@
 package methods;
 
-import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import elemental2.core.Function;
+import jsinterop.base.JsPropertyMap;
 
 @Generated(
     value = "com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator",
@@ -31,8 +31,7 @@ public class MethodsBindingComponentExposedType extends MethodsBindingComponent 
   public VueComponentOptions<MethodsBindingComponent> getOptions() {
     VueComponentOptions<MethodsBindingComponent> options = new VueComponentOptions<MethodsBindingComponent>();
     Proto p = this.__proto__;
-    options.setComponentExportedTypePrototype(
-        VueGWT.getComponentExposedTypeConstructorFn(MethodsBindingComponent.class).getPrototype());
+    options.setComponentExportedTypePrototype(p);
     options.addMethod("onClickMethod", p.onClickMethod);
     options.addHookMethod("created", p.vuegwt$created);
     options.initData(true, VueGWTTools.getFieldsName(this, () -> {
@@ -48,7 +47,7 @@ public class MethodsBindingComponentExposedType extends MethodsBindingComponent 
       namespace = JsPackage.GLOBAL,
       name = "Object"
   )
-  private static class Proto {
+  private static class Proto implements JsPropertyMap<Object> {
 
     public Function onClickMethod;
 

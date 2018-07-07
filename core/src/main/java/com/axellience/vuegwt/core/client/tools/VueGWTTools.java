@@ -131,8 +131,9 @@ public class VueGWTTools {
     JsPropertyMap<Object> map = cast(instance);
     JsObject jsObject = cast(instance);
     map.forEach(key -> {
-      if (!jsObject.hasOwnProperty(key))
+      if (!jsObject.hasOwnProperty(key)) {
         return;
+      }
 
       Any val = asAny(map.get(key));
       if (isTripleEqual(val, null) ||
@@ -146,8 +147,9 @@ public class VueGWTTools {
 
     Set<String> dataFields = new HashSet<>();
     map.forEach(key -> {
-      if (!jsObject.hasOwnProperty(key))
+      if (!jsObject.hasOwnProperty(key)) {
         return;
+      }
 
       Any val = asAny(map.get(key));
       if (isTripleEqual(val, null) ||
@@ -162,5 +164,30 @@ public class VueGWTTools {
 
   public static String getFieldName(Object instance, Runnable fieldMarker) {
     return getFieldsName(instance, fieldMarker).iterator().next();
+  }
+
+  /**
+   * Init instance properties for the given VueComponent instance. The Constructor for VueComponent
+   * is provided by Vue and doesn't extend the {@link IsVueComponent} constructor. This method get
+   * an instance of the Java class for the VueComponent and copy properties to the VueComponentInstance.
+   * This will initialise properties that are initialised inline in the class. For example: List&lt;String&gt;
+   * myList = new LinkedList&lt;String&gt;();
+   *
+   * @param vueComponentInstance An instance of VueComponent to initialize
+   * @param javaComponentClassInstance An instance of the Component class
+   */
+  public static void initComponentInstanceFields(IsVueComponent vueComponentInstance,
+      IsVueComponent javaComponentClassInstance) {
+    JsPropertyMap<Object> vueComponentInstancePropertyMap = Js.cast(vueComponentInstance);
+    JsPropertyMap<Object> javaComponentClassInstancePropertyMap = Js
+        .cast(javaComponentClassInstance);
+
+    javaComponentClassInstancePropertyMap.forEach(key -> {
+      if (!javaComponentClassInstancePropertyMap.has(key)
+          || vueComponentInstancePropertyMap.get(key) != null) {
+        return;
+      }
+      vueComponentInstancePropertyMap.set(key, javaComponentClassInstancePropertyMap.get(key));
+    });
   }
 }
