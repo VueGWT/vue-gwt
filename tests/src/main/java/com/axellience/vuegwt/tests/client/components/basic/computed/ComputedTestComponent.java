@@ -17,6 +17,11 @@ public class ComputedTestComponent implements IsVueComponent {
     return data == null ? null : "#" + data + "#";
   }
 
+  @Computed
+  public String computedPropertyNoGet() {
+    return data == null ? null : "!" + data + "!";
+  }
+
   @JsMethod
   public void setData(String data) {
     this.data = data;
