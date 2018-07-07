@@ -12,7 +12,7 @@ import elemental2.core.Function;
     namespace = "VueGWTExposedTypesRepository",
     name = "methods_MethodsBindingComponent"
 )
-public class MethodsBindingComponentExposedType extends MethodsBindingComponent implements DataFieldsProvider {
+public class MethodsBindingComponentExposedType extends MethodsBindingComponent {
 
   @JsMethod
   @SuppressWarnings("unusable-by-js")
@@ -31,10 +31,13 @@ public class MethodsBindingComponentExposedType extends MethodsBindingComponent 
   public VueComponentOptions<MethodsBindingComponent> getOptions() {
     VueComponentOptions<MethodsBindingComponent> options = new VueComponentOptions<MethodsBindingComponent>();
     Proto p = this.__proto__;
-    options.setComponentExportedTypePrototype(VueGWT.getComponentExposedTypeConstructorFn(MethodsBindingComponent.class).getPrototype());
+    options.setComponentExportedTypePrototype(
+        VueGWT.getComponentExposedTypeConstructorFn(MethodsBindingComponent.class).getPrototype());
     options.addMethod("onClickMethod", p.onClickMethod);
     options.addHookMethod("created", p.vuegwt$created);
-    options.initData(true, this.vuegwt$getDataFieldsName());
+    options.initData(true, VueGWTTools.getFieldsName(this, () -> {
+      this.simpleObject = null;
+    }));
     options.registerTemplateMethods(p.exp$0, p.exp$1);
     options.initRenderFunctions(getRenderFunction(), getStaticRenderFunctions());
     return options;
@@ -46,6 +49,7 @@ public class MethodsBindingComponentExposedType extends MethodsBindingComponent 
       name = "Object"
   )
   private static class Proto {
+
     public Function onClickMethod;
 
     public Function vuegwt$created;

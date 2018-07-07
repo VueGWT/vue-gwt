@@ -16,7 +16,7 @@ import jsinterop.annotations.JsType;
     namespace = "VueGWTExposedTypesRepository",
     name = "props_PropComponent"
 )
-public class PropComponentExposedType extends PropComponent implements DataFieldsProvider {
+public class PropComponentExposedType extends PropComponent {
 
   @JsMethod
   private void vuegwt_prop$myProp(int myProp) {
@@ -26,11 +26,14 @@ public class PropComponentExposedType extends PropComponent implements DataField
   public VueComponentOptions<PropComponent> getOptions() {
     VueComponentOptions<PropComponent> options = new VueComponentOptions<PropComponent>();
     Proto p = this.__proto__;
-    options.setComponentExportedTypePrototype(VueGWT.getComponentExposedTypeConstructorFn(PropComponent.class).getPrototype());
+    options.setComponentExportedTypePrototype(
+        VueGWT.getComponentExposedTypeConstructorFn(PropComponent.class).getPrototype());
     options.addJavaProp("myProp", false, null);
     options.addJavaWatch(p.vuegwt_prop$myProp, "myProp", false, true);
     options.addHookMethod("created", p.vuegwt$created);
-    options.initData(true, this.vuegwt$getDataFieldsName());
+    options.initData(true, VueGWTTools.getFieldsName(this, () -> {
+      this.myProp = 0;
+    }));
     return options;
   }
 
@@ -40,6 +43,7 @@ public class PropComponentExposedType extends PropComponent implements DataField
       name = "Object"
   )
   private static class Proto {
+
     public Function vuegwt_prop$myProp;
 
     public Function vuegwt$created;

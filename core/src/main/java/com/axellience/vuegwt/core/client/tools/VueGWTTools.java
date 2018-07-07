@@ -1,11 +1,18 @@
 package com.axellience.vuegwt.core.client.tools;
 
+import static jsinterop.base.Js.asAny;
+import static jsinterop.base.Js.cast;
+import static jsinterop.base.Js.isTripleEqual;
+
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
+import java.util.HashSet;
+import java.util.Set;
 import jsinterop.annotations.JsFunction;
+import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -109,5 +116,51 @@ public class VueGWTTools {
     return value != null &&
         (JsArray.isArray(value) || "object".equals(Js.typeof(value))) &&
         !value.has("_isVue");
+  }
+
+  /**
+   * Determine the name of fields at runtime. This allows fields to be renamed during optimizations.
+   * The fieldsMarker method must set the value of the wanted fields to either null, 0 or false
+   * (depending on the type of the field).
+   *
+   * @param instance The instance we want to get the name of the fields from
+   * @param fieldsMarker Mark the fields which names we want to get
+   * @return The list of names of the fields
+   */
+  public static Set<String> getFieldsName(Object instance, Runnable fieldsMarker) {
+    JsPropertyMap<Object> map = cast(instance);
+    JsObject jsObject = cast(instance);
+    map.forEach(key -> {
+      if (!jsObject.hasOwnProperty(key))
+        return;
+
+      Any val = asAny(map.get(key));
+      if (isTripleEqual(val, null) ||
+          isTripleEqual(val, asAny(0)) ||
+          isTripleEqual(val, asAny(false))) {
+        map.delete(key);
+      }
+    });
+
+    fieldsMarker.run();
+
+    Set<String> dataFields = new HashSet<>();
+    map.forEach(key -> {
+      if (!jsObject.hasOwnProperty(key))
+        return;
+
+      Any val = asAny(map.get(key));
+      if (isTripleEqual(val, null) ||
+          isTripleEqual(val, asAny(0)) ||
+          isTripleEqual(val, asAny(false))) {
+        dataFields.add(key);
+      }
+    });
+
+    return dataFields;
+  }
+
+  public static String getFieldName(Object instance, Runnable fieldMarker) {
+    return getFieldsName(instance, fieldMarker).iterator().next();
   }
 }

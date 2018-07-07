@@ -23,7 +23,6 @@ import com.axellience.vuegwt.core.annotations.component.PropValidator;
 import com.axellience.vuegwt.core.annotations.component.Watch;
 import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.ComponentExposedTypeConstructorFn;
-import com.axellience.vuegwt.core.client.component.DataFieldsProvider;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
@@ -169,7 +168,6 @@ public class ComponentExposedTypeGenerator {
         .classBuilder(exposedTypeClassName)
         .addModifiers(Modifier.PUBLIC)
         .superclass(TypeName.get(component.asType()))
-        .addSuperinterface(DataFieldsProvider.class)
         .addAnnotation(AnnotationSpec
             .builder(Generated.class)
             .addMember("value", "$S", ComponentExposedTypeGenerator.class.getCanonicalName())
@@ -278,30 +276,32 @@ public class ComponentExposedTypeGenerator {
    * Create
    */
   private void initComponentDataFields() {
-    MethodSpec.Builder dataFieldsNameGetterBuilder = MethodSpec
-        .methodBuilder("vuegwt$markDataFields")
-        .addModifiers(Modifier.PUBLIC)
-        .addAnnotation(Override.class);
-
-    fieldsToMarkAsData.forEach(field -> {
-      TypeName fieldType = TypeName.get(field.asType());
-      String value;
-      if (fieldType == TypeName.BOOLEAN) {
-        value = "false";
-      } else if (fieldType.isPrimitive()) {
-        value = "0";
-      } else {
-        value = "null";
-      }
-      dataFieldsNameGetterBuilder
-          .addStatement("this.$L = $L", field.getSimpleName().toString(), value);
-    });
-
-    componentExposedTypeBuilder.addMethod(dataFieldsNameGetterBuilder.build());
-
     Component annotation = component.getAnnotation(Component.class);
-    optionsBuilder.addStatement("options.initData($L, this.$L())", annotation.useFactory(),
-        "vuegwt$getDataFieldsName");
+    optionsBuilder.beginControlFlow("options.initData($L, $T.getFieldsName(this, () ->",
+        annotation.useFactory(), VueGWTTools.class);
+    fieldsToMarkAsData.forEach(field ->
+        optionsBuilder.addStatement("this.$L = $L", field.getSimpleName().toString(),
+            getFieldMarkingValueForType(field.asType()))
+    );
+    optionsBuilder.endControlFlow("))");
+  }
+
+  /**
+   * Return the value used to mark a field depending on it's type
+   *
+   * @param typeMirror The type of the field
+   * @return A String representing the value
+   * @see VueGWTTools#getFieldsName(Object, Runnable)
+   */
+  private String getFieldMarkingValueForType(TypeMirror typeMirror) {
+    TypeName fieldType = TypeName.get(typeMirror);
+    if (fieldType == TypeName.BOOLEAN) {
+      return "false";
+    } else if (fieldType.isPrimitive()) {
+      return "0";
+    }
+
+    return "null";
   }
 
   /**
@@ -381,11 +381,11 @@ public class ComponentExposedTypeGenerator {
       }
 
       String propertyName = GeneratorsUtil.getComputedPropertyName(method);
-      optionsBuilder.addStatement("options.addJavaComputed(p.$L, $S, $T.$L)",
-          methodName,
-          propertyName,
-          ComputedKind.class,
-          kind);
+      optionsBuilder.beginControlFlow("options.addJavaComputed(p.$L, $T.getFieldName(this, () ->",
+          methodName, VueGWTTools.class);
+      optionsBuilder.addStatement("this.$L = $L", propertyName,
+          getFieldMarkingValueForType(getComputedPropertyTypeFromMethod(method)));
+      optionsBuilder.endControlFlow("), $T.$L)", ComputedKind.class, kind);
 
       exposeExistingJavaMethodToJs(method);
     });
@@ -428,21 +428,25 @@ public class ComponentExposedTypeGenerator {
         return;
       }
 
-      TypeMirror propertyType;
-      if ("void".equals(method.getReturnType().toString())) {
-        propertyType = method.getParameters().get(0).asType();
-      } else {
-        propertyType = method.getReturnType();
-      }
-
+      TypeMirror propertyType = getComputedPropertyTypeFromMethod(method);
       componentExposedTypeBuilder.addField(TypeName.get(propertyType),
           propertyName,
-          Modifier.PUBLIC);
+          Modifier.PROTECTED);
       alreadyDone.add(propertyName);
     });
 
     getSuperComponentType(component)
         .ifPresent(superComponent -> addFieldsForComputedMethod(superComponent, alreadyDone));
+  }
+
+  private TypeMirror getComputedPropertyTypeFromMethod(ExecutableElement method) {
+    TypeMirror propertyType;
+    if ("void".equals(method.getReturnType().toString())) {
+      propertyType = method.getParameters().get(0).asType();
+    } else {
+      propertyType = method.getReturnType();
+    }
+    return propertyType;
   }
 
   /**
