@@ -20,7 +20,8 @@ class DataFieldsValidatorTest {
             .compile(
                 JavaFileObjects.forResource("validators/ModelWithListNoAnnotationComponent.java"));
 
-    assertThat(compilation).hadWarningContaining("Collection with missing @JsProperty");
+    assertThat(compilation).hadWarningContaining(
+        "Java Collections must have the @JsProperty annotation to be observed: modelWithListNoAnnotation");
   }
 
   @Test
@@ -32,7 +33,8 @@ class DataFieldsValidatorTest {
             .compile(
                 JavaFileObjects.forResource("validators/ModelWithSetNoAnnotationComponent.java"));
 
-    assertThat(compilation).hadWarningContaining("Collection with missing @JsProperty");
+    assertThat(compilation).hadWarningContaining(
+        "Java Collections must have the @JsProperty annotation to be observed: modelWithSetNoAnnotation -> set");
   }
 
   @Test
@@ -44,7 +46,23 @@ class DataFieldsValidatorTest {
             .compile(
                 JavaFileObjects.forResource("validators/ModelWithMapNoAnnotationComponent.java"));
 
-    assertThat(compilation).hadWarningContaining("Collection with missing @JsProperty");
+    assertThat(compilation).hadWarningContaining(
+        "Java Collections must have the @JsProperty annotation to be observed: modelWithMapNoAnnotation -> map");
+  }
+
+  @Test
+  @DisplayName("should throw a warning invalid Collection Data fields in a Component")
+  void collectionDataFields() {
+    Compilation compilation =
+        javac()
+            .withProcessors(new VueGwtProcessor())
+            .compile(
+                JavaFileObjects.forResource("validators/CollectionDataFieldsComponent.java"));
+
+    assertThat(compilation).hadWarningContaining(
+        "Java Collections must have the @JsProperty annotation to be observed: collectionWithMissingJsProperty");
+    assertThat(compilation).hadWarningContaining(
+        "Specific Collection type used as a field type, you should use either Map, Set or List: collectionWithSpecificType");
   }
 
   @Test
@@ -57,7 +75,7 @@ class DataFieldsValidatorTest {
                 .forResource("validators/ModelWithLinkedListWithAnnotationComponent.java"));
 
     assertThat(compilation).hadWarningContaining(
-        "Specific Collection type used as Property type, you should use either Map, Set or List");
+        "Specific Collection type used as a field type, you should use either Map, Set or List");
   }
 
   @Test
@@ -80,7 +98,8 @@ class DataFieldsValidatorTest {
             .compile(
                 JavaFileObjects.forResource("validators/ModelWithTypeParametersComponent.java"));
 
-    assertThat(compilation).hadWarningContaining("Collection with missing @JsProperty");
+    assertThat(compilation).hadWarningContaining(
+        "Java Collections must have the @JsProperty annotation to be observed: modelWithTypeParameters -> modelWithListNoAnnotationList -> validators.models.ModelWithListNoAnnotation -> list");
     System.out.println(compilation.errors());
   }
 

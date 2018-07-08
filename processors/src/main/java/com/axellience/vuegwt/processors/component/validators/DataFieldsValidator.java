@@ -90,13 +90,13 @@ public class DataFieldsValidator {
   private void validateCollectionField(VariableElement field, Element component, String debugPath) {
     if (!hasJsPropertyAnnotation(field)) {
       messager.printMessage(Kind.MANDATORY_WARNING,
-          "Collection with missing @JsProperty annotation: " + debugPath
+          "Java Collections must have the @JsProperty annotation to be observed: " + debugPath
               + ", please check the Vue GWT doc for Java Collection observation, in Component "
               + component, field);
     }
     if (!isSupportedCollectionField(field)) {
       messager.printMessage(Kind.MANDATORY_WARNING,
-          "Specific Collection type used as Property type, you should use either Map, Set or List: "
+          "Specific Collection type used as a field type, you should use either Map, Set or List: "
               + debugPath
               + ", please check the Vue GWT doc for Java Collection observation, in Component"
               + component, field);
