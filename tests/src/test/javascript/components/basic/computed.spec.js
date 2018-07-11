@@ -20,7 +20,6 @@ describe('@Computed', () => {
 
   it('should work correctly at start', () => {
     const computedPropertyEl = component.$el.firstElementChild;
-    console.log(component.$el);
     expect(computedPropertyEl.innerText).to.equal('');
     expect(computedPropertyEl.hasAttribute('data-value')).to.be.false;
   });
