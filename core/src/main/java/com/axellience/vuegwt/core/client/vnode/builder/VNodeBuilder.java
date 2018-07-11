@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.core.client.vnode.builder;
 
-import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.VNodeData;
@@ -48,32 +47,6 @@ public class VNodeBuilder {
    */
   public VNode el(String tag, VNodeData data, Object... children) {
     return this.function.create(tag, data, children);
-  }
-
-  /**
-   * Create a VNode with the given {@link IsVueComponent}
-   *
-   * @param isVueComponentClass Class for the {@link IsVueComponent} we want
-   * @param children Children
-   * @param <T> The type of the {@link IsVueComponent}
-   * @return a new VNode of this Component
-   */
-  public <T extends IsVueComponent> VNode el(Class<T> isVueComponentClass, Object... children) {
-    return el(VueGWT.getJsConstructor(isVueComponentClass), children);
-  }
-
-  /**
-   * Create a VNode with the given {@link IsVueComponent}
-   *
-   * @param isVueComponentClass Class for the {@link IsVueComponent} we want
-   * @param data Information for the new VNode (attributes...)
-   * @param children Children
-   * @param <T> The type of the {@link IsVueComponent}
-   * @return a new VNode of this Component
-   */
-  public <T extends IsVueComponent> VNode el(Class<T> isVueComponentClass, VNodeData data,
-      Object... children) {
-    return el(VueGWT.getJsConstructor(isVueComponentClass), data, children);
   }
 
   /**

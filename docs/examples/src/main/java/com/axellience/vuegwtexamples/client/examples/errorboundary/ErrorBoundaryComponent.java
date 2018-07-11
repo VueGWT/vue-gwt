@@ -32,6 +32,6 @@ public class ErrorBoundaryComponent implements IsVueComponent, HasErrorCaptured,
       return builder.el("pre", style, "An error occurred: " + error);
     }
 
-    return builder.el(ErrorMakerComponent.class);
+    return builder.el(ErrorMakerComponentFactory.get());
   }
 }

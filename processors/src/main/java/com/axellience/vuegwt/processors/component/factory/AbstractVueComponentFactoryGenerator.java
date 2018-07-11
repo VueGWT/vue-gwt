@@ -71,7 +71,7 @@ public abstract class AbstractVueComponentFactoryGenerator {
 
     vueFactoryBuilder.addMethod(MethodSpec
         .constructorBuilder()
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(Modifier.PROTECTED)
         .addAnnotation(Inject.class)
         .build());
 

@@ -1,7 +1,5 @@
 package com.axellience.vuegwt.core.client;
 
-import static com.axellience.vuegwt.core.client.VueGWT.createInstance;
-
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.customelement.CustomElementOptions;
@@ -34,21 +32,6 @@ public abstract class Vue {
    * Create a {@link Vue} instance and mount it on a DOM element.
    *
    * @param element CSS selector for the element to attach in
-   * @param isVueComponentClass The Class of the Component to create
-   * @param <T> {@link IsVueComponent} we want to attach
-   * @return The created and attached instance of our Component
-   */
-  @JsOverlay
-  public static <T extends IsVueComponent> T attach(String element, Class<T> isVueComponentClass) {
-    T vueInstance = createInstance(isVueComponentClass);
-    vueInstance.vue().$mount(element);
-    return vueInstance;
-  }
-
-  /**
-   * Create a {@link Vue} instance and mount it on a DOM element.
-   *
-   * @param element CSS selector for the element to attach in
    * @param vueFactory The factory of the Component to create
    * @param <T> {@link IsVueComponent} we want to attach
    * @return The created and attached instance of our Component
@@ -57,21 +40,6 @@ public abstract class Vue {
   public static <T extends IsVueComponent> T attach(String element,
       VueComponentFactory<T> vueFactory) {
     T vueInstance = vueFactory.create();
-    vueInstance.vue().$mount(element);
-    return vueInstance;
-  }
-
-  /**
-   * Create a {@link Vue} instance and mount it on a DOM element.
-   *
-   * @param element DOM Element we want to attach our component in
-   * @param isVueComponentClass The Class of the Component to create
-   * @param <T> {@link IsVueComponent} we want to attach
-   * @return The created and attached instance of our Component
-   */
-  @JsOverlay
-  public static <T extends IsVueComponent> T attach(Element element, Class<T> isVueComponentClass) {
-    T vueInstance = createInstance(isVueComponentClass);
     vueInstance.vue().$mount(element);
     return vueInstance;
   }
@@ -90,18 +58,6 @@ public abstract class Vue {
     T vueInstance = vueFactory.create();
     vueInstance.vue().$mount(element);
     return vueInstance;
-  }
-
-  /**
-   * Register a {@link IsVueComponent} globally
-   *
-   * @param id Id for our component in the templates
-   * @param isVueComponentClass The Class of the {@link IsVueComponent} to create
-   * @param <T> {@link IsVueComponent} we want to attach
-   */
-  @JsOverlay
-  public static <T extends IsVueComponent> void component(String id, Class<T> isVueComponentClass) {
-    component(id, VueGWT.getVueComponentFactory(isVueComponentClass));
   }
 
   /**
@@ -139,12 +95,6 @@ public abstract class Vue {
 
   @JsOverlay
   public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
-      String componentTag, Class<T> isVueComponentClass) {
-    return Vue.customElement(componentTag, isVueComponentClass, new CustomElementOptions<>());
-  }
-
-  @JsOverlay
-  public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
       String componentTag, VueComponentFactory<T> vueFactory) {
     return Vue.customElement(componentTag, vueFactory, new CustomElementOptions<>());
   }
@@ -153,13 +103,6 @@ public abstract class Vue {
   public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
       String componentTag, VueJsConstructor<T> vueJsConstructor) {
     return Vue.customElement(componentTag, vueJsConstructor, new CustomElementOptions<>());
-  }
-
-  @JsOverlay
-  public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
-      String componentTag, Class<T> isVueComponentClass, CustomElementOptions<T> options) {
-    return Vue
-        .customElement(componentTag, VueGWT.getVueComponentFactory(isVueComponentClass), options);
   }
 
   @JsOverlay

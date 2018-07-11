@@ -14,7 +14,7 @@ export const onGwtReady = function () {
 export const createAndMountComponent = function (qualifiedName) {
   const div = document.createElement("div");
   document.body.appendChild(div);
-  const ComponentConstructor = window.VueGWT.getJsConstructor(qualifiedName);
+  const ComponentConstructor = window.vueGwtTestComponents[qualifiedName];
   return new ComponentConstructor({el: div});
 };
 

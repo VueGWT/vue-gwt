@@ -7,7 +7,7 @@ import com.axellience.vuegwt.tests.client.common.Todo;
 import jsinterop.annotations.JsMethod;
 
 @Component(components = {EmitTypesChildComponent.class})
-class EmitTypesParentComponent implements IsVueComponent {
+public class EmitTypesParentComponent implements IsVueComponent {
 
   @Data
   public int myInt; // 10

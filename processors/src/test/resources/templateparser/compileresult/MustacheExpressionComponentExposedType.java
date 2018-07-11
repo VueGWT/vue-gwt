@@ -4,10 +4,6 @@ package templateparser;
     value = "com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator",
     comments = "https://github.com/Axellience/vue-gwt"
 )
-@JsType(
-    namespace = "VueGWTExposedTypesRepository",
-    name = "templateparser_MustacheExpressionComponent"
-)
 public class MustacheExpressionComponentExposedType extends MustacheExpressionComponent {
 
   @JsMethod

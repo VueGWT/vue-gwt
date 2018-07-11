@@ -3,6 +3,7 @@ package com.axellience.vuegwtexamples.client;
 import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwtexamples.client.examples.animalselector.AnimalSelectorComponent;
+import com.axellience.vuegwtexamples.client.examples.animalselector.AnimalSelectorComponentFactory;
 import com.axellience.vuegwtexamples.client.examples.melisandre.MelisandreComponentClientBundle;
 import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
@@ -26,7 +27,7 @@ public class VueGwtExamplesApp implements EntryPoint {
     DomGlobal.document.body.appendChild(scriptElement);
 
     MelisandreComponentClientBundle.INSTANCE.melisandreComponentStyle().ensureInjected();
-    Vue.customElement("animal-selector", AnimalSelectorComponent.class);
+    Vue.customElement("animal-selector", AnimalSelectorComponentFactory.get());
 
     VueGwtExamplesService.initExamples();
   }

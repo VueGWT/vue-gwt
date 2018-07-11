@@ -12,10 +12,6 @@ import jsinterop.base.JsPropertyMap;
     value = "com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator",
     comments = "https://github.com/Axellience/vue-gwt"
 )
-@JsType(
-    namespace = "VueGWTExposedTypesRepository",
-    name = "props_PropComponent"
-)
 public class PropComponentExposedType extends PropComponent {
 
   @JsMethod

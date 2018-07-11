@@ -6,7 +6,6 @@ import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.has
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isFieldVisibleInJS;
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isMethodVisibleInJS;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentExposedTypeName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getFieldMarkingValueForType;
@@ -23,7 +22,6 @@ import com.axellience.vuegwt.core.annotations.component.PropDefault;
 import com.axellience.vuegwt.core.annotations.component.PropValidator;
 import com.axellience.vuegwt.core.annotations.component.Watch;
 import com.axellience.vuegwt.core.client.VueGWT;
-import com.axellience.vuegwt.core.client.component.ComponentExposedTypeConstructorFn;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
@@ -71,6 +69,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -121,8 +120,6 @@ public class ComponentExposedTypeGenerator {
     componentExposedTypeBuilder = createComponentExposedTypeBuilder(componentWithSuffixClassName);
     protoClassBuilder = createProtoClassBuilder();
 
-    createGetFactoryMethod();
-
     optionsBuilder = createOptionsMethodBuilder();
     Set<ExecutableElement> hookMethodsFromInterfaces = getHookMethodsFromInterfaces();
     processData();
@@ -165,7 +162,7 @@ public class ComponentExposedTypeGenerator {
    * @return A Builder to build the class
    */
   private Builder createComponentExposedTypeBuilder(ClassName exposedTypeClassName) {
-    Builder exposedTypeBuilder = TypeSpec
+    return TypeSpec
         .classBuilder(exposedTypeClassName)
         .addModifiers(Modifier.PUBLIC)
         .superclass(TypeName.get(component.asType()))
@@ -174,30 +171,6 @@ public class ComponentExposedTypeGenerator {
             .addMember("value", "$S", ComponentExposedTypeGenerator.class.getCanonicalName())
             .addMember("comments", "$S", "https://github.com/Axellience/vue-gwt")
             .build());
-
-    // Add @JsType annotation. This ensure this class is included.
-    // As we use a class reference to use our Components, this class would be removed by GWT
-    // tree shaking.
-    exposedTypeBuilder.addAnnotation(AnnotationSpec
-        .builder(JsType.class)
-        .addMember("namespace", "$S", "VueGWTExposedTypesRepository")
-        .addMember("name", "$S", component.getQualifiedName().toString().replaceAll("\\.", "_"))
-        .build());
-
-    return exposedTypeBuilder;
-  }
-
-  /**
-   * Add a method to retrieve the Factory from the ExportedType
-   */
-  private void createGetFactoryMethod() {
-    componentExposedTypeBuilder.addMethod(MethodSpec
-        .methodBuilder("getVueComponentFactory")
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .returns(componentFactoryName(component))
-        .addAnnotation(GeneratorsUtil.getUnusableByJSAnnotation())
-        .addStatement("return $T.get()", componentFactoryName(component))
-        .build());
   }
 
   /**
@@ -207,7 +180,11 @@ public class ComponentExposedTypeGenerator {
    */
   private Builder createProtoClassBuilder() {
     componentExposedTypeBuilder.addField(
-        FieldSpec.builder(ClassName.bestGuess("Proto"), "__proto__", Modifier.PUBLIC).build());
+        FieldSpec
+            .builder(ClassName.bestGuess("Proto"), "__proto__", Modifier.PUBLIC)
+            .addAnnotation(JsProperty.class)
+            .build()
+    );
 
     return TypeSpec
         .classBuilder("Proto")
@@ -570,6 +547,7 @@ public class ComponentExposedTypeGenerator {
     componentExposedTypeBuilder.addMethod(MethodSpec
         .methodBuilder("vuegwt$render")
         .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(JsMethod.class)
         .returns(VNode.class)
         .addParameter(CreateElementFunction.class, "createElementFunction")
         .addStatement("return super.render(new $T(createElementFunction))", VNodeBuilder.class)
@@ -583,18 +561,24 @@ public class ComponentExposedTypeGenerator {
 
   /**
    * Create the "created" hook method. This method will be called on each Component when it's
-   * created. It will inject dependencies if any, and call the {@link
-   * ComponentExposedTypeConstructorFn} on the newly created instance.
+   * created. It will inject dependencies if any.
    *
    * @param dependenciesBuilder Builder for our component dependencies, needed here to inject the
    * dependencies in the instance
    */
   private void createCreatedHook(ComponentInjectedDependenciesBuilder dependenciesBuilder) {
     String hasRunCreatedFlagName = "vuegwt$hrc_" + getSuperComponentCount(component);
-    componentExposedTypeBuilder.addField(boolean.class, hasRunCreatedFlagName, Modifier.PUBLIC);
+    componentExposedTypeBuilder
+        .addField(
+            FieldSpec.builder(boolean.class, hasRunCreatedFlagName, Modifier.PUBLIC)
+                .addAnnotation(JsProperty.class)
+                .build()
+        );
 
     MethodSpec.Builder createdMethodBuilder =
-        MethodSpec.methodBuilder("vuegwt$created").addModifiers(Modifier.PUBLIC);
+        MethodSpec.methodBuilder("vuegwt$created")
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(JsMethod.class);
 
     // Avoid infinite recursion in case calling the Java constructor calls Vue.js constructor
     // This can happen when extending an existing JS component
@@ -703,8 +687,9 @@ public class ComponentExposedTypeGenerator {
    */
   private void initFieldsValues(TypeElement component, MethodSpec.Builder createdMethodBuilder) {
     // Do not init instance fields for abstract components
-    if (component.getModifiers().contains(Modifier.ABSTRACT))
+    if (component.getModifiers().contains(Modifier.ABSTRACT)) {
       return;
+    }
 
     createdMethodBuilder.addStatement(
         "$T.initComponentInstanceFields(this, new $T())",
@@ -753,6 +738,7 @@ public class ComponentExposedTypeGenerator {
     MethodSpec.Builder proxyMethodBuilder = MethodSpec
         .methodBuilder(originalMethod.getSimpleName().toString())
         .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(JsMethod.class)
         .returns(ClassName.get(originalMethod.getReturnType()));
 
     originalMethod

@@ -1,6 +1,5 @@
 package com.axellience.vuegwt.gwt2.client.widget;
 
-import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
@@ -25,10 +24,6 @@ public class VueGwtWidget<T extends IsVueComponent> extends Widget {
 
   public VueGwtWidget(VueComponentFactory<T> vueFactory) {
     this(vueFactory.getJsConstructor());
-  }
-
-  public VueGwtWidget(Class<T> vueClass) {
-    this(VueGWT.getVueComponentFactory(vueClass));
   }
 
   /**
