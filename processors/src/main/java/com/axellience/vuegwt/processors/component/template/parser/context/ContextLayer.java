@@ -9,9 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A context layer holding local variables for a v-for.
- *
- * @author Adrien Baron
+ * A context layer holding variables visible in a given element. Each v-for will create a new child
+ * context. Exiting a v-for will pop the latest context.
  */
 public class ContextLayer {
 

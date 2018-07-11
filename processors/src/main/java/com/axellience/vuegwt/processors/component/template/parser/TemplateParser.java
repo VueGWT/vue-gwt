@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.processors.component.template.parser;
 
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.vModelFieldToPlaceHolderField;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
 
 import com.axellience.vuegwt.core.annotations.component.Prop;
@@ -289,7 +290,12 @@ public class TemplateParser {
     // Iterate on element attributes
     Set<LocalComponentProp> foundProps = new HashSet<>();
     for (Attribute attribute : element.getAttributes()) {
-      if ("v-for".equals(attribute.getKey()) || "v-model".equals(attribute.getKey())) {
+      if ("v-for".equals(attribute.getKey())) {
+        continue;
+      }
+
+      if ("v-model".equals(attribute.getKey())) {
+        processVModel(attribute);
         continue;
       }
 
@@ -315,6 +321,25 @@ public class TemplateParser {
     }
 
     localComponent.ifPresent(lc -> validateRequiredProps(lc, foundProps));
+  }
+
+  /**
+   * Process v-model expressions. Only @Data fields are allowed in v-model.
+   *
+   * @param vModelAttribute The v-model attribute to process
+   */
+  private void processVModel(Attribute vModelAttribute) {
+    String vModelValue = vModelAttribute.getValue();
+    VariableInfo vModelDataField = context.findRootVariable(vModelValue);
+    if (vModelDataField == null) {
+      logger.error("Couldn't find @Data field for v-model \"" + vModelValue
+          + "\". V-Model is only supported on @Data fields.");
+      return;
+    }
+
+    String placeHolderVModelValue = vModelFieldToPlaceHolderField(vModelValue);
+    outputDocument.replace(vModelAttribute.getValueSegment(), placeHolderVModelValue);
+    result.addvModelDataField(vModelDataField);
   }
 
   /**

@@ -3,8 +3,10 @@ package com.axellience.vuegwt.processors.component.template.parser.result;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Result of a template parsing.
@@ -19,10 +21,12 @@ public class TemplateParserResult {
   private final List<TemplateExpression> expressions = new LinkedList<>();
   private final TemplateParserContext context;
   private final String templateName;
+  private final Set<VariableInfo> vModelDataFields;
 
   public TemplateParserResult(TemplateParserContext context) {
     this.context = context;
     this.templateName = context.getTemplateName();
+    vModelDataFields = new HashSet<>();
   }
 
   /**
@@ -73,6 +77,14 @@ public class TemplateParserResult {
   }
 
   /**
+   * Register a data field used in a v-model expression.
+   * @param dataFieldName Name of the field
+   */
+  public void addvModelDataField(VariableInfo dataFieldName) {
+    vModelDataFields.add(dataFieldName);
+  }
+
+  /**
    * Return the list of expression we found in the template.
    *
    * @return The list of {@link TemplateExpression}
@@ -93,4 +105,7 @@ public class TemplateParserResult {
     this.scopedCss = scopedCss;
   }
 
+  public Set<VariableInfo> getvModelDataFields() {
+    return vModelDataFields;
+  }
 }

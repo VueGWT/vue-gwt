@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class DataFieldsValidatorTest {
 
   @Test
-  @DisplayName("should throw a warning when List missing @JsProperty in the data model")
+  @DisplayName("should throw an error when List missing @JsProperty in the data model")
   void modelWithListNoAnnotation() {
     Compilation compilation =
         javac()
@@ -25,7 +25,7 @@ class DataFieldsValidatorTest {
   }
 
   @Test
-  @DisplayName("should throw a warning when Set missing @JsProperty in the data model")
+  @DisplayName("should throw an error when Set missing @JsProperty in the data model")
   void modelWithSetNoAnnotation() {
     Compilation compilation =
         javac()
@@ -38,7 +38,7 @@ class DataFieldsValidatorTest {
   }
 
   @Test
-  @DisplayName("should throw a warning when Map missing @JsProperty in the data model")
+  @DisplayName("should throw an error when Map missing @JsProperty in the data model")
   void modelWithMapNoAnnotation() {
     Compilation compilation =
         javac()
@@ -51,7 +51,7 @@ class DataFieldsValidatorTest {
   }
 
   @Test
-  @DisplayName("should throw a warning invalid Collection Data fields in a Component")
+  @DisplayName("should throw an error invalid Collection Data fields in a Component")
   void collectionDataFields() {
     Compilation compilation =
         javac()
@@ -66,7 +66,7 @@ class DataFieldsValidatorTest {
   }
 
   @Test
-  @DisplayName("should throw a warning when using specific List implementation in the data model, even with @JsProperty Annotation")
+  @DisplayName("should throw an error when using specific List implementation in the data model, even with @JsProperty Annotation")
   void modelWithLinkedListWithAnnotation() {
     Compilation compilation =
         javac()
@@ -79,7 +79,7 @@ class DataFieldsValidatorTest {
   }
 
   @Test
-  @DisplayName("should not throw a warning on Java Lang types")
+  @DisplayName("should not throw an error on Java Lang types")
   void modelWithIgnoredTypes() {
     Compilation compilation =
         javac()
@@ -104,7 +104,7 @@ class DataFieldsValidatorTest {
   }
 
   @Test
-  @DisplayName("should not throw a warning when using @SuppressWarnings")
+  @DisplayName("should not throw an error when using @SuppressWarnings")
   void ignoreListWithNoAnnotation() {
     Compilation compilation =
         javac()

@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.processors.utils;
 
 import com.axellience.vuegwt.core.annotations.component.Computed;
+import com.axellience.vuegwt.core.client.tools.VueGWTTools;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
@@ -162,5 +163,34 @@ public class GeneratorsUtil {
     }
 
     return typeName;
+  }
+
+
+  /**
+   * Return the value used to mark a field depending on it's type
+   *
+   * @param typeMirror The type of the field
+   * @return A String representing the value
+   * @see VueGWTTools#getFieldsName(Object, Runnable)
+   */
+  public static String getFieldMarkingValueForType(TypeMirror typeMirror) {
+    return getFieldMarkingValueForType(TypeName.get(typeMirror));
+  }
+
+  /**
+   * Return the value used to mark a field depending on it's type
+   *
+   * @param fieldType The type of the field
+   * @return A String representing the value
+   * @see VueGWTTools#getFieldsName(Object, Runnable)
+   */
+  public static String getFieldMarkingValueForType(TypeName fieldType) {
+    if (fieldType == TypeName.BOOLEAN) {
+      return "false";
+    } else if (fieldType.isPrimitive()) {
+      return "0";
+    }
+
+    return "null";
   }
 }

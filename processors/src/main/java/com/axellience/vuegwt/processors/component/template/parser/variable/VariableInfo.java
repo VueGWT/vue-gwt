@@ -7,8 +7,6 @@ import com.squareup.javapoet.TypeName;
 /**
  * Information about a Variable in the template. Can be for example a variable accessible from Java
  * (@JsProperty), a Computed Property a loop variable (v-for) or method parameters.
- *
- * @author Adrien Baron
  */
 public class VariableInfo {
 

@@ -9,6 +9,8 @@ import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
+import elemental2.core.JsRegExp;
+import elemental2.core.JsString;
 import java.util.HashSet;
 import java.util.Set;
 import jsinterop.annotations.JsFunction;
@@ -22,6 +24,9 @@ import jsinterop.base.JsPropertyMap;
  * @author Adrien Baron
  */
 public class VueGWTTools {
+
+  private static final JsRegExp ESCAPE_JS_STRING_REGEXP = new JsRegExp("[.*+?^${}()|[\\]\\\\]",
+      "g");
 
   /**
    * Copy a Java class prototype to a VueComponent declaration. This allows VueComponent created by
@@ -169,9 +174,9 @@ public class VueGWTTools {
   /**
    * Init instance properties for the given VueComponent instance. The Constructor for VueComponent
    * is provided by Vue and doesn't extend the {@link IsVueComponent} constructor. This method get
-   * an instance of the Java class for the VueComponent and copy properties to the VueComponentInstance.
-   * This will initialise properties that are initialised inline in the class. For example: List&lt;String&gt;
-   * myList = new LinkedList&lt;String&gt;();
+   * an instance of the Java class for the VueComponent and copy properties to the
+   * VueComponentInstance. This will initialise properties that are initialised inline in the class.
+   * For example: List&lt;String&gt; myList = new LinkedList&lt;String&gt;();
    *
    * @param vueComponentInstance An instance of VueComponent to initialize
    * @param javaComponentClassInstance An instance of the Component class
@@ -189,5 +194,26 @@ public class VueGWTTools {
       }
       vueComponentInstancePropertyMap.set(key, javaComponentClassInstancePropertyMap.get(key));
     });
+  }
+
+  /**
+   * Escape a String to be used in a JsRegexp as a String literal
+   *
+   * @param input The String we want to escape
+   * @return The escaped String
+   */
+  public static String escapeStringForJsRegexp(String input) {
+    JsString string = cast(input);
+    return string.replace(ESCAPE_JS_STRING_REGEXP, "\\$&");
+  }
+
+  public static String replaceVariableInRenderFunction(String renderFunctionString,
+      String placeHolderFieldName, IsVueComponent component, Runnable fieldMarker) {
+    JsString renderFunctionJsString = Js.cast(renderFunctionString);
+
+    return renderFunctionJsString.replace(
+        new JsRegExp(escapeStringForJsRegexp(placeHolderFieldName), "g"),
+        VueGWTTools.getFieldName(component, fieldMarker)
+    );
   }
 }

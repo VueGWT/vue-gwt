@@ -77,16 +77,6 @@ public class TemplateParserContext {
   }
 
   /**
-   * Add a variable to the root context.
-   *
-   * @param type The type of the variable to add
-   * @param name The name of the variable to add
-   */
-  public void addRootVariable(String type, String name) {
-    this.rootLayer.addVariable(type, name);
-  }
-
-  /**
    * Register a method in the root context
    *
    * @param methodName The name of the method
@@ -135,6 +125,16 @@ public class TemplateParserContext {
     }
 
     return null;
+  }
+
+  /**
+   * Return info about a root variable
+   *
+   * @param name the name of the variable to get
+   * @return Information about the variable
+   */
+  public VariableInfo findRootVariable(String name) {
+    return rootLayer.getVariableInfo(name);
   }
 
   /**

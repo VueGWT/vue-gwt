@@ -95,6 +95,10 @@ public class GeneratorsNameUtil {
     return ClassName.get(typeElement).packageName();
   }
 
+  public static String vModelFieldToPlaceHolderField(String fieldName) {
+    return fieldName + "__vuegwt__vmodel";
+  }
+
   /**
    * Return the default name to register a component based on it's class name. The name of the tag
    * is the name of the component converted to kebab-case. If the component class ends with

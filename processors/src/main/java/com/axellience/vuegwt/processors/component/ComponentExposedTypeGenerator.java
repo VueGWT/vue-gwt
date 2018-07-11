@@ -9,6 +9,7 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componen
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getFieldMarkingValueForType;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
 
@@ -285,24 +286,6 @@ public class ComponentExposedTypeGenerator {
             getFieldMarkingValueForType(field.asType()))
     );
     optionsBuilder.endControlFlow("))");
-  }
-
-  /**
-   * Return the value used to mark a field depending on it's type
-   *
-   * @param typeMirror The type of the field
-   * @return A String representing the value
-   * @see VueGWTTools#getFieldsName(Object, Runnable)
-   */
-  private String getFieldMarkingValueForType(TypeMirror typeMirror) {
-    TypeName fieldType = TypeName.get(typeMirror);
-    if (fieldType == TypeName.BOOLEAN) {
-      return "false";
-    } else if (fieldType.isPrimitive()) {
-      return "0";
-    }
-
-    return "null";
   }
 
   /**
