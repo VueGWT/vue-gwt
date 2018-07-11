@@ -10,7 +10,7 @@ import jsinterop.annotations.JsMethod;
  * @author Adrien Baron
  */
 @Component(hasTemplate = false)
-public class ParentComponent implements IsVueComponent {
+public abstract class ParentComponent implements IsVueComponent {
 
   @Data
   String parentMessage = "This is a message from the parent";

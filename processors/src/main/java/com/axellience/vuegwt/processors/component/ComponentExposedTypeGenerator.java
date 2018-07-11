@@ -603,7 +603,7 @@ public class ComponentExposedTypeGenerator {
         .addStatement("$L = true", hasRunCreatedFlagName);
 
     injectDependencies(component, dependenciesBuilder, createdMethodBuilder);
-    callConstructor(component, createdMethodBuilder);
+    initFieldsValues(component, createdMethodBuilder);
 
     processWatchers(createdMethodBuilder);
 
@@ -696,12 +696,16 @@ public class ComponentExposedTypeGenerator {
   }
 
   /**
-   * Call our {@link IsVueComponent} constructor. Pass injected parameters if needed.
+   * Init fields at creation by using an instance of the Java class
    *
    * @param component {@link IsVueComponent} to process
    * @param createdMethodBuilder Builder for our Create method
    */
-  private void callConstructor(TypeElement component, MethodSpec.Builder createdMethodBuilder) {
+  private void initFieldsValues(TypeElement component, MethodSpec.Builder createdMethodBuilder) {
+    // Do not init instance fields for abstract components
+    if (component.getModifiers().contains(Modifier.ABSTRACT))
+      return;
+
     createdMethodBuilder.addStatement(
         "$T.initComponentInstanceFields(this, new $T())",
         VueGWTTools.class,
