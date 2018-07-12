@@ -57,7 +57,6 @@ public class VueGwtTestsApp implements EntryPoint {
 
   public void onModuleLoad() {
     VueGWT.init();
-    Window.onVueGwtTestsReady.forEach(Function::call);
     registerTestComponent(ComputedTestComponent.class, ComputedTestComponentFactory.get());
     registerTestComponent(DataTestComponent.class, DataTestComponentFactory.get());
     registerTestComponent(PropParentTestComponent.class, PropParentTestComponentFactory.get());
@@ -100,6 +99,8 @@ public class VueGwtTestsApp implements EntryPoint {
     );
     registerTestComponent(ScopedTestComponent.class, ScopedTestComponentFactory.get());
     registerTestComponent(VModelComponent.class, VModelComponentFactory.get());
+
+    Window.onVueGwtTestsReady.forEach(Function::call);
   }
 
   private static <T extends IsVueComponent> void registerTestComponent(Class<T> componentClass,
