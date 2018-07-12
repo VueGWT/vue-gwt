@@ -3,6 +3,7 @@ package com.axellience.vuegwt.core.client.tools;
 import static jsinterop.base.Js.asAny;
 import static jsinterop.base.Js.cast;
 import static jsinterop.base.Js.isTripleEqual;
+import static jsinterop.base.Js.uncheckedCast;
 
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
@@ -203,13 +204,13 @@ public class VueGWTTools {
    * @return The escaped String
    */
   public static String escapeStringForJsRegexp(String input) {
-    JsString string = cast(input);
+    JsString string = uncheckedCast(input);
     return string.replace(ESCAPE_JS_STRING_REGEXP, "\\$&");
   }
 
   public static String replaceVariableInRenderFunction(String renderFunctionString,
       String placeHolderFieldName, IsVueComponent component, Runnable fieldMarker) {
-    JsString renderFunctionJsString = Js.cast(renderFunctionString);
+    JsString renderFunctionJsString = uncheckedCast(renderFunctionString);
 
     return renderFunctionJsString.replace(
         new JsRegExp(escapeStringForJsRegexp(placeHolderFieldName), "g"),
