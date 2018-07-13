@@ -7,9 +7,6 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-/**
- * @author Adrien Baron
- */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class VueObserver {
 
@@ -30,7 +27,7 @@ public class VueObserver {
     this.dep.notifySelf();
   }
 
-  private class Dep {
+  private static class Dep {
 
     @JsMethod(name = "notify")
     public native void notifySelf();

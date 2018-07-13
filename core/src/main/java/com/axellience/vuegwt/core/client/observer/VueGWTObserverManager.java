@@ -134,16 +134,16 @@ public class VueGWTObserverManager {
    * @param vueObserverPrototype A {@link VueObserverPrototype}
    */
   public void customizeVueObserverPrototype(VueObserverPrototype vueObserverPrototype) {
-    vueObserveArrayFunction = vueObserverPrototype.observeArray;
-    vueWalkFunction = vueObserverPrototype.walk;
+    vueObserveArrayFunction = vueObserverPrototype.getObserveArray();
+    vueWalkFunction = vueObserverPrototype.getWalk();
 
-    vueObserverPrototype.walk = (toObserve) -> {
+    vueObserverPrototype.setWalk(toObserve -> {
       if (observeJavaObject(toObserve)) {
         return;
       }
 
       vueWalkFunction.walk(toObserve);
-    };
+    });
   }
 
   /**

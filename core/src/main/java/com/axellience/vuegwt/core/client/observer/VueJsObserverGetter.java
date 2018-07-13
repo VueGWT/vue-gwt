@@ -2,15 +2,15 @@ package com.axellience.vuegwt.core.client.observer;
 
 import static jsinterop.base.Js.uncheckedCast;
 
+import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
+import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import elemental2.core.Function;
-import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 
 class VueJsObserverGetter {
@@ -19,11 +19,12 @@ class VueJsObserverGetter {
   private Proto __proto__;
 
   VueObserverPrototype getVueJsObserverPrototype() {
-    JsConstructorFn vueConstructor = ((JsPropertyMap<JsConstructorFn>) DomGlobal.window).get("Vue");
     VueComponentOptions options = new VueComponentOptions();
+    options.setComponentExportedTypePrototype(this.__proto__);
     options.addMethod("getObserverPrototype", this.__proto__.getObserverPrototype);
 
-    VueJsObserverGetter getter = uncheckedCast(vueConstructor.construct(options));
+    VueJsConstructor vueJsConstructor = Vue.extendJavaComponent(options);
+    VueJsObserverGetter getter = uncheckedCast(vueJsConstructor.instantiate());
     return getter.getObserverPrototype();
   }
 
@@ -33,7 +34,7 @@ class VueJsObserverGetter {
   }
 
   @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-  private static class Proto {
+  private static class Proto implements JsPropertyMap<Object> {
 
     public Function getObserverPrototype;
   }
