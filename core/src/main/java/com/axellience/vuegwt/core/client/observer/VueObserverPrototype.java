@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.core.client.observer;
 
-import static jsinterop.base.Js.cast;
+import static jsinterop.base.Js.uncheckedCast;
 
 import com.axellience.vuegwt.core.client.observer.functions.VueObserveArray;
 import com.axellience.vuegwt.core.client.observer.functions.VueWalk;
@@ -14,12 +14,12 @@ public class VueObserverPrototype implements JsPropertyMap<Object> {
 
   @JsOverlay
   public final VueObserveArray getObserveArray() {
-    return cast(get("observeArray"));
+    return uncheckedCast(get("observeArray"));
   }
 
   @JsOverlay
   public final VueWalk getWalk() {
-    return cast(get("walk"));
+    return uncheckedCast(get("walk"));
   }
 
   @JsOverlay
