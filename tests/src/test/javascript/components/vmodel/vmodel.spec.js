@@ -41,12 +41,12 @@ describe('v-model', () => {
     });
 
     it('should change data field when input value is changed', () => {
-      textInput.value = "newValueFromData";
+      textInput.value = "newValueFromInput";
       triggerEvent(textInput, "input");
 
       return nextTick().then(() => {
-        expect(textInput.value).to.equal('newValueFromData');
-        expect(component.getInputTextValue()).to.equal('newValueFromData');
+        expect(textInput.value).to.equal('newValueFromInput');
+        expect(component.getInputTextValue()).to.equal('newValueFromInput');
       });
     });
   });
@@ -73,12 +73,44 @@ describe('v-model', () => {
     });
 
     it('should change data field when input value is changed', () => {
-      textInput.value = "newValueFromData";
+      textInput.value = "newValueFromInput";
       triggerEvent(textInput, "input");
 
       return nextTick().then(() => {
-        expect(textInput.value).to.equal('newValueFromData');
-        expect(component.getInputTextValue$WithDollar()).to.equal('newValueFromData');
+        expect(textInput.value).to.equal('newValueFromInput');
+        expect(component.getInputTextValue$WithDollar()).to.equal('newValueFromInput');
+      });
+    });
+  });
+
+  describe('computed property with getter/setter', () => {
+    let textInput;
+
+    beforeEach(() => {
+      textInput = component.$el.querySelector("#computedInputTextValue");
+    });
+
+    it('should set the initial value in the text box', () => {
+      expect(textInput.value).to.equal('initialBobby');
+      expect(component.getComputedInputTextValueProperty()).to.equal('initialValue');
+    });
+
+    it('should change input value when data is changed', () => {
+      component.setComputedInputTextValueProperty('newValueFromData');
+
+      return nextTick().then(() => {
+        expect(textInput.value).to.equal('newBobbyFromData');
+        expect(component.getComputedInputTextValueProperty()).to.equal('newValueFromData');
+      });
+    });
+
+    it('should change data field when input value is changed', () => {
+      textInput.value = "newValueFromInput";
+      triggerEvent(textInput, "input");
+
+      return nextTick().then(() => {
+        expect(textInput.value).to.equal('newBobbyFromInput');
+        expect(component.getComputedInputTextValueProperty()).to.equal('newValueFromInput');
       });
     });
   });
