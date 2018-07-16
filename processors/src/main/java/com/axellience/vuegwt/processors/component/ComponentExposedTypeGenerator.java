@@ -47,6 +47,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
+import elemental2.dom.DomGlobal;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
@@ -60,6 +61,7 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -99,6 +101,7 @@ public class ComponentExposedTypeGenerator {
   private MethodSpec.Builder optionsBuilder;
   private Builder protoClassBuilder;
   private Set<VariableElement> fieldsToMarkAsData;
+  private Set<String> fieldsWithNameExposed;
 
   public ComponentExposedTypeGenerator(ProcessingEnvironment processingEnvironment) {
     processingEnv = processingEnvironment;
@@ -117,6 +120,7 @@ public class ComponentExposedTypeGenerator {
 
     this.component = component;
     fieldsToMarkAsData = new HashSet<>();
+    fieldsWithNameExposed = new HashSet<>();
     componentExposedTypeBuilder = createComponentExposedTypeBuilder(componentWithSuffixClassName);
     protoClassBuilder = createProtoClassBuilder();
 
@@ -147,6 +151,9 @@ public class ComponentExposedTypeGenerator {
 
     // Finish building proto
     componentExposedTypeBuilder.addType(protoClassBuilder.build());
+
+    // Expose all fields whose names we determine at runtime to JS
+    exposeExposedFieldsToJs();
 
     // And generate our Java Class
     GeneratorsUtil.toJavaFile(filer,
@@ -258,11 +265,37 @@ public class ComponentExposedTypeGenerator {
     Component annotation = component.getAnnotation(Component.class);
     optionsBuilder.beginControlFlow("options.initData($L, $T.getFieldsName(this, () ->",
         annotation.useFactory(), VueGWTTools.class);
+
     fieldsToMarkAsData.forEach(field ->
         optionsBuilder.addStatement("this.$L = $L", field.getSimpleName().toString(),
             getFieldMarkingValueForType(field.asType()))
     );
     optionsBuilder.endControlFlow("))");
+
+    fieldsWithNameExposed.addAll(
+        fieldsToMarkAsData.stream()
+            .map(VariableElement::getSimpleName)
+            .map(Name::toString)
+            .collect(Collectors.toSet())
+    );
+  }
+
+  /**
+   * Generate a method that use all the fields we want to determine the name of at runtime. This is
+   * to avoid GWT optimizing away assignation on those fields.
+   */
+  private void exposeExposedFieldsToJs() {
+    if (fieldsWithNameExposed.isEmpty()) {
+      return;
+    }
+
+    componentExposedTypeBuilder.addMethod(
+        MethodSpec.methodBuilder("vuegwt$exposeFieldsToJs")
+            .addAnnotation(JsMethod.class)
+            .addStatement("$T.console.log($L)", DomGlobal.class,
+                String.join(",", fieldsWithNameExposed))
+            .build()
+    );
   }
 
   /**
@@ -342,6 +375,7 @@ public class ComponentExposedTypeGenerator {
       }
 
       String propertyName = GeneratorsUtil.getComputedPropertyName(method);
+      fieldsWithNameExposed.add(propertyName);
       optionsBuilder.beginControlFlow("options.addJavaComputed(p.$L, $T.getFieldName(this, () ->",
           methodName, VueGWTTools.class);
       optionsBuilder.addStatement("this.$L = $L", propertyName,

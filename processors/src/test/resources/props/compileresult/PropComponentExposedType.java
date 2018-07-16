@@ -27,7 +27,7 @@ public class PropComponentExposedType extends PropComponent {
     options.addJavaWatch(p.vuegwt_prop$myProp, "myProp", false, true);
     options.addHookMethod("created", p.vuegwt$created);
     options.initData(true, VueGWTTools.getFieldsName(this, () -> {
-      this.myProp = 0;
+      this.myProp = 1;
     }));
     return options;
   }

@@ -29,6 +29,8 @@ public class VueGWTTools {
   private static final JsRegExp ESCAPE_JS_STRING_REGEXP = new JsRegExp("[.*+?^${}()|[\\]\\\\]",
       "g");
 
+  public static final String MARKING_STRING = "VUE_GWT";
+
   /**
    * Copy a Java class prototype to a VueComponent declaration. This allows VueComponent created by
    * Vue to pass as an instance of the {@link IsVueComponent} class they represent.
@@ -143,8 +145,9 @@ public class VueGWTTools {
 
       Any val = asAny(map.get(key));
       if (isTripleEqual(val, null) ||
-          isTripleEqual(val, asAny(0)) ||
-          isTripleEqual(val, asAny(false))) {
+          isTripleEqual(val, asAny(1)) ||
+          isTripleEqual(val, asAny(true)) ||
+          isTripleEqual(val, MARKING_STRING)) {
         map.delete(key);
       }
     });
@@ -159,8 +162,9 @@ public class VueGWTTools {
 
       Any val = asAny(map.get(key));
       if (isTripleEqual(val, null) ||
-          isTripleEqual(val, asAny(0)) ||
-          isTripleEqual(val, asAny(false))) {
+          isTripleEqual(val, asAny(1)) ||
+          isTripleEqual(val, asAny(true)) ||
+          isTripleEqual(val, MARKING_STRING)) {
         dataFields.add(key);
       }
     });

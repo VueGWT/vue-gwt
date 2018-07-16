@@ -186,9 +186,11 @@ public class GeneratorsUtil {
    */
   public static String getFieldMarkingValueForType(TypeName fieldType) {
     if (fieldType == TypeName.BOOLEAN) {
-      return "false";
+      return "true";
     } else if (fieldType.isPrimitive()) {
-      return "0";
+      return "1";
+    } else if (fieldType.equals(TypeName.get(String.class))) {
+      return "com.axellience.vuegwt.core.client.tools.VueGWTTools.MARKING_STRING";
     }
 
     return "null";
