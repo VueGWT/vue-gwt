@@ -18,24 +18,24 @@ class VueJsObserverGetter {
   @JsProperty
   private Proto __proto__;
 
-  VueObserverPrototype getVueJsObserverPrototype() {
+  VueObserver getVueJsObserver() {
     VueComponentOptions options = new VueComponentOptions();
     options.setComponentExportedTypePrototype(this.__proto__);
-    options.addMethod("getObserverPrototype", this.__proto__.getObserverPrototype);
+    options.addMethod("getObserver", this.__proto__.getObserver);
 
     VueJsConstructor vueJsConstructor = Vue.extendJavaComponent(options);
     VueJsObserverGetter getter = uncheckedCast(vueJsConstructor.instantiate());
-    return getter.getObserverPrototype();
+    return getter.getObserver();
   }
 
   @JsMethod
-  private VueObserverPrototype getObserverPrototype() {
-    return VueGWTTools.getDeepValue(this, "$data.__ob__.__proto__");
+  private VueObserver getObserver() {
+    return VueGWTTools.getDeepValue(this, "$data.__ob__");
   }
 
   @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
   private static class Proto implements JsPropertyMap<Object> {
 
-    public Function getObserverPrototype;
+    public Function getObserver;
   }
 }

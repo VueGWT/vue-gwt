@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.core.client.observer;
 
-import com.axellience.vuegwt.core.client.observer.functions.VueObserveArray;
-import com.axellience.vuegwt.core.client.observer.functions.VueWalk;
+import elemental2.core.Function;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import java.util.HashMap;
@@ -24,8 +23,8 @@ public class VueGWTObserverManager {
 
   private final List<VueGWTObserver> observers = new LinkedList<>();
   private final Map<String, Map<String, Object>> classesPropertyCaches = new HashMap<>();
-  private VueObserveArray vueObserveArrayFunction;
-  private VueWalk vueWalkFunction;
+  private Function vueObserveArrayFunction;
+  private Function vueWalkFunction;
 
   public static VueGWTObserverManager get() {
     if (INSTANCE == null) {
@@ -112,7 +111,7 @@ public class VueGWTObserverManager {
    * @param <T> The type of the JsArray
    */
   public <T> void observeArray(JsArray<T> objects) {
-    vueObserveArrayFunction.observeArray(objects);
+    vueObserveArrayFunction.call(this, objects);
   }
 
   /**
@@ -124,25 +123,25 @@ public class VueGWTObserverManager {
    * @param object The object to make reactive
    */
   public void makeReactive(Object object) {
-    vueWalkFunction.walk(object);
+    vueWalkFunction.call(this, object);
   }
 
   /**
    * Customize the VueObserver instance. We get in between to be warned whenever an object is
    * observed and observe it using our Java observers if necessary.
    *
-   * @param vueObserverPrototype A {@link VueObserverPrototype}
+   * @param vueObserver A {@link VueObserver}
    */
-  public void customizeVueObserverPrototype(VueObserverPrototype vueObserverPrototype) {
-    vueObserveArrayFunction = vueObserverPrototype.getObserveArray();
-    vueWalkFunction = vueObserverPrototype.getWalk();
+  public void customizeVueObserverPrototype(VueObserver vueObserver) {
+    vueObserveArrayFunction = vueObserver.getObserveArray();
+    vueWalkFunction = vueObserver.getWalk();
 
-    vueObserverPrototype.setWalk(toObserve -> {
+    vueObserver.setWalk(toObserve -> {
       if (observeJavaObject(toObserve)) {
         return;
       }
 
-      vueWalkFunction.walk(toObserve);
+      vueWalkFunction.call(this, toObserve);
     });
   }
 
@@ -151,7 +150,7 @@ public class VueGWTObserverManager {
    */
   private void captureVueObserver() {
     VueJsObserverGetter getter = new VueJsObserverGetter();
-    customizeVueObserverPrototype(getter.getVueJsObserverPrototype());
+    customizeVueObserverPrototype(getter.getVueJsObserver());
   }
 
   /**
