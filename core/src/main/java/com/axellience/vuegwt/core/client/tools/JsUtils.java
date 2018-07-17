@@ -1,9 +1,10 @@
 package com.axellience.vuegwt.core.client.tools;
 
+import static jsinterop.base.Js.uncheckedCast;
+
 import elemental2.core.JsArray;
 import java.util.Collection;
 import java.util.Map;
-import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 public class JsUtils {
@@ -32,11 +33,13 @@ public class JsUtils {
   }
 
   public static <T> JsArray<T> arrayFrom(Collection<T> collection) {
-    return Js.cast(collection.toArray());
+    return new JsArray<>(collection.toArray());
   }
 
   public static <K, V> JsArray<V> arrayFrom(Map<K, V> map) {
-    return Js.cast(map.values().toArray());
+    JsArray<V> arr = new JsArray<>();
+    map.values().forEach(arr::push);
+    return arr;
   }
 
   public static <T> JsArray<T> arrayFrom(JsArray<T> array) {
@@ -44,7 +47,7 @@ public class JsUtils {
   }
 
   public static <T> JsArray<T> arrayFrom(T[] array) {
-    return Js.cast(array);
+    return uncheckedCast(JsArray.from(array));
   }
 
   public static class JsObjectEntry<T> {
