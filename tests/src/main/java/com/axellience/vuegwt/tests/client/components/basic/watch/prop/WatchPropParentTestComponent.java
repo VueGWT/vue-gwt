@@ -1,5 +1,7 @@
 package com.axellience.vuegwt.tests.client.components.basic.watch.prop;
 
+import static jsinterop.base.Js.uncheckedCast;
+
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
@@ -56,7 +58,7 @@ public class WatchPropParentTestComponent implements IsVueComponent {
 
   @JsMethod
   public WatchPropTestComponent getWatchPropTestComponent() {
-    return vue().$ref("watchPropTest");
+    return uncheckedCast(vue().$ref("watchPropTest"));
   }
 
   @JsMethod

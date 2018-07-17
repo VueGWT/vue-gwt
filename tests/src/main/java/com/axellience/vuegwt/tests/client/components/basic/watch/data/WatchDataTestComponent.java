@@ -7,7 +7,6 @@ import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.tests.client.common.SimpleObject;
 import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsProperty;
 
 @Component
 public class WatchDataTestComponent implements IsVueComponent, HasCreated {
@@ -15,58 +14,44 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   @Data
   SimpleObject watchedDataAnnotation = null;
 
-  @JsProperty
   SimpleObject newValueAnnotation;
 
-  @JsProperty
   SimpleObject oldValueAnnotation;
 
-  @JsProperty
   String newValueAnnotationProperty;
 
-  @JsProperty
   String oldValueAnnotationProperty;
 
   @Data
   SimpleObject watchedDataDeepAnnotation = null;
 
-  @JsProperty
   String newValueAnnotationDeep;
 
-  @JsProperty
   String oldValueAnnotationDeep;
 
   @Data
   String watchedDataImmediateAnnotation = "initialValue";
 
-  @JsProperty
   String newValueAnnotationImmediate;
 
-  @JsProperty
   String oldValueAnnotationImmediate;
 
   @Data
   SimpleObject watchedDataPropertyImmediateAnnotation = new SimpleObject("initialValue");
 
-  @JsProperty
   String newValueAnnotationPropertyImmediate;
 
-  @JsProperty
   String oldValueAnnotationPropertyImmediate;
 
   @Data
   SimpleObject watchedData$WatchMethod = null;
 
-  @JsProperty
   SimpleObject newValue$WatchMethod;
 
-  @JsProperty
   SimpleObject oldValue$WatchMethod;
 
-  @JsProperty
   String newValue$WatchMethodProperty;
 
-  @JsProperty
   String oldValue$WatchMethodProperty;
 
   @Override
@@ -172,5 +157,75 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   @JsMethod
   public SimpleObject getWatchedData$WatchMethod() {
     return watchedData$WatchMethod;
+  }
+
+  @JsMethod
+  public SimpleObject getNewValueAnnotation() {
+    return newValueAnnotation;
+  }
+
+  @JsMethod
+  public SimpleObject getOldValueAnnotation() {
+    return oldValueAnnotation;
+  }
+
+  @JsMethod
+  public String getNewValueAnnotationProperty() {
+    return newValueAnnotationProperty;
+  }
+
+  @JsMethod
+  public String getOldValueAnnotationProperty() {
+    return oldValueAnnotationProperty;
+  }
+
+  @JsMethod
+  public String getNewValueAnnotationDeep() {
+    return newValueAnnotationDeep;
+  }
+
+  @JsMethod
+  public String getOldValueAnnotationDeep() {
+    return oldValueAnnotationDeep;
+  }
+
+  @JsMethod
+  public String getNewValueAnnotationImmediate() {
+    return newValueAnnotationImmediate;
+  }
+
+  @JsMethod
+  public String getOldValueAnnotationImmediate() {
+    return oldValueAnnotationImmediate;
+  }
+
+  @JsMethod
+  public String getNewValueAnnotationPropertyImmediate() {
+    return newValueAnnotationPropertyImmediate;
+  }
+
+  @JsMethod
+  public String getOldValueAnnotationPropertyImmediate() {
+    return oldValueAnnotationPropertyImmediate;
+  }
+
+  @JsMethod
+  public SimpleObject getNewValue$WatchMethod() {
+    return newValue$WatchMethod;
+  }
+
+  @JsMethod
+  public SimpleObject getOldValue$WatchMethod() {
+    return oldValue$WatchMethod;
+  }
+
+  @JsMethod
+  public String getNewValue$WatchMethodProperty() {
+    return newValue$WatchMethodProperty;
+  }
+
+  @JsMethod
+  public String getOldValue$WatchMethodProperty() {
+    return oldValue$WatchMethodProperty;
   }
 }

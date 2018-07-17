@@ -25,19 +25,19 @@ describe('Watch', () => {
 
         return nextTick()
         .then(() => {
-          expect(component.oldValueAnnotation).to.be.null;
-          expect(component.newValueAnnotation).to.be.not.null;
-          expect(component.newValueAnnotation.getStringProperty()).to.equal(
+          expect(component.getOldValueAnnotation()).to.be.null;
+          expect(component.getNewValueAnnotation()).to.be.not.null;
+          expect(component.getNewValueAnnotation().getStringProperty()).to.equal(
               'value');
 
           component.changeWatchedDataAnnotation(null);
           return nextTick();
         })
         .then(() => {
-          expect(component.oldValueAnnotation).to.be.not.null;
-          expect(component.oldValueAnnotation.getStringProperty()).to.equal(
+          expect(component.getOldValueAnnotation()).to.be.not.null;
+          expect(component.getOldValueAnnotation().getStringProperty()).to.equal(
               'value');
-          expect(component.newValueAnnotation).to.be.null;
+          expect(component.getNewValueAnnotation()).to.be.null;
         })
       });
 
@@ -47,17 +47,17 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValueAnnotationProperty).to.be.null;
-              expect(component.newValueAnnotationProperty).to.be.not.null;
-              expect(component.newValueAnnotationProperty).to.equal('value');
+              expect(component.getOldValueAnnotationProperty()).to.be.null;
+              expect(component.getNewValueAnnotationProperty()).to.be.not.null;
+              expect(component.getNewValueAnnotationProperty()).to.equal('value');
 
               component.changeWatchedDataAnnotation(null);
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValueAnnotationProperty).to.be.not.null;
-              expect(component.oldValueAnnotationProperty).to.equal('value');
-              expect(component.newValueAnnotationProperty).to.be.null;
+              expect(component.getOldValueAnnotationProperty()).to.be.not.null;
+              expect(component.getOldValueAnnotationProperty()).to.equal('value');
+              expect(component.getNewValueAnnotationProperty()).to.be.null;
             });
           });
 
@@ -67,18 +67,18 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValueAnnotationProperty).to.be.null;
-              expect(component.newValueAnnotationProperty).to.be.not.null;
-              expect(component.newValueAnnotationProperty).to.equal('value');
+              expect(component.getOldValueAnnotationProperty()).to.be.null;
+              expect(component.getNewValueAnnotationProperty()).to.be.not.null;
+              expect(component.getNewValueAnnotationProperty()).to.equal('value');
 
               component.getWatchedDataAnnotation().setStringProperty('newValue');
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValueAnnotationProperty).to.be.not.null;
-              expect(component.oldValueAnnotationProperty).to.equal('value');
-              expect(component.newValueAnnotationProperty).to.be.not.null;
-              expect(component.newValueAnnotationProperty).to.equal('newValue');
+              expect(component.getOldValueAnnotationProperty()).to.be.not.null;
+              expect(component.getOldValueAnnotationProperty()).to.equal('value');
+              expect(component.getNewValueAnnotationProperty()).to.be.not.null;
+              expect(component.getNewValueAnnotationProperty()).to.equal('newValue');
             })
           });
 
@@ -87,17 +87,17 @@ describe('Watch', () => {
 
         return nextTick()
         .then(() => {
-          expect(component.oldValueAnnotationDeep).to.be.null;
-          expect(component.newValueAnnotationDeep).to.be.not.null;
-          expect(component.newValueAnnotationDeep).to.equal('value');
+          expect(component.getOldValueAnnotationDeep()).to.be.null;
+          expect(component.getNewValueAnnotationDeep()).to.be.not.null;
+          expect(component.getNewValueAnnotationDeep()).to.equal('value');
 
           component.changeWatchedDataDeepAnnotation(null);
           return nextTick();
         })
         .then(() => {
-          expect(component.oldValueAnnotationDeep).to.be.not.null;
-          expect(component.oldValueAnnotationDeep).to.equal('value');
-          expect(component.newValueAnnotationDeep).to.be.null;
+          expect(component.getOldValueAnnotationDeep()).to.be.not.null;
+          expect(component.getOldValueAnnotationDeep()).to.equal('value');
+          expect(component.getNewValueAnnotationDeep()).to.be.null;
         });
       });
 
@@ -107,30 +107,30 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValueAnnotationDeep).to.be.null;
-              expect(component.newValueAnnotationDeep).to.be.not.null;
-              expect(component.newValueAnnotationDeep).to.equal('value');
+              expect(component.getOldValueAnnotationDeep()).to.be.null;
+              expect(component.getNewValueAnnotationDeep()).to.be.not.null;
+              expect(component.getNewValueAnnotationDeep()).to.equal('value');
 
               component.getWatchedDataDeepAnnotation().setStringProperty('newValue');
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValueAnnotationDeep).to.be.not.null;
+              expect(component.getOldValueAnnotationDeep()).to.be.not.null;
               // Same object is passed as old, as the props as changed on it we get "newValue" too in old value
-              expect(component.oldValueAnnotationDeep).to.equal('newValue');
-              expect(component.newValueAnnotationDeep).to.be.not.null;
-              expect(component.newValueAnnotationDeep).to.equal('newValue');
+              expect(component.getOldValueAnnotationDeep()).to.equal('newValue');
+              expect(component.getNewValueAnnotationDeep()).to.be.not.null;
+              expect(component.getNewValueAnnotationDeep()).to.equal('newValue');
             });
           });
 
       it('should be called on init when using immediate', () => {
-          expect(component.oldValueAnnotationImmediate).to.be.undefined;
-          expect(component.newValueAnnotationImmediate).to.equal('initialValue');
+        expect(component.getOldValueAnnotationImmediate()).to.be.undefined;
+        expect(component.getNewValueAnnotationImmediate()).to.equal('initialValue');
       });
 
       it('should be called on init when using immediate on property', () => {
-        expect(component.oldValueAnnotationPropertyImmediate).to.be.undefined;
-        expect(component.newValueAnnotationPropertyImmediate).to.equal('initialValue');
+        expect(component.getOldValueAnnotationPropertyImmediate()).to.be.undefined;
+        expect(component.getNewValueAnnotationPropertyImmediate()).to.equal('initialValue');
       });
     });
 
@@ -140,19 +140,19 @@ describe('Watch', () => {
 
         return nextTick()
         .then(() => {
-          expect(component.oldValue$WatchMethod).to.be.null;
-          expect(component.newValue$WatchMethod).to.be.not.null;
-          expect(component.newValue$WatchMethod.getStringProperty()).to.equal(
+          expect(component.getOldValue$WatchMethod()).to.be.null;
+          expect(component.getNewValue$WatchMethod()).to.be.not.null;
+          expect(component.getNewValue$WatchMethod().getStringProperty()).to.equal(
               'value');
 
           component.changeWatchedData$WatchMethod(null);
           return nextTick();
         })
         .then(() => {
-          expect(component.oldValue$WatchMethod).to.be.not.null;
-          expect(component.oldValue$WatchMethod.getStringProperty()).to.equal(
+          expect(component.getOldValue$WatchMethod()).to.be.not.null;
+          expect(component.getOldValue$WatchMethod().getStringProperty()).to.equal(
               'value');
-          expect(component.newValue$WatchMethod).to.be.null;
+          expect(component.getNewValue$WatchMethod()).to.be.null;
         })
       });
 
@@ -162,18 +162,18 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValue$WatchMethodProperty).to.be.null;
-              expect(component.newValue$WatchMethodProperty).to.be.not.null;
-              expect(component.newValue$WatchMethodProperty).to.equal('value');
+              expect(component.getOldValue$WatchMethodProperty()).to.be.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.equal('value');
 
               component.changeWatchedData$WatchMethod(null);
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValue$WatchMethodProperty).to.be.not.null;
-              expect(component.oldValue$WatchMethodProperty).to.equal(
+              expect(component.getOldValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getOldValue$WatchMethodProperty()).to.equal(
                   'value');
-              expect(component.newValue$WatchMethodProperty).to.be.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.be.null;
             });
           });
 
@@ -183,18 +183,18 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValue$WatchMethodProperty).to.be.null;
-              expect(component.newValue$WatchMethodProperty).to.be.not.null;
-              expect(component.newValue$WatchMethodProperty).to.equal('value');
+              expect(component.getOldValue$WatchMethodProperty()).to.be.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.equal('value');
 
               component.getWatchedData$WatchMethod().setStringProperty('newValue');
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValue$WatchMethodProperty).to.be.not.null;
-              expect(component.oldValue$WatchMethodProperty).to.equal('value');
-              expect(component.newValue$WatchMethodProperty).to.be.not.null;
-              expect(component.newValue$WatchMethodProperty).to.equal(
+              expect(component.getOldValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getOldValue$WatchMethodProperty()).to.equal('value');
+              expect(component.getNewValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.equal(
                   'newValue');
             });
           });
@@ -221,19 +221,19 @@ describe('Watch', () => {
 
         return nextTick()
         .then(() => {
-          expect(component.oldValueAnnotation).to.be.null;
-          expect(component.newValueAnnotation).to.be.not.null;
-          expect(component.newValueAnnotation.getStringProperty()).to.equal(
+          expect(component.getOldValueAnnotation()).to.be.null;
+          expect(component.getNewValueAnnotation()).to.be.not.null;
+          expect(component.getNewValueAnnotation().getStringProperty()).to.equal(
               'value');
 
           parentComponent.changeWatchedPropAnnotation(null);
           return nextTick();
         })
         .then(() => {
-          expect(component.oldValueAnnotation).to.be.not.null;
-          expect(component.oldValueAnnotation.getStringProperty()).to.equal(
+          expect(component.getOldValueAnnotation()).to.be.not.null;
+          expect(component.getOldValueAnnotation().getStringProperty()).to.equal(
               'value');
-          expect(component.newValueAnnotation).to.be.null;
+          expect(component.getNewValueAnnotation()).to.be.null;
         })
       });
 
@@ -243,17 +243,17 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValueAnnotationProperty).to.be.null;
-              expect(component.newValueAnnotationProperty).to.be.not.null;
-              expect(component.newValueAnnotationProperty).to.equal('value');
+              expect(component.getOldValueAnnotationProperty()).to.be.null;
+              expect(component.getNewValueAnnotationProperty()).to.be.not.null;
+              expect(component.getNewValueAnnotationProperty()).to.equal('value');
 
               parentComponent.changeWatchedPropAnnotation(null);
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValueAnnotationProperty).to.be.not.null;
-              expect(component.oldValueAnnotationProperty).to.equal('value');
-              expect(component.newValueAnnotationProperty).to.be.null;
+              expect(component.getOldValueAnnotationProperty()).to.be.not.null;
+              expect(component.getOldValueAnnotationProperty()).to.equal('value');
+              expect(component.getNewValueAnnotationProperty()).to.be.null;
             });
           });
 
@@ -263,19 +263,19 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValueAnnotationProperty).to.be.null;
-              expect(component.newValueAnnotationProperty).to.be.not.null;
-              expect(component.newValueAnnotationProperty).to.equal('value');
+              expect(component.getOldValueAnnotationProperty()).to.be.null;
+              expect(component.getNewValueAnnotationProperty()).to.be.not.null;
+              expect(component.getNewValueAnnotationProperty()).to.equal('value');
 
               parentComponent.getWatchedPropAnnotation().setStringProperty(
                   'newValue');
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValueAnnotationProperty).to.be.not.null;
-              expect(component.oldValueAnnotationProperty).to.equal('value');
-              expect(component.newValueAnnotationProperty).to.be.not.null;
-              expect(component.newValueAnnotationProperty).to.equal('newValue');
+              expect(component.getOldValueAnnotationProperty()).to.be.not.null;
+              expect(component.getOldValueAnnotationProperty()).to.equal('value');
+              expect(component.getNewValueAnnotationProperty()).to.be.not.null;
+              expect(component.getNewValueAnnotationProperty()).to.equal('newValue');
             });
           });
 
@@ -284,17 +284,17 @@ describe('Watch', () => {
 
         return nextTick()
         .then(() => {
-          expect(component.oldValueAnnotationDeep).to.be.null;
-          expect(component.newValueAnnotationDeep).to.be.not.null;
-          expect(component.newValueAnnotationDeep).to.equal('value');
+          expect(component.getOldValueAnnotationDeep()).to.be.null;
+          expect(component.getNewValueAnnotationDeep()).to.be.not.null;
+          expect(component.getNewValueAnnotationDeep()).to.equal('value');
 
           parentComponent.changeWatchedPropDeepAnnotation(null);
           return nextTick();
         })
         .then(() => {
-          expect(component.oldValueAnnotationDeep).to.be.not.null;
-          expect(component.oldValueAnnotationDeep).to.equal('value');
-          expect(component.newValueAnnotationDeep).to.be.null;
+          expect(component.getOldValueAnnotationDeep()).to.be.not.null;
+          expect(component.getOldValueAnnotationDeep()).to.equal('value');
+          expect(component.getNewValueAnnotationDeep()).to.be.null;
         });
       });
 
@@ -304,20 +304,20 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValueAnnotationDeep).to.be.null;
-              expect(component.newValueAnnotationDeep).to.be.not.null;
-              expect(component.newValueAnnotationDeep).to.equal('value');
+              expect(component.getOldValueAnnotationDeep()).to.be.null;
+              expect(component.getNewValueAnnotationDeep()).to.be.not.null;
+              expect(component.getNewValueAnnotationDeep()).to.equal('value');
 
               parentComponent.getWatchedPropDeepAnnotation().setStringProperty(
                   'newValue');
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValueAnnotationDeep).to.be.not.null;
+              expect(component.getOldValueAnnotationDeep()).to.be.not.null;
               // Same object is passed as old, as the props as changed on it we get "newValue" too in old value
-              expect(component.oldValueAnnotationDeep).to.equal('newValue');
-              expect(component.newValueAnnotationDeep).to.be.not.null;
-              expect(component.newValueAnnotationDeep).to.equal('newValue');
+              expect(component.getOldValueAnnotationDeep()).to.equal('newValue');
+              expect(component.getNewValueAnnotationDeep()).to.be.not.null;
+              expect(component.getNewValueAnnotationDeep()).to.equal('newValue');
             });
           });
     });
@@ -328,19 +328,19 @@ describe('Watch', () => {
 
         return nextTick()
         .then(() => {
-          expect(component.oldValue$WatchMethod).to.be.null;
-          expect(component.newValue$WatchMethod).to.be.not.null;
-          expect(component.newValue$WatchMethod.getStringProperty()).to.equal(
+          expect(component.getOldValue$WatchMethod()).to.be.null;
+          expect(component.getNewValue$WatchMethod()).to.be.not.null;
+          expect(component.getNewValue$WatchMethod().getStringProperty()).to.equal(
               'value');
 
           parentComponent.changeWatchedProp$WatchMethod(null);
           return nextTick();
         })
         .then(() => {
-          expect(component.oldValue$WatchMethod).to.be.not.null;
-          expect(component.oldValue$WatchMethod.getStringProperty()).to.equal(
+          expect(component.getOldValue$WatchMethod()).to.be.not.null;
+          expect(component.getOldValue$WatchMethod().getStringProperty()).to.equal(
               'value');
-          expect(component.newValue$WatchMethod).to.be.null;
+          expect(component.getNewValue$WatchMethod()).to.be.null;
         })
       });
 
@@ -350,18 +350,18 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValue$WatchMethodProperty).to.be.null;
-              expect(component.newValue$WatchMethodProperty).to.be.not.null;
-              expect(component.newValue$WatchMethodProperty).to.equal('value');
+              expect(component.getOldValue$WatchMethodProperty()).to.be.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.equal('value');
 
               parentComponent.changeWatchedProp$WatchMethod(null);
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValue$WatchMethodProperty).to.be.not.null;
-              expect(component.oldValue$WatchMethodProperty).to.equal(
+              expect(component.getOldValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getOldValue$WatchMethodProperty()).to.equal(
                   'value');
-              expect(component.newValue$WatchMethodProperty).to.be.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.be.null;
             });
           });
 
@@ -371,31 +371,31 @@ describe('Watch', () => {
 
             return nextTick()
             .then(() => {
-              expect(component.oldValue$WatchMethodProperty).to.be.null;
-              expect(component.newValue$WatchMethodProperty).to.be.not.null;
-              expect(component.newValue$WatchMethodProperty).to.equal('value');
+              expect(component.getOldValue$WatchMethodProperty()).to.be.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.equal('value');
 
               parentComponent.getWatchedProp$WatchMethod().setStringProperty(
                   'newValue');
               return nextTick();
             })
             .then(() => {
-              expect(component.oldValue$WatchMethodProperty).to.be.not.null;
-              expect(component.oldValue$WatchMethodProperty).to.equal('value');
-              expect(component.newValue$WatchMethodProperty).to.be.not.null;
-              expect(component.newValue$WatchMethodProperty).to.equal(
+              expect(component.getOldValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getOldValue$WatchMethodProperty()).to.equal('value');
+              expect(component.getNewValue$WatchMethodProperty()).to.be.not.null;
+              expect(component.getNewValue$WatchMethodProperty()).to.equal(
                   'newValue');
             });
           });
 
       it('should be called on init when using immediate', () => {
-        expect(component.oldValueAnnotationImmediate).to.be.undefined;
-        expect(component.newValueAnnotationImmediate).to.equal('initialValue');
+        expect(component.getOldValueAnnotationImmediate()).to.be.undefined;
+        expect(component.getNewValueAnnotationImmediate()).to.equal('initialValue');
       });
 
       it('should be called on init when using immediate on property', () => {
-        expect(component.oldValueAnnotationPropertyImmediate).to.be.undefined;
-        expect(component.newValueAnnotationPropertyImmediate).to.equal('initialValue');
+        expect(component.getOldValueAnnotationPropertyImmediate()).to.be.undefined;
+        expect(component.getNewValueAnnotationPropertyImmediate()).to.equal('initialValue');
       });
     });
   });
