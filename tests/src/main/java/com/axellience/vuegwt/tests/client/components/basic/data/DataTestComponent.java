@@ -5,6 +5,7 @@ import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.tests.client.common.SimpleObject;
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsProperty;
 
 @Component
 public class DataTestComponent implements IsVueComponent {
@@ -68,6 +69,14 @@ public class DataTestComponent implements IsVueComponent {
 
   @Data
   SimpleObject dataWithLineBreaks = new SimpleObject();
+
+  @Data
+  @JsProperty
+  String $dataStartingWithDollar = "Hello";
+
+  @Data
+  @JsProperty
+  String _dataStartingWithUnderscore = "Hello";
 
   @JsMethod
   public void initSimpleObject() {
@@ -182,5 +191,15 @@ public class DataTestComponent implements IsVueComponent {
   @JsMethod
   public SimpleObject getDataWithLineBreaks() {
     return dataWithLineBreaks;
+  }
+
+  @JsMethod
+  public void set$dataStartingWithDollar(String $dataStartingWithDollar) {
+    this.$dataStartingWithDollar = $dataStartingWithDollar;
+  }
+
+  @JsMethod
+  public void set_dataStartingWithUnderscore(String _dataStartingWithUnderscore) {
+    this._dataStartingWithUnderscore = _dataStartingWithUnderscore;
   }
 }

@@ -620,6 +620,8 @@ public class ComponentExposedTypeGenerator {
         .addStatement("if ($L) return", hasRunCreatedFlagName)
         .addStatement("$L = true", hasRunCreatedFlagName);
 
+    createdMethodBuilder
+        .addStatement("vue().$L().proxyDataFields(this)", "$options");
     injectDependencies(component, dependenciesBuilder, createdMethodBuilder);
     initFieldsValues(component, createdMethodBuilder);
 

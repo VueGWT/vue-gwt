@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.core.client.component.options;
 
 import static elemental2.core.Global.JSON;
+import static jsinterop.base.Js.asAny;
 import static jsinterop.base.Js.cast;
 
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
@@ -11,8 +12,10 @@ import com.axellience.vuegwt.core.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
+import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Provider;
@@ -37,11 +40,12 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
 
   private JsPropertyMap<Object> componentExportedTypePrototype;
   private Map<String, Provider<?>> dependenciesProvider;
+  private Set<String> dataFieldsToProxy;
 
   /**
-   * Set the JS Prototype of the ExportedType Java Class represented by this
-   * {@link VueComponentOptions}. This prototype will be used to retrieve the java methods of our
-   * {@link IsVueComponent}.
+   * Set the JS Prototype of the ExportedType Java Class represented by this {@link
+   * VueComponentOptions}. This prototype will be used to retrieve the java methods of our {@link
+   * IsVueComponent}.
    *
    * @param prototype The JS prototype of the ExportedType Java Class
    */
@@ -59,7 +63,8 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    * @param staticRenderFnsStrings The static render functions
    */
   @JsOverlay
-  public final void initRenderFunctions(Function renderFunctionString, Function[] staticRenderFnsStrings) {
+  public final void initRenderFunctions(Function renderFunctionString,
+      Function[] staticRenderFnsStrings) {
     this.setRender(renderFunctionString);
     this.setStaticRenderFns(cast(staticRenderFnsStrings));
   }
@@ -73,8 +78,14 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   @JsOverlay
   public final void initData(boolean useFactory, Set<String> fieldNames) {
     JsPropertyMap<Object> dataFields = JsPropertyMap.of();
+    dataFieldsToProxy = new HashSet<>();
     for (String fieldName : fieldNames) {
       dataFields.set(fieldName, null);
+
+      // If field name starts with $ or _ Vue.js won't proxify it so we must do it
+      if (fieldName.startsWith("$") || fieldName.startsWith("_")) {
+        dataFieldsToProxy.add(fieldName);
+      }
     }
 
     if (useFactory) {
@@ -91,7 +102,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    *
    * @param javaMethod Function pointer to the method in the {@link IsVueComponent}
    * @param computedPropertyName Name of the computed property in the Template and the
-   *        ComponentOptions
+   * ComponentOptions
    * @param kind Kind of the computed method (getter or setter)
    */
   @JsOverlay
@@ -151,7 +162,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    * @param propName The name of the property
    * @param required Is the property required (mandatory)
    * @param exposedTypeName JS name of the type of this property, if not null we will ask Vue to
-   *        type check based on it
+   * type check based on it
    */
   @JsOverlay
   public final void addJavaProp(String propName, boolean required, String exposedTypeName) {
@@ -230,6 +241,23 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
     }
 
     return dependenciesProvider;
+  }
+
+  @JsOverlay
+  public final void proxyDataFields(IsVueComponent instance) {
+    if (dataFieldsToProxy == null || dataFieldsToProxy.isEmpty()) {
+      return;
+    }
+
+    JsPropertyMap<Object> sharedDefinition = JsPropertyMap.of();
+    sharedDefinition.set("enumerable", asAny(true));
+    sharedDefinition.set("configurable", asAny(true));
+
+    for (String dataField : dataFieldsToProxy) {
+      sharedDefinition.set("set", new Function("this[\"_data\"][\"" + dataField + "\"] = arguments[0];"));
+      sharedDefinition.set("get", new Function("return this[\"_data\"][\"" + dataField + "\"];"));
+      JsObject.defineProperty(instance, dataField, sharedDefinition);
+    }
   }
 
   /*

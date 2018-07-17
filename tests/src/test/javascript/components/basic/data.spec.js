@@ -328,4 +328,36 @@ describe('Data', () => {
     });
   });
 
+  describe('$dataStartingWithDollar', () => {
+    it('should be displayed with it\'s initial value', () => {
+      const domValue = getElement(component, '#string-starting-with-dollar').innerText;
+      expect(domValue).to.equal('Hello');
+    });
+
+    it('should update its DOM element when it changes', () => {
+      component.set$dataStartingWithDollar('a new value');
+
+      return nextTick().then(() => {
+        const domValue = getElement(component, '#string-starting-with-dollar').innerText;
+        expect(domValue).to.equal('a new value');
+      });
+    });
+  });
+
+  describe('_dataStartingWithUnderscore', () => {
+    it('should be displayed with it\'s initial value', () => {
+      const domValue = getElement(component, '#string-starting-with-underscore').innerText;
+      expect(domValue).to.equal('Hello');
+    });
+
+    it('should update its DOM element when it changes', () => {
+      component.set_dataStartingWithUnderscore('a new value');
+
+      return nextTick().then(() => {
+        const domValue = getElement(component, '#string-starting-with-underscore').innerText;
+        expect(domValue).to.equal('a new value');
+      });
+    });
+  });
+
 });
