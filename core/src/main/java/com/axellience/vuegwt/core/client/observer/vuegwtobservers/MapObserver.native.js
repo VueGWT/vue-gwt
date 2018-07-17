@@ -1,7 +1,7 @@
 const MapJavaType = goog.require('java.util.Map');
-goog.exportSymbol("java.util.Map.prototype.clear", MapJavaType.prototype.clear);
-goog.exportSymbol("java.util.Map.prototype.remove", MapJavaType.prototype.remove);
-goog.exportSymbol("java.util.Map.prototype.put", MapJavaType.prototype.put);
-goog.exportSymbol("java.util.Map.prototype.putIfAbsent", MapJavaType.prototype.putIfAbsent);
-goog.exportSymbol("java.util.Map.prototype.putAll", MapJavaType.prototype.putAll);
-goog.exportSymbol("java.util.Map.prototype.replace", MapJavaType.prototype.replace);
+goog.exportProperty(MapJavaType.prototype, "clear", MapJavaType.prototype.clear);
+goog.exportProperty(MapJavaType.prototype, "remove", MapJavaType.prototype.remove);
+goog.exportProperty(MapJavaType.prototype, "put", MapJavaType.prototype.put);
+goog.exportProperty(MapJavaType.prototype, "putIfAbsent", MapJavaType.prototype.putIfAbsent);
+goog.exportProperty(MapJavaType.prototype, "putAll", MapJavaType.prototype.putAll);
+goog.exportProperty(MapJavaType.prototype, "replace", MapJavaType.prototype.replace);
