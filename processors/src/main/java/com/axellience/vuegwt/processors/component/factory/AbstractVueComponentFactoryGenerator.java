@@ -3,6 +3,7 @@ package com.axellience.vuegwt.processors.component.factory;
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.hasTemplate;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentExposedTypeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentToTagName;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
@@ -11,6 +12,7 @@ import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
+import com.axellience.vuegwt.processors.utils.MissingComponentAnnotationException;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -29,6 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic.Kind;
 
 /**
  * Abstract class to generate {@link VueComponentFactory} from the user {@link IsVueComponent}
@@ -62,6 +65,7 @@ public abstract class AbstractVueComponentFactoryGenerator {
 
     Builder vueFactoryBuilder = createFactoryBuilderClass(component, vueFactoryClassName);
 
+    createGetName(vueFactoryBuilder, component);
     createProperties(vueFactoryClassName, vueFactoryBuilder);
     List<CodeBlock> staticInitParameters = createInitMethod(component, vueFactoryBuilder);
     createStaticGetMethod(component,
@@ -77,6 +81,28 @@ public abstract class AbstractVueComponentFactoryGenerator {
 
     // Build the ComponentOptions class
     GeneratorsUtil.toJavaFile(filer, vueFactoryBuilder, vueFactoryClassName, component);
+  }
+
+  private void createGetName(Builder vueFactoryBuilder, TypeElement component) {
+    String tagName;
+    try {
+      tagName = componentToTagName(component);
+
+      vueFactoryBuilder.addMethod(
+          MethodSpec.methodBuilder("getComponentTagName")
+              .returns(String.class)
+              .addModifiers(Modifier.PUBLIC)
+              .addAnnotation(Override.class)
+              .addStatement("return $S", tagName)
+              .build()
+      );
+    } catch (MissingComponentAnnotationException e) {
+      e.printStackTrace();
+
+      messager
+          .printMessage(Kind.ERROR, "Missing @Component or @JsComponent annotation on component: "
+              + component.toString(), component);
+    }
   }
 
   /**

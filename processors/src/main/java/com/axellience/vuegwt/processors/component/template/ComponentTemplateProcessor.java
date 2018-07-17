@@ -9,7 +9,6 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotatio
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Data;
-import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
@@ -20,6 +19,7 @@ import com.axellience.vuegwt.processors.component.template.parser.context.localc
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
+import com.axellience.vuegwt.processors.utils.MissingComponentAnnotationException;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -205,17 +205,17 @@ public class ComponentTemplateProcessor {
    */
   private void processLocalComponentClass(LocalComponents localComponents,
       TypeElement localComponentType) {
-    Component componentAnnotation = localComponentType.getAnnotation(Component.class);
-    JsComponent jsComponentAnnotation = localComponentType.getAnnotation(JsComponent.class);
-    if (componentAnnotation == null && jsComponentAnnotation == null) {
+
+    String localComponentTagName;
+    try {
+      localComponentTagName = componentToTagName(localComponentType);
+    } catch (MissingComponentAnnotationException e) {
+      e.printStackTrace();
       messager.printMessage(Kind.ERROR,
           "Missing @Component or @JsComponent annotation on imported component: "
-              + localComponentType.toString());
+              + localComponentType.toString(), localComponentType);
       return;
     }
-
-    String localComponentTagName =
-        componentToTagName(localComponentType.getSimpleName().toString(), componentAnnotation);
 
     if (localComponents.hasLocalComponent(localComponentTagName)) {
       return;

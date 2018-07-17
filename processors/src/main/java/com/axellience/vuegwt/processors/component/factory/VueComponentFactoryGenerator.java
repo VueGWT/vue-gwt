@@ -6,13 +6,11 @@ import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.get
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentExposedTypeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentFactoryName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentToTagName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.directiveOptionsName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.directiveToTagName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.providerOf;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
-import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.options.CustomizeOptions;
@@ -33,7 +31,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.inject.Inject;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -166,20 +163,9 @@ public class VueComponentFactoryGenerator extends AbstractVueComponentFactoryGen
       initBuilder.addParameter(providerOf(factory), parameterName);
       staticInitParameters.add(CodeBlock.of("() -> $T.get()", factory));
 
-      Element localComponentElement = ((DeclaredType) localComponent).asElement();
-      Component componentAnnotation = localComponentElement.getAnnotation(Component.class);
-      JsComponent jsComponentAnnotation = localComponentElement.getAnnotation(JsComponent.class);
-      if (componentAnnotation == null && jsComponentAnnotation == null) {
-        printError("Missing @Component or @JsComponent annotation on imported component: "
-            + localComponent.toString(), component);
-        return;
-      }
-
-      String tagName = componentToTagName(localComponentElement.getSimpleName().toString(),
-          componentAnnotation);
       initBuilder.addStatement(
-          "components.set($S, render -> render.accept($L.get().getJsConstructor()))",
-          tagName,
+          "components.set($L.get().getComponentTagName(), render -> render.accept($L.get().getJsConstructor()))",
+          parameterName,
           parameterName);
     });
   }

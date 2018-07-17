@@ -2,6 +2,7 @@ package com.axellience.vuegwt.tests.client;
 
 import static jsinterop.base.Js.cast;
 
+import com.axellience.vuegwt.core.client.Vue;
 import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueComponentFactory;
@@ -38,6 +39,11 @@ import com.axellience.vuegwt.tests.client.components.events.types.EmitTypesChild
 import com.axellience.vuegwt.tests.client.components.events.types.EmitTypesChildComponentFactory;
 import com.axellience.vuegwt.tests.client.components.events.types.EmitTypesParentComponent;
 import com.axellience.vuegwt.tests.client.components.events.types.EmitTypesParentComponentFactory;
+import com.axellience.vuegwt.tests.client.components.globalregistration.GloballyRegisteredComponentFactory;
+import com.axellience.vuegwt.tests.client.components.globalregistration.GloballyRegisteredWithNameComponentFactory;
+import com.axellience.vuegwt.tests.client.components.globalregistration.GloballyRegisteredWithNameOnRegistrationComponentFactory;
+import com.axellience.vuegwt.tests.client.components.globalregistration.UsingGloballyRegisteredComponent;
+import com.axellience.vuegwt.tests.client.components.globalregistration.UsingGloballyRegisteredComponentFactory;
 import com.axellience.vuegwt.tests.client.components.style.classbinding.ClassBindingTestComponent;
 import com.axellience.vuegwt.tests.client.components.style.classbinding.ClassBindingTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.style.inlinestylebinding.InlineStyleBindingTestComponent;
@@ -99,6 +105,16 @@ public class VueGwtTestsApp implements EntryPoint {
     );
     registerTestComponent(ScopedTestComponent.class, ScopedTestComponentFactory.get());
     registerTestComponent(VModelComponent.class, VModelComponentFactory.get());
+
+    Vue.component(GloballyRegisteredComponentFactory.get());
+    Vue.component(GloballyRegisteredWithNameComponentFactory.get());
+    Vue.component(
+        "globally-registered-this-is-name-on-registration",
+        GloballyRegisteredWithNameOnRegistrationComponentFactory.get()
+    );
+    registerTestComponent(
+        UsingGloballyRegisteredComponent.class,
+        UsingGloballyRegisteredComponentFactory.get());
 
     Window.onVueGwtTestsReady.forEach((f, i, a) -> f.call(i, a));
   }

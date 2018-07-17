@@ -29,6 +29,8 @@ public abstract class VueComponentFactory<T extends IsVueComponent> {
     return jsConstructor;
   }
 
+  public abstract String getComponentTagName();
+
   protected void injectComponentCss(String componentCss) {
     if (componentCss == null || componentCss.isEmpty()) {
       return;

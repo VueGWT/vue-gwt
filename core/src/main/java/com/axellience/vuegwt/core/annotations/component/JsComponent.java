@@ -16,4 +16,6 @@ import java.lang.annotation.Target;
 public @interface JsComponent {
 
   String value();
+
+  String name() default "";
 }

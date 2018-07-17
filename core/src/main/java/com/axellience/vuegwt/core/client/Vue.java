@@ -63,6 +63,17 @@ public abstract class Vue {
   /**
    * Register a {@link IsVueComponent} globally
    *
+   * @param vueFactory The factory of the Component to create
+   * @param <T> {@link IsVueComponent} we want to attach
+   */
+  @JsOverlay
+  public static <T extends IsVueComponent> void component(VueComponentFactory<T> vueFactory) {
+    component(vueFactory.getComponentTagName(), vueFactory);
+  }
+
+  /**
+   * Register a {@link IsVueComponent} globally
+   *
    * @param id Id for our component in the templates
    * @param vueFactory The factory of the Component to create
    * @param <T> {@link IsVueComponent} we want to attach
@@ -95,27 +106,33 @@ public abstract class Vue {
 
   @JsOverlay
   public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
+      VueComponentFactory<T> vueFactory) {
+    return customElement(vueFactory.getComponentTagName(), vueFactory);
+  }
+
+  @JsOverlay
+  public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
       String componentTag, VueComponentFactory<T> vueFactory) {
-    return Vue.customElement(componentTag, vueFactory, new CustomElementOptions<>());
+    return customElement(componentTag, vueFactory, new CustomElementOptions<>());
   }
 
   @JsOverlay
   public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
       String componentTag, VueJsConstructor<T> vueJsConstructor) {
-    return Vue.customElement(componentTag, vueJsConstructor, new CustomElementOptions<>());
+    return customElement(componentTag, vueJsConstructor, new CustomElementOptions<>());
   }
 
   @JsOverlay
   public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
       String componentTag, VueComponentFactory<T> vueFactory, CustomElementOptions<T> options) {
-    return Vue.customElement(componentTag, vueFactory.getJsConstructor(), options);
+    return customElement(componentTag, vueFactory.getJsConstructor(), options);
   }
 
   @JsOverlay
   public static <T extends IsVueComponent> VueCustomElementType<T> customElement(
       String componentTag, VueJsConstructor<T> vueJsConstructor, CustomElementOptions<T> options) {
     VueCustomElementLibInjector.ensureInjected();
-    return Vue.customElementNative(componentTag, vueJsConstructor, options);
+    return customElementNative(componentTag, vueJsConstructor, options);
   }
 
   // @formatter:off

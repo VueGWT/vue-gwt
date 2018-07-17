@@ -2,6 +2,7 @@ package com.axellience.vuegwt.processors.utils;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Emit;
+import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.directive.VueDirective;
@@ -9,6 +10,7 @@ import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import javax.inject.Provider;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -104,19 +106,35 @@ public class GeneratorsNameUtil {
    * is the name of the component converted to kebab-case. If the component class ends with
    * "Component", this part is ignored.
    *
-   * @param componentClassName The Class name of the {@link IsVueComponent} we want the name of
-   * @param componentAnnotation The {@link Component} annotation for the {@link IsVueComponent} we
-   * want the name of
+   * @param componentElement The Element for the {@link IsVueComponent} we want the name of
    * @return The name of the component as kebab case
+   * @throws MissingComponentAnnotationException If the {@link IsVueComponent} doesn't have a
+   * Component or JsComponent annotation
    */
-  public static String componentToTagName(String componentClassName,
-      Component componentAnnotation) {
-    if (componentAnnotation != null && !"".equals(componentAnnotation.name())) {
-      return componentAnnotation.name();
+  public static String componentToTagName(Element componentElement)
+      throws MissingComponentAnnotationException {
+    Component componentAnnotation = componentElement.getAnnotation(Component.class);
+    JsComponent jsComponentAnnotation = componentElement.getAnnotation(JsComponent.class);
+
+    String annotationNameValue;
+    if (componentAnnotation != null) {
+      annotationNameValue = componentAnnotation.name();
+    } else if (jsComponentAnnotation != null) {
+      annotationNameValue = jsComponentAnnotation.value();
+    } else {
+      throw new MissingComponentAnnotationException();
+    }
+
+    if (!"".equals(annotationNameValue)) {
+      return annotationNameValue;
     }
 
     // Drop "Component" at the end of the class name
-    componentClassName = componentClassName.replaceAll("Component$", "");
+    String componentClassName = componentElement
+        .getSimpleName()
+        .toString()
+        .replaceAll("Component$", "");
+    
     // Convert from CamelCase to kebab-case
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, componentClassName).toLowerCase();
   }
