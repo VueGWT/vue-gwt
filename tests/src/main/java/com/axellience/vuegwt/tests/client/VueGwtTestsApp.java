@@ -100,7 +100,7 @@ public class VueGwtTestsApp implements EntryPoint {
     registerTestComponent(ScopedTestComponent.class, ScopedTestComponentFactory.get());
     registerTestComponent(VModelComponent.class, VModelComponentFactory.get());
 
-    Window.onVueGwtTestsReady.forEach(Function::call);
+    Window.onVueGwtTestsReady.forEach((f, i, a) -> f.call(i, a));
   }
 
   private static <T extends IsVueComponent> void registerTestComponent(Class<T> componentClass,
