@@ -1,13 +1,12 @@
 package com.axellience.vuegwt.tests.client.components.vmodel;
 
-import static jsinterop.base.Js.uncheckedCast;
-
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import elemental2.core.JsString;
 import jsinterop.annotations.JsMethod;
+import jsinterop.base.Js;
 
 @Component
 public class VModelComponent implements IsVueComponent {
@@ -43,12 +42,12 @@ public class VModelComponent implements IsVueComponent {
 
   @Computed
   public String getComputedInputTextValue() {
-    return ((JsString) uncheckedCast(computedInputTextValueProperty)).replace("Value", "Bobby");
+    return Js.<JsString>uncheckedCast(computedInputTextValueProperty).replace("Value", "Bobby");
   }
 
   @Computed
   public void setComputedInputTextValue(String computedInputTextValue) {
-    this.computedInputTextValueProperty = ((JsString) uncheckedCast(computedInputTextValue)).replace("Bobby", "Value");
+    this.computedInputTextValueProperty = Js.<JsString>uncheckedCast(computedInputTextValue).replace("Bobby", "Value");
   }
 
   @JsMethod
