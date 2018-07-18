@@ -29,7 +29,7 @@ public class MethodsBindingComponentExposedType extends MethodsBindingComponent 
     Proto p = __proto__;
     options.setComponentExportedTypePrototype(p);
     options.addMethod("onClickMethod", p.onClickMethod);
-    options.addHookMethod("created", p.vuegwt$created);
+    options.addHookMethod("created", p.vg$created);
     options.initData(true, VueGWTTools.getFieldsName(this, () -> {
       this.simpleObject = null;
     }));
@@ -47,7 +47,7 @@ public class MethodsBindingComponentExposedType extends MethodsBindingComponent 
 
     public Function onClickMethod;
 
-    public Function vuegwt$created;
+    public Function vg$created;
 
     public Function exp$0;
 

@@ -83,9 +83,7 @@ import jsinterop.base.JsPropertyMap;
  * @author Adrien Baron
  */
 public class ComponentExposedTypeGenerator {
-
-  private static final String WATCHER_METHOD_PREFIX = "vuegwt_watcher$";
-  private static final String PROP_SETTER_PREFIX = "vuegwt_prop$";
+  private static final String METHOD_IN_PROTO_PREFIX = "vg$e";
 
   private final ProcessingEnvironment processingEnv;
   private final Filer filer;
@@ -100,6 +98,7 @@ public class ComponentExposedTypeGenerator {
   private Builder protoClassBuilder;
   private Set<VariableElement> fieldsToMarkAsData;
   private Set<ExposedField> fieldsWithNameExposed;
+  private int methodsInProtoCount;
 
   public ComponentExposedTypeGenerator(ProcessingEnvironment processingEnvironment) {
     processingEnv = processingEnvironment;
@@ -117,6 +116,7 @@ public class ComponentExposedTypeGenerator {
     ClassName componentWithSuffixClassName = componentExposedTypeName(component);
 
     this.component = component;
+    methodsInProtoCount = 0;
     fieldsToMarkAsData = new HashSet<>();
     fieldsWithNameExposed = new HashSet<>();
     componentExposedTypeBuilder = createComponentExposedTypeBuilder(componentWithSuffixClassName);
@@ -349,27 +349,24 @@ public class ComponentExposedTypeGenerator {
    */
   private void processComputed() {
     getMethodsWithAnnotation(component, Computed.class).forEach(method -> {
-      String methodName = method.getSimpleName().toString();
-
       ComputedKind kind = ComputedKind.GETTER;
       if ("void".equals(method.getReturnType().toString())) {
         kind = ComputedKind.SETTER;
       }
 
+      String exposedMethodName = exposeExistingJavaMethodToJs(method);
       String propertyName = GeneratorsUtil.getComputedPropertyName(method);
       TypeMirror propertyType = getComputedPropertyTypeFromMethod(method);
       fieldsWithNameExposed.add(new ExposedField(propertyName, propertyType));
       optionsBuilder.addStatement(
           "options.addJavaComputed(p.$L, $T.getFieldName(this, () -> this.$L = $L), $T.$L)",
-          methodName,
+          exposedMethodName,
           VueGWTTools.class,
           propertyName,
           getFieldMarkingValueForType(propertyType),
           ComputedKind.class,
           kind
       );
-
-      exposeExistingJavaMethodToJs(method);
     });
 
     addFieldsForComputedMethod(component, new HashSet<>());
@@ -390,9 +387,9 @@ public class ComponentExposedTypeGenerator {
         .collect(Collectors.toList());
 
     templateMethods.forEach(method -> {
-      exposeExistingJavaMethodToJs(method);
       String methodName = method.getSimpleName().toString();
-      optionsBuilder.addStatement("options.addMethod($S, p.$L)", methodName, methodName);
+      String exposedMethodName = exposeExistingJavaMethodToJs(method);
+      optionsBuilder.addStatement("options.addMethod($S, p.$L)", methodName, exposedMethodName);
     });
   }
 
@@ -437,38 +434,45 @@ public class ComponentExposedTypeGenerator {
    * @param createdMethodBuilder Builder for the created hook method
    */
   private void processWatchers(MethodSpec.Builder createdMethodBuilder) {
-    getMethodsWithAnnotation(component, Watch.class).forEach(method -> {
-      Watch watch = method.getAnnotation(Watch.class);
+    createdMethodBuilder.addStatement("Proto p = __proto__");
+    getMethodsWithAnnotation(component, Watch.class)
+        .forEach(method -> processWatcher(createdMethodBuilder, method));
+  }
 
-      exposeExistingJavaMethodToJs(method);
+  /**
+   * Process a watcher from the Component Class.
+   *
+   * @param createdMethodBuilder Builder for the created hook method
+   * @param method The method we are currently processing
+   */
+  private void processWatcher(MethodSpec.Builder createdMethodBuilder, ExecutableElement method) {
+    Watch watch = method.getAnnotation(Watch.class);
 
-      String watchMethodName = method.getSimpleName().toString();
-      String watcherTriggerMethodName = WATCHER_METHOD_PREFIX + watchMethodName;
+    String exposedMethodName = exposeExistingJavaMethodToJs(method);
+    String watcherTriggerMethodName = addNewMethodToProto();
 
-      MethodSpec.Builder watcherMethodBuilder = MethodSpec
-          .methodBuilder(watcherTriggerMethodName)
-          .addModifiers(Modifier.PUBLIC)
-          .addAnnotation(JsMethod.class)
-          .returns(Object.class);
+    MethodSpec.Builder watcherMethodBuilder = MethodSpec
+        .methodBuilder(watcherTriggerMethodName)
+        .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(JsMethod.class)
+        .returns(Object.class);
 
-      String[] valueSplit = watch.value().split("\\.");
+    String[] valueSplit = watch.value().split("\\.");
 
-      String currentExpression = "";
-      for (int i = 0; i < valueSplit.length - 1; i++) {
-        currentExpression += valueSplit[i];
-        watcherMethodBuilder.addStatement("if ($L == null) return null", currentExpression);
-      }
+    String currentExpression = "";
+    for (int i = 0; i < valueSplit.length - 1; i++) {
+      currentExpression += valueSplit[i];
+      watcherMethodBuilder.addStatement("if ($L == null) return null", currentExpression);
+    }
 
-      watcherMethodBuilder.addStatement("return $L", watch.value());
+    watcherMethodBuilder.addStatement("return $L", watch.value());
 
-      componentExposedTypeBuilder.addMethod(watcherMethodBuilder.build());
-      addMethodToProto(watcherTriggerMethodName);
+    componentExposedTypeBuilder.addMethod(watcherMethodBuilder.build());
 
-      createdMethodBuilder
-          .addStatement("vue().$L(__proto__.$L, __proto__.$L, $T.of($L, $L))", "$watch",
-              watcherTriggerMethodName, watchMethodName, WatchOptions.class, watch.isDeep(),
-              watch.isImmediate());
-    });
+    createdMethodBuilder
+        .addStatement("vue().$L(p.$L, p.$L, $T.of($L, $L))", "$watch",
+            watcherTriggerMethodName, exposedMethodName, WatchOptions.class, watch.isDeep(),
+            watch.isImmediate());
   }
 
   /**
@@ -484,11 +488,10 @@ public class ComponentExposedTypeGenerator {
             + " annotated with PropValidator must return a boolean.", component);
       }
 
-      exposeExistingJavaMethodToJs(method);
-
+      String exposedMethodName = exposeExistingJavaMethodToJs(method);
       String propertyName = propValidator.value();
       optionsBuilder.addStatement("options.addJavaPropValidator(p.$L, $S)",
-          method.getSimpleName().toString(),
+          exposedMethodName,
           propertyName);
     });
   }
@@ -500,11 +503,10 @@ public class ComponentExposedTypeGenerator {
     getMethodsWithAnnotation(component, PropDefault.class).forEach(method -> {
       PropDefault propValidator = method.getAnnotation(PropDefault.class);
 
-      exposeExistingJavaMethodToJs(method);
-
+      String exposedMethodName = exposeExistingJavaMethodToJs(method);
       String propertyName = propValidator.value();
       optionsBuilder.addStatement("options.addJavaPropDefaultValue(p.$L, $S)",
-          method.getSimpleName().toString(),
+          exposedMethodName,
           propertyName);
     });
   }
@@ -523,9 +525,9 @@ public class ComponentExposedTypeGenerator {
         // Created hook is already added by createCreatedHook
         .filter(method -> !"created".equals(method.getSimpleName().toString()))
         .forEach(method -> {
-          exposeExistingJavaMethodToJs(method);
+          String exposedMethodName = exposeExistingJavaMethodToJs(method);
           String methodName = method.getSimpleName().toString();
-          optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", methodName, methodName);
+          optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", methodName, exposedMethodName);
         });
   }
 
@@ -566,7 +568,7 @@ public class ComponentExposedTypeGenerator {
     }
 
     componentExposedTypeBuilder.addMethod(MethodSpec
-        .methodBuilder("vuegwt$render")
+        .methodBuilder("vg$render")
         .addModifiers(Modifier.PUBLIC)
         .addAnnotation(JsMethod.class)
         .returns(VNode.class)
@@ -574,10 +576,10 @@ public class ComponentExposedTypeGenerator {
         .addStatement("return super.render(new $T(createElementFunction))", VNodeBuilder.class)
         .build());
 
-    addMethodToProto("vuegwt$render");
+    addMethodToProto("vg$render");
 
     // Register the render method
-    optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", "render", "vuegwt$render");
+    optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", "render", "vg$render");
   }
 
   /**
@@ -588,7 +590,7 @@ public class ComponentExposedTypeGenerator {
    * dependencies in the instance
    */
   private void createCreatedHook(ComponentInjectedDependenciesBuilder dependenciesBuilder) {
-    String hasRunCreatedFlagName = "vuegwt$hrc_" + getSuperComponentCount(component);
+    String hasRunCreatedFlagName = "vg$hrc_" + getSuperComponentCount(component);
     componentExposedTypeBuilder
         .addField(
             FieldSpec.builder(boolean.class, hasRunCreatedFlagName, Modifier.PUBLIC)
@@ -597,7 +599,7 @@ public class ComponentExposedTypeGenerator {
         );
 
     MethodSpec.Builder createdMethodBuilder =
-        MethodSpec.methodBuilder("vuegwt$created")
+        MethodSpec.methodBuilder("vg$created")
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(JsMethod.class);
 
@@ -621,8 +623,8 @@ public class ComponentExposedTypeGenerator {
     componentExposedTypeBuilder.addMethod(createdMethodBuilder.build());
 
     // Register the hook
-    addMethodToProto("vuegwt$created");
-    optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", "created", "vuegwt$created");
+    addMethodToProto("vg$created");
+    optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", "created", "vg$created");
   }
 
   /**
@@ -725,14 +727,21 @@ public class ComponentExposedTypeGenerator {
    * same name in JS and can be therefore passed to Vue to configure our {@link IsVueComponent}.
    *
    * @param originalMethod Method to proxify
+   *
+   * @return The exposed method name
    */
-  private void exposeExistingJavaMethodToJs(ExecutableElement originalMethod) {
+  private String exposeExistingJavaMethodToJs(ExecutableElement originalMethod) {
     Emit emitAnnotation = originalMethod.getAnnotation(Emit.class);
-    if (!isMethodVisibleInJS(originalMethod) || emitAnnotation != null) {
-      createProxyJsMethod(componentExposedTypeBuilder, originalMethod);
-    }
 
-    addMethodToProto(originalMethod.getSimpleName().toString());
+    if (!isMethodVisibleInJS(originalMethod) || emitAnnotation != null) {
+      String proxyMethodName = addNewMethodToProto();
+      createProxyJsMethod(componentExposedTypeBuilder, originalMethod, proxyMethodName);
+      return proxyMethodName;
+    } else {
+      String methodName = originalMethod.getSimpleName().toString();
+      addMethodToProto(methodName);
+      return methodName;
+    }
   }
 
   /**
@@ -749,17 +758,31 @@ public class ComponentExposedTypeGenerator {
   }
 
   /**
+   * Add a method to the ExposedType proto. This allows referencing them as this.__proto__.myMethod
+   * to pass them to Vue.js. This way of referencing works both in GWT2 and Closure. The method MUST
+   * have the @JsMethod annotation for this to work.
+   */
+  private String addNewMethodToProto() {
+    String methodName = METHOD_IN_PROTO_PREFIX + methodsInProtoCount;
+    addMethodToProto(methodName);
+    methodsInProtoCount++;
+
+    return methodName;
+  }
+
+  /**
    * Generate a JsInterop proxy method for a {@link IsVueComponent} method.
    *
    * @param componentExposedTypeBuilder Builder for the ExposedType class
    * @param originalMethod Method to proxify
+   * @param proxyMethodName The name of the proxy method
    */
   private void createProxyJsMethod(Builder componentExposedTypeBuilder,
-      ExecutableElement originalMethod) {
+      ExecutableElement originalMethod, String proxyMethodName) {
     Emit emitAnnotation = originalMethod.getAnnotation(Emit.class);
 
     MethodSpec.Builder proxyMethodBuilder = MethodSpec
-        .methodBuilder(originalMethod.getSimpleName().toString())
+        .methodBuilder(proxyMethodName)
         .addModifiers(Modifier.PUBLIC)
         .addAnnotation(JsMethod.class)
         .returns(ClassName.get(originalMethod.getReturnType()));
