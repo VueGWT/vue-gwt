@@ -9,6 +9,7 @@ import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componen
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getFieldMarkingValueForType;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getUnusableByJSAnnotation;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasInterface;
 
@@ -785,6 +786,7 @@ public class ComponentExposedTypeGenerator {
         .methodBuilder(proxyMethodName)
         .addModifiers(Modifier.PUBLIC)
         .addAnnotation(JsMethod.class)
+        .addAnnotation(getUnusableByJSAnnotation())
         .returns(ClassName.get(originalMethod.getReturnType()));
 
     originalMethod
