@@ -26,7 +26,7 @@ public class MethodsBindingComponentExposedType extends MethodsBindingComponent 
 
   public VueComponentOptions<MethodsBindingComponent> getOptions() {
     VueComponentOptions<MethodsBindingComponent> options = new VueComponentOptions<MethodsBindingComponent>();
-    Proto p = this.__proto__;
+    Proto p = __proto__;
     options.setComponentExportedTypePrototype(p);
     options.addMethod("onClickMethod", p.onClickMethod);
     options.addHookMethod("created", p.vuegwt$created);

@@ -223,7 +223,7 @@ public class ComponentExposedTypeGenerator {
         .addModifiers(Modifier.PUBLIC)
         .returns(optionsTypeName)
         .addStatement("$T options = new $T()", optionsTypeName, optionsTypeName)
-        .addStatement("Proto p = this.__proto__");
+        .addStatement("Proto p = __proto__");
 
     Component annotation = component.getAnnotation(Component.class);
 
@@ -478,7 +478,7 @@ public class ComponentExposedTypeGenerator {
       addMethodToProto(watcherTriggerMethodName);
 
       createdMethodBuilder
-          .addStatement("vue().$L(this.__proto__.$L, this.__proto__.$L, $T.of($L, $L))", "$watch",
+          .addStatement("vue().$L(__proto__.$L, __proto__.$L, $T.of($L, $L))", "$watch",
               watcherTriggerMethodName, watchMethodName, WatchOptions.class, watch.isDeep(),
               watch.isImmediate());
     });

@@ -21,7 +21,7 @@ public class PropComponentExposedType extends PropComponent {
 
   public VueComponentOptions<PropComponent> getOptions() {
     VueComponentOptions<PropComponent> options = new VueComponentOptions<PropComponent>();
-    Proto p = this.__proto__;
+    Proto p = __proto__;
     options.setComponentExportedTypePrototype(p);
     options.addJavaProp("myProp", false, null);
     options.addJavaWatch(p.vuegwt_prop$myProp, "myProp", false, true);
