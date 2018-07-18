@@ -31,6 +31,13 @@ public class VueGWTTools {
 
   public static final String MARKING_STRING = "VUE_GWT";
 
+  private static final JsPropertyMap<Object> PROXY_SHARED_DEFINITION = JsPropertyMap.of();
+
+  static {
+    PROXY_SHARED_DEFINITION.set("enumerable", asAny(true));
+    PROXY_SHARED_DEFINITION.set("configurable", asAny(true));
+  }
+
   /**
    * Copy a Java class prototype to a VueComponent declaration. This allows VueComponent created by
    * Vue to pass as an instance of the {@link IsVueComponent} class they represent.
@@ -220,5 +227,24 @@ public class VueGWTTools {
         new JsRegExp(escapeStringForJsRegexp(placeHolderFieldName), "g"),
         VueGWTTools.getFieldName(component, fieldMarker)
     );
+  }
+
+  /**
+   * Proxy a field on an instance. Use the same mechanism as Vue.js proxy method. For example:
+   * this._data.myField can be proxied as this.myTargetField. Getting/Setting this.myTargetField
+   * will be the same as getting/setting this._data.myField.
+   *
+   * @param target Object we proxy on
+   * @param sourceKey The key in target from which we want to proxy a property
+   * @param sourceProperty The source property we want to proxy
+   * @param targetProperty The name of the target property on target
+   */
+  public static void proxyField(Object target, String sourceKey, String sourceProperty,
+      String targetProperty) {
+    PROXY_SHARED_DEFINITION.set("set",
+        new Function("this[\"" + sourceKey + "\"][\"" + sourceProperty + "\"] = arguments[0];"));
+    PROXY_SHARED_DEFINITION.set("get",
+        new Function("return this[\"" + sourceKey + "\"][\"" + sourceProperty + "\"];"));
+    JsObject.defineProperty(target, targetProperty, PROXY_SHARED_DEFINITION);
   }
 }

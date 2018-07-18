@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.core.client.component.options;
 
+import static com.axellience.vuegwt.core.client.tools.VueGWTTools.proxyField;
 import static elemental2.core.Global.JSON;
-import static jsinterop.base.Js.asAny;
 import static jsinterop.base.Js.cast;
 
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
@@ -9,10 +9,10 @@ import com.axellience.vuegwt.core.client.component.options.computed.ComputedKind
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedOptions;
 import com.axellience.vuegwt.core.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.core.client.component.options.props.PropOptions;
+import com.axellience.vuegwt.core.client.component.options.props.PropProxyDefinition;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
-import elemental2.core.JsObject;
 import elemental2.dom.DomGlobal;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,6 +41,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   private JsPropertyMap<Object> componentExportedTypePrototype;
   private Map<String, Provider<?>> dependenciesProvider;
   private Set<String> dataFieldsToProxy;
+  private Set<PropProxyDefinition> propsToProxy;
 
   /**
    * Set the JS Prototype of the ExportedType Java Class represented by this {@link
@@ -159,13 +160,19 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
    * Add a prop to our ComponentOptions. This will allow to receive data from the outside of our
    * Component.
    *
-   * @param propName The name of the property
+   * @param propName The name of the prop
+   * @param fieldName The name of the java field for that prop
    * @param required Is the property required (mandatory)
    * @param exposedTypeName JS name of the type of this property, if not null we will ask Vue to
    * type check based on it
    */
   @JsOverlay
-  public final void addJavaProp(String propName, boolean required, String exposedTypeName) {
+  public final void addJavaProp(String propName, String fieldName, boolean required,
+      String exposedTypeName) {
+    if (propsToProxy == null) {
+      propsToProxy = new HashSet<>();
+    }
+
     PropOptions propDefinition = new PropOptions();
     propDefinition.required = required;
 
@@ -173,6 +180,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
       propDefinition.type = ((JsPropertyMap<Object>) DomGlobal.window).get(exposedTypeName);
     }
 
+    propsToProxy.add(new PropProxyDefinition(propName, fieldName));
     addProp(propName, propDefinition);
   }
 
@@ -244,19 +252,17 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   }
 
   @JsOverlay
-  public final void proxyDataFields(IsVueComponent instance) {
-    if (dataFieldsToProxy == null || dataFieldsToProxy.isEmpty()) {
-      return;
+  public final void proxyFields(IsVueComponent instance) {
+    if (dataFieldsToProxy != null && !dataFieldsToProxy.isEmpty()) {
+      for (String dataField : dataFieldsToProxy) {
+        proxyField(instance, "_data", dataField, dataField);
+      }
     }
 
-    JsPropertyMap<Object> sharedDefinition = JsPropertyMap.of();
-    sharedDefinition.set("enumerable", asAny(true));
-    sharedDefinition.set("configurable", asAny(true));
-
-    for (String dataField : dataFieldsToProxy) {
-      sharedDefinition.set("set", new Function("this[\"_data\"][\"" + dataField + "\"] = arguments[0];"));
-      sharedDefinition.set("get", new Function("return this[\"_data\"][\"" + dataField + "\"];"));
-      JsObject.defineProperty(instance, dataField, sharedDefinition);
+    if (propsToProxy != null && !propsToProxy.isEmpty()) {
+      for (PropProxyDefinition def : propsToProxy) {
+        proxyField(instance, "_props", def.getPropName(), def.getFieldName());
+      }
     }
   }
 

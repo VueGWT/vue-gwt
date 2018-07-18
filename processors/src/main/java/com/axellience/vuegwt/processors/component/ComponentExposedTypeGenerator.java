@@ -28,6 +28,7 @@ import com.axellience.vuegwt.core.client.component.hooks.HasRender;
 import com.axellience.vuegwt.core.client.component.options.VueComponentOptions;
 import com.axellience.vuegwt.core.client.component.options.computed.ComputedKind;
 import com.axellience.vuegwt.core.client.component.options.watch.WatchOptions;
+import com.axellience.vuegwt.core.client.tools.FieldsExposer;
 import com.axellience.vuegwt.core.client.tools.VueGWTTools;
 import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.builder.CreateElementFunction;
@@ -47,7 +48,6 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
-import elemental2.dom.DomGlobal;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
@@ -61,7 +61,6 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -73,7 +72,6 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -101,7 +99,7 @@ public class ComponentExposedTypeGenerator {
   private MethodSpec.Builder optionsBuilder;
   private Builder protoClassBuilder;
   private Set<VariableElement> fieldsToMarkAsData;
-  private Set<String> fieldsWithNameExposed;
+  private Set<ExposedField> fieldsWithNameExposed;
 
   public ComponentExposedTypeGenerator(ProcessingEnvironment processingEnvironment) {
     processingEnv = processingEnvironment;
@@ -274,8 +272,7 @@ public class ComponentExposedTypeGenerator {
 
     fieldsWithNameExposed.addAll(
         fieldsToMarkAsData.stream()
-            .map(VariableElement::getSimpleName)
-            .map(Name::toString)
+            .map(field -> new ExposedField(field.getSimpleName().toString(), field.asType()))
             .collect(Collectors.toSet())
     );
   }
@@ -289,13 +286,29 @@ public class ComponentExposedTypeGenerator {
       return;
     }
 
-    componentExposedTypeBuilder.addMethod(
-        MethodSpec.methodBuilder("vuegwt$exposeFieldsToJs")
-            .addAnnotation(JsMethod.class)
-            .addStatement("$T.console.log($L)", DomGlobal.class,
-                String.join(",", fieldsWithNameExposed))
-            .build()
-    );
+    MethodSpec.Builder exposeFieldMethod = MethodSpec
+        .methodBuilder("vg$ef")
+        .addAnnotation(JsMethod.class);
+
+    fieldsWithNameExposed
+        .forEach(field -> exposeFieldMethod
+            .addStatement("this.$L = $T.v()",
+                field.getName(),
+                FieldsExposer.class)
+        );
+
+    exposeFieldMethod
+        .addStatement(
+            "$T.e($L)",
+            FieldsExposer.class,
+            String.join(
+                ",",
+                fieldsWithNameExposed.stream()
+                    .map(ExposedField::getName)
+                    .collect(Collectors.toList())
+            )
+        );
+    componentExposedTypeBuilder.addMethod(exposeFieldMethod.build());
   }
 
   /**
@@ -317,49 +330,18 @@ public class ComponentExposedTypeGenerator {
                 component);
           }
 
-          // Mark prop field as Data
-          this.fieldsToMarkAsData.add(field);
+          fieldsWithNameExposed.add(new ExposedField(propName, field.asType()));
 
-          optionsBuilder.addStatement("options.addJavaProp($S, $L, $S)",
+          optionsBuilder.addStatement(
+              "options.addJavaProp($S, $T.getFieldName(this, () -> this.$L = $L), $L, $S)",
               propName,
+              VueGWTTools.class,
+              propName,
+              getFieldMarkingValueForType(field.asType()),
               prop.required(),
-              prop.checkType() ? getNativeNameForJavaType(field.asType()) : null);
-
-          String propSetterMethodName = PROP_SETTER_PREFIX + propName;
-          createPropSetter(field, propName, propSetterMethodName);
-
-          optionsBuilder
-              .addStatement("options.addJavaWatch(p.$L, $S, false, true)", propSetterMethodName,
-                  propName);
+              prop.checkType() ? getNativeNameForJavaType(field.asType()) : null
+          );
         });
-  }
-
-  private void createPropSetter(VariableElement field, String propName,
-      String propSetterMethodName) {
-    TypeName type = TypeName.get(field.asType());
-
-    MethodSpec.Builder propSetterBuilder = MethodSpec.methodBuilder(propSetterMethodName)
-        .addAnnotation(JsMethod.class)
-        .addModifiers(Modifier.PRIVATE)
-        .addParameter(type, propName);
-
-    if (type.isPrimitive() || type.isBoxedPrimitive()) {
-      propSetterBuilder.addStatement("this.$L = $L", propName, propName);
-    } else {
-      propSetterBuilder
-          .addStatement("$T<Object> val = $T.asPropertyMap($L)", JsPropertyMap.class, Js.class,
-              propName)
-          .beginControlFlow("if (!$T.isObservableValue(val))", VueGWTTools.class)
-          .addStatement("this.$L = $L", propName, propName)
-          .addStatement("return")
-          .endControlFlow()
-          .addStatement("val.set(\"_isVue\", true)")
-          .addStatement("this.$L = $L", propName, propName)
-          .addStatement("val.delete(\"_isVue\")");
-    }
-
-    componentExposedTypeBuilder.addMethod(propSetterBuilder.build());
-    addMethodToProto(propSetterMethodName);
   }
 
   /**
@@ -375,12 +357,17 @@ public class ComponentExposedTypeGenerator {
       }
 
       String propertyName = GeneratorsUtil.getComputedPropertyName(method);
-      fieldsWithNameExposed.add(propertyName);
-      optionsBuilder.beginControlFlow("options.addJavaComputed(p.$L, $T.getFieldName(this, () ->",
-          methodName, VueGWTTools.class);
-      optionsBuilder.addStatement("this.$L = $L", propertyName,
-          getFieldMarkingValueForType(getComputedPropertyTypeFromMethod(method)));
-      optionsBuilder.endControlFlow("), $T.$L)", ComputedKind.class, kind);
+      TypeMirror propertyType = getComputedPropertyTypeFromMethod(method);
+      fieldsWithNameExposed.add(new ExposedField(propertyName, propertyType));
+      optionsBuilder.addStatement(
+          "options.addJavaComputed(p.$L, $T.getFieldName(this, () -> this.$L = $L), $T.$L)",
+          methodName,
+          VueGWTTools.class,
+          propertyName,
+          getFieldMarkingValueForType(propertyType),
+          ComputedKind.class,
+          kind
+      );
 
       exposeExistingJavaMethodToJs(method);
     });
@@ -621,7 +608,7 @@ public class ComponentExposedTypeGenerator {
         .addStatement("$L = true", hasRunCreatedFlagName);
 
     createdMethodBuilder
-        .addStatement("vue().$L().proxyDataFields(this)", "$options");
+        .addStatement("vue().$L().proxyFields(this)", "$options");
     injectDependencies(component, dependenciesBuilder, createdMethodBuilder);
     initFieldsValues(component, createdMethodBuilder);
 

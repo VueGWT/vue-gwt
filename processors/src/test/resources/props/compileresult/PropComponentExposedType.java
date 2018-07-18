@@ -14,33 +14,14 @@ import jsinterop.base.JsPropertyMap;
 )
 public class PropComponentExposedType extends PropComponent {
 
-  @JsMethod
-  private void vuegwt_prop$myProp(int myProp) {
-    this.myProp = myProp;
-  }
-
   public VueComponentOptions<PropComponent> getOptions() {
     VueComponentOptions<PropComponent> options = new VueComponentOptions<PropComponent>();
     Proto p = __proto__;
     options.setComponentExportedTypePrototype(p);
-    options.addJavaProp("myProp", false, null);
-    options.addJavaWatch(p.vuegwt_prop$myProp, "myProp", false, true);
+    options.addJavaProp("myProp", VueGWTTools.getFieldName(this, () -> this.myProp = 1), false, null);
     options.addHookMethod("created", p.vuegwt$created);
     options.initData(true, VueGWTTools.getFieldsName(this, () -> {
-      this.myProp = 1;
     }));
     return options;
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "Object"
-  )
-  private static class Proto implements JsPropertyMap<Object> {
-
-    public Function vuegwt_prop$myProp;
-
-    public Function vuegwt$created;
   }
 }
