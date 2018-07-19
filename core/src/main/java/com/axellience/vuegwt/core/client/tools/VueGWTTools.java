@@ -8,7 +8,6 @@ import static jsinterop.base.Js.uncheckedCast;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import elemental2.core.Function;
-import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.core.JsRegExp;
 import elemental2.core.JsString;
@@ -28,8 +27,6 @@ public class VueGWTTools {
 
   private static final JsRegExp ESCAPE_JS_STRING_REGEXP = new JsRegExp("[.*+?^${}()|[\\]\\\\]",
       "g");
-
-  public static final String MARKING_STRING = "VUE_GWT";
 
   private static final JsPropertyMap<Object> PROXY_SHARED_DEFINITION = JsPropertyMap.of();
 
@@ -127,12 +124,6 @@ public class VueGWTTools {
     return expressionValue == null ? null : String.valueOf(expressionValue);
   }
 
-  public static boolean isObservableValue(JsPropertyMap<Object> value) {
-    return value != null &&
-        (JsArray.isArray(value) || "object".equals(Js.typeof(value))) &&
-        !value.has("_isVue");
-  }
-
   /**
    * Determine the name of fields at runtime. This allows fields to be renamed during optimizations.
    * The fieldsMarker method must set the value of the wanted fields to either null, 0 or false
@@ -143,7 +134,7 @@ public class VueGWTTools {
    * @return The list of names of the fields
    */
   public static Set<String> getFieldsName(Object instance, Runnable fieldsMarker) {
-    JsPropertyMap<Object> map = cast(instance);
+    JsPropertyMap<Any> map = cast(instance);
     JsObject jsObject = cast(instance);
     map.forEach(key -> {
       if (!jsObject.hasOwnProperty(key)) {
@@ -153,8 +144,7 @@ public class VueGWTTools {
       Any val = asAny(map.get(key));
       if (isTripleEqual(val, null) ||
           isTripleEqual(val, asAny(1)) ||
-          isTripleEqual(val, asAny(true)) ||
-          isTripleEqual(val, MARKING_STRING)) {
+          isTripleEqual(val, asAny(true))) {
         map.delete(key);
       }
     });
@@ -170,8 +160,7 @@ public class VueGWTTools {
       Any val = asAny(map.get(key));
       if (isTripleEqual(val, null) ||
           isTripleEqual(val, asAny(1)) ||
-          isTripleEqual(val, asAny(true)) ||
-          isTripleEqual(val, MARKING_STRING)) {
+          isTripleEqual(val, asAny(true))) {
         dataFields.add(key);
       }
     });

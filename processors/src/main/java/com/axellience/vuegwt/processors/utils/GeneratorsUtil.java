@@ -189,8 +189,6 @@ public class GeneratorsUtil {
       return "true";
     } else if (fieldType.isPrimitive()) {
       return "1";
-    } else if (fieldType.equals(TypeName.get(String.class))) {
-      return "com.axellience.vuegwt.core.client.tools.VueGWTTools.MARKING_STRING";
     }
 
     return "null";
