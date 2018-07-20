@@ -35,8 +35,8 @@ public class VueGWT {
   }
 
   private static boolean isDevMode() {
-    return "on".equals(System.getProperty("superdevmode", "off")) || "development".equals(System
-        .getProperty("vuegwt.environment", "production"));
+    return "development" == System.getProperty("vuegwt.environment", "production") ||
+        "on" == System.getProperty("superdevmode", "off");
   }
 
   /**
