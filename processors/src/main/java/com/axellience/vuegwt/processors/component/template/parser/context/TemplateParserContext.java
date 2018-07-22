@@ -5,6 +5,7 @@ import com.axellience.vuegwt.core.client.tools.JsUtils;
 import com.axellience.vuegwt.core.client.tools.VForExpressionUtil;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
+import com.axellience.vuegwt.processors.component.template.parser.variable.DestructuredPropertyInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
@@ -60,7 +61,7 @@ public class TemplateParserContext {
     this.addStaticImport(JsUtils.class.getCanonicalName() + ".e");
     this.addStaticImport(JsUtils.class.getCanonicalName() + ".array");
 
-    this.rootLayer = new ContextLayer();
+    this.rootLayer = new ContextLayer(0);
     this.rootLayer.addMethod("vue");
 
     this.contextLayers.add(this.rootLayer);
@@ -89,7 +90,7 @@ public class TemplateParserContext {
    * Add a context layer. Used when entering a node with v-for.
    */
   public void addContextLayer() {
-    contextLayers.push(new ContextLayer());
+    contextLayers.push(new ContextLayer(contextLayers.getFirst().getUniqueContextVariableCount()));
   }
 
   /**
@@ -108,6 +109,31 @@ public class TemplateParserContext {
    */
   public LocalVariableInfo addLocalVariable(String typeQualifiedName, String name) {
     return contextLayers.getFirst().addLocalVariable(typeQualifiedName, name);
+  }
+
+  /**
+   * Add a local variable coming from a Variable destructuring to the current context.
+   *
+   * @param propertyType The type of the property on the destructured variable
+   * @param propertyName The name of the property on the destructured variable
+   * @param destructuredVariable The local variable that is getting destructured
+   * @return {@link DestructuredPropertyInfo} for the added variable
+   */
+  public DestructuredPropertyInfo addDestructuredProperty(String propertyType,
+      String propertyName,
+      LocalVariableInfo destructuredVariable) {
+    return contextLayers.getFirst()
+        .addDestructuredProperty(propertyType, propertyName, destructuredVariable);
+  }
+
+  /**
+   * Add a unique local variable to the current context and return it's info
+   *
+   * @param typeQualifiedName The type of the variable
+   * @return {@link LocalVariableInfo} for the added variable
+   */
+  public LocalVariableInfo addUniqueLocalVariable(String typeQualifiedName) {
+    return contextLayers.getFirst().addUniqueLocalVariable(typeQualifiedName);
   }
 
   /**
@@ -270,5 +296,4 @@ public class TemplateParserContext {
   public Map<String, String> getMandatoryAttributes() {
     return mandatoryAttributes;
   }
-
 }

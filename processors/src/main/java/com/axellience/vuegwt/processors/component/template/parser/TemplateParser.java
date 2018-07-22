@@ -12,10 +12,12 @@ import com.axellience.vuegwt.processors.component.template.parser.context.localc
 import com.axellience.vuegwt.processors.component.template.parser.jericho.TemplateParserLoggerProvider;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.processors.component.template.parser.variable.DestructuredPropertyInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -191,36 +193,8 @@ public class TemplateParser {
     currentProp = null;
     currentAttribute = null;
 
-    Attributes attributes = element.getAttributes();
-    if (attributes != null) {
-      // see https://sourceforge.net/p/jerichohtml/discussion/350024/thread/501a7d05/
-      Map<String, String> attrs = context.getMandatoryAttributes();
-      if (!attrs.isEmpty()) {
-        for (Entry<String, String> i : attrs.entrySet()) {
-          String v = i.getValue();
-          if (v == null) {
-            outputDocument.insert(attributes.getBegin(), " " + i.getKey() + " ");
-          } else {
-            outputDocument.insert(attributes.getBegin(), " " + i.getKey() + "\"" + v + "\" ");
-          }
-        }
-      }
-    }
-
-    Attribute vForAttribute = attributes != null ? attributes.get("v-for") : null;
-    if (vForAttribute != null) {
-      // Add a context layer for our v-for
-      context.addContextLayer();
-
-      // Process the v-for expression, and update our attribute
-      String processedVForValue = processVForValue(vForAttribute.getValue());
-      outputDocument.replace(vForAttribute.getValueSegment(), processedVForValue);
-    }
-
-    // Process the element
-    if (attributes != null) {
-      processElementAttributes(element);
-    }
+    // Process attributes
+    boolean shouldPopContext = processElementAttributes(element);
 
     // Process text segments
     StreamSupport
@@ -241,9 +215,101 @@ public class TemplateParser {
     element.getChildElements().
         forEach(this::processElement);
 
-    // After downward recursion, pop the context layer
-    if (vForAttribute != null) {
+    // After downward recursion, pop the context layer if necessary
+    if (shouldPopContext) {
       context.popContextLayer();
+    }
+  }
+
+  /**
+   * Process a given {@link Element} attributes
+   *
+   * @param element The element to process
+   * @return True if this {@link Element} created a new Context in the stack, false otherwise
+   */
+  private boolean processElementAttributes(Element element) {
+    Attributes attributes = element.getAttributes();
+    if (attributes == null) {
+      return false;
+    }
+
+    boolean shouldPopContext = false;
+    registerMandatoryAttributes(attributes);
+
+    Attribute vForAttribute = attributes.get("v-for");
+    Attribute slotScopeAttribute = attributes.get("slot-scope");
+    if (vForAttribute != null || slotScopeAttribute != null) {
+      // Add a context layer
+      shouldPopContext = true;
+      context.addContextLayer();
+    }
+
+    if (vForAttribute != null) {
+      String processedVForValue = processVForValue(vForAttribute.getValue());
+      outputDocument.replace(vForAttribute.getValueSegment(), processedVForValue);
+    }
+
+    if (slotScopeAttribute != null) {
+      String processedScopedSlotValue = processSlotScopeValue(slotScopeAttribute.getValue());
+      outputDocument.replace(slotScopeAttribute.getValueSegment(), processedScopedSlotValue);
+    }
+
+    Optional<LocalComponent> localComponent = getLocalComponentForElement(element);
+
+    // Iterate on element attributes
+    Set<LocalComponentProp> foundProps = new HashSet<>();
+    for (Attribute attribute : element.getAttributes()) {
+      String key = attribute.getKey();
+      if ("v-for".equals(key) || "slot-scope".equals(key)) {
+        continue;
+      }
+
+      if ("v-model".equals(key)) {
+        processVModel(attribute);
+        continue;
+      }
+
+      Optional<LocalComponentProp> optionalProp =
+          localComponent.flatMap(lc -> lc.getPropForAttribute(attribute.getName()));
+      optionalProp.ifPresent(foundProps::add);
+
+      if (!VUE_ATTR_PATTERN.matcher(key).matches()) {
+        optionalProp.ifPresent(this::validateStringPropBinding);
+        continue;
+      }
+
+      context.setCurrentSegment(attribute);
+
+      currentAttribute = attribute;
+      currentProp = optionalProp.orElse(null);
+      currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
+      String processedExpression = processExpression(attribute.getValue());
+
+      if (attribute.getValueSegment() != null) {
+        outputDocument.replace(attribute.getValueSegment(), processedExpression);
+      }
+    }
+
+    localComponent.ifPresent(lc -> validateRequiredProps(lc, foundProps));
+
+    return shouldPopContext;
+  }
+
+  /**
+   * Register mandatory attributes for Scoped CSS
+   */
+  private void registerMandatoryAttributes(Attributes attributes) {
+    // see https://sourceforge.net/p/jerichohtml/discussion/350024/thread/501a7d05/
+    Map<String, String> attrs = context.getMandatoryAttributes();
+    if (!attrs.isEmpty()) {
+      for (Entry<String, String> i : attrs.entrySet()) {
+        String v = i.getValue();
+        if (v == null) {
+          outputDocument.insert(attributes.getBegin(), " " + i.getKey() + " ");
+        } else {
+          outputDocument.insert(attributes.getBegin(), " " + i.getKey() + "\"" + v + "\" ");
+        }
+      }
     }
   }
 
@@ -277,50 +343,6 @@ public class TemplateParser {
       newText.append(elementText.substring(lastEnd));
       outputDocument.replace(textSegment, newText.toString());
     }
-  }
-
-  /**
-   * Process an {@link Element} and check for vue attributes.
-   *
-   * @param element Current element being processed
-   */
-  private void processElementAttributes(Element element) {
-    Optional<LocalComponent> localComponent = getLocalComponentForElement(element);
-
-    // Iterate on element attributes
-    Set<LocalComponentProp> foundProps = new HashSet<>();
-    for (Attribute attribute : element.getAttributes()) {
-      if ("v-for".equals(attribute.getKey())) {
-        continue;
-      }
-
-      if ("v-model".equals(attribute.getKey())) {
-        processVModel(attribute);
-        continue;
-      }
-
-      Optional<LocalComponentProp> optionalProp =
-          localComponent.flatMap(lc -> lc.getPropForAttribute(attribute.getName()));
-      optionalProp.ifPresent(foundProps::add);
-
-      if (!VUE_ATTR_PATTERN.matcher(attribute.getKey()).matches()) {
-        optionalProp.ifPresent(this::validateStringPropBinding);
-        continue;
-      }
-
-      context.setCurrentSegment(attribute);
-
-      currentAttribute = attribute;
-      currentProp = optionalProp.orElse(null);
-      currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
-      String processedExpression = processExpression(attribute.getValue());
-
-      if (attribute.getValueSegment() != null) {
-        outputDocument.replace(attribute.getValueSegment(), processedExpression);
-      }
-    }
-
-    localComponent.ifPresent(lc -> validateRequiredProps(lc, foundProps));
   }
 
   /**
@@ -441,6 +463,14 @@ public class TemplateParser {
 
     // And return the newly built definition
     return vForDef.getVariableDefinition() + " in " + inExpression;
+  }
+
+  /**
+   * Process a scoped-slot value.
+   */
+  private String processSlotScopeValue(String value) {
+    SlotScopeDefinition slotScopeDefinition = new SlotScopeDefinition(value, context, logger);
+    return slotScopeDefinition.getSlotScopeVariableName();
   }
 
   /**
@@ -690,7 +720,7 @@ public class TemplateParser {
       if ("$event".equals(nameExpr.getNameAsString())) {
         processEventParameter(expression, nameExpr, parameters);
       } else {
-        processNameExpression(expression, nameExpr, parameters);
+        processNameExpression(nameExpr, parameters);
       }
     }
 
@@ -711,14 +741,13 @@ public class TemplateParser {
    */
   private void processEventParameter(Expression expression, NameExpr nameExpr,
       List<VariableInfo> parameters) {
-    if (nameExpr.getParentNode().isPresent() && nameExpr
-        .getParentNode()
-        .get() instanceof CastExpr) {
-      CastExpr castExpr = (CastExpr) nameExpr.getParentNode().get();
+    Optional<Node> parentNode = nameExpr.getParentNode();
+    if (parentNode.isPresent() && parentNode.get() instanceof CastExpr) {
+      CastExpr castExpr = (CastExpr) parentNode.get();
       parameters.add(new VariableInfo(castExpr.getType().toString(), "$event"));
     } else {
       logger.error(
-          "\"$event\" should always be casted to it's intended type. Example: @click=\"doSomething((NativeEvent) $event)\".",
+          "\"$event\" should always be casted to it's intended type. Example: @click=\"doSomething((Event) $event)\".",
           expression.toString());
     }
   }
@@ -727,11 +756,10 @@ public class TemplateParser {
    * Process a name expression to determine if it exists in the context. If it does, and it's a
    * local variable (from a v-for) we add it to our parameters
    *
-   * @param expression The currently processed expression
    * @param nameExpr The variable we are processing
    * @param parameters The parameters this expression depends on
    */
-  private void processNameExpression(Expression expression, NameExpr nameExpr,
+  private void processNameExpression(NameExpr nameExpr,
       List<VariableInfo> parameters) {
     String name = nameExpr.getNameAsString();
     if (context.hasImport(name)) {
@@ -749,6 +777,11 @@ public class TemplateParser {
 
     if (variableInfo instanceof LocalVariableInfo) {
       parameters.add(variableInfo);
+    } else if (variableInfo instanceof DestructuredPropertyInfo) {
+      DestructuredPropertyInfo propertyInfo = (DestructuredPropertyInfo) variableInfo;
+
+      parameters.add(propertyInfo.getDestructuredVariable());
+      nameExpr.setName(propertyInfo.getAsDestructuredValue());
     }
   }
 

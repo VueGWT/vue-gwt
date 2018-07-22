@@ -44,6 +44,8 @@ import com.axellience.vuegwt.tests.client.components.globalregistration.Globally
 import com.axellience.vuegwt.tests.client.components.globalregistration.GloballyRegisteredWithNameOnRegistrationComponentFactory;
 import com.axellience.vuegwt.tests.client.components.globalregistration.UsingGloballyRegisteredComponent;
 import com.axellience.vuegwt.tests.client.components.globalregistration.UsingGloballyRegisteredComponentFactory;
+import com.axellience.vuegwt.tests.client.components.slots.SlotScopeParentComponent;
+import com.axellience.vuegwt.tests.client.components.slots.SlotScopeParentComponentFactory;
 import com.axellience.vuegwt.tests.client.components.style.classbinding.ClassBindingTestComponent;
 import com.axellience.vuegwt.tests.client.components.style.classbinding.ClassBindingTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.style.inlinestylebinding.InlineStyleBindingTestComponent;
@@ -105,6 +107,7 @@ public class VueGwtTestsApp implements EntryPoint {
     );
     registerTestComponent(ScopedTestComponent.class, ScopedTestComponentFactory.get());
     registerTestComponent(VModelComponent.class, VModelComponentFactory.get());
+    registerTestComponent(SlotScopeParentComponent.class, SlotScopeParentComponentFactory.get());
 
     Vue.component(GloballyRegisteredComponentFactory.get());
     Vue.component(GloballyRegisteredWithNameComponentFactory.get());
@@ -114,7 +117,8 @@ public class VueGwtTestsApp implements EntryPoint {
     );
     registerTestComponent(
         UsingGloballyRegisteredComponent.class,
-        UsingGloballyRegisteredComponentFactory.get());
+        UsingGloballyRegisteredComponentFactory.get()
+    );
 
     Window.onVueGwtTestsReady.forEach((f, i, a) -> f.call(i, a));
   }
