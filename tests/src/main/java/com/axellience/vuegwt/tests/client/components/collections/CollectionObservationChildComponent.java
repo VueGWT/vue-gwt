@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.tests.client.components.collections;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
-import com.axellience.vuegwt.core.annotations.component.Data;
+import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,22 +13,22 @@ import java.util.Set;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 
-@Component(components = CollectionObservationChildComponent.class)
-public class CollectionObservationComponent implements IsVueComponent {
+@Component
+public class CollectionObservationChildComponent implements IsVueComponent {
 
-  @Data
+  @Prop(required = true)
   @JsProperty
   List<String> arrayList = new ArrayList<>();
 
-  @Data
+  @Prop(required = true)
   @JsProperty
   List<String> linkedList = new LinkedList<>();
 
-  @Data
+  @Prop(required = true)
   @JsProperty
   Set<String> hashSet = new HashSet<>();
 
-  @Data
+  @Prop(required = true)
   @JsProperty
   Map<String, String> hashMap = new HashMap<>();
 

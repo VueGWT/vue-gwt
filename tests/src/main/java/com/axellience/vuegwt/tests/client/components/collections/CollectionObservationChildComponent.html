@@ -1,21 +1,14 @@
 <div>
-  <div id="arrayList">
+  <div id="arrayListProp">
     <span v-for="String val in arrayList">{{val}}</span>
   </div>
-  <div id="linkedList">
+  <div id="linkedListProp">
     <span v-for="String val in linkedList">{{val}}</span>
   </div>
-  <div id="hashSet">
+  <div id="hashSetProp">
     <span v-for="String val in hashSet">{{val}}</span>
   </div>
-  <div id="hashMap">
+  <div id="hashMapProp">
     <span v-for="String val in hashMap">{{val}}</span>
   </div>
-
-  <collection-observation-child
-      ref="child"
-      :arrayList="arrayList"
-      :linkedList="linkedList"
-      :hashSet="hashSet"
-      :hashMap="hashMap"/>
 </div>

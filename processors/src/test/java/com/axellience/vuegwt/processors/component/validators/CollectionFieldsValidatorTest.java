@@ -9,7 +9,7 @@ import com.google.testing.compile.JavaFileObjects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class DataFieldsValidatorTest {
+class CollectionFieldsValidatorTest {
 
   @Test
   @DisplayName("should throw an error when List missing @JsProperty in the data model")
@@ -58,6 +58,21 @@ class DataFieldsValidatorTest {
             .withProcessors(new VueGwtProcessor())
             .compile(
                 JavaFileObjects.forResource("validators/CollectionDataFieldsComponent.java"));
+
+    assertThat(compilation).hadErrorContaining(
+        "Java Collections must have the @JsProperty annotation to be observed: collectionWithMissingJsProperty");
+    assertThat(compilation).hadErrorContaining(
+        "Specific Collection type used as a field type, you should use either Map, Set or List: collectionWithSpecificType");
+  }
+
+  @Test
+  @DisplayName("should throw an error invalid Collection Prop fields in a Component")
+  void collectionPropFields() {
+    Compilation compilation =
+        javac()
+            .withProcessors(new VueGwtProcessor())
+            .compile(
+                JavaFileObjects.forResource("validators/CollectionPropFieldsComponent.java"));
 
     assertThat(compilation).hadErrorContaining(
         "Java Collections must have the @JsProperty annotation to be observed: collectionWithMissingJsProperty");

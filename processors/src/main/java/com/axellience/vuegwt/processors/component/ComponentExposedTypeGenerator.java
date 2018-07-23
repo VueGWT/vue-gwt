@@ -3,7 +3,6 @@ package com.axellience.vuegwt.processors.component;
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentCount;
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.hasTemplate;
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isFieldVisibleInJS;
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isMethodVisibleInJS;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentExposedTypeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
@@ -36,7 +35,7 @@ import com.axellience.vuegwt.core.client.vnode.builder.CreateElementFunction;
 import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import com.axellience.vuegwt.core.client.vue.VueJsConstructor;
 import com.axellience.vuegwt.processors.component.template.ComponentTemplateProcessor;
-import com.axellience.vuegwt.processors.component.validators.DataFieldsValidator;
+import com.axellience.vuegwt.processors.component.validators.CollectionFieldsValidator;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.axellience.vuegwt.processors.utils.GeneratorsUtil;
 import com.squareup.javapoet.AnnotationSpec;
@@ -91,7 +90,7 @@ public class ComponentExposedTypeGenerator {
   private final Messager messager;
   private final Elements elements;
   private final ComponentTemplateProcessor componentTemplateProcessor;
-  private final DataFieldsValidator dataFieldsValidator;
+  private final CollectionFieldsValidator collectionFieldsValidator;
 
   private TypeElement component;
   private Builder componentExposedTypeBuilder;
@@ -107,7 +106,7 @@ public class ComponentExposedTypeGenerator {
     messager = processingEnvironment.getMessager();
     elements = processingEnvironment.getElementUtils();
     componentTemplateProcessor = new ComponentTemplateProcessor(processingEnvironment);
-    dataFieldsValidator = new DataFieldsValidator(processingEnvironment.getTypeUtils(), elements,
+    collectionFieldsValidator = new CollectionFieldsValidator(processingEnvironment.getTypeUtils(), elements,
         messager);
   }
 
@@ -252,7 +251,7 @@ public class ComponentExposedTypeGenerator {
       return;
     }
 
-    dataFields.forEach(dataFieldsValidator::validateComponentDataField);
+    dataFields.forEach(collectionFieldsValidator::validateComponentDataField);
 
     this.fieldsToMarkAsData.addAll(dataFields);
   }
@@ -324,12 +323,7 @@ public class ComponentExposedTypeGenerator {
           String propName = field.getSimpleName().toString();
           Prop prop = field.getAnnotation(Prop.class);
 
-          if (isFieldVisibleInJS(field)) {
-            printError(
-                "@Prop should not be annotated with @JsProperty anymore starting Beta 9 on field: \""
-                    + propName + "\".",
-                component);
-          }
+          collectionFieldsValidator.validateComponentPropField(field);
 
           fieldsWithNameExposed.add(new ExposedField(propName, field.asType()));
 

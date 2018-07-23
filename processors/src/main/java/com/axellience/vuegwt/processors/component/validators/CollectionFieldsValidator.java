@@ -16,7 +16,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import jsinterop.annotations.JsProperty;
 
-public class DataFieldsValidator {
+public class CollectionFieldsValidator {
 
   private final Types types;
   private final TypeMirror setType;
@@ -24,7 +24,7 @@ public class DataFieldsValidator {
   private final TypeMirror mapType;
   private final Messager messager;
 
-  public DataFieldsValidator(Types types, Elements elements, Messager messager) {
+  public CollectionFieldsValidator(Types types, Elements elements, Messager messager) {
     this.types = types;
     setType = types.erasure(elements.getTypeElement(Set.class.getCanonicalName()).asType());
     listType = types.erasure(elements.getTypeElement(List.class.getCanonicalName()).asType());
@@ -35,6 +35,17 @@ public class DataFieldsValidator {
   public void validateComponentDataField(VariableElement dataField) {
     validateField(dataField, new HashSet<>(), dataField.getEnclosingElement(),
         dataField.getSimpleName().toString());
+  }
+
+  public void validateComponentPropField(VariableElement propField) {
+    if (hasSuppressWarning(propField)) {
+      return;
+    }
+
+    if (isCollectionField(propField)) {
+      validateCollectionField(propField, propField.getEnclosingElement(),
+          propField.getSimpleName().toString());
+    }
   }
 
   private void validateField(VariableElement field, Set<String> exploredTypes, Element component,

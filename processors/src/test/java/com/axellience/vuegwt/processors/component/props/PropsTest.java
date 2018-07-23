@@ -12,17 +12,6 @@ import org.junit.jupiter.api.Test;
 class PropsTest {
 
   @Test
-  @DisplayName("should throw when using @JsProperty with @Prop")
-  void propsWithJsPropertyAnnotation() {
-    Compilation compilation =
-        javac()
-            .withProcessors(new VueGwtProcessor())
-            .compile(JavaFileObjects.forResource("props/PropWithJsPropertyComponent.java"));
-
-    assertThat(compilation).hadErrorContaining("@Prop should not be annotated with @JsProperty anymore starting Beta 9 on field: \"myProp\".");
-  }
-
-  @Test
   @DisplayName("should register @Prop in options correctly")
   void propsAreRegisteredInOptionsCorrectly() {
     Compilation compilation =
