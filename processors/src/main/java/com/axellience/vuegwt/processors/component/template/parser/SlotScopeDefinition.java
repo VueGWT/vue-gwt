@@ -18,7 +18,7 @@ class SlotScopeDefinition {
     this.context = context;
     this.logger = logger;
 
-    if (value.startsWith("{")) {
+    if (this.value.startsWith("{")) {
       processParameterDestructuring();
     } else {
       processSimpleSlotScope();

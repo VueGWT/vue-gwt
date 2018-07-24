@@ -32,4 +32,10 @@
     <div id="myStringLiteralD">{{ myStringLiteralD + "_HELLO" }}</div>
     <div id="mySimpleObjectD">{{ mySimpleObjectD.getStringProperty() + "_HELLO" }}</div>
   </template>
+
+  <template slot="my-slot-with-spaces"
+            slot-scope="   {   int myIntS  ,   int myIntLiteralS   }   ">
+    <div id="myIntS">{{ myIntS + 5 }}</div>
+    <div id="myIntLiteralS">{{ myIntLiteralS + 10 }}</div>
+  </template>
 </slot-scope-child>

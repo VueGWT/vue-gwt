@@ -19,7 +19,7 @@ describe('Slot Scope', () => {
     destroyComponent(component);
   });
 
-  describe('Passing data', () => {
+  describe('passing data', () => {
     it('should pass int variables', () => {
       const element = getElement(component, "#myInt");
       expect(element.innerText).to.be.equal("15");
@@ -64,14 +64,14 @@ describe('Slot Scope', () => {
     });
   });
 
-  describe('Named Slots', () => {
+  describe('named slots', () => {
     it('should work on named slots', () => {
       const element = getElement(component, "#nameSlotMyString");
       expect(element.innerText).to.be.equal("MY_STRING_HELLO");
     });
   });
 
-  describe('Destructuring Slot Scope Variable', () => {
+  describe('destructuring Slot Scope Variable', () => {
     it('should destructure int variables', () => {
       const element = getElement(component, "#myIntD");
       expect(element.innerText).to.be.equal("15");
@@ -148,6 +148,18 @@ describe('Slot Scope', () => {
       component.$refs["child"].changeSimpleObjectValue("NEW_VALUE");
       nextTick()
       .then(() => expect(element.innerText).to.be.equal("NEW_VALUE_HELLO"));
+    });
+  });
+
+  describe('destructuring Slot Scope Variable with spaces', () => {
+    it('should destructure int variables', () => {
+      const element = getElement(component, "#myIntD");
+      expect(element.innerText).to.be.equal("15");
+    });
+
+    it('should destructure Integer variables', () => {
+      const element = getElement(component, "#myIntegerD");
+      expect(element.innerText).to.be.equal("15");
     });
   });
 });
