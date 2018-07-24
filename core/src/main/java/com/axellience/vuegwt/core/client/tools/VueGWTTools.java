@@ -141,11 +141,15 @@ public class VueGWTTools {
         return;
       }
 
-      Any val = asAny(map.get(key));
-      if (isTripleEqual(val, null) ||
-          isTripleEqual(val, asAny(1)) ||
-          isTripleEqual(val, asAny(true))) {
-        map.delete(key);
+      try {
+        Any val = asAny(map.get(key));
+        if (isTripleEqual(val, null) ||
+            isTripleEqual(val, asAny(1)) ||
+            isTripleEqual(val, asAny(true))) {
+          map.delete(key);
+        }
+      } catch (Exception e) {
+
       }
     });
 
@@ -157,11 +161,15 @@ public class VueGWTTools {
         return;
       }
 
-      Any val = asAny(map.get(key));
-      if (isTripleEqual(val, null) ||
-          isTripleEqual(val, asAny(1)) ||
-          isTripleEqual(val, asAny(true))) {
-        dataFields.add(key);
+      try {
+        Any val = asAny(map.get(key));
+        if (isTripleEqual(val, null) ||
+            isTripleEqual(val, asAny(1)) ||
+            isTripleEqual(val, asAny(true))) {
+          dataFields.add(key);
+        }
+      } catch (Exception e) {
+
       }
     });
 
@@ -189,11 +197,15 @@ public class VueGWTTools {
         .cast(javaComponentClassInstance);
 
     javaComponentClassInstancePropertyMap.forEach(key -> {
-      if (!javaComponentClassInstancePropertyMap.has(key)
-          || vueComponentInstancePropertyMap.get(key) != null) {
-        return;
+      try {
+        if (!javaComponentClassInstancePropertyMap.has(key)
+            || vueComponentInstancePropertyMap.get(key) != null) {
+          return;
+        }
+        vueComponentInstancePropertyMap.set(key, javaComponentClassInstancePropertyMap.get(key));
+      } catch (Exception e) {
+
       }
-      vueComponentInstancePropertyMap.set(key, javaComponentClassInstancePropertyMap.get(key));
     });
   }
 

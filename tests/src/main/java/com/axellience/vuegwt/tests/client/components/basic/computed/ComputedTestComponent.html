@@ -1,4 +1,5 @@
 <div>
   <div :data-value='computedProperty'>{{ computedProperty }}</div>
   <div :data-value='computedPropertyNoGet'>{{ computedPropertyNoGet }}</div>
+  <div v-if="simpleObject != null">{{ computedNoNullCheck }}</div>
 </div>
