@@ -472,6 +472,7 @@ public class ComponentExposedTypeGenerator {
     for (int i = 0; i < valueSplit.length - 1; i++) {
       currentExpression += valueSplit[i];
       watcherMethodBuilder.addStatement("if ($L == null) return null", currentExpression);
+      currentExpression += ".";
     }
 
     watcherMethodBuilder.addStatement("return $L", watch.value());

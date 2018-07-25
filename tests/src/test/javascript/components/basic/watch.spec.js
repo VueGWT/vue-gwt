@@ -82,6 +82,47 @@ describe('Watch', () => {
             })
           });
 
+      it('should be called when watching expression on data and data changes',
+          () => {
+            component.changeWatchedDataAnnotation('value');
+
+            return nextTick()
+            .then(() => {
+              expect(component.getOldValueAnnotationExpression()).to.be.null;
+              expect(component.getNewValueAnnotationExpression()).to.be.not.null;
+              expect(component.getNewValueAnnotationExpression()).to.equal('value');
+
+              component.changeWatchedDataAnnotation(null);
+              return nextTick();
+            })
+            .then(() => {
+              expect(component.getOldValueAnnotationExpression()).to.be.not.null;
+              expect(component.getOldValueAnnotationExpression()).to.equal('value');
+              expect(component.getNewValueAnnotationExpression()).to.be.null;
+            });
+          });
+
+      it('should be called when watching expression on data and property changes',
+          () => {
+            component.changeWatchedDataAnnotation('value');
+
+            return nextTick()
+            .then(() => {
+              expect(component.getOldValueAnnotationExpression()).to.be.null;
+              expect(component.getNewValueAnnotationExpression()).to.be.not.null;
+              expect(component.getNewValueAnnotationExpression()).to.equal('value');
+
+              component.getWatchedDataAnnotation().setStringProperty('newValue');
+              return nextTick();
+            })
+            .then(() => {
+              expect(component.getOldValueAnnotationExpression()).to.be.not.null;
+              expect(component.getOldValueAnnotationExpression()).to.equal('value');
+              expect(component.getNewValueAnnotationExpression()).to.be.not.null;
+              expect(component.getNewValueAnnotationExpression()).to.equal('newValue');
+            })
+          });
+
       it('should be called when watching data deep and data changes', () => {
         component.changeWatchedDataDeepAnnotation('value');
 

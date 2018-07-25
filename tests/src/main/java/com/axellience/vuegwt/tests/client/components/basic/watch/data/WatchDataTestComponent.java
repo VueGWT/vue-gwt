@@ -22,6 +22,10 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
 
   String oldValueAnnotationProperty;
 
+  String newValueAnnotationExpression;
+
+  String oldValueAnnotationExpression;
+
   @Data
   SimpleObject watchedDataDeepAnnotation = null;
 
@@ -84,6 +88,12 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   public void onWatchedDataPropertyChange(String newValue, String oldValue) {
     this.newValueAnnotationProperty = newValue;
     this.oldValueAnnotationProperty = oldValue;
+  }
+
+  @Watch("watchedDataAnnotation.getStringProperty().toString()")
+  public void omWatchExpression(String newValue, String oldValue) {
+    this.newValueAnnotationExpression = newValue;
+    this.oldValueAnnotationExpression = oldValue;
   }
 
   @Watch(value = "watchedDataDeepAnnotation", isDeep = true)
@@ -177,6 +187,16 @@ public class WatchDataTestComponent implements IsVueComponent, HasCreated {
   @JsMethod
   public String getOldValueAnnotationProperty() {
     return oldValueAnnotationProperty;
+  }
+
+  @JsMethod
+  public String getNewValueAnnotationExpression() {
+    return newValueAnnotationExpression;
+  }
+
+  @JsMethod
+  public String getOldValueAnnotationExpression() {
+    return oldValueAnnotationExpression;
   }
 
   @JsMethod
