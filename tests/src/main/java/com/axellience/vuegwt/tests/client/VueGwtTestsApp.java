@@ -11,6 +11,8 @@ import com.axellience.vuegwt.tests.client.components.basic.computed.ComputedTest
 import com.axellience.vuegwt.tests.client.components.basic.computed.ComputedTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.data.DataTestComponent;
 import com.axellience.vuegwt.tests.client.components.basic.data.DataTestComponentFactory;
+import com.axellience.vuegwt.tests.client.components.basic.imports.StaticImportsComponent;
+import com.axellience.vuegwt.tests.client.components.basic.imports.StaticImportsComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.prop.PropParentTestComponent;
 import com.axellience.vuegwt.tests.client.components.basic.prop.PropParentTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.prop.PropTestComponent;
@@ -119,6 +121,7 @@ public class VueGwtTestsApp implements EntryPoint {
         UsingGloballyRegisteredComponent.class,
         UsingGloballyRegisteredComponentFactory.get()
     );
+    registerTestComponent(StaticImportsComponent.class, StaticImportsComponentFactory.get());
 
     Window.onVueGwtTestsReady.forEach((f, i, a) -> f.call(i, a));
   }

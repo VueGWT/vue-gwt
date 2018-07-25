@@ -134,6 +134,11 @@ public class TemplateParser {
           if (classAttributeValue != null) {
             context.addImport(classAttributeValue);
           }
+
+          String staticAttributeValue = importElement.getAttributeValue("static");
+          if (staticAttributeValue != null) {
+            context.addStaticImport(staticAttributeValue);
+          }
         })
         .forEach(outputDocument::remove);
   }
@@ -765,6 +770,11 @@ public class TemplateParser {
     if (context.hasImport(name)) {
       // This is a direct Class reference, we just replace with the fully qualified name
       nameExpr.setName(context.getFullyQualifiedNameForClassName(name));
+      return;
+    }
+
+    if (context.hasStaticProperty(name)) {
+      nameExpr.setName(context.getFullyQualifiedNameForPropertyName(name));
       return;
     }
 

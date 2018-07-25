@@ -35,6 +35,7 @@ public class TemplateParserContext {
   private Map<String, String> classNameToFullyQualifiedName = new HashMap<>();
   // For static imports
   private Map<String, String> methodNameToFullyQualifiedName = new HashMap<>();
+  private Map<String, String> propertyNameToFullyQualifiedName = new HashMap<>();
 
   private Segment currentSegment;
 
@@ -221,9 +222,10 @@ public class TemplateParserContext {
    */
   public void addStaticImport(String fullyQualifiedName) {
     String[] importSplit = fullyQualifiedName.split("\\.");
-    String methodName = importSplit[importSplit.length - 1];
+    String symbolName = importSplit[importSplit.length - 1];
 
-    methodNameToFullyQualifiedName.put(methodName, fullyQualifiedName);
+    methodNameToFullyQualifiedName.put(symbolName, fullyQualifiedName);
+    propertyNameToFullyQualifiedName.put(symbolName, fullyQualifiedName);
   }
 
   /**
@@ -242,6 +244,21 @@ public class TemplateParserContext {
   }
 
   /**
+   * Return the fully qualified name for a given property. Only works if the property has been
+   * statically imported.
+   *
+   * @param propertyName The name of the property to get the fully qualified name of
+   * @return The fully qualified name, or the property name if it's unknown
+   */
+  public String getFullyQualifiedNameForPropertyName(String propertyName) {
+    if (!propertyNameToFullyQualifiedName.containsKey(propertyName)) {
+      return propertyName;
+    }
+
+    return propertyNameToFullyQualifiedName.get(propertyName);
+  }
+
+  /**
    * Return true if we have a static import for the given methodName
    *
    * @param methodName The methodName we want to check
@@ -250,6 +267,17 @@ public class TemplateParserContext {
   public boolean hasStaticMethod(String methodName) {
     return methodNameToFullyQualifiedName.containsKey(methodName)
         || methodNameToFullyQualifiedName.containsValue(methodName);
+  }
+
+  /**
+   * Return true if we have a static import for the given propertyName
+   *
+   * @param propertyName The propertyName we want to check
+   * @return True if we have an import, false otherwise
+   */
+  public boolean hasStaticProperty(String propertyName) {
+    return methodNameToFullyQualifiedName.containsKey(propertyName)
+        || methodNameToFullyQualifiedName.containsValue(propertyName);
   }
 
   /**
