@@ -417,9 +417,13 @@ public class ComponentExposedTypeGenerator {
       }
 
       TypeMirror propertyType = getComputedPropertyTypeFromMethod(method);
-      componentExposedTypeBuilder.addField(TypeName.get(propertyType),
-          propertyName,
-          Modifier.PROTECTED);
+      componentExposedTypeBuilder
+          .addField(FieldSpec
+              .builder(TypeName.get(propertyType),
+                  propertyName,
+                  Modifier.PROTECTED)
+              .addAnnotation(JsProperty.class)
+              .build());
       alreadyDone.add(propertyName);
     });
 
@@ -537,7 +541,8 @@ public class ComponentExposedTypeGenerator {
         .forEach(method -> {
           String exposedMethodName = exposeExistingJavaMethodToJs(method);
           String methodName = method.getSimpleName().toString();
-          optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", methodName, exposedMethodName);
+          optionsBuilder
+              .addStatement("options.addHookMethod($S, p.$L)", methodName, exposedMethodName);
         });
   }
 
