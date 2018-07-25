@@ -83,6 +83,7 @@ import jsinterop.base.JsPropertyMap;
  * @author Adrien Baron
  */
 public class ComponentExposedTypeGenerator {
+
   private static final String METHOD_IN_PROTO_PREFIX = "vg$e";
 
   private final ProcessingEnvironment processingEnv;
@@ -106,7 +107,8 @@ public class ComponentExposedTypeGenerator {
     messager = processingEnvironment.getMessager();
     elements = processingEnvironment.getElementUtils();
     componentTemplateProcessor = new ComponentTemplateProcessor(processingEnvironment);
-    collectionFieldsValidator = new CollectionFieldsValidator(processingEnvironment.getTypeUtils(), elements,
+    collectionFieldsValidator = new CollectionFieldsValidator(processingEnvironment.getTypeUtils(),
+        elements,
         messager);
   }
 
@@ -131,7 +133,7 @@ public class ComponentExposedTypeGenerator {
     processPropDefaultValues();
     processHooks(hookMethodsFromInterfaces);
     processMethods(hookMethodsFromInterfaces);
-    processInvalidEmitMethods();
+    processEmitMethods();
     processRenderFunction();
     createCreatedHook(dependenciesBuilder);
     initComponentDataFields();
@@ -386,6 +388,18 @@ public class ComponentExposedTypeGenerator {
       String exposedMethodName = exposeExistingJavaMethodToJs(method);
       optionsBuilder.addStatement("options.addMethod($S, p.$L)", methodName, exposedMethodName);
     });
+  }
+
+  /**
+   * Process @Emit methods with no @JsMethod annotation
+   */
+  private void processEmitMethods() {
+    ElementFilter
+        .methodsIn(component.getEnclosedElements())
+        .stream()
+        .filter(method -> hasAnnotation(method, Emit.class))
+        .filter(method -> !hasAnnotation(method, JsMethod.class))
+        .forEach(this::exposeExistingJavaMethodToJs);
   }
 
   /**
@@ -655,22 +669,6 @@ public class ComponentExposedTypeGenerator {
         component);
   }
 
-  /**
-   * Emit an error message for every method annotated with {@link Emit} that are not also annotated
-   * with {@link JsMethod}.
-   */
-  private void processInvalidEmitMethods() {
-    ElementFilter
-        .methodsIn(component.getEnclosedElements())
-        .stream()
-        .filter(method -> hasAnnotation(method, Emit.class))
-        .filter(method -> !hasAnnotation(method, JsMethod.class))
-        .forEach(invalidEmitMethod -> printError("The method \"" + invalidEmitMethod
-                .getSimpleName()
-                .toString() + "\" annotated with @Emit must also be annotated with @JsMethod.",
-            component));
-  }
-
   private void copyDependenciesFields(ComponentInjectedDependenciesBuilder dependenciesBuilder,
       MethodSpec.Builder createdMethodBuilder) {
     dependenciesBuilder
@@ -722,13 +720,18 @@ public class ComponentExposedTypeGenerator {
    * same name in JS and can be therefore passed to Vue to configure our {@link IsVueComponent}.
    *
    * @param originalMethod Method to proxify
-   *
    * @return The exposed method name
    */
   private String exposeExistingJavaMethodToJs(ExecutableElement originalMethod) {
     Emit emitAnnotation = originalMethod.getAnnotation(Emit.class);
 
-    if (!isMethodVisibleInJS(originalMethod) || emitAnnotation != null) {
+    if (emitAnnotation != null) {
+      // @Emit methods must be overridden so the exposed method must keep the same name
+      String methodName = originalMethod.getSimpleName().toString();
+      createProxyJsMethod(componentExposedTypeBuilder, originalMethod, methodName);
+      addMethodToProto(methodName);
+      return methodName;
+    } else if (!isMethodVisibleInJS(originalMethod)) {
       String proxyMethodName = addNewMethodToProto();
       createProxyJsMethod(componentExposedTypeBuilder, originalMethod, proxyMethodName);
       return proxyMethodName;

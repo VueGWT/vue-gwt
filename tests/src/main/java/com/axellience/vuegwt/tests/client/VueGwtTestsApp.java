@@ -37,6 +37,8 @@ import com.axellience.vuegwt.tests.client.components.conditionalrendering.vif.VI
 import com.axellience.vuegwt.tests.client.components.conditionalrendering.vif.VIfTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.conditionalrendering.vshow.VShowTestComponent;
 import com.axellience.vuegwt.tests.client.components.conditionalrendering.vshow.VShowTestComponentFactory;
+import com.axellience.vuegwt.tests.client.components.events.emitannotation.EmitAnnotationParent;
+import com.axellience.vuegwt.tests.client.components.events.emitannotation.EmitAnnotationParentFactory;
 import com.axellience.vuegwt.tests.client.components.events.types.EmitTypesChildComponent;
 import com.axellience.vuegwt.tests.client.components.events.types.EmitTypesChildComponentFactory;
 import com.axellience.vuegwt.tests.client.components.events.types.EmitTypesParentComponent;
@@ -122,6 +124,7 @@ public class VueGwtTestsApp implements EntryPoint {
         UsingGloballyRegisteredComponentFactory.get()
     );
     registerTestComponent(StaticImportsComponent.class, StaticImportsComponentFactory.get());
+    registerTestComponent(EmitAnnotationParent.class, EmitAnnotationParentFactory.get());
 
     Window.onVueGwtTestsReady.forEach((f, i, a) -> f.call(i, a));
   }
