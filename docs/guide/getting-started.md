@@ -23,11 +23,11 @@ To create our Component, we must create a Class annotated by `@Component` that i
 ```java
 @Component
 public class SimpleLinkComponent implements IsVueComponent {
-    @JsProperty String linkName = "Hello Vue GWT!";
+    @Data String linkName = "Hello Vue GWT!";
 }
 ```
 
-Adding `@JsProperty` on the property makes it visible in the HTML template.
+Adding `@Data` on the property makes it visible in the HTML template.
 
 ##### SimpleLinkComponent.html
 
@@ -59,8 +59,6 @@ The bindings in the Components are dynamic, each time the value of `linkName` ch
 simpleLinkComponent.linkName = "This is working!";
 ```
 
-This works with all the examples of this documentation.
-
 #### Instantiating the Component
 
 How do we instantiate our `SimpleLinkComponent`?
@@ -74,7 +72,9 @@ First, in our GWT index page we add a div to attach the instance:
 
 Then when GWT starts, we need to bootstrap an instance of our `SimpleLinkComponent` and attach it in our `simpleLinkComponentContainer` div.
 
-To do this we simply call the `Vue.attach()`` static method and pass the selector of our container and the class of our Component.
+To do this we simply call the `Vue.attach()` static method and pass the selector of our container and the Component factory.
+This factory is generated for you by Vue GWT annotation processor.
+If your IDE can't find it, make sure [it is configured correctly](project-setup.md#configure-your-ide).
 
 ***RootGwtApp.java***
 
@@ -82,7 +82,7 @@ To do this we simply call the `Vue.attach()`` static method and pass the selecto
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
         VueGWT.init();
-        SimpleLinkComponent simpleLinkComponent = Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponent.class);
+        SimpleLinkComponent simpleLinkComponent = Vue.attach("#simpleLinkComponentContainer", SimpleLinkComponentFactory.get());
     }
 }
 ```
@@ -108,9 +108,7 @@ Behind the scene, our Java `IsVueComponent` Class is converted to the options th
 ```
 
 Those options are passed to the [`Vue.extend()`](https://vuejs.org/v2/api/#Vue-extend) JavaScript method.
-The result is a `VueJsConstructor` we can use to generate new instances of our Vue Component.
-
-When you call `attach`, `VueGWT` get this `VueJsConstructor` for you and use it to create a new instance of your Component.
+The result is a Factory we can use to generate new instances of our Vue Component.
 
 ### Binding Element Attributes
 
@@ -124,8 +122,8 @@ This one will allow us to set the link `href` attribute in our Java Class.
 ```java
 @Component
 public class LinkComponent implements IsVueComponent {
-    @JsProperty String linkName = "Hello Vue GWT!";
-    @JsProperty String linkTarget = "https://github.com/Axellience/vue-gwt";
+    @Data String linkName = "Hello Vue GWT!";
+    @Data String linkTarget = "https://github.com/Axellience/vue-gwt";
 }
 ```
 
@@ -164,7 +162,7 @@ Let's check this with a small example:
 ```java
 @Component
 public class CanHideComponent implements IsVueComponent {
-    @JsProperty boolean visible = true;
+    @Data boolean visible = true;
 }
 ```
 
@@ -177,9 +175,11 @@ As you can see below the `div` is created if the property `visible` of the Compo
 
 
 You can try to interact in your browser console by typing:
+
 ```js
 canHideComponent.visible = false;
 ```
+
 The `div` will be removed from the DOM.
 
 This example demonstrates that we can bind data to not only text and attributes, but also the structure of the DOM.
@@ -214,7 +214,9 @@ You can see it as your Component constructor.
 ```java
 @Component
 public class SimpleTodoListComponent implements IsVueComponent, HasCreated {
-    @JsProperty List<Todo> todos = new LinkedList<>();
+    @Data  
+    @JsProperty
+    List<Todo> todos = new LinkedList<>();
     
     @Override
     public void created() {
@@ -234,24 +236,28 @@ public class SimpleTodoListComponent implements IsVueComponent, HasCreated {
 </ol>
 ```
 
-Vue GWT observes Java Collections for you.
+You will notice that we added the `@JsProperty` annotation on the `@Data` field.
+Java collections fields need this annotation to be observed in Vue GWT.
+If you forget it, Vue GWT will throw an explicit error at compile time to remind you.
 For now this observation works for the `List`, `Set` and `Map` interfaces.
+For more information about Collections observation in Vue GWT [check this page](essentials/reactivity-system.md#java-collections-observation).
 
 Another difference with Vue.js is you must indicate your loop variable type.
 This is because Vue GWT compile templates expressions to Java and so needs the type information.
 You can import Java types in your template by using the `vue-gwt:import` element.
-
 
 <div class="example-container" data-name="simpleTodoListComponent">
     <span id="simpleTodoListComponent"></span>
 </div>
 
 
-As the `Todo` class does not have the `@JsType` annotation it's not possible to create new Todos from the JavaScript console.
-But you can try removing all the `Todo` from the list in your browser console:
-```
-simpleTodoListComponent.todos.clear();
-```
+::: tip
+You can also use static java imports in your templates:
+```html
+<vue-gwt:import static="com.mypackage.Util.MY_STATIC_VARIABLE"/>
+<vue-gwt:import static="com.mypackage.Util.myStaticMethod"/>
+``` 
+:::
 
 ## Handling User Input
 
@@ -268,7 +274,7 @@ To let users interact with your app, we can use the `v-on` directive to attach e
 ```java
 @Component
 public class ExclamationComponent implements IsVueComponent {
-    @JsProperty String message = "Hello Vue GWT!";
+    @Data String message = "Hello Vue GWT!";
     
     @JsMethod // Notice the @JsMethod annotation to expose this method to our template
     public void addExclamationMark() {
@@ -303,7 +309,7 @@ Vue also provides the [v-model directive](essentials/forms.md) that makes two-wa
 ```java
 @Component
 public class MessageComponent implements IsVueComponent {
-    @JsProperty String message = "Hello Vue GWT!";
+    @Data String message = "Hello Vue GWT!";
 }
 ```
 
@@ -317,11 +323,9 @@ Changing the value of our Java property will change the value of input:
 
 
 ::: warning
-It's important to note that for now in Vue GWT only `JsInterop` properties can be used directly in `v-model`.
+It's important to note that for now in Vue GWT only `@Data` fields or `@Computed` with a getter and a setter can be used directly in `v-model`.
 [Check here to see why and get solutions](essentials/forms.md).
 :::
-
-A real world application is never just one Component, let's see how to **[compose Components together](README#composing-with-components)**.
 
 ## Composing with Components
 
@@ -337,7 +341,7 @@ This Component will display a simple message.
 
 ***TodoComponent.java***
 
-We first create a Class like for our previous examples.
+We first create a Class like in our previous examples.
 
 ```java
 @Component
@@ -394,15 +398,11 @@ Let’s modify our `TodoComponent` to make it accept a property.
 ```java
 @Component
 public class TodoComponent implements IsVueComponent {
-    @Prop
-    @JsProperty
-    Todo todo;
+    @Prop Todo todo;
 }
 ```
 
 The `@Prop` annotation tells Vue GWT that our `todo` property will be passed from a parent component.
-
-Be careful, you still need to use the `@JsProperty` alongside it.
 
 ***TodoComponent.html***
 
@@ -422,7 +422,9 @@ Let's call it `TodoListComponent`:
 ```java
 @Component(components = {TodoComponent.class})
 public class TodoListComponent implements IsVueComponent, HasCreated {
-    @JsProperty List<Todo> todos = new LinkedList<>();
+    @Data
+    @JsProperty
+    List<Todo> todos = new LinkedList<>();
     
     @Override
     public void created() {
@@ -489,8 +491,8 @@ You won't need to pass the class of your Vue Component to the `components` attri
 public class RootGwtApp implements EntryPoint {
     public void onModuleLoad() {
         VueGWT.init();
-        // Register TodoComponent globally
-        Vue.component("todo", TodoComponent.class);
+        // Register TodoComponent globally under the name "todo"
+        Vue.component(TodoComponentFactory.get());
     }
 }
 ```
@@ -498,7 +500,7 @@ public class RootGwtApp implements EntryPoint {
 ::: tip
 It's better to register locally whenever you can.
 Locally registered components get compile time type checking when binding property values.
-They also break at compile time if you miss a required property.
+They also break at compile time if you forget a required property.
 :::
 
 It is **strongly recommended** to read the whole [Essentials section](essentials/the-vue-instance.md) even if skimming through it.

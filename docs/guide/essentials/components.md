@@ -73,10 +73,10 @@ Note that Vue does not enforce the [W3C Rules](http://www.w3.org/TR/custom-eleme
 
 ### Global Registration
 
-To register a global component, you can use `Vue.component(tagName, MyComponent.class)`. For example:
+To register a global component, you can use `Vue.component(tagName, MyComponentFactory.get())`. For example:
 
 ```java
-Vue.component("my-component", MyChildComponent.class);
+Vue.component("my-component", MyComponentFactory.get());
 ```
 
 Your Component will then be available in all the Components template from your application.
@@ -84,7 +84,7 @@ Your Component will then be available in all the Components template from your a
 ::: tip
 It's better to register locally whenever you can.
 Locally registered components get compile time type checking when binding property values.
-They also break at compile time if you miss a required property.
+They also break at compile time if you forget a required property.
 :::
 
 ### DOM Template Parsing Caveats
@@ -120,9 +120,9 @@ When parsing your the Component class we build a `dataObject` Object for you. Fo
 ```java
 @Component
 public class StarkComponent implements IsVueComponent {
-    @JsProperty String winter;
-    @JsProperty boolean is;
-    @JsProperty String coming;
+    @Data String winter;
+    @Data boolean is;
+    @Data String coming;
 }
 ```
 
@@ -154,7 +154,7 @@ Here is a working example:
 ```java
 @Component(useFactory = false)
 public class SharedDataModelComponent implements IsVueComponent {
-    @JsProperty int counter = 0;
+    @Data int counter = 0;
 }
 ```
 
@@ -199,9 +199,7 @@ A child component needs to explicitly declare the props it expects to receive us
 ```java
 @Component
 public class ChildComponent implements IsVueComponent {
-    @Prop
-    @JsProperty
-    public String message;
+    @Prop String message;
 }
 ```
 
@@ -218,9 +216,7 @@ HTML attributes are case-insensitive, so when using non-string templates, camelC
 ```java
 @Component
 public class ChildComponent implements IsVueComponent {
-    @Prop
-    @JsProperty
-    String myMessage;
+    @Prop String myMessage;
 }
 ```
 
@@ -291,11 +287,9 @@ The proper answer to these use cases are:
 ```java
 @Component
 public class MyComponent implements IsVueComponent, HasCreated {
-    @Prop
-    @JsProperty
-    public String initialCounter;
+    @Prop String initialCounter;
     
-    @JsProperty String counter;
+    @Data String counter;
     
     @Override
     public void created() {
@@ -309,9 +303,7 @@ public class MyComponent implements IsVueComponent, HasCreated {
 ```java
 @Component
 public class MyComponent implements IsVueComponent {
-    @Prop
-    @JsProperty
-    public String size;
+    @Prop String size;
     
     @Computed
     public String getNormalizedSize() {
@@ -341,9 +333,7 @@ For this you can use the `@PropValidator` annotation like this:
 ```java
 @Component
 public class WhiteWalkerArmyComponent implements IsVueComponent {
-    @Prop
-    @JsProperty
-    int armyCount;
+    @Prop int armyCount;
     
     @PropValidator("armyCount")
     boolean armyCountValidator(int value) {
@@ -364,9 +354,7 @@ To set this default value, you must create a method that returns it and annotate
 ```java
 @Component
 public class PropDefaultValueComponent implements IsVueComponent {
-    @Prop
-    @JsProperty
-    String stringProp;
+    @Prop String stringProp;
 
     @PropDefault("stringProp")
     String stringPropDefault() {
@@ -451,7 +439,7 @@ Here's an example:
 ```java
 @Component
 public class ButtonCounterComponent implements IsVueComponent {
-    @JsProperty int counter = 0;
+    @Data int counter = 0;
 
     @JsMethod
     public void increment() {
@@ -473,7 +461,7 @@ public class ButtonCounterComponent implements IsVueComponent {
 ```java
 @Component(components = {ButtonCounterComponent.class})
 public class CounterWithEventComponent implements IsVueComponent {
-    @JsProperty int total = 0;
+    @Data int total = 0;
 
     @JsMethod
     public void incrementTotal() {
@@ -499,7 +487,7 @@ For example, let's change our counter component to pass the value of it's counte
 ```java
 @Component
 public class ButtonCounterComponent implements IsVueComponent {
-    @JsProperty int counter = 0;
+    @Data int counter = 0;
 
     @JsMethod
     public void increment() {
@@ -524,7 +512,7 @@ We can now get this value in the parent:
 ```java
 @Component(components = {ButtonCounterComponent.class})
 public class CounterWithEventComponent implements IsVueComponent {
-    @JsProperty int total = 0;
+    @Data int total = 0;
 
     // But we can now get the value of the event as parameter
     @JsMethod
@@ -717,7 +705,7 @@ If you need to bind child-scope directives on a component root node, you should 
 ```java
 @Component
 public class ChildComponent implements IsVueComponent {
-    @JsProperty boolean someChildProperty;
+    @Data boolean someChildProperty;
 }
 ```
 
@@ -831,9 +819,65 @@ The content distribution API is a very useful mechanism when designing component
 
 ### Scoped Slots
 
-Vue.js support [scoped slots](https://vuejs.org/v2/guide/components.html#Scoped-Slots).
-It allows to pass properties to your slot.
-This is not yet supported by Vue GWT.
+Sometimes you'll want to provide a component with a reusable slot that can access data from the child component.
+For example, a simple `<todo-list>` component may contain the following in its template:
+
+```html
+<vue-gwt:import class="com.mypackage.Todo"/>
+<ul>
+  <li
+    v-for="Todo todo in todos"
+    v-bind:key="todo.getId()">
+    {{ todo.getText() }}
+  </li>
+</ul>
+```
+
+But in some parts of our app, we want the individual todo items to render something different than just `todo.getText()`.
+This is where scoped slots come in.
+
+To make the feature possible, all we have to do is wrap the todo item content in a `<slot>` element, then pass the slot any data relevant to its context: in this case, the `todo` object:
+
+```html
+<vue-gwt:import class="com.mypackage.Todo"/>
+<ul>
+  <li
+    v-for="Todo todo in todos"
+    v-bind:key="todo.getId()">
+    <!-- We have a slot for each todo, passing it the -->
+    <!-- `todo` object as a slot prop.                -->
+    <slot v-bind:todo="todo">
+      <!-- Fallback content -->
+      {{ todo.getText() }}
+    </slot>
+  </li>
+</ul>
+```
+
+Now when we use the `<todo-list>` component, we can optionally define an alternative `<template>` for todo items, but with access to data from the child via the `slot-scope` attribute:
+
+```html
+<vue-gwt:import class="com.mypackage.Todo"/>
+<todo-list v-bind:todos="todos">
+  <!-- Define a variable todo that will get the value of the binded attribute todo -->
+  <template slot-scope="{ Todo todo }">
+    <!-- Define a custom template for todo items, using -->
+    <!-- `slotProps` to customize each todo.            -->
+    <span v-if="todo.isComplete()">✓</span>
+    {{ todo.getText() }}
+  </template>
+</todo-list>
+```
+
+If you pass several values on your slot, just list them like so: `slot-scope="{ Todo todo, int count }"`.
+
+::: tip
+You may notice that wrap the list of variables in `{}`.
+This is because Vue.js actually pass us a [`JsPropertyMap`](../gwt-integration/js-interop.md#jspropertymap-t), where the keys are the names of the properties and the values are the values that are binded.
+Vue GWT manages destructuring this `JsPropertyMap` into variables for you.
+
+If you want to access the actual slot-scope object passed from Vue.js, use: `slot-scope="slotScope"`. 
+:::
 
 ## Dynamic Components
 
@@ -842,7 +886,7 @@ You can use the same mount point and dynamically switch between multiple compone
 ```java
 @Component(components = { TargaryenComponent.class, StarkComponent.class, LannisterComponent.class })
 public class HousesComponent implements IsVueComponent {
-    @JsProperty String currentHouse = "targaryen";
+    @Data String currentHouse = "targaryen";
 }
 ```
 
@@ -940,7 +984,7 @@ However, they can only do so with the `name` option:
 When you register a component globally using `Vue.component`, the global ID is automatically set as the component's `name` option.
 
 ```java
-Vue.component("unique-name-of-my-component", MyComponent.class);
+Vue.component("unique-name-of-my-component", MyComponentFactory.get());
 ```
 
 If you're not careful, recursive components can also lead to infinite loops:
@@ -960,9 +1004,7 @@ Bellow is an example recursive component:
 ```java
 @Component(name = "recursive")
 public class RecursiveComponent implements IsVueComponent, HasCreated {
-    @Prop
-    @JsProperty
-    Integer counter;
+    @Prop Integer counter;
 
     @Override
     public void created() {

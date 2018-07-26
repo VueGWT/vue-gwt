@@ -7,7 +7,7 @@
 Every Vue application starts by creating a new **root Vue instance**, for example with the `Vue.attach()` method:
 
 ```java
-DemoComponent vm = Vue.attach("#container", DemoComponent.class);
+DemoComponent vm = Vue.attach("#container", DemoComponentFactory.get());
 ```
 
 Although not strictly associated with the [MVVM pattern](https://en.wikipedia.org/wiki/Model_View_ViewModel), Vue's design was partly inspired by it.
@@ -16,25 +16,12 @@ As a convention, we often use the variable `vm` (short for ViewModel) to refer t
 ## @Component to Vue.js Data Model
 
 In Vue.js you pass all the data you want to observe as the `data` option of your Vue constructor.
-This `data` object is built for you by Vue GWT based on the `@JsProperty` of your Java Class.
-
-For example this Vue Component:
-```java
-@Component
-public class DemoComponent implements IsVueComponent {
-    @JsProperty Todo todo;
-}
-```
-
-Will have the following `data` object in it's Vue.js options:
-```js
-var data = {todo: null};
-```
+This `data` object is built for you by Vue GWT based on the `@Data` of your Java Class.
 
 Each Vue instance **proxies** all the properties found in its `data` object.
 When the values of those properties change, the view will "react", updating to match the new values.
 
-So Vue.js will automatically be warned whenever you set teh value of a `@JsProperty` and recursively observe all the properties of the Object you set on it.
+So Vue.js will automatically be warned whenever you set the value of a `@Data` and recursively observe all the properties of the Object you set on it.
 
 For example if somewhere in your component you do:
 ```java
@@ -64,7 +51,7 @@ To avoid gotchas in Vue GWT, make sure to read about the [Reactivity System](rea
 
 ## Component Properties and Methods
 
-In addition to data properties, Vue instances expose a number of useful instance properties and methods.
+In addition to data properties, Vue instances exposes a number of useful instance properties and methods.
 These properties and methods are prefixed with `$` to differentiate them from proxied data properties.
 
 In Vue GWT these methods and properties are defined in `VueComponent`, usually with the same name.
@@ -75,15 +62,11 @@ For example:
 ```java
 @Component
 public class DemoComponent implements IsVueComponent, HasCreated {
-    @JsProperty Todo todo;
+    @Data Todo todo;
     
     @Override
     public void created() {
         this.todo = new Todo();
-        
-        if (vue().$data.get("todo") == this.todo) {
-            // true
-        }
         
         vue().$watch(() -> this.todo, (newValue, oldValue) -> {
             // Todo has changed!
@@ -103,7 +86,7 @@ For example, the [`mounted`](https://vuejs.org/v2/api/#mounted) hook is called a
 ```java
 @Component
 public class DemoComponent implements IsVueComponent, HasMounted {
-    @JsProperty Todo todo;
+    @Data Todo todo;
     
     @Override
     public void mounted() {

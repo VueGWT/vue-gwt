@@ -136,7 +136,7 @@ First we add a boolean in our `MelisandreComponent`:
 ```java
 @Component
 public class MelisandreComponent implements IsVueComponent {
-    @JsProperty boolean isRed = true;
+    @Data boolean isRed = true;
     
     @Computed
     public MelisandreComponentStyle getMyStyle() {
@@ -172,7 +172,7 @@ You can combine both the `array` and the ternary syntax:
 You can try toggling the red color on the two bottom sentences by typing in your browser console:
 
 ```
-melisandreComponent.isRed = false;
+melisandreComponent.setRed(false);
 ```
 
 ::: tip

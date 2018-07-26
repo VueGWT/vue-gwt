@@ -19,7 +19,7 @@ Let's say we have the following Component:
 ```java
 @Component
 public abstract class ParentComponent implements IsVueComponent {
-    @JsProperty String parentMessage = "This is a message from the parent";
+    @Data String parentMessage = "This is a message from the parent";
 
     @JsMethod
     public int parentMultiplyBy2(int value) {
@@ -44,7 +44,7 @@ For this we just have to use classic Java inheritance.
 ```java
 @Component
 public class ChildJavaComponent extends ParentJsComponent, HasCreated {
-    @JsProperty int childValue;
+    @Data int childValue;
 
     public void created() {
         this.childValue = 10;
@@ -134,7 +134,7 @@ We can then just inherit from it the same way we did for our Java Component:
 ```java
 @Component
 public class ChildJavaComponent extends ParentJsComponent {
-    @JsProperty int childValue;
+    @Data int childValue;
 
     public ChildJavaComponent() {
         this.childValue = 10;

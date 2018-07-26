@@ -4,29 +4,19 @@
 
 This section is about the `v-model` directive.
 
-It's important to note that for now in Vue GWT only `JsInterop` properties can be used directly in `v-model`.
-For example if you have a property `myTodo` of type `Todo` then:
-```html
-<input v-model="myTodo.text">
-```
-Will only work if the `text` property in `Todo` has the `@JsProperty` annotation (or is public, and `Todo` has the `@JsType` annotation).
-
-`v-model` expressions are also not type checked at compile time.
-
+It's important to note that for now in Vue GWT only `@Data` fields or `@Computed` with a getter and a setter can be used directly in `v-model`.
 Apart from this limitations, `v-model` works the same way in Vue GWT than in Vue.js.
 
 You can just **[see Vue.js documentation about Form Input Bindings](https://vuejs.org/v2/guide/forms.html)**.
 
-## Making `v-model` Work with Regular Java Objects
-
 ### Using a Computed Property
 
-You can use a computed properties along with the regular `v-model`:
+You can use a Computed property with `v-model`:
 
 ```java
 @Component
 public class TodoTextComputedComponent implements IsVueComponent {
-    @JsProperty Todo todo = new Todo("Hello World!");
+    @Data Todo todo = new Todo("Hello World!");
 
     @Computed
     public String getTodoText() {
@@ -68,11 +58,11 @@ In those case you can use the following syntax:
 ```java
 @Component
 public class TodoTextComponent implements IsVueComponent {
-    @JsProperty Todo todo = new Todo("Hello World!");
+    @Data Todo todo = new Todo("Hello World!");
 
     @JsMethod
-    public void updateMessage(Event event) {
-        this.todo.setText(((HTMLInputElement) event.target).value);
+    public void updateMessage(HTMLInputElement event) {
+        this.todo.setText(event.target.value);
     }
 }
 ```

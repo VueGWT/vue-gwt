@@ -17,7 +17,7 @@ For example:
 ```java
 @Component
 public class ButtonPlusOneComponent implements IsVueComponent {
-    @JsProperty int counter = 0;
+    @Data int counter = 0;
 }
 ```
 

@@ -56,7 +56,6 @@ When you get started with a component that just generates a heading based on the
 ```java
 @Component
 public class AnchoredHeadingComponent implements IsVueComponent {
-    @JsProperty
     @Prop(required = true)
     Integer level;
 }
@@ -70,9 +69,8 @@ While templates work great for most components, it's clear that this isn't one o
 ```java
 @Component(hasTemplate = false)
 public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
-    @JsProperty
     @Prop(required = true)
-    public Integer level;
+    Integer level;
 
     @Override
     public VNode render(VNodeBuilder builder) {
@@ -234,7 +232,6 @@ With this knowledge, we can now finish the component we started:
 public class AnchoredHeadingComponent implements IsVueComponent, HasRender {
     private static RegExp camelCasePattern = RegExp.compile("([a-z])([A-Z]+)", "g");
 
-    @JsProperty
     @Prop(required = true)
     Integer level;
 

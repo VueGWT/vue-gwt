@@ -4,7 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
-import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsMethod;
 
 /**
  * @author Adrien Baron
@@ -18,5 +18,10 @@ public class ReverseComponent implements IsVueComponent {
   @Computed
   public String getReversedMessage() {
     return new StringBuilder(message).reverse().toString();
+  }
+
+  @JsMethod
+  public void setMessage(String message) {
+    this.message = message;
   }
 }

@@ -77,8 +77,8 @@ This is a common and powerful pattern:
 ```java
 @Component
 public class StylishComponent implements IsVueComponent {
-    @JsProperty boolean isActive = true;
-    @JsProperty Error error = null;
+    @Data boolean isActive = true;
+    @Data Error error = null;
 
     @Computed
     public JsObject getClassObject() {
@@ -125,7 +125,7 @@ That's why it's also possible to use the `map` syntax inside `array` syntax:
 
 ### GWT Styles
 
-You should also check how to use [GWT GSS Styles](../gwt-integration/client-bundles-and-styles.md#styles) in your app.
+You should also check how to use [GWT GSS Styles](../gwt-integration/client-bundles-and-styles.md#using-cssresources-in-vue-gwt) in your app.
 
 ### With Components
 
@@ -196,7 +196,7 @@ It is often a good idea to bind to a style object directly so that the template 
 ```java
 @Component
 public class StylishComponent implements IsVueComponent, HasCreated {
-    @JsProperty JsObject<String> styleObject;
+    @Data JsObject<String> styleObject;
 
     @Override
     public void created() {

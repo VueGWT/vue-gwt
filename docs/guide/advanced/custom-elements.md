@@ -26,9 +26,7 @@ It let's a user with a given name select an animal, and emits an event each time
 ```java
 @Component
 public class AnimalSelectorComponent implements IsVueComponent {
-    @Prop
-    @JsProperty
-    String userName;
+    @Prop String userName;
 
     @JsMethod
     public void selectAnimal(Event event) {

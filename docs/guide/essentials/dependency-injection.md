@@ -50,7 +50,7 @@ It's not possible to use injected constructor parameters as Java constructors ar
 ```java
 @Component
 public class GotQuotesComponent implements IsVueComponent, HasCreated {
-    @JsProperty GotQuote quote;
+    @Data GotQuote quote;
     @Inject GotQuotesService gotQuotesService;
 
     @Override
@@ -59,7 +59,7 @@ public class GotQuotesComponent implements IsVueComponent, HasCreated {
     }
 
     @JsMethod
-    protected void changeQuote() {
+    void changeQuote() {
         quote = gotQuotesService.getRandomQuote();
     }
 }
