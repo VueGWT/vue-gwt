@@ -273,7 +273,7 @@ Just add `lang="scss"` to your scoped style definition and the SCSS will be auto
 You can even use SCSS imports (relative to your current HTML file).
 
 ```html
-<div class="root">
+<div>
   <h1 class="alert-message">Red Alert</h1>
 </div>
 
