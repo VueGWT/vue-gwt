@@ -78,6 +78,10 @@ public class TemplateParserContext {
     this.rootLayer.addVariable(type, name);
   }
 
+  public void addRootComputedProperty(TypeName type, String computedPropertyName, String fieldName) {
+    this.rootLayer.addComputedVariable(type, computedPropertyName, fieldName);
+  }
+
   /**
    * Register a method in the root context
    *

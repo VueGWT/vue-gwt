@@ -12,6 +12,7 @@ import com.axellience.vuegwt.processors.component.template.parser.context.localc
 import com.axellience.vuegwt.processors.component.template.parser.jericho.TemplateParserLoggerProvider;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.processors.component.template.parser.variable.ComputedVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.DestructuredPropertyInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
@@ -359,8 +360,8 @@ public class TemplateParser {
     String vModelValue = vModelAttribute.getValue();
     VariableInfo vModelDataField = context.findRootVariable(vModelValue);
     if (vModelDataField == null) {
-      logger.error("Couldn't find @Data field for v-model \"" + vModelValue
-          + "\". V-Model is only supported on @Data fields.");
+      logger.error("Couldn't find @Data or @Computed for v-model \"" + vModelValue
+          + "\". V-Model is only supported on @Data and @Computed.");
       return;
     }
 
@@ -792,6 +793,8 @@ public class TemplateParser {
 
       parameters.add(propertyInfo.getDestructuredVariable());
       nameExpr.setName(propertyInfo.getAsDestructuredValue());
+    } else if (variableInfo instanceof ComputedVariableInfo) {
+      nameExpr.setName(((ComputedVariableInfo) variableInfo).getFieldName());
     }
   }
 

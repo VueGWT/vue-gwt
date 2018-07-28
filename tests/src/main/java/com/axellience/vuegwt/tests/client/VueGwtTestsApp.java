@@ -50,6 +50,8 @@ import com.axellience.vuegwt.tests.client.components.globalregistration.UsingGlo
 import com.axellience.vuegwt.tests.client.components.globalregistration.UsingGloballyRegisteredComponentFactory;
 import com.axellience.vuegwt.tests.client.components.inheritance.ChildComponent;
 import com.axellience.vuegwt.tests.client.components.inheritance.ChildComponentFactory;
+import com.axellience.vuegwt.tests.client.components.jsinterop.ComputedOverrideComponent;
+import com.axellience.vuegwt.tests.client.components.jsinterop.ComputedOverrideComponentFactory;
 import com.axellience.vuegwt.tests.client.components.slots.SlotScopeParentComponent;
 import com.axellience.vuegwt.tests.client.components.slots.SlotScopeParentComponentFactory;
 import com.axellience.vuegwt.tests.client.components.style.classbinding.ClassBindingTestComponent;
@@ -128,6 +130,7 @@ public class VueGwtTestsApp implements EntryPoint {
     registerTestComponent(StaticImportsComponent.class, StaticImportsComponentFactory.get());
     registerTestComponent(EmitAnnotationParent.class, EmitAnnotationParentFactory.get());
     registerTestComponent(ChildComponent.class, ChildComponentFactory.get());
+    registerTestComponent(ComputedOverrideComponent.class, ComputedOverrideComponentFactory.get());
 
     Window.onVueGwtTestsReady.forEach((f, i, a) -> f.call(i, a));
   }

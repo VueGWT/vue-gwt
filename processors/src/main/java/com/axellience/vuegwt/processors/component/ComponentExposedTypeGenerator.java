@@ -6,7 +6,9 @@ import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.has
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.isMethodVisibleInJS;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentExposedTypeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentInjectedDependenciesName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.computedPropertyNameToFieldName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.methodToEventName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getFieldMarkingValueForType;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getUnusableByJSAnnotation;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
@@ -352,14 +354,14 @@ public class ComponentExposedTypeGenerator {
       }
 
       String exposedMethodName = exposeExistingJavaMethodToJs(method);
-      String propertyName = GeneratorsUtil.getComputedPropertyName(method);
+      String fieldName = computedPropertyNameToFieldName(getComputedPropertyName(method));
       TypeMirror propertyType = getComputedPropertyTypeFromMethod(method);
-      fieldsWithNameExposed.add(new ExposedField(propertyName, propertyType));
+      fieldsWithNameExposed.add(new ExposedField(fieldName, propertyType));
       optionsBuilder.addStatement(
           "options.addJavaComputed(p.$L, $T.getFieldName(this, () -> this.$L = $L), $T.$L)",
           exposedMethodName,
           VueGWTTools.class,
-          propertyName,
+          fieldName,
           getFieldMarkingValueForType(propertyType),
           ComputedKind.class,
           kind
@@ -410,7 +412,7 @@ public class ComponentExposedTypeGenerator {
    */
   private void addFieldsForComputedMethod(TypeElement component, Set<String> alreadyDone) {
     getMethodsWithAnnotation(component, Computed.class).forEach(method -> {
-      String propertyName = GeneratorsUtil.getComputedPropertyName(method);
+      String propertyName = computedPropertyNameToFieldName(getComputedPropertyName(method));
 
       if (alreadyDone.contains(propertyName)) {
         return;

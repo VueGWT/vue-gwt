@@ -3,6 +3,7 @@ package com.axellience.vuegwt.processors.component.template;
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
 import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentToTagName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.computedPropertyNameToFieldName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.hasAnnotation;
 
@@ -141,7 +142,9 @@ public class ComponentTemplateProcessor {
             propertyType = method.getReturnType();
           }
 
-          templateParserContext.addRootVariable(ClassName.get(propertyType), name);
+          templateParserContext
+              .addRootComputedProperty(ClassName.get(propertyType), name,
+                  computedPropertyNameToFieldName(name));
         });
 
     ElementFilter

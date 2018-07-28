@@ -21,6 +21,6 @@ class VModelTest {
                 JavaFileObjects.forResource("vmodel/VModelInvalidFieldComponent.java"));
 
     assertThat(compilation).hadErrorContaining(
-        "Couldn't find @Data field for v-model \"nonExistingField\"");
+        "Couldn't find @Data or @Computed for v-model \"nonExistingField\"");
   }
 }

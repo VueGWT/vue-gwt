@@ -13,6 +13,7 @@ import com.axellience.vuegwt.processors.component.template.builder.compiler.VueT
 import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateExpression;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
+import com.axellience.vuegwt.processors.component.template.parser.variable.ComputedVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -80,12 +81,17 @@ public class TemplateMethodsBuilder {
 
     for (VariableInfo vModelField : templateParserResult.getvModelDataFields()) {
       String placeHolderVModelValue = vModelFieldToPlaceHolderField(vModelField.getName());
+
+      String fieldName = vModelField.getName();
+      if (vModelField instanceof ComputedVariableInfo)
+        fieldName = ((ComputedVariableInfo) vModelField).getFieldName();
+
       getRenderFunctionBuilder
           .addStatement(
               "renderFunctionString = $T.replaceVariableInRenderFunction(renderFunctionString, $S, this, () -> this.$L = $L)",
               VueGWTTools.class,
               placeHolderVModelValue,
-              vModelField.getName(),
+              fieldName,
               getFieldMarkingValueForType(vModelField.getType())
           );
     }

@@ -134,7 +134,7 @@ public class GeneratorsNameUtil {
         .getSimpleName()
         .toString()
         .replaceAll("Component$", "");
-    
+
     // Convert from CamelCase to kebab-case
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, componentClassName).toLowerCase();
   }
@@ -179,5 +179,9 @@ public class GeneratorsNameUtil {
    */
   public static String propNameToAttributeName(String propName) {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, propName).toLowerCase();
+  }
+
+  public static String computedPropertyNameToFieldName(String computedPropertyName) {
+    return "vg$c_" + computedPropertyName;
   }
 }

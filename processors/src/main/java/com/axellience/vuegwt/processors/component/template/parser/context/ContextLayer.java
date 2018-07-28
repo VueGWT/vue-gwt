@@ -1,5 +1,6 @@
 package com.axellience.vuegwt.processors.component.template.parser.context;
 
+import com.axellience.vuegwt.processors.component.template.parser.variable.ComputedVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.DestructuredPropertyInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
@@ -32,6 +33,10 @@ class ContextLayer {
 
   VariableInfo addVariable(TypeName type, String name) {
     return addVariable(new VariableInfo(type, name));
+  }
+
+  VariableInfo addComputedVariable(TypeName type, String computedPropertyName, String fieldName) {
+    return addVariable(new ComputedVariableInfo(type, computedPropertyName, fieldName));
   }
 
   LocalVariableInfo addLocalVariable(String type, String templateName) {
