@@ -62,7 +62,7 @@ public class TemplateParserContext {
     this.addStaticImport(JsUtils.class.getCanonicalName() + ".e");
     this.addStaticImport(JsUtils.class.getCanonicalName() + ".array");
 
-    this.rootLayer = new ContextLayer(0);
+    this.rootLayer = new ContextLayer(0, false);
     this.rootLayer.addMethod("vue");
 
     this.contextLayers.add(this.rootLayer);
@@ -78,7 +78,8 @@ public class TemplateParserContext {
     this.rootLayer.addVariable(type, name);
   }
 
-  public void addRootComputedProperty(TypeName type, String computedPropertyName, String fieldName) {
+  public void addRootComputedProperty(TypeName type, String computedPropertyName,
+      String fieldName) {
     this.rootLayer.addComputedVariable(type, computedPropertyName, fieldName);
   }
 
@@ -94,8 +95,9 @@ public class TemplateParserContext {
   /**
    * Add a context layer. Used when entering a node with v-for.
    */
-  public void addContextLayer() {
-    contextLayers.push(new ContextLayer(contextLayers.getFirst().getUniqueContextVariableCount()));
+  public void addContextLayer(boolean isVFor) {
+    contextLayers
+        .push(new ContextLayer(contextLayers.getFirst().getUniqueContextVariableCount(), isVFor));
   }
 
   /**
@@ -260,6 +262,19 @@ public class TemplateParserContext {
     }
 
     return propertyNameToFullyQualifiedName.get(propertyName);
+  }
+
+  /**
+   * Return whether we are inside a v-for loop
+   * @return true if we are in a v-for loop
+   */
+  public boolean isInVFor() {
+    for (ContextLayer contextLayer : contextLayers) {
+      if (contextLayer.isVFor()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

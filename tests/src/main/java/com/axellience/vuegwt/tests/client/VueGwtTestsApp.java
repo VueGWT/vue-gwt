@@ -25,6 +25,8 @@ import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropVal
 import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorParentTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorTestComponent;
 import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorTestComponentFactory;
+import com.axellience.vuegwt.tests.client.components.basic.ref.RefParentTestComponent;
+import com.axellience.vuegwt.tests.client.components.basic.ref.RefParentTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.watch.data.WatchDataTestComponent;
 import com.axellience.vuegwt.tests.client.components.basic.watch.data.WatchDataTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.watch.prop.WatchPropParentTestComponent;
@@ -131,6 +133,7 @@ public class VueGwtTestsApp implements EntryPoint {
     registerTestComponent(EmitAnnotationParent.class, EmitAnnotationParentFactory.get());
     registerTestComponent(ChildComponent.class, ChildComponentFactory.get());
     registerTestComponent(ComputedOverrideComponent.class, ComputedOverrideComponentFactory.get());
+    registerTestComponent(RefParentTestComponent.class, RefParentTestComponentFactory.get());
 
     Window.onVueGwtTestsReady.forEach((f, i, a) -> f.call(i, a));
   }

@@ -22,6 +22,7 @@ import com.axellience.vuegwt.core.annotations.component.HookMethod;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.annotations.component.PropDefault;
 import com.axellience.vuegwt.core.annotations.component.PropValidator;
+import com.axellience.vuegwt.core.annotations.component.Ref;
 import com.axellience.vuegwt.core.annotations.component.Watch;
 import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
@@ -133,6 +134,7 @@ public class ComponentExposedTypeGenerator {
     processComputed();
     processPropValidators();
     processPropDefaultValues();
+    processRefs();
     processHooks(hookMethodsFromInterfaces);
     processMethods(hookMethodsFromInterfaces);
     processEmitMethods();
@@ -501,7 +503,7 @@ public class ComponentExposedTypeGenerator {
       if (!TypeName.get(method.getReturnType()).equals(TypeName.BOOLEAN)) {
         printError("Method "
             + method.getSimpleName()
-            + " annotated with PropValidator must return a boolean.", component);
+            + " annotated with PropValidator must return a boolean.");
       }
 
       String exposedMethodName = exposeExistingJavaMethodToJs(method);
@@ -564,15 +566,15 @@ public class ComponentExposedTypeGenerator {
             .methodsIn(typeElement.getEnclosedElements())
             .stream())
         .filter(method -> hasAnnotation(method, HookMethod.class))
-        .peek(hookMethod -> validateHookMethod(hookMethod, component))
+        .peek(this::validateHookMethod)
         .collect(Collectors.toSet());
   }
 
-  private void validateHookMethod(ExecutableElement hookMethod, TypeElement component) {
+  private void validateHookMethod(ExecutableElement hookMethod) {
     if (!isMethodVisibleInJS(hookMethod)) {
       printError("Method "
           + hookMethod.getSimpleName()
-          + " annotated with HookMethod should also have @JsMethod property.", component);
+          + " annotated with HookMethod should also have @JsMethod property.");
     }
   }
 
@@ -597,6 +599,26 @@ public class ComponentExposedTypeGenerator {
 
     // Register the render method
     optionsBuilder.addStatement("options.addHookMethod($S, p.$L)", "render", "vg$render");
+  }
+
+  private void processRefs() {
+    ElementFilter
+        .fieldsIn(component.getEnclosedElements())
+        .stream()
+        .filter(field -> hasAnnotation(field, Ref.class))
+        .forEach(this::processRefField);
+  }
+
+  private void processRefField(VariableElement field) {
+    String refName = field.getSimpleName().toString();
+    fieldsWithNameExposed.add(new ExposedField(refName, field.asType()));
+    optionsBuilder
+        .addStatement("options.addRef($S, $T.getFieldName(this, () -> this.$L = $L))",
+            refName,
+            VueGWTTools.class,
+            refName,
+            getFieldMarkingValueForType(field.asType())
+        );
   }
 
   /**
@@ -870,7 +892,7 @@ public class ComponentExposedTypeGenerator {
   private boolean isHookMethod(TypeElement component, ExecutableElement method,
       Set<ExecutableElement> hookMethodsFromInterfaces) {
     if (hasAnnotation(method, HookMethod.class)) {
-      validateHookMethod(method, component);
+      validateHookMethod(method);
       return true;
     }
 
@@ -918,7 +940,7 @@ public class ComponentExposedTypeGenerator {
     }
   }
 
-  private void printError(String message, TypeElement component) {
+  private void printError(String message) {
     messager.printMessage(Kind.ERROR,
         message + " In VueComponent: " + component.getQualifiedName(), component);
   }

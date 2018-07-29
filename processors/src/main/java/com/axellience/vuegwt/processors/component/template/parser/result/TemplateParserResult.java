@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.processors.component.template.parser.result;
 
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
+import com.axellience.vuegwt.processors.component.template.parser.refs.RefInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
 import java.util.HashSet;
@@ -22,11 +23,13 @@ public class TemplateParserResult {
   private final TemplateParserContext context;
   private final String templateName;
   private final Set<VariableInfo> vModelDataFields;
+  private final Set<RefInfo> refs;
 
   public TemplateParserResult(TemplateParserContext context) {
     this.context = context;
     this.templateName = context.getTemplateName();
     vModelDataFields = new HashSet<>();
+    refs = new HashSet<>();
   }
 
   /**
@@ -85,6 +88,15 @@ public class TemplateParserResult {
   }
 
   /**
+   * Register a ref found in the template
+   * @param name The name of the ref
+   * @param isArray Whether the ref is in a v-for (should be an array)
+   */
+  public void addRef(String name, boolean isArray) {
+    refs.add(new RefInfo(name, isArray));
+  }
+
+  /**
    * Return the list of expression we found in the template.
    *
    * @return The list of {@link TemplateExpression}
@@ -107,5 +119,9 @@ public class TemplateParserResult {
 
   public Set<VariableInfo> getvModelDataFields() {
     return vModelDataFields;
+  }
+
+  public Set<RefInfo> getRefs() {
+    return refs;
   }
 }

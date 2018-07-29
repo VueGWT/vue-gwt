@@ -10,6 +10,7 @@ import com.axellience.vuegwt.core.client.component.options.computed.ComputedOpti
 import com.axellience.vuegwt.core.client.component.options.data.DataFactory;
 import com.axellience.vuegwt.core.client.component.options.props.PropOptions;
 import com.axellience.vuegwt.core.client.component.options.props.PropProxyDefinition;
+import com.axellience.vuegwt.core.client.component.options.refs.RefProxyDefinition;
 import com.axellience.vuegwt.core.client.directive.options.VueDirectiveOptions;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
@@ -42,6 +43,7 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   private Map<String, Provider<?>> dependenciesProvider;
   private Set<String> dataFieldsToProxy;
   private Set<PropProxyDefinition> propsToProxy;
+  private Set<RefProxyDefinition> refsToProxy;
 
   /**
    * Set the JS Prototype of the ExportedType Java Class represented by this {@link
@@ -244,11 +246,20 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
 
   @JsOverlay
   public final Map<String, Provider<?>> getProviders() {
-    if (this.dependenciesProvider == null) {
-      this.dependenciesProvider = new HashMap<>();
+    if (dependenciesProvider == null) {
+      dependenciesProvider = new HashMap<>();
     }
 
     return dependenciesProvider;
+  }
+
+  @JsOverlay
+  public final void addRef(String refName, String javaFieldName) {
+    if (refsToProxy == null) {
+      refsToProxy = new HashSet<>();
+    }
+
+    refsToProxy.add(new RefProxyDefinition(refName, javaFieldName));
   }
 
   @JsOverlay
@@ -262,6 +273,12 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
     if (propsToProxy != null && !propsToProxy.isEmpty()) {
       for (PropProxyDefinition def : propsToProxy) {
         proxyField(instance, "_props", def.getPropName(), def.getFieldName());
+      }
+    }
+
+    if (refsToProxy != null && !refsToProxy.isEmpty()) {
+      for (RefProxyDefinition def : refsToProxy) {
+        proxyField(instance, "$refs", def.getRefName(), def.getFieldName());
       }
     }
   }

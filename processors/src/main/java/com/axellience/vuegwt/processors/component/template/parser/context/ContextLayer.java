@@ -21,9 +21,11 @@ class ContextLayer {
   private final Map<String, VariableInfo> variables = new HashMap<>();
   private final Set<String> methods = new HashSet<>();
   private int uniqueContextVariableCount;
+  private final boolean isVFor;
 
-  ContextLayer(int uniqueContextVariableCount) {
+  ContextLayer(int uniqueContextVariableCount, boolean isVFor) {
     this.uniqueContextVariableCount = uniqueContextVariableCount;
+    this.isVFor = isVFor;
   }
 
   private <T extends VariableInfo> T addVariable(T variableInfo) {
@@ -70,5 +72,9 @@ class ContextLayer {
 
   int getUniqueContextVariableCount() {
     return uniqueContextVariableCount;
+  }
+
+  boolean isVFor() {
+    return isVFor;
   }
 }

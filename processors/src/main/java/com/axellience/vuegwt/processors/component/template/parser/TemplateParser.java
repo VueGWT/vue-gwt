@@ -247,7 +247,7 @@ public class TemplateParser {
     if (vForAttribute != null || slotScopeAttribute != null) {
       // Add a context layer
       shouldPopContext = true;
-      context.addContextLayer();
+      context.addContextLayer(vForAttribute != null);
     }
 
     if (vForAttribute != null) {
@@ -258,6 +258,11 @@ public class TemplateParser {
     if (slotScopeAttribute != null) {
       String processedScopedSlotValue = processSlotScopeValue(slotScopeAttribute.getValue());
       outputDocument.replace(slotScopeAttribute.getValueSegment(), processedScopedSlotValue);
+    }
+
+    Attribute refAttribute = attributes.get("ref");
+    if (refAttribute != null) {
+      result.addRef(refAttribute.getValue(), context.isInVFor());
     }
 
     Optional<LocalComponent> localComponent = getLocalComponentForElement(element);

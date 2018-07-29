@@ -11,6 +11,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.annotations.component.Prop;
+import com.axellience.vuegwt.core.annotations.component.Ref;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
 import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
@@ -18,6 +19,8 @@ import com.axellience.vuegwt.processors.component.template.parser.TemplateParser
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
+import com.axellience.vuegwt.processors.component.template.parser.refs.RefInfo;
+import com.axellience.vuegwt.processors.component.template.parser.refs.RefFieldValidator;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.axellience.vuegwt.processors.utils.MissingComponentAnnotationException;
@@ -52,11 +55,13 @@ import javax.tools.StandardLocation;
  */
 public class ComponentTemplateProcessor {
 
+  private final ProcessingEnvironment processingEnvironment;
   private final Filer filer;
   private final Messager messager;
   private final Elements elementUtils;
 
   public ComponentTemplateProcessor(ProcessingEnvironment processingEnvironment) {
+    this.processingEnvironment = processingEnvironment;
     filer = processingEnvironment.getFiler();
     messager = processingEnvironment.getMessager();
     elementUtils = processingEnvironment.getElementUtils();
@@ -90,6 +95,7 @@ public class ComponentTemplateProcessor {
         messager,
         optionalTemplateContent.get().uri);
 
+    validateRefs(templateParserResult.getRefs(), componentTypeElement);
     registerScopedCss(exposedTypeGenerator.getClassBuilder(), templateParserResult);
 
     // Add expressions from the template to ExposedType and compile template
@@ -234,6 +240,16 @@ public class ComponentTemplateProcessor {
             propAnnotation.required());
       }
     });
+  }
+
+  private void validateRefs(Set<RefInfo> templateRefs, TypeElement component) {
+    RefFieldValidator refFieldValidator = new RefFieldValidator(component, templateRefs, processingEnvironment);
+
+    ElementFilter
+        .fieldsIn(component.getEnclosedElements())
+        .stream()
+        .filter(field -> hasAnnotation(field, Ref.class))
+        .forEach(refFieldValidator::validateRefField);
   }
 
   private static class TemplateFileResource {
