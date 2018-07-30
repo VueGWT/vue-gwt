@@ -953,18 +953,22 @@ To achieve this you have to assign a reference ID to the child component using `
 ```java
 @Component(components = UserProfileComponent.class)
 public class ParentComponent implements IsVueComponent, HasCreated {
+    @Ref
+    UserProfileComponent profile;
+  
     @Override
     public void created() {
-        UserProfileComponent userProfileComponent = vue().$ref("profile");
+        profile.doSomething();
     }
 }
 ```
 
-When `ref` is used together with `v-for`, the ref you get will be an array that you can get using `vue().$refArray("myRef")`.
+When `ref` is used together with `v-for`, the ref you get will be an array so your `@Ref` field must be a `JsArray<MyComponent>`.
+Vue GWT will check that for you at compile time.
 
 ::: tip
-`$refs` are only populated after the component has been rendered, and it is not reactive.
-It is only meant as an escape hatch for direct child manipulation - you should avoid using `$refs` in templates or computed properties.
+`@Ref` are only populated after the component has been rendered, and they are not reactive.
+They are only meant as an escape hatch for direct child manipulation - you should avoid using `@Ref` in templates or computed properties.
 :::
 
 ### Async Components
