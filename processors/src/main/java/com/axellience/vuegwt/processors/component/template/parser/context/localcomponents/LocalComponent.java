@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.processors.component.template.parser.context.localcomponents;
 
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.boundedAttributeToAttributeName;
 
 import com.squareup.javapoet.TypeName;
 import java.util.HashMap;
@@ -50,15 +51,8 @@ public class LocalComponent {
     return Optional.empty();
   }
 
-  public Optional<LocalComponentProp> getPropForAttribute(String attributeName) {
-    if (attributeName.toLowerCase().startsWith("v-bind:")) {
-      return getProp(attributeName.substring("v-bind:".length()));
-    }
-    if (attributeName.startsWith(":")) {
-      return getProp(attributeName.substring(1));
-    }
-
-    return getProp(attributeName);
+  public Optional<LocalComponentProp> getPropForAttribute(String boundedAttributeName) {
+    return getProp(boundedAttributeToAttributeName(boundedAttributeName));
   }
 
   public Set<LocalComponentProp> getRequiredProps() {

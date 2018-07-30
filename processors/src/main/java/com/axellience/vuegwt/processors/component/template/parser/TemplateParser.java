@@ -2,6 +2,8 @@ package com.axellience.vuegwt.processors.component.template.parser;
 
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.vModelFieldToPlaceHolderField;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.boundedAttributeToAttributeName;
+import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.isBoundedAttribute;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
 
 import com.axellience.vuegwt.core.annotations.component.Prop;
@@ -16,6 +18,7 @@ import com.axellience.vuegwt.processors.component.template.parser.variable.Compu
 import com.axellience.vuegwt.processors.component.template.parser.variable.DestructuredPropertyInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
+import com.axellience.vuegwt.processors.dom.DOMElementsUtil;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Node;
@@ -33,6 +36,7 @@ import io.bit3.jsass.Options;
 import io.bit3.jsass.Output;
 import io.bit3.jsass.context.StringContext;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -277,6 +281,9 @@ public class TemplateParser {
       );
     }
 
+    Map<String, Class<?>> elementPropertiesType = getPropertiesForDOMElement(element)
+        .orElse(new HashMap<>());
+
     // Iterate on element attributes
     Set<LocalComponentProp> foundProps = new HashSet<>();
     for (Attribute attribute : element.getAttributes()) {
@@ -303,7 +310,8 @@ public class TemplateParser {
 
       currentAttribute = attribute;
       currentProp = optionalProp.orElse(null);
-      currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute);
+      currentExpressionReturnType = getExpressionReturnTypeForAttribute(attribute,
+          elementPropertiesType);
       String processedExpression = processExpression(attribute.getValue());
 
       if (attribute.getValueSegment() != null) {
@@ -318,22 +326,23 @@ public class TemplateParser {
 
   /**
    * Find the corresponding TypeMirror from Elemental2 for a given DOM Element
+   *
    * @param element The element we want the TypeMirror of
    * @return The type mirror
    */
   private TypeMirror getTypeFromDOMElement(Element element) {
-    String elementName = element.getStartTag().getName();
-    elementName = elementName.substring(0, 1).toUpperCase() + elementName.substring(1);
+    return DOMElementsUtil
+        .getTypeForElementTag(element.getStartTag().getName())
+        .map(Class::getCanonicalName)
+        .map(elements::getTypeElement)
+        .map(TypeElement::asType)
+        .orElse(null);
+  }
 
-    // This might not work if the Tag doesn't map to the constructor
-    TypeElement typeElement = elements
-        .getTypeElement("elemental2.dom.HTML" + elementName + "Element");
-
-    if (typeElement == null) {
-      return null;
-    }
-
-    return typeElement.asType();
+  private Optional<Map<String, Class<?>>> getPropertiesForDOMElement(Element element) {
+    return DOMElementsUtil
+        .getTypeForElementTag(element.getStartTag().getName())
+        .map(DOMElementsUtil::getElementProperties);
   }
 
   /**
@@ -468,7 +477,8 @@ public class TemplateParser {
    *
    * @param attribute The attribute the expression is in
    */
-  private TypeName getExpressionReturnTypeForAttribute(Attribute attribute) {
+  private TypeName getExpressionReturnTypeForAttribute(Attribute attribute,
+      Map<String, Class<?>> propertiesTypes) {
     String attributeName = attribute.getKey().toLowerCase();
 
     if (attributeName.indexOf("@") == 0 || attributeName.indexOf("v-on:") == 0) {
@@ -477,6 +487,18 @@ public class TemplateParser {
 
     if ("v-if".equals(attributeName) || "v-show".equals(attributeName)) {
       return TypeName.BOOLEAN;
+    }
+
+    if (isBoundedAttribute(attributeName)) {
+      String unboundedAttributeName = boundedAttributeToAttributeName(attributeName);
+
+      if (unboundedAttributeName.equals("class") || unboundedAttributeName.equals("style")) {
+        return TypeName.get(Any.class);
+      }
+
+      if (propertiesTypes.containsKey(unboundedAttributeName)) {
+        return TypeName.get(propertiesTypes.get(unboundedAttributeName));
+      }
     }
 
     if (currentProp != null) {

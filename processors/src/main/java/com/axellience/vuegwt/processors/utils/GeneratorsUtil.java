@@ -193,4 +193,22 @@ public class GeneratorsUtil {
 
     return "null";
   }
+
+  public static boolean isBoundedAttribute(String attributeName) {
+    if (attributeName.toLowerCase().startsWith("v-bind:")) {
+      return true;
+    }
+
+    return attributeName.startsWith(":");
+  }
+
+  public static String boundedAttributeToAttributeName(String boundedAttributeName) {
+    if (boundedAttributeName.toLowerCase().startsWith("v-bind:")) {
+      boundedAttributeName = boundedAttributeName.substring("v-bind:".length());
+    } else if (boundedAttributeName.startsWith(":")) {
+      boundedAttributeName = boundedAttributeName.substring(1);
+    }
+
+    return boundedAttributeName;
+  }
 }
