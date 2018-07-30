@@ -38,4 +38,11 @@ public class PropertyBindingComponentExposedType extends PropertyBindingComponen
     // PropertyBindingComponent.html, line 4
     return Js.asAny(15);
   }
+
+  @JsMethod
+  @SuppressWarnings("unusable-by-js")
+  public boolean exp$4() {
+    // PropertyBindingComponent.html, line 5
+    return (boolean) (false);
+  }
 }
