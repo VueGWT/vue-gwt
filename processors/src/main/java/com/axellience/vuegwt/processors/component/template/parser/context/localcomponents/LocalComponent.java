@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.lang.model.type.TypeMirror;
 
 public class LocalComponent {
 
@@ -15,9 +16,11 @@ public class LocalComponent {
   private final Map<String, LocalComponentProp> propNameToPropMap;
   private final Set<LocalComponentProp> requiredProps;
   private final String componentTagName;
+  private final TypeMirror componentType;
 
-  LocalComponent(String componentTagName) {
+  LocalComponent(String componentTagName, TypeMirror componentType) {
     this.componentTagName = componentTagName;
+    this.componentType = componentType;
     attributeNameToPropMap = new HashMap<>();
     propNameToPropMap = new HashMap<>();
     requiredProps = new HashSet<>();
@@ -64,5 +67,9 @@ public class LocalComponent {
 
   public String getComponentTagName() {
     return componentTagName;
+  }
+
+  public TypeMirror getComponentType() {
+    return componentType;
   }
 }

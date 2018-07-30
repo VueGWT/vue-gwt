@@ -77,6 +77,58 @@ class RefsTest {
   }
 
   @Test
+  @DisplayName("should check ref on local component is assignable to the @Ref field")
+  void shouldCheckLocalComponentType() {
+    Compilation compilation =
+        javac()
+            .withProcessors(new VueGwtProcessor())
+            .compile(forResource("refs/InvalidRefComponentTypeComponent.java"));
+
+    assertThat(compilation)
+        .hadErrorContaining(
+            "Invalid type for @Ref \"invalidRefType\", must be able to assign \"common.SimpleChildComponent\".");
+  }
+
+  @Test
+  @DisplayName("should check ref on local component is assignable to the @Ref JsArray field")
+  void shouldCheckJsArrayLocalComponentType() {
+    Compilation compilation =
+        javac()
+            .withProcessors(new VueGwtProcessor())
+            .compile(forResource("refs/InvalidRefArrayComponentTypeComponent.java"));
+
+    assertThat(compilation)
+        .hadErrorContaining(
+            "Invalid type for @Ref \"invalidRefArrayType\", must be able to assign \"common.SimpleChildComponent\".");
+  }
+
+  @Test
+  @DisplayName("should check ref on DOM Element is assignable to the @Ref field")
+  void shouldCheckDOMElementType() {
+    Compilation compilation =
+        javac()
+            .withProcessors(new VueGwtProcessor())
+            .compile(forResource("refs/InvalidRefDOMElementTypeComponent.java"));
+
+    assertThat(compilation)
+        .hadErrorContaining(
+            "Invalid type for @Ref \"invalidRefType\", must be able to assign \"elemental2.dom.HTMLInputElement\".");
+  }
+
+  @Test
+  @DisplayName("should check ref on DOM Element is assignable to the @Ref JsArray field")
+  void shouldCheckJsArrayDOMElementType() {
+    Compilation compilation =
+        javac()
+            .withProcessors(new VueGwtProcessor())
+            .compile(forResource("refs/InvalidRefArrayDOMElementTypeComponent.java"));
+
+    assertThat(compilation)
+        .hadErrorContaining(
+            "Invalid type for @Ref \"invalidRefArrayType\", must be able to assign \"elemental2.dom.HTMLDivElement\".");
+  }
+
+  @Test
   @DisplayName("should not throw exceptions on valid refs")
   void shouldNotThrowOnValidRefs() {
     Compilation compilation =

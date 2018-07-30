@@ -19,8 +19,8 @@ import com.axellience.vuegwt.processors.component.template.parser.TemplateParser
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
-import com.axellience.vuegwt.processors.component.template.parser.refs.RefInfo;
 import com.axellience.vuegwt.processors.component.template.parser.refs.RefFieldValidator;
+import com.axellience.vuegwt.processors.component.template.parser.refs.RefInfo;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.axellience.vuegwt.processors.utils.MissingComponentAnnotationException;
@@ -58,13 +58,13 @@ public class ComponentTemplateProcessor {
   private final ProcessingEnvironment processingEnvironment;
   private final Filer filer;
   private final Messager messager;
-  private final Elements elementUtils;
+  private final Elements elements;
 
   public ComponentTemplateProcessor(ProcessingEnvironment processingEnvironment) {
     this.processingEnvironment = processingEnvironment;
     filer = processingEnvironment.getFiler();
     messager = processingEnvironment.getMessager();
-    elementUtils = processingEnvironment.getElementUtils();
+    elements = processingEnvironment.getElementUtils();
   }
 
   public void processComponentTemplate(TypeElement componentTypeElement,
@@ -92,6 +92,7 @@ public class ComponentTemplateProcessor {
     TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
         optionalTemplateContent.get().content,
         templateParserContext,
+        elements,
         messager,
         optionalTemplateContent.get().uri);
 
@@ -190,7 +191,7 @@ public class ComponentTemplateProcessor {
     }
 
     processLocalComponentClass(localComponents, componentTypeElement);
-    getComponentLocalComponents(elementUtils, componentTypeElement)
+    getComponentLocalComponents(elements, componentTypeElement)
         .stream()
         .map(DeclaredType.class::cast)
         .map(DeclaredType::asElement)
@@ -230,7 +231,8 @@ public class ComponentTemplateProcessor {
       return;
     }
 
-    LocalComponent localComponent = localComponents.addLocalComponent(localComponentTagName);
+    LocalComponent localComponent = localComponents
+        .addLocalComponent(localComponentTagName, localComponentType.asType());
 
     ElementFilter.fieldsIn(localComponentType.getEnclosedElements()).forEach(field -> {
       Prop propAnnotation = field.getAnnotation(Prop.class);
@@ -243,7 +245,8 @@ public class ComponentTemplateProcessor {
   }
 
   private void validateRefs(Set<RefInfo> templateRefs, TypeElement component) {
-    RefFieldValidator refFieldValidator = new RefFieldValidator(component, templateRefs, processingEnvironment);
+    RefFieldValidator refFieldValidator = new RefFieldValidator(component, templateRefs,
+        processingEnvironment);
 
     ElementFilter
         .fieldsIn(component.getEnclosedElements())

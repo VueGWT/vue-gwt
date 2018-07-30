@@ -3,6 +3,7 @@ package com.axellience.vuegwt.processors.component.template.parser.context.local
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.lang.model.type.TypeMirror;
 
 public class LocalComponents {
 
@@ -12,8 +13,8 @@ public class LocalComponents {
     localComponentsMap = new HashMap<>();
   }
 
-  public LocalComponent addLocalComponent(String tagName) {
-    LocalComponent localComponent = new LocalComponent(tagName);
+  public LocalComponent addLocalComponent(String tagName, TypeMirror componentType) {
+    LocalComponent localComponent = new LocalComponent(tagName, componentType);
     localComponentsMap.put(tagName, localComponent);
     return localComponent;
   }

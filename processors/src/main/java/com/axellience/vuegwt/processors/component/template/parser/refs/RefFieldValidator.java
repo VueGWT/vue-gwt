@@ -6,6 +6,7 @@ import elemental2.dom.Element;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
@@ -44,44 +45,76 @@ public class RefFieldValidator {
       return;
     }
 
+    RefInfo refInfo = templateRefsMap.get(fieldName);
     TypeMirror fieldType = refField.asType();
     if (isJsArray(fieldType)) {
-      if (!templateRefsMap.get(fieldName).isArray()) {
-        printError(
-            "@Ref field \"" + fieldName
-                + "\", must not be a JsArray as the ref is not used inside a v-for.");
-      }
-
-      if (!isValidRefArrayField(fieldType)) {
-        printError(
-            "Invalid type for @Ref array \"" + fieldName
-                + "\", must be a JsArray of a type extending elemental2.Element or IsVueComponent.");
-      }
+      validateRefArrayField(fieldName, refInfo, fieldType);
     } else {
-      if (templateRefsMap.get(fieldName).isArray()) {
-        printError(
-            "@Ref field \"" + fieldName
-                + "\", must be a JsArray as the ref is used inside a v-for.");
-      }
-
-      if (!isRefType(fieldType)) {
-        printError("Invalid type for @Ref \"" + fieldName
-            + "\", type must extend elemental2.Element or IsVueComponent.");
-      }
+      validateRefField(fieldName, refInfo, fieldType);
     }
   }
 
-  private boolean isValidRefArrayField(TypeMirror fieldType) {
+  private void validateRefArrayField(String fieldName, RefInfo refElementInfo,
+      TypeMirror fieldType) {
+    TypeMirror elementType = refElementInfo.getElementType();
+
+    if (!refElementInfo.isArray()) {
+      printError(
+          "@Ref field \"" + fieldName
+              + "\", must not be a JsArray as the ref is not used inside a v-for.");
+      return;
+    }
+
+    TypeMirror jsArrayTypeParameter = getJsArrayTypeParameter(fieldType);
+    if (!isRefValidType(jsArrayTypeParameter)) {
+      printError(
+          "Invalid type for @Ref array \"" + fieldName
+              + "\", must be a JsArray of a type extending elemental2.Element or IsVueComponent.");
+      return;
+    }
+
+    if (elementType != null && !types.isAssignable(elementType, jsArrayTypeParameter)) {
+      printError(
+          "Invalid type for @Ref \"" + fieldName
+              + "\", must be able to assign \"" + elementType.toString() + "\".");
+    }
+  }
+
+  private void validateRefField(String fieldName, RefInfo refElementInfo, TypeMirror fieldType) {
+    TypeMirror elementType = refElementInfo.getElementType();
+
+    if (refElementInfo.isArray()) {
+      printError(
+          "@Ref field \"" + fieldName
+              + "\", must be a JsArray as the ref is used inside a v-for.");
+      return;
+    }
+
+    if (!isRefValidType(fieldType)) {
+      printError("Invalid type for @Ref \"" + fieldName
+          + "\", type must extend elemental2.Element or IsVueComponent.");
+      return;
+    }
+
+    if (elementType != null && !types.isAssignable(elementType, fieldType)) {
+      printError(
+          "Invalid type for @Ref \"" + fieldName
+              + "\", must be able to assign \"" + elementType.toString() + "\".");
+    }
+  }
+
+  @Nullable
+  private TypeMirror getJsArrayTypeParameter(TypeMirror fieldType) {
     if (!(fieldType instanceof DeclaredType)) {
-      return false;
+      return null;
     }
 
     DeclaredType declaredType = (DeclaredType) fieldType;
     if (declaredType.getTypeArguments().isEmpty()) {
-      return false;
+      return null;
     }
 
-    return isRefType(declaredType.getTypeArguments().get(0));
+    return declaredType.getTypeArguments().get(0);
   }
 
   private boolean isJsArray(TypeMirror fieldType) {
@@ -89,7 +122,7 @@ public class RefFieldValidator {
         types.erasure(elements.getTypeElement(JsArray.class.getCanonicalName()).asType()));
   }
 
-  private boolean isRefType(TypeMirror type) {
+  private boolean isRefValidType(TypeMirror type) {
     return
         types.isAssignable(type, elements.getTypeElement(Element.class.getCanonicalName()).asType())
             ||

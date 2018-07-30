@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Result of a template parsing.
@@ -90,10 +91,11 @@ public class TemplateParserResult {
   /**
    * Register a ref found in the template
    * @param name The name of the ref
+   * @param elementType The type of the element the Ref is on
    * @param isArray Whether the ref is in a v-for (should be an array)
    */
-  public void addRef(String name, boolean isArray) {
-    refs.add(new RefInfo(name, isArray));
+  public void addRef(String name, TypeMirror elementType, boolean isArray) {
+    refs.add(new RefInfo(name, elementType, isArray));
   }
 
   /**

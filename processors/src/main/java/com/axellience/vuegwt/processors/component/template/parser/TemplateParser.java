@@ -45,6 +45,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.annotation.processing.Messager;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import jsinterop.base.Any;
 import net.htmlparser.jericho.Attribute;
 import net.htmlparser.jericho.Attributes;
@@ -71,6 +74,7 @@ public class TemplateParser {
   private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}", Pattern.DOTALL);
 
   private TemplateParserContext context;
+  private Elements elements;
   private Messager messager;
   private TemplateParserLogger logger;
   private TemplateParserResult result;
@@ -91,8 +95,9 @@ public class TemplateParser {
    * @return A {@link TemplateParserResult} containing the processed template and expressions
    */
   public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
-      TemplateParserContext context, Messager messager, URI htmlTemplateUri) {
+      TemplateParserContext context, Elements elements, Messager messager, URI htmlTemplateUri) {
     this.context = context;
+    this.elements = elements;
     this.messager = messager;
     this.logger = new TemplateParserLogger(context, messager);
     this.htmlTemplateUri = htmlTemplateUri;
@@ -260,12 +265,17 @@ public class TemplateParser {
       outputDocument.replace(slotScopeAttribute.getValueSegment(), processedScopedSlotValue);
     }
 
+    Optional<LocalComponent> localComponent = getLocalComponentForElement(element);
+
     Attribute refAttribute = attributes.get("ref");
     if (refAttribute != null) {
-      result.addRef(refAttribute.getValue(), context.isInVFor());
+      result.addRef(
+          refAttribute.getValue(),
+          localComponent.map(LocalComponent::getComponentType)
+              .orElse(getTypeFromDOMElement(element)),
+          context.isInVFor()
+      );
     }
-
-    Optional<LocalComponent> localComponent = getLocalComponentForElement(element);
 
     // Iterate on element attributes
     Set<LocalComponentProp> foundProps = new HashSet<>();
@@ -304,6 +314,26 @@ public class TemplateParser {
     localComponent.ifPresent(lc -> validateRequiredProps(lc, foundProps));
 
     return shouldPopContext;
+  }
+
+  /**
+   * Find the corresponding TypeMirror from Elemental2 for a given DOM Element
+   * @param element The element we want the TypeMirror of
+   * @return The type mirror
+   */
+  private TypeMirror getTypeFromDOMElement(Element element) {
+    String elementName = element.getStartTag().getName();
+    elementName = elementName.substring(0, 1).toUpperCase() + elementName.substring(1);
+
+    // This might not work if the Tag doesn't map to the constructor
+    TypeElement typeElement = elements
+        .getTypeElement("elemental2.dom.HTML" + elementName + "Element");
+
+    if (typeElement == null) {
+      return null;
+    }
+
+    return typeElement.asType();
   }
 
   /**
