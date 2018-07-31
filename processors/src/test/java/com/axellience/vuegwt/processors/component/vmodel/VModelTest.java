@@ -23,4 +23,17 @@ class VModelTest {
     assertThat(compilation).hadErrorContaining(
         "Couldn't find @Data or @Computed for v-model \"nonExistingField\"");
   }
+
+  @Test
+  @DisplayName("should throw an error when using a v-model with dot notation")
+  void vmodelWithDotNotation() {
+    Compilation compilation =
+        javac()
+            .withProcessors(new VueGwtProcessor())
+            .compile(
+                JavaFileObjects.forResource("vmodel/VModelDotNotationComponent.java"));
+
+    assertThat(compilation).hadErrorContaining(
+        "v-model doesn't support dot notation in Vue GWT: \"dot.notation\"");
+  }
 }

@@ -404,8 +404,13 @@ public class TemplateParser {
     String vModelValue = vModelAttribute.getValue();
     VariableInfo vModelDataField = context.findRootVariable(vModelValue);
     if (vModelDataField == null) {
-      logger.error("Couldn't find @Data or @Computed for v-model \"" + vModelValue
-          + "\". V-Model is only supported on @Data and @Computed.");
+      if (vModelValue.contains(".")) {
+        logger.error("v-model doesn't support dot notation in Vue GWT: \"" + vModelValue
+            + "\". Try using a @Computed with a getter and a setter. Check our documentation on v-model for more information.");
+      } else {
+        logger.error("Couldn't find @Data or @Computed for v-model \"" + vModelValue
+            + "\". V-Model is only supported on @Data and @Computed. Check our documentation on v-model for more information.");
+      }
       return;
     }
 
