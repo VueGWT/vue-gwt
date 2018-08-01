@@ -14,7 +14,7 @@ export const onGwtReady = function () {
 export const createAndMountComponent = function (qualifiedName) {
   const div = document.createElement("div");
   document.body.appendChild(div);
-  const ComponentConstructor = window.VueGWT.getJsConstructor(qualifiedName);
+  const ComponentConstructor = window.vueGwtTestComponents[qualifiedName];
   return new ComponentConstructor({el: div});
 };
 
@@ -23,19 +23,17 @@ export const destroyComponent = function (component) {
   document.body.removeChild(component.$el);
 };
 
-export const onNextTick = function (testFunction) {
-  return new Promise((resolve, reject) => {
-    Vue.nextTick(() => {
-      try {
-        testFunction();
-        resolve();
-      } catch (e) {
-        reject(e);
-      }
-    });
-  });
+export const nextTick = function () {
+  return Vue.nextTick();
 };
 
 export const getElement = function (component, query) {
   return component.$el.querySelector(query);
+};
+
+export const triggerEvent = function triggerEvent (target, event, process) {
+  const e = document.createEvent('HTMLEvents');
+  e.initEvent(event, true, true);
+  if (process) process(e);
+  target.dispatchEvent(e);
 };

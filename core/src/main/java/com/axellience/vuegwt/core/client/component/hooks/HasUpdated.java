@@ -6,9 +6,9 @@ import jsinterop.annotations.JsMethod;
 /**
  * @author Adrien Baron
  */
-public interface HasUpdated
-{
-    @HookMethod
-    @JsMethod
-    void updated();
+public interface HasUpdated {
+
+  @HookMethod
+  @JsMethod
+  void updated();
 }

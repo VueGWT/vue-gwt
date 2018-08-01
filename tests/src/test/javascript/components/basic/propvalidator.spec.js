@@ -1,10 +1,11 @@
-import {expect} from 'chai'
-import chai from 'chai'
+import chai, {expect} from 'chai'
 import spies from 'chai-spies'
 
 import {
-  createAndMountComponent, destroyComponent, onGwtReady,
-  onNextTick
+  createAndMountComponent,
+  destroyComponent,
+  nextTick,
+  onGwtReady
 } from '../../vue-gwt-tests-utils'
 
 describe('@PropValidator', () => {
@@ -24,27 +25,28 @@ describe('@PropValidator', () => {
   });
 
   it('should not fire an error if the value is correct', () => {
-    component.validatedPropParent = 6;
-    return onNextTick(() => {
+    component.setValidatedPropParent(6);
+    return nextTick().then(() => {
       expect(console.error).to.not.have.been.called();
     });
   });
 
   it('should fire an error if the value is incorrect in dev mode', () => {
     if (Vue.config.productionTip === true) {
-      component.validatedPropParent = 106;
-      return onNextTick(() => {
+      component.setValidatedPropParent(106);
+      return nextTick().then(() => {
         expect(console.error).to.have.been.called.once;
       });
     }
   });
 
-  it('should not fire an error if the value is incorrect in production mode', () => {
-    if (Vue.config.productionTip === false) {
-      component.validatedPropParent = 106;
-      return onNextTick(() => {
-        expect(console.error).to.not.have.been.called();
+  it('should not fire an error if the value is incorrect in production mode',
+      () => {
+        if (Vue.config.productionTip === false) {
+          component.setValidatedPropParent(106);
+          return nextTick().then(() => {
+            expect(console.error).to.not.have.been.called();
+          });
+        }
       });
-    }
-  });
 });

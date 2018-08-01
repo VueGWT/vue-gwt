@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.axellience</groupId>
-		<artifactId>vue-gwt-parent</artifactId>
-		<version>1.0-beta-8</version>
-	</parent>
+  <parent>
+    <groupId>com.axellience</groupId>
+    <artifactId>vue-gwt-parent</artifactId>
+    <version>1.0-beta-9</version>
+  </parent>
 
-	<artifactId>vue-gwt-gwt2</artifactId>
-	<name>Vue GWT GWT2</name>
-	<description>Vue GWT compatibility classes for GWT 2.x</description>
-	<packaging>gwt-lib</packaging>
+  <artifactId>vue-gwt-gwt2</artifactId>
+  <name>Vue GWT GWT2</name>
+  <description>Vue GWT compatibility classes for GWT 2.x</description>
+  <packaging>gwt-lib</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.axellience</groupId>
-			<artifactId>vue-gwt</artifactId>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>com.axellience</groupId>
+      <artifactId>vue-gwt</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>net.ltgt.gwt.maven</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<moduleName>com.axellience.vuegwt.GWT2</moduleName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>net.ltgt.gwt.maven</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <moduleName>com.axellience.vuegwt.GWT2</moduleName>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

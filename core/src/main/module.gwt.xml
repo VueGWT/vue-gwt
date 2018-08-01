@@ -1,12 +1,12 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.0//EN"
-		"http://gwtproject.org/doctype/2.8.0/gwt-module.dtd">
+  "http://gwtproject.org/doctype/2.8.0/gwt-module.dtd">
 <module>
-	<inherits name="jsinterop.base.Base"/>
-	<inherits name="elemental2.core.Core"/>
-	<inherits name="elemental2.dom.Dom"/>
-	<inherits name="javax.inject.Inject"/>
-	<source path="core/client"/>
+  <inherits name="jsinterop.base.Base"/>
+  <inherits name="elemental2.core.Core"/>
+  <inherits name="elemental2.dom.Dom"/>
+  <inherits name="javax.inject.Inject"/>
+  <source path="core/client"/>
 
-	<define-property name="vuegwt.environment" values="development,production"/>
-	<set-property name="vuegwt.environment" value="production"/>
+  <define-property name="vuegwt.environment" values="development,production"/>
+  <set-property name="vuegwt.environment" value="production"/>
 </module>

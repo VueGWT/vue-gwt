@@ -1,17 +1,15 @@
 package com.axellience.vuegwtexamples.client.examples.tree;
 
-import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Prop;
-import jsinterop.annotations.JsProperty;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 
 /**
  * @author Adrien Baron
  */
 @Component(components = TreeFolderContentComponent.class)
-public class TreeFolderComponent implements IsVueComponent
-{
-    @Prop
-    @JsProperty
-    public Folder folder;
+public class TreeFolderComponent implements IsVueComponent {
+
+  @Prop
+  public Folder folder;
 }

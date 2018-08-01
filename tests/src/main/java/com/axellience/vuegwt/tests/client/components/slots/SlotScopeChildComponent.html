@@ -1,0 +1,35 @@
+<div>
+  <slot :my-int="myInt"
+        :myIntCamelCase="myInt"
+        :my-int-literal="10"
+        :my-integer="myInteger"
+        :my-string="myString"
+        :my-string-literal='"MY_STRING_LITERAL"'
+        :my-simple-object="mySimpleObject">
+  </slot>
+
+  <slot name="my-named-slot" :named-slot-my-string="myString">
+  </slot>
+
+  <slot name="my-destructured-slot"
+        :my-int-d="myInt"
+        :myIntCamelCaseD="myInt"
+        :my-byte-d="myByte"
+        :my-short-d="myShort"
+        :my-long-d="myLong"
+        :my-float-d="myFloat"
+        :my-double-d="myDouble"
+        :my-boolean-d="myBoolean"
+        :my-char-d="myChar"
+        :my-int-literal-d="10"
+        :my-integer-d="myInteger"
+        :my-string-d="myString"
+        :my-string-literal-d='"MY_STRING_LITERAL"'
+        :my-simple-object-d="mySimpleObject">
+  </slot>
+
+  <slot name="my-slot-with-spaces"
+        :my-int-s="myInt"
+        :my-int-literal-s="10">
+  </slot>
+</div>

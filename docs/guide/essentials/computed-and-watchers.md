@@ -31,9 +31,9 @@ That's why for any complex logic, you should use a **computed property**.
 ```java
 @Component
 public class ReverseComponent implements IsVueComponent {
-    @JsProperty String message = "Hello";
+    @Data String message = "Hello";
 
-    @Computed // Note the annotation that tells Vue GWT that this is a Computed Properties
+    @Computed // Note the annotation that tells Vue GWT that this is a Computed Property
     public String getReversedMessage() {
         return new StringBuilder(message).reverse().toString();
     }
@@ -50,12 +50,14 @@ Here we have declared a computed property `reversedMessage`.
 For this we declared a getter method `getReversedMessage()` following the Java bean naming convention.
 The method we provided will be used as the getter function for the property `reversedMessage` of your template.
 
+Notice that we didn't use any parenthesis in the template, `reversedMessage` is a field and not a method.
+
 You can open the console and play with the example vm yourself.
-The value of `reverseComponent.reversedMessage` is always dependent on the value of `reverseComponent.message`.
+The value of `reverseComponent.reversedMessage` is always dependent on the value of `reverseComponent.message`
 
 ```js
 console.log(reverseComponent.reversedMessage); // -> 'olleH'
-reverseComponent.message = 'Goodbye';
+reverseComponent.setMessage('Goodbye');
 console.log(reverseComponent.reversedMessage); // -> 'eybdooG'
 ```
 
@@ -74,9 +76,9 @@ You may have noticed we can achieve the same result by invoking a method in the 
 ```java
 @Component
 public class ReverseComponent implements IsVueComponent {
-    @JsProperty String message = "Hello";
+    @Data String message = "Hello";
 
-    // Note that there a no more @Computed annotation
+    // Note that there a no @Computed annotation
     @JsMethod
     public String getReversedMessage() {
         return new StringBuilder(message).reverse().toString();
@@ -120,9 +122,9 @@ However, it is often a better idea to use a computed property rather than an imp
 ```java
 @Component
 public class JohnSnowComponent implements IsVueComponent, HasCreated {
-    @JsProperty String firstName;
-    @JsProperty String lastName;
-    @JsProperty String fullName;
+    @Data String firstName;
+    @Data String lastName;
+    @Data String fullName;
 
     @Override
     public void created() {
@@ -148,8 +150,8 @@ The above code is imperative and repetitive. Compare it with a computed property
 ```java
 @Component
 public class JohnSnowComponent implements IsVueComponent {
-    @JsProperty String firstName = "John";
-    @JsProperty String lastName = "Snow";
+    @Data String firstName = "John";
+    @Data String lastName = "Snow";
 
     @Computed
     public String getFullName() {
@@ -167,8 +169,8 @@ Computed properties are by default getter-only, but you can also provide a sette
 ```java
 @Component
 public class JohnSnowComponent implements IsVueComponent {
-    @JsProperty String firstName = "John";
-    @JsProperty String lastName = "Snow";
+    @Data String firstName = "John";
+    @Data String lastName = "Snow";
 
     @Computed
     public String getFullName() {
@@ -208,7 +210,7 @@ Here is an example:
 ```java
 @Component
 public class JohnSnowComponent implements IsVueComponent {
-    @JsProperty String message = "Hello World!";
+    @Data String message = "Hello World!";
 
     @Watch("message")
     public void watchMessage(String newValue, String oldValue) {
@@ -217,14 +219,28 @@ public class JohnSnowComponent implements IsVueComponent {
 }
 ```
 
-::: warning
-Like for `v-model`, only `JsInterop` expression can be used as `value` for the `@Watch` annotation.
-This means any attribute from your Component and any of their attributes as long as they have the `@JsProperty` annotation.<br/>
-The following: `@Watch("todo.text")` won't work if the attribute `text` of the class `Todo` doesn't have the `@JsProperty` annotation.
-:::
+### isImmediate
+
+If you declare a watcher, by default it will not be fired when your Component is created.
+
+If you want your watcher to be called with the initial value, you can add `isImmediate = true` to the annotation.
+
+```java
+@Component
+public class JohnSnowComponent implements IsVueComponent {
+    @Prop String myProp;
+
+    @Watch(value = "myProp", isImmediate = true)
+    public void watchMessage(String newValue, String oldValue) {
+        // Will be called at component creation with inital 
+    }
+}
+```
+
+### $watch
 
 In addition to the `watch` option, you can also use the imperative [vm.$watch API](https://vuejs.org/v2/api/#vm-watch).
-This allow you to watch non `JsInterop` properties:
+This allows you to observe more complex expressions.
 ```java
 vue().$watch(
     () -> this.todo.getText(),

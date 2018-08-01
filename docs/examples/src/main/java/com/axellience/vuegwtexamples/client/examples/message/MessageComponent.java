@@ -1,11 +1,12 @@
 package com.axellience.vuegwtexamples.client.examples.message;
 
-import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.annotations.component.Component;
-import jsinterop.annotations.JsProperty;
+import com.axellience.vuegwt.core.annotations.component.Data;
+import com.axellience.vuegwt.core.client.component.IsVueComponent;
 
 @Component
-public class MessageComponent implements IsVueComponent
-{
-    @JsProperty String message = "Hello VueComponent GWT!";
+public class MessageComponent implements IsVueComponent {
+
+  @Data
+  String message = "Hello VueComponent GWT!";
 }

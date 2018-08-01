@@ -21,7 +21,9 @@ The `v-for` directive requires a special syntax in the form of `Type item in ite
 ```java
 @Component
 public class SimpleTodoListComponent implements IsVueComponent, HasCreated {
-    @JsProperty List<Todo> todos = new LinkedList<>();
+    @Data
+    @JsProperty
+    List<Todo> todos = new LinkedList<>();
     
     @Override
     public void created() {
@@ -53,8 +55,11 @@ Inside `v-for` blocks we have full access to parent scope properties.
 ```java
 @Component
 public class VForWithIndexComponent implements IsVueComponent, HasCreated {
-    @JsProperty String parentMessage = "Message from parent";
-    @JsProperty List<Todo> todos = new LinkedList<>();
+    @Data String parentMessage = "Message from parent";
+    
+    @Data
+    @JsProperty
+    List<Todo> todos = new LinkedList<>();
 
     @Override
     public void created() {
@@ -113,7 +118,7 @@ This tells Vue GWT that you are iterating on an `Object` and not an regular Coll
 ```java
 @Component
 public class VForOnObjectComponent implements IsVueComponent, HasCreated {
-    @JsProperty JsObject<Object> myObject = new JsObject<>();
+    @Data JsObject<Object> myObject = new JsObject<>();
 
     @Override
     public void created() {
@@ -271,7 +276,9 @@ For example:
 ```java
 @Component
 public class EvenNumbersComponent implements IsVueComponent {
-    @JsProperty List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    @Data
+    @JsProperty
+    List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
     @Computed
     public List<Integer> getEvenNumbers() {

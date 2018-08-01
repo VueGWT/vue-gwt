@@ -1,4 +1,6 @@
+<vue-gwt:import class="elemental2.dom.HTMLInputElement"/>
+
 <div>
-    <input v-model="todoText"/>
-    Todo Text: {{ todoText }}
+  <input :value="todoText" @input="todoText = ((HTMLInputElement) ((Event) $event).target).value"/>
+  Todo Text: {{ todoText }}
 </div>

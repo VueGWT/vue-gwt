@@ -8,7 +8,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface VueWarnHandler
-{
-    void action(String message, IsVueComponent vue, String trace);
+public interface VueWarnHandler {
+
+  void action(String message, IsVueComponent vue, String trace);
 }

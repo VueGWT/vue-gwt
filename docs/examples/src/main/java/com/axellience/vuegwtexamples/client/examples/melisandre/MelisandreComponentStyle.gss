@@ -1,6 +1,7 @@
 .red {
-	color: red !important;
+  color: red !important;
 }
+
 .bold {
-	font-weight: bold;
+  font-weight: bold;
 }

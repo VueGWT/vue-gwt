@@ -1,61 +1,80 @@
 package com.axellience.vuegwt.processors.component.template.parser.context;
 
+import com.axellience.vuegwt.processors.component.template.parser.variable.ComputedVariableInfo;
+import com.axellience.vuegwt.processors.component.template.parser.variable.DestructuredPropertyInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.LocalVariableInfo;
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.squareup.javapoet.TypeName;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * A context layer holding local variables for a v-for.
- * @author Adrien Baron
+ * A context layer holding variables visible in a given element. Each v-for will create a new child
+ * context. Exiting a v-for will pop the latest context.
  */
-public class ContextLayer
-{
-    private final Map<String, VariableInfo> variables = new HashMap<>();
-    private final Set<String> methods = new HashSet<>();
+class ContextLayer {
 
-    private <T extends VariableInfo> T addVariable(T variableInfo)
-    {
-        variables.put(variableInfo.getName(), variableInfo);
-        return variableInfo;
-    }
+  private static final String UNIQUE_LOCAL_VARIABLE_PREFIX = "vg$u";
 
-    VariableInfo addVariable(String type, String name)
-    {
-        return addVariable(new VariableInfo(type, name));
-    }
+  private final Map<String, VariableInfo> variables = new HashMap<>();
+  private final Set<String> methods = new HashSet<>();
+  private int uniqueContextVariableCount;
+  private final boolean isVFor;
 
-    VariableInfo addVariable(TypeName type, String name)
-    {
-        return addVariable(new VariableInfo(type, name));
-    }
+  ContextLayer(int uniqueContextVariableCount, boolean isVFor) {
+    this.uniqueContextVariableCount = uniqueContextVariableCount;
+    this.isVFor = isVFor;
+  }
 
-    LocalVariableInfo addLocalVariable(String type, String templateName)
-    {
-        return addVariable(new LocalVariableInfo(type, templateName));
-    }
+  private <T extends VariableInfo> T addVariable(T variableInfo) {
+    variables.put(variableInfo.getName(), variableInfo);
+    return variableInfo;
+  }
 
-    VariableInfo addVariable(Class type, String name)
-    {
-        return addVariable(type.getCanonicalName(), name);
-    }
+  VariableInfo addVariable(TypeName type, String name) {
+    return addVariable(new VariableInfo(type, name));
+  }
 
-    VariableInfo getVariableInfo(String name)
-    {
-        return variables.get(name);
-    }
+  VariableInfo addComputedVariable(TypeName type, String computedPropertyName, String fieldName) {
+    return addVariable(new ComputedVariableInfo(type, computedPropertyName, fieldName));
+  }
 
-    void addMethod(String methodName)
-    {
-        this.methods.add(methodName);
-    }
+  LocalVariableInfo addLocalVariable(String type, String templateName) {
+    return addVariable(new LocalVariableInfo(type, templateName));
+  }
 
-    boolean hasMethod(String methodName)
-    {
-        return this.methods.contains(methodName);
-    }
+  LocalVariableInfo addUniqueLocalVariable(String type) {
+    return addVariable(
+        new LocalVariableInfo(type, UNIQUE_LOCAL_VARIABLE_PREFIX + uniqueContextVariableCount++)
+    );
+  }
+
+  DestructuredPropertyInfo addDestructuredProperty(String propertyType,
+      String propertyName,
+      LocalVariableInfo destructuredVariable) {
+    return addVariable(
+        new DestructuredPropertyInfo(propertyType, propertyName, destructuredVariable));
+  }
+
+  VariableInfo getVariableInfo(String name) {
+    return variables.get(name);
+  }
+
+  void addMethod(String methodName) {
+    this.methods.add(methodName);
+  }
+
+  boolean hasMethod(String methodName) {
+    return this.methods.contains(methodName);
+  }
+
+  int getUniqueContextVariableCount() {
+    return uniqueContextVariableCount;
+  }
+
+  boolean isVFor() {
+    return isVFor;
+  }
 }

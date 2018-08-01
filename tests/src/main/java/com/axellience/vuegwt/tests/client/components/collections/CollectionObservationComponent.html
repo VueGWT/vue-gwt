@@ -1,0 +1,21 @@
+<div>
+  <div id="arrayList">
+    <span v-for="String val in arrayList">{{val}}</span>
+  </div>
+  <div id="linkedList">
+    <span v-for="String val in linkedList">{{val}}</span>
+  </div>
+  <div id="hashSet">
+    <span v-for="String val in hashSet">{{val}}</span>
+  </div>
+  <div id="hashMap">
+    <span v-for="String val in hashMap">{{val}}</span>
+  </div>
+
+  <collection-observation-child
+      ref="child"
+      :arrayList="arrayList"
+      :linkedList="linkedList"
+      :hashSet="hashSet"
+      :hashMap="hashMap"/>
+</div>

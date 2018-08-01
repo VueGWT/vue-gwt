@@ -9,15 +9,13 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 
 @Component
-public class AnimalSelectorComponent implements IsVueComponent
-{
-    @Prop
-    @JsProperty
-    String userName;
+public class AnimalSelectorComponent implements IsVueComponent {
 
-    @JsMethod
-    public void selectAnimal(Event event)
-    {
-        vue().$emit("animal-selected", ((HTMLInputElement) event.target).value);
-    }
+  @Prop
+  String userName;
+
+  @JsMethod
+  public void selectAnimal(Event event) {
+    vue().$emit("animal-selected", ((HTMLInputElement) event.target).value);
+  }
 }

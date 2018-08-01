@@ -1,0 +1,31 @@
+<div class="root">
+  <p></p>
+  <div class="attention" v-if="parseFloat(celsius) >= 100">
+    <p>The water would boil.</p>
+    <div>Careful!</div>
+  </div>
+  <p class="relax" v-else>The water would not boil.</p>
+</div>
+
+<style lang="scss" scoped>
+  
+  @import 'ScopedTestComponent';
+  
+  .root {
+    border: 1px $boiling-border-color solid;
+    margin: 5px;
+  }
+
+  .attention {
+    color: $attention-color;
+  }
+  .attention > div {
+    color: $attention-info-color;
+  }
+  
+  .relax {
+    color: $relax-color;
+    border: 1px solid $relax-color;
+    @include rounded;
+  }
+</style>

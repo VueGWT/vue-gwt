@@ -6,9 +6,9 @@ import jsinterop.annotations.JsMethod;
 /**
  * @author Adrien Baron
  */
-public interface HasBeforeDestroy
-{
-    @HookMethod
-    @JsMethod
-    void beforeDestroy();
+public interface HasBeforeDestroy {
+
+  @HookMethod
+  @JsMethod
+  void beforeDestroy();
 }

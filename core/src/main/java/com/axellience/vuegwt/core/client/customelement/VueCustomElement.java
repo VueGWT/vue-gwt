@@ -9,13 +9,13 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
 
 @JsType(isNative = true, namespace = "<global>", name = "Element")
-public class VueCustomElement<T extends IsVueComponent> extends Element
-{
-    @JsProperty
-    private JsPropertyMap<JsArray<T>> __vue_custom_element__;
+public class VueCustomElement<T extends IsVueComponent> extends Element {
 
-    @JsOverlay
-    public final T getComponent() {
-        return this.__vue_custom_element__.get("$children").getAt(0);
-    }
+  @JsProperty
+  private JsPropertyMap<JsArray<T>> __vue_custom_element__;
+
+  @JsOverlay
+  public final T getComponent() {
+    return this.__vue_custom_element__.get("$children").getAt(0);
+  }
 }

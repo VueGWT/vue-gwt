@@ -1,0 +1,7 @@
+<div>
+  <div ref="divElement">Hello World</div>
+  <div v-for="String string in list" ref="divElements">{{ string }}</div>
+
+  <ref-child-test ref="child"/>
+  <ref-child-test v-for="String string in list" ref="children"/>
+</div>

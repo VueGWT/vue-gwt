@@ -4,11 +4,12 @@
 Vue.js reactivity system is based on [ES5 getter/setters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get) which have limitations.
 
 In the future, Vue will use [ES6 proxies](https://caniuse.com/#feat=proxy) for it's reactivity system, and the limitations below will disappear :tada:.
+We will however leave the option to keep the old reactivity system on a given project for IE 11 compatibility.
 :::
 
 ## Objects Observation
 
-When you assign an Object to a `@JsProperty` of a Component, all it's properties **must** already be set in the JS world to be observed.
+When you assign an Object to a `@Data` of a Component, all it's properties **must** already be set in the JS world to be observed.
 This means that they must have a value set, even if null.
 
 In this case the `text` property **WON'T** be observed:
@@ -22,7 +23,7 @@ public class Todo {
 
 @Component
 public class MyComponent implements IsVueComponent, HasCreated {
-    @JsProperty todo;
+    @Data todo;
     
     @Override
     public void created() {
@@ -72,7 +73,7 @@ public class Todo {
 // The text property will be observable in your Component
 @Component
 public class MyComponent implements IsVueComponent, HasCreated {
-    @JsProperty todo;
+    @Data todo;
     
     @Override
     public void created() {
@@ -95,7 +96,7 @@ public class Todo {
 
 @Component
 public class MyComponent implements IsVueComponent, HasCreated {
-    @JsProperty todo;
+    @Data todo;
     
     @Override
     public void created() {
@@ -129,8 +130,8 @@ For this to work the name of these methods must not change when your code is opt
 
 To tell GWT that you want this, you must always:
 
-- Use either `List`, `Set` or `Map` for your property type, never the concrete type
-- Always the `@JsProperty` annotation on top of your fields, in any collection you want to use in your template.
+- Use either `List`, `Set` or `Map` for your property type, never the concrete type.
+- Always the `@JsProperty` annotation on top of your collection fields, on Class that will be in a `@Data`.
 
 Here is a valid example of a `UsersRepository` containing a collection of Users:
 
@@ -141,8 +142,9 @@ class UsersRepository {
 }
 ```
 
-::: warning
-If you don't respect **both** these constraints **observation will break when compiling for production**, so be extra careful.
+::: tip
+Vue GWT will check for you all your `@Data` fields (recursively) and all your `@Prop` fields (non-recursively) at compile time to make sure they respect the rules on collection fields.
+If they don't Vue GWT will throw an explicit compile time exception.
 
-We will try to add a compile time error for these cases in the future.
+If you wish to disable this error on a specific field you can add the annotation `@SuppressWarnings("vue-gwt-collections")` to it.
 :::

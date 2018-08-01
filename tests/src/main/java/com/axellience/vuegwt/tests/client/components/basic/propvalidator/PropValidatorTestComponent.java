@@ -10,7 +10,6 @@ import jsinterop.annotations.JsProperty;
 public class PropValidatorTestComponent implements IsVueComponent {
 
   @Prop
-  @JsProperty
   int validatedProp;
 
   @PropValidator("validatedProp")

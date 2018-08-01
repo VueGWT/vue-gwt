@@ -77,8 +77,8 @@ This is a common and powerful pattern:
 ```java
 @Component
 public class StylishComponent implements IsVueComponent {
-    @JsProperty boolean isActive = true;
-    @JsProperty Error error = null;
+    @Data boolean isActive = true;
+    @Data Error error = null;
 
     @Computed
     public JsObject getClassObject() {
@@ -125,7 +125,7 @@ That's why it's also possible to use the `map` syntax inside `array` syntax:
 
 ### GWT Styles
 
-You should also check how to use [GWT GSS Styles](../gwt-integration/client-bundles-and-styles.md#styles) in your app.
+You should also check how to use [GWT GSS Styles](../gwt-integration/client-bundles-and-styles.md#using-cssresources-in-vue-gwt) in your app.
 
 ### With Components
 
@@ -196,7 +196,7 @@ It is often a good idea to bind to a style object directly so that the template 
 ```java
 @Component
 public class StylishComponent implements IsVueComponent, HasCreated {
-    @JsProperty JsObject<String> styleObject;
+    @Data JsObject<String> styleObject;
 
     @Override
     public void created() {
@@ -234,3 +234,54 @@ In this example, it will render `display: flex` for browsers that support the un
 
 Vue GWT consider the expressions in JSON Object Values/Arrays to be Java expression.
 If you actually want to pass a String you have to add escaped quotes around your expression.
+
+## Scoped Style
+
+Vue GWT supports scoped style like in [Vue single file components](https://vuejs.org/v2/guide/single-file-components.html).
+
+### Scoped CSS
+
+In your templates you can add a `<style scoped>` element that contains CSS specific to that component.
+
+Usually CSS is global to a document, with scoped style this is not the case.
+All the CSS you write in `<style scoped>` will only apply to instances of your component and nothing else in the page.
+
+```html
+<div>
+  <h1>Red Alert</h1>
+  <div class="my-message">Blue message</h1>
+</div>
+
+<style scoped>
+  h1 {
+    color: red;
+  }
+  
+  .my-message {
+    color: blue;
+  }
+</style>
+```
+
+The style on `h1` we declared here will only apply to this Red Alert title, no other title in the page will be impacted.
+This is great to keep your components styles nice and isolated.
+
+### SCSS Support
+
+Since Beta 9, SCSS (SASS) is also supported.
+Just add `lang="scss"` to your scoped style definition and the SCSS will be automatically processed to CSS for you when the template is compiled.
+You can even use SCSS imports (relative to your current HTML file).
+
+```html
+<div>
+  <h1 class="alert-message">Red Alert</h1>
+</div>
+
+<style lang="scss" scoped>
+  @import '../global/my-variables';
+  
+  .alert-message {
+    color: $alert-color;
+  }
+</style>
+```

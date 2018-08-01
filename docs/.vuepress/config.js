@@ -3,6 +3,7 @@ module.exports = {
   description: 'Vue Components written in Java',
   base: "/vue-gwt/",
   ga: "UA-120205640-1",
+  serviceWorker: true,
   themeConfig: {
     repo: 'axellience/vue-gwt',
     docsDir: 'docs',

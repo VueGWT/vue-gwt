@@ -4,18 +4,22 @@
  */
 
 const fs = require('fs'),
-	javaStringSplitter = require('../java/java-string-splitter'),
-	path = require('path');
+    javaStringSplitter = require('../java/java-string-splitter'),
+    path = require('path');
 
-const IN = path.join(__dirname, '..', 'node_modules', 'vue', 'dist', 'vue.runtime.min.js');
+const IN = path.join(__dirname, '..', 'node_modules', 'vue', 'dist',
+    'vue.runtime.min.js');
 const OUT = path.join(__dirname, '..', 'out', 'VueLibInjector.java');
 
 module.exports = function () {
-	fs.readFile(IN, 'utf8', function (err, data) {
-		if (err) throw err;
+  fs.readFile(IN, 'utf8', function (err, data) {
+    if (err) {
+      throw err;
+    }
 
-		const javaStringBuilder = javaStringSplitter.splitStringForJava(data, 'VUE_RUNTIME');
-		fs.writeFile(OUT, `package com.axellience.vuegwt.core.client;
+    const javaStringBuilder = javaStringSplitter.splitStringForJava(data,
+        'VUE_RUNTIME');
+    fs.writeFile(OUT, `package com.axellience.vuegwt.core.client;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLScriptElement;
@@ -50,5 +54,5 @@ class VueLibInjector
     	${javaStringBuilder}
     }
 }`, () => console.log('Process Vue Runtime SUCCESS'));
-	});
+  });
 };

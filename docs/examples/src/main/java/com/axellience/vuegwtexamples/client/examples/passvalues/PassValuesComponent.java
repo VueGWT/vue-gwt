@@ -3,48 +3,37 @@ package com.axellience.vuegwtexamples.client.examples.passvalues;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
-import jsinterop.annotations.JsProperty;
 
 @Component
-public class PassValuesComponent implements IsVueComponent
-{
-    @Prop
-    @JsProperty
-    int myInt;
+public class PassValuesComponent implements IsVueComponent {
 
-    @Prop
-    @JsProperty
-    boolean myBool;
+  @Prop
+  int myInt;
 
-    @Prop
-    @JsProperty
-    double myDouble;
+  @Prop
+  boolean myBool;
 
-    @Prop
-    @JsProperty
-    float myFloat;
+  @Prop
+  double myDouble;
 
-    @Prop
-    @JsProperty
-    long myLong;
+  @Prop
+  float myFloat;
 
-    @Prop
-    @JsProperty
-    Integer wrappedInteger;
+  @Prop
+  long myLong;
 
-    @Prop
-    @JsProperty
-    Boolean wrappedBoolean;
+  @Prop
+  Integer wrappedInteger;
 
-    @Prop
-    @JsProperty
-    Double wrappedDouble;
+  @Prop
+  Boolean wrappedBoolean;
 
-    @Prop
-    @JsProperty
-    Float wrappedFloat;
+  @Prop
+  Double wrappedDouble;
 
-    @Prop
-    @JsProperty
-    Long wrappedLong;
+  @Prop
+  Float wrappedFloat;
+
+  @Prop
+  Long wrappedLong;
 }

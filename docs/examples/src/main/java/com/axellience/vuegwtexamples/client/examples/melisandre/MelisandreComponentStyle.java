@@ -5,8 +5,9 @@ import com.google.gwt.resources.client.CssResource;
 /**
  * @author Adrien Baron
  */
-public interface MelisandreComponentStyle extends CssResource
-{
-    String red();
-    String bold();
+public interface MelisandreComponentStyle extends CssResource {
+
+  String red();
+
+  String bold();
 }

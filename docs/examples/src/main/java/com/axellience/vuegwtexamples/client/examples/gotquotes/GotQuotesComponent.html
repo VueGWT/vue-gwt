@@ -1,10 +1,11 @@
 <div>
-    <blockquote>
-        {{ quote.getText() }}
-        <br/>
-        <cite>
-            <strong>{{ quote.getAuthor() }}</strong>, Season <strong>{{ quote.getSeason() }}</strong>, Episode <strong>{{ quote.getEpisode() }}</strong>
-        </cite>
-    </blockquote>
-    <button @click="changeQuote">Give me another!</button>
+  <blockquote>
+    {{ quote.getText() }}
+    <br/>
+    <cite>
+      <strong>{{ quote.getAuthor() }}</strong>, Season <strong>{{ quote.getSeason() }}</strong>,
+      Episode <strong>{{ quote.getEpisode() }}</strong>
+    </cite>
+  </blockquote>
+  <button @click="changeQuote">Give me another!</button>
 </div>

@@ -2,18 +2,16 @@ package com.axellience.vuegwt.tests.client.common;
 
 import jsinterop.annotations.JsProperty;
 
-public class Todo
-{
-    @JsProperty
-    private String text;
+public class Todo {
 
-    public Todo(String text)
-    {
-        this.text = text;
-    }
+  @JsProperty
+  private String text;
 
-    public String getText()
-    {
-        return text;
-    }
+  public Todo(String text) {
+    this.text = text;
+  }
+
+  public String getText() {
+    return text;
+  }
 }

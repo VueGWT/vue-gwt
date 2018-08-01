@@ -7,7 +7,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface ScopedSlot
-{
-    Object execute(Object props);
+public interface ScopedSlot {
+
+  Object execute(Object props);
 }

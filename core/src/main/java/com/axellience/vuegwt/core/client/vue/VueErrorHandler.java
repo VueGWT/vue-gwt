@@ -9,7 +9,7 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface VueErrorHandler
-{
-    void action(JsObject err, IsVueComponent vue, String info);
+public interface VueErrorHandler {
+
+  void action(JsObject err, IsVueComponent vue, String info);
 }

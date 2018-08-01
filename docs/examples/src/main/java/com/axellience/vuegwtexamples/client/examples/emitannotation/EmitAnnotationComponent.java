@@ -6,40 +6,35 @@ import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import jsinterop.annotations.JsMethod;
 
 @Component
-public class EmitAnnotationComponent implements IsVueComponent
-{
-    @Emit
-    @JsMethod
-    public void myEvent()
-    {
+public class EmitAnnotationComponent implements IsVueComponent {
 
-    }
+  @Emit
+  @JsMethod
+  public void myEvent() {
 
-    @Emit
-    @JsMethod
-    public void myEventWithValue(int value)
-    {
+  }
 
-    }
+  @Emit
+  @JsMethod
+  public void myEventWithValue(int value) {
 
-    @Emit
-    @JsMethod
-    public String myEventWithValue2(int value)
-    {
-        return "Random Value";
-    }
+  }
+
+  @Emit
+  @JsMethod
+  public String myEventWithValue2(int value) {
+    return "Random Value";
+  }
 
 
-    @Emit("custom-event")
-    @JsMethod
-    public void myEventWithValueAndCustomName(int value)
-    {
+  @Emit("custom-event")
+  @JsMethod
+  public void myEventWithValueAndCustomName(int value) {
 
-    }
+  }
 
-    @JsMethod
-    public void callEmitMethodFromJava()
-    {
-        myEventWithValue(12);
-    }
+  @JsMethod
+  public void callEmitMethodFromJava() {
+    myEventWithValue(12);
+  }
 }
