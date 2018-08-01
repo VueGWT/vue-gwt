@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.axellience</groupId>
     <artifactId>vue-gwt-parent</artifactId>
-    <version>1.0-beta-9-SNAPSHOT</version>
+    <version>1.0-beta-9</version>
   </parent>
 
   <artifactId>vue-gwt-gwt2</artifactId>
