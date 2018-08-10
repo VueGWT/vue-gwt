@@ -1,0 +1,17 @@
+language: java
+
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+
+matrix:
+  allow_failures:
+    - jdk: oraclejdk9
+
+notifications:
+  email: false
+
+sudo: false
+cache:
+  directories:
+    - $HOME/.m2
