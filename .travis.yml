@@ -11,7 +11,7 @@ matrix:
 notifications:
   email: false
 
-sudo: false
+sudo: required
 cache:
   directories:
     - $HOME/.m2
