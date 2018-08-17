@@ -10,6 +10,7 @@ Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtpro
 It lets you write Vue Components in Java.
 
 <p align="center">
+    <a href="https://travis-ci.org/Axellience/vue-gwt"><img src="https://travis-ci.org/Axellience/vue-gwt.svg?branch=develop" alt="Build Status"/></a>
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
     <a href="https://gitter.im/Axellience/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
 </p>
