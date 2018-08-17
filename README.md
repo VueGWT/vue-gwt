@@ -15,6 +15,7 @@ It lets you write Vue Components in Java.
     <a href="https://gitter.im/Axellience/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
 </p>
 
+
 ## Features
 
 * **Vue.js** Components with a **Java controller**
