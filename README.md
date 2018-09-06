@@ -1,8 +1,8 @@
 # Vue GWT
 
 <p align="center">
-    <a href="https://axellience.github.io/vue-gwt/">
-        <img src="https://axellience.github.io/vue-gwt/resources/images/Vue-GWT-logo.png" alt="Vue GWT Logo" width="400"/>
+    <a href="https://vuegwt.github.io/vue-gwt/">
+        <img src="https://vuegwt.github.io/vue-gwt/resources/images/Vue-GWT-logo.png" alt="Vue GWT Logo" width="400"/>
     </a>
 </p>
 
@@ -20,12 +20,12 @@ It lets you write Vue Components in Java.
 
 * **Vue.js** Components with a **Java controller**
 * Template expressions **type checking** at compile time
-* [**Web Components** (Custom Elements)](https://axellience.github.io/vue-gwt/guide/advanced/custom-elements.html) support
+* [**Web Components** (Custom Elements)](https://vuegwt.github.io/vue-gwt/guide/advanced/custom-elements.html) support
 * **HTML templates are compiled** during Java Compilation (only requires Vue.js runtime)
 * Use **regular Java Objects and Collections** in your templates
-* Supports [**injection** in Components](https://axellience.github.io/vue-gwt/guide/essentials/dependency-injection.html)
+* Supports [**injection** in Components](https://vuegwt.github.io/vue-gwt/guide/essentials/dependency-injection.html)
 * Supports **most of Vue.js features**
-* Integrates with [GWT Resources](https://axellience.github.io/vue-gwt/guide/gwt-integration/client-bundles-and-styles.html) and [Widgets](https://axellience.github.io/vue-gwt/guide/gwt-integration/widgets.html)
+* Integrates with [GWT Resources](https://vuegwt.github.io/vue-gwt/guide/gwt-integration/client-bundles-and-styles.html) and [Widgets](https://vuegwt.github.io/vue-gwt/guide/gwt-integration/widgets.html)
 
 ## Who is this for?
 
@@ -35,23 +35,23 @@ It lets you write Vue Components in Java.
 
 ## What does it look like?
 
-You can start by reading **[our documentation](https://axellience.github.io/vue-gwt/guide/)** that contains live examples. 
-You can also checkout the **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)**.
+You can start by reading **[our documentation](https://vuegwt.github.io/vue-gwt/guide/)** that contains live examples. 
+You can also checkout the **[Vue GWT Demo page](https://vuegwt.github.io/vue-gwt-demo/)**.
 
 Curious about the implementation? See the sources in our public **[Github repository](https://github.com/Axellience/vue-gwt)**.
 
 ## Let's do this!
 
-When you are ready, you can start by **[setting it up on your project](https://axellience.github.io/vue-gwt/guide/project-setup.html)**.
+When you are ready, you can start by **[setting it up on your project](https://vuegwt.github.io/vue-gwt/guide/project-setup.html)**.
 
 > We are looking for feedback and contributions.
-If you use it on a project, please [let us know how it goes](https://gitter.im/Axellience/vue-gwt).
+If you use it on a project, please [let us know how it goes](https://gitter.im/VueGWT/vue-gwt).
 
 ## Who made this?
 
 <p align="center">
     Vue GWT is developed by the awesome people at<br/>
     <a href="https://www.genmymodel.com" target="_blank">
-        <img src="https://axellience.github.io/vue-gwt/resources/images/GenMyModel-Logo-Black.png" alt="GenMyModel" height="50"/>
+        <img src="https://vuegwt.github.io/vue-gwt/resources/images/GenMyModel-Logo-Black.png" alt="GenMyModel" height="50"/>
     </a>
 </p>

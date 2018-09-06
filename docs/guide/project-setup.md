@@ -20,7 +20,7 @@ To add Vue GWT to your Maven project, simply add the following to your `pom.xml`
             <groupId>com.axellience</groupId>
             <artifactId>vue-gwt-processors</artifactId>
             <version>1.0-beta-9</version>
-			      <optional>true</optional>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>
@@ -215,4 +215,4 @@ Congratulation, you are good to go! **[Let's start using Vue GWT](getting-starte
 
 #### NetBeans
 
-[Feedback](https://gitter.im/Axellience/vue-gwt) for Vue GWT on NetBeans welcome.
+[Feedback](https://gitter.im/VueGWT/vue-gwt) for Vue GWT on NetBeans welcome.

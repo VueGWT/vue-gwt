@@ -42,4 +42,4 @@ This can be useful if your plugin requires some kind of registration, or other s
 ## Example With Vue Router
 
 We built a [JsInterop wrapper of the Vue Router](../scaling-up/routing.md) plugin for you.
-You can [checkout how it works](https://github.com/Axellience/vue-router-gwt) if you need a working example of integration.
+You can [checkout how it works](https://github.com/VueGWT/vue-router-gwt) if you need a working example of integration.

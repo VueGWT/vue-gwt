@@ -34,7 +34,7 @@ When you are ready, you can get started with by **[setting Vue GWT up on your pr
 
 ::: tip INFO
 We are looking for feedback.
-If you use Vue GWT on a project, please [let us know how it goes](https://gitter.im/Axellience/vue-gwt).
+If you use Vue GWT on a project, please [let us know how it goes](https://gitter.im/VueGWT/vue-gwt).
 :::
 
 *This documentation was last updated for [Vue.js v2.5.16](https://github.com/vuejs/vue/releases/tag/v2.5.16) and Vue GWT 1.0-beta-9*

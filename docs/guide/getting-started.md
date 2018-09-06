@@ -36,7 +36,7 @@ It should have the same name as our Java Class file and be in the same package.
 Vue GWT will detect it automatically and use it as our Component template.
 
 ```html
-<a href="https://github.com/Axellience/vue-gwt">
+<a href="https://github.com/VueGWT/vue-gwt">
     {{ linkName }}
 </a>
 ```
@@ -123,7 +123,7 @@ This one will allow us to set the link `href` attribute in our Java Class.
 @Component
 public class LinkComponent implements IsVueComponent {
     @Data String linkName = "Hello Vue GWT!";
-    @Data String linkTarget = "https://github.com/Axellience/vue-gwt";
+    @Data String linkTarget = "https://github.com/VueGWT/vue-gwt";
 }
 ```
 

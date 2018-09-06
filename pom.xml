@@ -11,10 +11,10 @@
   <packaging>pom</packaging>
 
   <name>Vue GWT Parent</name>
-  <description>Let you use Vue.js Components in GWT application and code Vue.js Components in
-  Java
+  <description>
+    Let you use Vue.js Components in GWT application and code Vue.js Components in Java
   </description>
-  <url>https://github.com/Axellience/vue-gwt</url>
+  <url>https://github.com/VueGWT/vue-gwt</url>
 
   <licenses>
     <license>
@@ -26,7 +26,11 @@
   <developers>
     <developer>
       <name>Adrien Baron</name>
-      <email>adrien.baron@axellience.com</email>
+      <email>adrien@abaron.net</email>
+    </developer>
+    <developer>
+      <name>Justin Trentesaux</name>
+      <email>justin.tentesaux@axellience.com</email>
       <organization>Axellience</organization>
       <organizationUrl>http://www.genmymodel.com</organizationUrl>
     </developer>
@@ -40,9 +44,9 @@
   </modules>
 
   <scm>
-    <connection>scm:git:git://github.com/Axellience/vue-gwt.git</connection>
-    <developerConnection>scm:git:ssh://github.com:Axellience/vue-gwt.git</developerConnection>
-    <url>https://github.com/Axellience/vue-gwt/tree/master</url>
+    <connection>scm:git:git://github.com/VueGWT/vue-gwt.git</connection>
+    <developerConnection>scm:git:ssh://github.com:VueGWT/vue-gwt.git</developerConnection>
+    <url>https://github.com/VueGWT/vue-gwt/tree/master</url>
   </scm>
 
   <properties>

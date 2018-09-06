@@ -1,7 +1,7 @@
 # Unsupported Features
 
 Vue GWT doesn't support all of Vue.js features yet.
-If you would like to help we are [open to contributions](https://github.com/Axellience/vue-gwt)!
+If you would like to help we are [open to contributions](https://github.com/VueGWT/vue-gwt)!
 
 Here is the list of unsupported features:
 
