@@ -1,162 +1,57 @@
 # Vue GWT
 
-Vue GWT is a wrapper of [Vue.JS](https://vuejs.org/) using [GWT](http://www.gwtproject.org/) 2.8 and [JsInterop](https://docs.google.com/document/d/10fmlEYIHcyead_4R1S5wKGs1t2I7Fnp_PaNaa7XTEk0/view).
+[![Join the chat at https://gitter.im/VueGWT/vue-gwt](https://badges.gitter.im/VueGWT/vue-gwt.svg)](https://gitter.im/VueGWT/vue-gwt?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-:warning: Vue GWT is in an **experimental** state.
-Please be careful as it may contain bugs. :warning:
+<p align="center">
+    <a href="https://axellience.github.io/vue-gwt/">
+        <img src="https://axellience.github.io/vue-gwt/resources/images/Vue-GWT-logo.png" alt="Vue GWT Logo" width="400"/>
+    </a>
+</p>
 
-Vue GWT makes heavy use of Vue.JS, it's recommended to read [Vue.JS introduction guide](https://vuejs.org/v2/guide/) if you are not familiar with it.
+Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtproject.org/) using [JsInterop](https://github.com/google/jsinterop-base) and [Elemental2](https://github.com/google/elemental2).
+It lets you write Vue Components in Java.
 
-A simple demo project using Vue GWT is available here: [Vue GWT Demo](https://github.com/Axellience/vue-gwt-demo).
+<p align="center">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
+    <a href="https://gitter.im/Axellience/vue-gwt"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Chat"/></a>
+</p>
 
-## Introduction
+## Features
 
-Vue GWT makes it easy to use Vue.JS to build your GWT applications.
+* **Vue.js** Components with a **Java controller**
+* Template expressions **type checking** at compile time
+* [**Web Components** (Custom Elements)](https://axellience.github.io/vue-gwt/guide/advanced/custom-elements.html) support
+* **HTML templates are compiled** during Java Compilation (only requires Vue.js runtime)
+* Use **regular Java Objects and Collections** in your templates
+* Supports [**injection** in Components](https://axellience.github.io/vue-gwt/guide/essentials/dependency-injection.html)
+* Supports **most of Vue.js features**
+* Integrates with [GWT Resources](https://axellience.github.io/vue-gwt/guide/gwt-integration/client-bundles-and-styles.html) and [Widgets](https://axellience.github.io/vue-gwt/guide/gwt-integration/widgets.html)
 
-### Setup on your project
+## Who is this for?
 
-Vue GWT uses maven.
-For now there is now maven repository, so you must clone the source on your computer and mvn install them:
+* You want to code a **Vue app with type checking**, and take advantage of GWT optimizations. 
+* You have **GWT app**, and you want an **easy way to write views** with **2-way data binding**.
+* You have a **Vue app** and you need to **use a Java library in some Components**.
 
-```bash
-git clone https://github.com/Axellience/vue-gwt.git
-cd vue-gwt
-mvn install
-```
+## What does it look like?
 
-Then add Vue GWT to your project pom.xml:
+You can start by reading **[our documentation](https://axellience.github.io/vue-gwt/guide/)** that contains live examples. 
+You can also checkout the **[Vue GWT Demo page](https://axellience.github.io/vue-gwt-demo/)**.
 
-```xml
-<dependency>
-	<groupId>com.axellience</groupId>
-	<artifactId>vue-gwt</artifactId>
-	<version>${vue-gwt.version}</version>
-</dependency>
-```
+Curious about the implementation? See the sources in our public **[Github repository](https://github.com/Axellience/vue-gwt)**.
 
-You are ready to go!
+## Let's do this!
 
-### Simple App
+When you are ready, you can start by **[setting it up on your project](https://axellience.github.io/vue-gwt/guide/project-setup.html)**.
 
-The root of a Vue.JS app is a Vue instance.
-In Vue GWT we have the notion of `VueApp`.
+> We are looking for feedback and contributions.
+If you use it on a project, please [let us know how it goes](https://gitter.im/Axellience/vue-gwt).
 
-A `VueApp` is the root of a Vue GWT application.
-You can see it as your root component in your GWT application.
+## Who made this?
 
-
-***GwtIndex.html***
-
-In our GWT index page we add a div with our app template.
-
-```html
-<div id="vueApp">
-  {{ message }}
-</div>
-```
-
-***SimpleVueApp.java***
-
-This is our VueApp.
-It will be instantiated on the template above. 
-
-```java
-@JsType
-public class SimpleApp extends VueApp
-{
-	public String message = "Hello Vue GWT!";
-
-	public SimpleApp()
-	{
-		// We pass the selector on which this vue app should initialize 
-		this.init("#vueApp");
-    }
-}
-```
-
-***RootGwtApp.java***
-
-We need to bootstrap our VueApp when GWT starts.
-For that we simply call Vue.app() and pass it an instance of our app.
-
-```java
-@JsType
-public class RootGwtApp implements EntryPoint {
-	public void onModuleLoad()
-	{
-		// When our GWT app starts, we start our Vue app.
-		Vue.app(new SimpleApp());
-	}
-}
-```
-
-## Components
-If you already know GWT then you should be familiar with the concept of Widgets.
-Vue Components are like GWT Widgets, they are reusable and isolated pieces of your application.
-
-There is three main difference between Components and App in GWT Vue:
-
-* Components have their template in an isolated HTML file
-* Components have a tag name that you can use to instantiate them in your Vue App.
-
-Let's see how to make a simple component in Vue GWT:
-
-***SimpleComponent.html***
-```html
-<div>
-  	{{ message }}
-	<input type="text" v-model="message"/>
-	<a href v-on:click="resetMessage()">Reset message</a>
-</div>
-```
-
-***SimpleComponent.java***
-```java
-@JsType
-public class SimpleComponent extends VueComponent
-{
-	public String message = "This is my first component!";
-
-	public SimpleComponent()
-	{
-		// Init the component with the name "simple-component"
-		this.init("simple-component", TEMPLATES.simpleComponent());
-	}
-    
-	public void resetMessage() {
-		message = "This is my first component!";
-	}
-}
-```
-
-We will then make a few changes to our VueApp to use this component:
-
-***GwtIndex.html***
-
-```html
-<div id="vueApp">
-	<!-- We use our component in our app template. -->
-	<simple-component></simple-component>
-</div>
-```
-
-***RootGwtApp.java***
-
-```java
-@JsType
-public class RootGwtApp implements EntryPoint {
-	public void onModuleLoad()
-	{
-		// We register our component in Vue
-		Vue.component(new SimpleComponent());
-		// When our GWT app starts, we start our Vue app.
-		Vue.app(new SimpleApp());
-	}
-}
-```
-
-## Vue GWT Panel
-
-For easy backward compatibility it's possible to wrap any GWT Vue Component in a gwt-user Panel.
-For this you need to use `VueGwtPanel`
-
+<p align="center">
+    Vue GWT is developed by the awesome people at<br/>
+    <a href="https://www.genmymodel.com" target="_blank">
+        <img src="https://axellience.github.io/vue-gwt/resources/images/GenMyModel-Logo-Black.png" alt="GenMyModel" height="50"/>
+    </a>
+</p>
