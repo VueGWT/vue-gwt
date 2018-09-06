@@ -10,5 +10,5 @@ public class LinkComponent implements IsVueComponent {
   @Data
   String linkName = "Hello Vue GWT!";
   @Data
-  String linkTarget = "https://github.com/Axellience/vue-gwt";
+  String linkTarget = "https://github.com/VueGWT/vue-gwt";
 }

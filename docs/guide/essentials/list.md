@@ -208,7 +208,7 @@ In order to pass the iterated data into the component, we should also use props:
 The reason for not automatically injecting `item` into the component is because that makes the component tightly coupled to how `v-for` works.
 Being explicit about where its data comes from makes the component reusable in other situations.
 
-You can see our [TodoList example](https://axellience.github.io/vue-gwt-demo/).
+You can see our [TodoList example](https://vuegwt.github.io/vue-gwt-demo/).
 
 ### Using v-for with v-if
 

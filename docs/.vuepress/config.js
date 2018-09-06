@@ -5,7 +5,7 @@ module.exports = {
   ga: "UA-120205640-1",
   serviceWorker: true,
   themeConfig: {
-    repo: 'axellience/vue-gwt',
+    repo: 'VueGWT/vue-gwt',
     docsDir: 'docs',
     editLinks: true,
     editLinkText: 'Help us improve this page!',

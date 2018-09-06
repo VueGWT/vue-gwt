@@ -215,4 +215,4 @@ Congratulation, you are good to go! **[Let's start using Vue GWT](getting-starte
 
 #### NetBeans
 
-[Feedback](https://gitter.im/Axellience/vue-gwt) for Vue GWT on NetBeans welcome.
+[Feedback](https://gitter.im/VueGWT/vue-gwt) for Vue GWT on NetBeans welcome.

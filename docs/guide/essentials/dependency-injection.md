@@ -209,7 +209,7 @@ public class VueGwtExamplesApp implements EntryPoint {
 
 ## Injecting Routes in Vue GWT Router
 
-If you are using [Vue GWT Router](https://github.com/Axellience/vue-router-gwt), you can also inject your Routes.
+If you are using [Vue GWT Router](https://github.com/VueGWT/vue-router-gwt), you can also inject your Routes.
 
 ```java
 public class RoutesConfig implements CustomizeOptions {
