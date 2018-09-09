@@ -2,7 +2,7 @@
 
 <p align="center">
     <a href="https://vuegwt.github.io/vue-gwt/">
-        <img src="https://vuegwt.github.io/vue-gwt/resources/images/Vue-GWT-logo.png" alt="Vue GWT Logo" width="400"/>
+        <img src="https://vuegwt.github.io/vue-gwt/resources/images/VueGWTLogo.png" alt="Vue GWT Logo" width="150"/>
     </a>
 </p>
 
