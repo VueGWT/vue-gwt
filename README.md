@@ -1,8 +1,6 @@
-# Vue GWT
-
 <p align="center">
     <a href="https://vuegwt.github.io/vue-gwt/">
-        <img src="https://vuegwt.github.io/vue-gwt/resources/images/VueGWTLogo.png" alt="Vue GWT Logo" width="150"/>
+        <img src="https://vuegwt.github.io/vue-gwt/resources/images/VueGWTLogo.png" alt="Vue GWT Logo" width="200"/>
     </a>
 </p>
 
