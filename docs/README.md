@@ -1,6 +1,6 @@
 ---
 home: true
-heroImage: /resources/images/Vue-GWT-logo.png
+heroImage: /resources/images/VueGWTLogo-noText.png
 actionText: Get Started →
 actionLink: /guide/
 features:
