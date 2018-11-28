@@ -131,7 +131,7 @@ For this to work the name of these methods must not change when your code is opt
 To tell GWT that you want this, you must always:
 
 - Use either `List`, `Set` or `Map` for your property type, never the concrete type.
-- Always the `@JsProperty` annotation on top of your collection fields, on Class that will be in a `@Data`.
+- Always use the `@JsProperty` annotation on top of your collection fields, on Class that will be in a `@Data`.
 
 Here is a valid example of a `UsersRepository` containing a collection of Users:
 
