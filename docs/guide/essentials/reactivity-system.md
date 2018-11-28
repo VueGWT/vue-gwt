@@ -23,7 +23,7 @@ public class Todo {
 
 @Component
 public class MyComponent implements IsVueComponent, HasCreated {
-    @Data todo;
+    @Data Todo todo;
     
     @Override
     public void created() {
@@ -73,7 +73,7 @@ public class Todo {
 // The text property will be observable in your Component
 @Component
 public class MyComponent implements IsVueComponent, HasCreated {
-    @Data todo;
+    @Data Todo todo;
     
     @Override
     public void created() {
