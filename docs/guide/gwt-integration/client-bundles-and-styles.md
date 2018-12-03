@@ -176,6 +176,6 @@ melisandreComponent.setRed(false);
 ```
 
 ::: tip
-You can use [Component inheritance](../essentials/components.html) to declare a base component in your app and avoid
+You can use [Component inheritance](../essentials/components) to declare a base component in your app and avoid
 having to expose your resources/styles manually in every components.
 :::
