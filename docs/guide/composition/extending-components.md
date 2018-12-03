@@ -43,7 +43,7 @@ For this we just have to use classic Java inheritance.
 
 ```java
 @Component
-public class ChildJavaComponent extends ParentJsComponent, HasCreated {
+public class ChildJavaComponent extends ParentComponent, HasCreated {
     @Data int childValue;
 
     public void created() {
