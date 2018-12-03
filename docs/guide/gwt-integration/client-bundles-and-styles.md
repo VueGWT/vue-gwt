@@ -47,7 +47,7 @@ We can then simply access our bundle instance from the template:
 You could also directly expose your ImageResource to the template, it's really up to you.
 
 ::: tip
-You can use [Component inheritance](../composition/extending-components) to declare a base component in your app and avoid
+You can use [Component inheritance](../essentials/components) to declare a base component in your app and avoid
 having to expose your resources/styles manually in every components.
 :::
 
@@ -176,6 +176,6 @@ melisandreComponent.setRed(false);
 ```
 
 ::: tip
-You can use [Component inheritance](../composition/extending-components) to declare a base component in your app and avoid
+You can use [Component inheritance](../essentials/components) to declare a base component in your app and avoid
 having to expose your resources/styles manually in every components.
 :::
