@@ -25,4 +25,19 @@ class TemplateParserTest {
         .containsElementsIn(JavaFileObjects.forResource(
             "templateparser/compileresult/MustacheExpressionComponentExposedType.java"));
   }
+
+  @Test
+  @DisplayName("should compile an external stylesheet")
+  void componentWithExternalStylesheet() {
+    Compilation compilation =
+        javac()
+            .withProcessors(new VueGwtProcessor())
+            .compile(
+                JavaFileObjects.forResource("templateparser/StyledComponent.java"));
+
+    assertThat(compilation)
+        .generatedSourceFile("templateparser.StyledComponentExposedType")
+        .containsElementsIn(JavaFileObjects.forResource(
+            "templateparser/compileresult/StyledComponentExposedType.java"));
+  }
 }
