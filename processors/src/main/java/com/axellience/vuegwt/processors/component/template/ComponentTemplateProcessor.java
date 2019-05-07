@@ -15,12 +15,15 @@ import com.axellience.vuegwt.core.annotations.component.Ref;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
 import com.axellience.vuegwt.processors.component.template.builder.TemplateMethodsBuilder;
+import com.axellience.vuegwt.processors.component.template.parser.StyleParser;
 import com.axellience.vuegwt.processors.component.template.parser.TemplateParser;
+import com.axellience.vuegwt.processors.component.template.parser.context.StyleParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.context.TemplateParserContext;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponent;
 import com.axellience.vuegwt.processors.component.template.parser.context.localcomponents.LocalComponents;
 import com.axellience.vuegwt.processors.component.template.parser.refs.RefFieldValidator;
 import com.axellience.vuegwt.processors.component.template.parser.refs.RefInfo;
+import com.axellience.vuegwt.processors.component.template.parser.result.StyleParserResult;
 import com.axellience.vuegwt.processors.component.template.parser.result.TemplateParserResult;
 import com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil;
 import com.axellience.vuegwt.processors.utils.MissingComponentAnnotationException;
@@ -29,6 +32,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec.Builder;
+import com.sun.tools.javac.util.ClientCodeException;
+import com.sun.tools.javac.util.StringUtils;
+
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashSet;
@@ -70,7 +76,7 @@ public class ComponentTemplateProcessor {
   public void processComponentTemplate(TypeElement componentTypeElement,
       ComponentExposedTypeGenerator exposedTypeGenerator) {
     ClassName componentTypeName = ClassName.get(componentTypeElement);
-    Optional<TemplateFileResource> optionalTemplateContent =
+    Optional<TemplateFileResource> optionalTemplateContent = 
         getTemplateContent(componentTypeName, componentTypeElement);
 
     if (!optionalTemplateContent.isPresent()) {
@@ -80,6 +86,12 @@ public class ComponentTemplateProcessor {
     LocalComponents localComponents = new LocalComponents();
     findLocalComponentsForComponent(localComponents, componentTypeElement);
 
+    // Parse the styles
+    StringBuilder sb = new StringBuilder();
+    StyleParserContext styleContext = new StyleParserContext(componentTypeElement);
+    tryParseStyle(componentTypeName, componentTypeElement, sb, styleContext, "scss");
+    tryParseStyle(componentTypeName, componentTypeElement, sb, styleContext, "css");
+
     // Initialize the template parser context based on the VueComponent type element
     TemplateParserContext templateParserContext =
         new TemplateParserContext(componentTypeElement, localComponents);
@@ -88,6 +100,9 @@ public class ComponentTemplateProcessor {
         new HashSet<>(),
         new HashSet<>());
 
+    // Forward mandatory attributes to template context
+     templateParserContext.getMandatoryAttributes().putAll(styleContext.getMandatoryAttributes());
+
     // Parse the template
     TemplateParserResult templateParserResult = new TemplateParser().parseHtmlTemplate(
         optionalTemplateContent.get().content,
@@ -95,14 +110,49 @@ public class ComponentTemplateProcessor {
         elements,
         messager,
         optionalTemplateContent.get().uri);
-
+    
     validateRefs(templateParserResult.getRefs(), componentTypeElement);
-    registerScopedCss(exposedTypeGenerator.getClassBuilder(), templateParserResult);
+
+    Optional.ofNullable(templateParserResult.getScopedCss()).ifPresent(sb::append);
+    
+    registerScopedCss(exposedTypeGenerator.getClassBuilder(), sb.toString());
 
     // Add expressions from the template to ExposedType and compile template
     TemplateMethodsBuilder templateMethodsBuilder = new TemplateMethodsBuilder();
     templateMethodsBuilder.addTemplateMethodsToComponentExposedType(exposedTypeGenerator,
         templateParserResult);
+  }
+
+  private void tryParseStyle(ClassName componentTypeName, TypeElement componentTypeElement, StringBuilder sb,
+      StyleParserContext styleContext, String type) {
+    Optional<TemplateFileResource> optionalStyleContent = getStyleContent(componentTypeName, componentTypeElement, type);
+    if (optionalStyleContent.isPresent()) {
+      StyleParserResult styleParserResult = new StyleParser().parseStyleTemplate(
+          type,
+          optionalStyleContent.get().content,
+          styleContext,
+          messager,
+          optionalStyleContent.get().uri);
+      
+      Optional.ofNullable(styleParserResult.getScopedCss()).ifPresent(sb::append);
+    }
+  }
+
+  private Optional<TemplateFileResource> getStyleContent(ClassName componentTypeName, TypeElement componentTypeElement,
+      String type) {
+    String path = slashify(componentTypeName.reflectionName()) + "." + type;
+    Optional<TemplateFileResource> result = getTemplateContentAtLocation(path,
+        StandardLocation.CLASS_OUTPUT);
+    if (result.isPresent()) {
+      return result;
+    }
+
+    result = getTemplateContentAtLocation(path, StandardLocation.CLASS_PATH);
+    if (result.isPresent()) {
+      return result;
+    }
+    
+    return Optional.empty();
   }
 
   /**
@@ -295,6 +345,8 @@ public class ComponentTemplateProcessor {
       resource = filer.getResource(location, "", path);
     } catch (IOException ignore) {
       return Optional.empty();
+    } catch (RuntimeException e) {
+      return Optional.empty();
     }
 
     // Get template content from HTML file
@@ -307,8 +359,7 @@ public class ComponentTemplateProcessor {
   }
 
   private static void registerScopedCss(Builder componentExposedTypeBuilder,
-      TemplateParserResult templateParserResult) {
-    String scopedCss = templateParserResult.getScopedCss();
+      String scopedCss) {
     componentExposedTypeBuilder.addMethod(MethodSpec
         .methodBuilder("getScopedCss")
         .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
