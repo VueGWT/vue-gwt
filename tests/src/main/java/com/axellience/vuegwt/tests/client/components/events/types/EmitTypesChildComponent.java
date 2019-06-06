@@ -18,11 +18,11 @@ public class EmitTypesChildComponent implements IsVueComponent, HasCreated {
     vue().$emit("float", (float) 12.5);
     vue().$emit("todo", new Todo("Hello World"));
 
-    vue().$emit("int", Js.asAny(10));
-    vue().$emit("integer", Js.asAny((Integer) 10));
-    vue().$emit("boolean", Js.asAny(false));
-    vue().$emit("double", Js.asAny(12));
-    vue().$emit("float", Js.asAny(12.5));
-    vue().$emit("todo", Js.asAny(new Todo("Hello World")));
+    vue().$emit("intAsAny", Js.asAny(10));
+    vue().$emit("integerAsAny", Js.asAny((Integer) 10));
+    vue().$emit("booleanAsAny", Js.asAny(false));
+    vue().$emit("doubleAsAny", Js.asAny(12));
+    vue().$emit("floatAsAny", Js.asAny(12.5));
+    vue().$emit("todoAsAny", Js.asAny(new Todo("Hello World")));
   }
 }

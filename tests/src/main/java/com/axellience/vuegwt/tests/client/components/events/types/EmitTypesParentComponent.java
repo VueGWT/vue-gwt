@@ -9,18 +9,19 @@ import jsinterop.annotations.JsMethod;
 @Component(components = {EmitTypesChildComponent.class})
 public class EmitTypesParentComponent implements IsVueComponent {
 
-  @Data
-  public int myInt; // 10
-  @Data
-  public boolean myBoolean; // false
-  @Data
-  public double myDouble; // 12
-  @Data
-  public float myFloat; // 12.5
-  @Data
-  public Todo myTodo; // "Hello World"
-
+  private int myInt; // 10
+  private boolean myBoolean; // false
+  private double myDouble; // 12
+  private float myFloat; // 12.5
+  private Todo myTodo; // "Hello World"
   private Integer myInteger; // 10
+
+  private int myIntAsAny; // 10
+  private boolean myBooleanAsAny; // false
+  private double myDoubleAsAny; // 12
+  private float myFloatAsAny; // 12.5
+  private Todo myTodoAsAny; // "Hello World"
+  private Integer myIntegerAsAny; // 10
 
   @JsMethod
   public void setInt(int eventInt) {
@@ -85,5 +86,65 @@ public class EmitTypesParentComponent implements IsVueComponent {
   @JsMethod
   public Todo getMyTodo() {
     return myTodo;
+  }
+
+  @JsMethod
+  public int getMyIntAsAny() {
+    return myIntAsAny;
+  }
+
+  @JsMethod
+  public void setIntAsAny(int myIntAsAny) {
+    this.myIntAsAny = myIntAsAny;
+  }
+
+  @JsMethod
+  public boolean getMyBooleanAsAny() {
+    return myBooleanAsAny;
+  }
+
+  @JsMethod
+  public void setBooleanAsAny(boolean myBooleanAsAny) {
+    this.myBooleanAsAny = myBooleanAsAny;
+  }
+
+  @JsMethod
+  public double getMyDoubleAsAny() {
+    return myDoubleAsAny;
+  }
+
+  @JsMethod
+  public void setDoubleAsAny(double myDoubleAsAny) {
+    this.myDoubleAsAny = myDoubleAsAny;
+  }
+
+  @JsMethod
+  public float getMyFloatAsAny() {
+    return myFloatAsAny;
+  }
+
+  @JsMethod
+  public void setFloatAsAny(float myFloatAsAny) {
+    this.myFloatAsAny = myFloatAsAny;
+  }
+
+  @JsMethod
+  public Todo getMyTodoAsAny() {
+    return myTodoAsAny;
+  }
+
+  @JsMethod
+  public void setTodoAsAny(Todo myTodoAsAny) {
+    this.myTodoAsAny = myTodoAsAny;
+  }
+
+  @JsMethod
+  public Integer getMyIntegerAsAny() {
+    return myIntegerAsAny;
+  }
+
+  @JsMethod
+  public void setIntegerAsAny(Integer myIntegerAsAny) {
+    this.myIntegerAsAny = myIntegerAsAny;
   }
 }
