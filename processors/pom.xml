@@ -31,6 +31,11 @@
     <dependency>
       <groupId>com.google.auto.service</groupId>
       <artifactId>auto-service</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auto</groupId>
+      <artifactId>auto-common</artifactId>
     </dependency>
     <dependency>
       <groupId>com.squareup</groupId>
@@ -78,6 +83,90 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>com.axellience:vue-gwt</exclude>
+                  <exclude>com.google.jsinterop:jsinterop-annotations</exclude>
+                  <exclude>com.google.jsinterop:base</exclude>
+                  <exclude>com.google.elemental2:elemental2-core</exclude>
+                  <exclude>com.google.elemental2:elemental2-dom</exclude>
+                  <exclude>com.google.elemental2:elemental2-promise</exclude>
+                  <exclude>javax.inject:javax.inject</exclude>
+                  <exclude>com.google.j2objc:j2objc-annotations</exclude>
+                  <exclude>com.google.errorprone:error_prone_annotations</exclude>
+                </excludes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>com.google</pattern>
+                  <shadedPattern>vuegwt.shaded.com.google</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.squareup</pattern>
+                  <shadedPattern>vuegwt.shaded.com.squareup</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.github</pattern>
+                  <shadedPattern>vuegwt.shaded.com.github</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.helger</pattern>
+                  <shadedPattern>vuegwt.shaded.com.helger</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>afu</pattern>
+                  <shadedPattern>vuegwt.shaded.afu</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org</pattern>
+                  <shadedPattern>vuegwt.shaded.org</shadedPattern>
+                </relocation>
+                <!--
+                This is excluded since it causes unsatisfied link errors. Not
+                sure what is going on here, or if it should be shaded at all.
+                -->
+                <!--<relocation>
+                  <pattern>io</pattern>
+                  <shadedPattern>vuegwt.shaded.io</shadedPattern>
+                </relocation>-->
+                <relocation>
+                  <pattern>net</pattern>
+                  <shadedPattern>vuegwt.shaded.net</shadedPattern>
+                </relocation>
+              </relocations>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+              </transformers>
+              <createSourcesJar>true</createSourcesJar>
+              <filters>
+                <filter>
+                  <artifact>com.google.auto:auto-common</artifact>
+                  <excludes>
+                    <exclude>**/*.java</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>com.google.code.findbugs:jsr305</artifact>
+                  <excludes>
+                    <exclude>**/*.java</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
