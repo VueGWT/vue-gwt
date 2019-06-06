@@ -145,6 +145,7 @@ public class VueGWTTools {
         Any val = asAny(map.get(key));
         if (isTripleEqual(val, null) ||
             isTripleEqual(val, asAny(1)) ||
+            isTripleEqual(val, asAny(1L)) ||
             isTripleEqual(val, asAny(true))) {
           map.delete(key);
         }
@@ -165,6 +166,7 @@ public class VueGWTTools {
         Any val = asAny(map.get(key));
         if (isTripleEqual(val, null) ||
             isTripleEqual(val, asAny(1)) ||
+            isTripleEqual(val, asAny(1L)) ||
             isTripleEqual(val, asAny(true))) {
           dataFields.add(key);
         }
