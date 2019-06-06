@@ -870,7 +870,7 @@ public class ComponentExposedTypeGenerator {
       MethodSpec.Builder proxyMethodBuilder, String methodCallParameters) {
     String methodName = "$emit";
     if (methodCallParameters != null && !"".equals(methodCallParameters)) {
-      proxyMethodBuilder.addStatement("vue().$L($S, $L)",
+      proxyMethodBuilder.addStatement("vue().$L($S, jsinterop.base.Js.asAny($L))",
           methodName,
           methodToEventName(originalMethod),
           methodCallParameters);

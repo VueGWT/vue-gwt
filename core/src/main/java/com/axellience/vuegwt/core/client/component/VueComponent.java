@@ -12,11 +12,11 @@ import com.axellience.vuegwt.core.client.vnode.VNode;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
 import elemental2.dom.Element;
-import javaemul.internal.annotations.DoNotAutobox;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -98,7 +98,41 @@ public abstract class VueComponent {
 
   public native void $off(String name, OnEvent callback);
 
-  public native void $emit(String name, @DoNotAutobox Object... param);
+  @JsOverlay
+  public final void $emit(String name, int param) {
+    $emit(name, Js.asAny(param));
+  }
+  @JsOverlay
+  public final void $emit(String name, float param) {
+    $emit(name, Js.asAny(param));
+  }
+  @JsOverlay
+  public final void $emit(String name, double param) {
+    $emit(name, Js.asAny(param));
+  }
+  @JsOverlay
+  public final void $emit(String name, short param) {
+    $emit(name, Js.asAny(param));
+  }
+  @JsOverlay
+  public final void $emit(String name, boolean param) {
+    $emit(name, Js.asAny(param));
+  }
+  @JsOverlay
+  public final void $emit(String name, byte param) {
+    $emit(name, Js.asAny(param));
+  }
+  @JsOverlay
+  public final void $emit(String name, char param) {
+    $emit(name, Js.asAny(param));
+  }
+  @JsOverlay
+  public final void $emit(String name, Object param) {
+    $emit(name, Js.asAny(param));
+  }
+
+  public native void $emit(String name, Any param);
+  public native void $emit(String name);
 
   // Lifecycle
   public native <T extends IsVueComponent> T $mount();
