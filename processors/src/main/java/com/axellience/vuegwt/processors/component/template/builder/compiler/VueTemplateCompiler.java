@@ -1,9 +1,10 @@
 package com.axellience.vuegwt.processors.component.template.builder.compiler;
 
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+
+import javax.script.ScriptException;
 
 /**
  * Compile an HTML Vue template to JS render function using Nashorn and the vue-template-compiler.
@@ -25,7 +26,7 @@ public class VueTemplateCompiler {
    * Init the Nashorn engine and load the Vue compiler in it.
    */
   private void initEngine() {
-    engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+    engine = (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine();
 
     try {
       engine.eval("(function(global){global.global = global})(this);");

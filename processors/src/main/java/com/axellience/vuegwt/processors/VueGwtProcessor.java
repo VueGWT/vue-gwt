@@ -1,6 +1,7 @@
 package com.axellience.vuegwt.processors;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
+import com.axellience.vuegwt.core.annotations.component.EventBound;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.directive.Directive;
 import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
