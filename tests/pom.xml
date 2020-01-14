@@ -17,9 +17,9 @@
   <description>Tests suite for Vue GWT</description>
 
   <properties>
-    <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
-    <node.version>v8.9.4</node.version>
-    <yarn.version>v1.4.1</yarn.version>
+    <frontend-maven-plugin.version>1.8.0</frontend-maven-plugin.version>
+    <node.version>v10.16.0</node.version>
+    <yarn.version>v1.21.1</yarn.version>
 
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
