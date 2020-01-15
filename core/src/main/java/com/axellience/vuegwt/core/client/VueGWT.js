@@ -1,7 +1,7 @@
 goog.provide("vuegwt");
 
 /** @define {string} */
-goog.define("vuegwt.environment", "production");
+vuegwt.environment = goog.define("vuegwt.environment", "production");
 
 /** @define {string} */
-goog.define("superdevmode", "off");
+var superdevmode = goog.define("superdevmode", "off");
