@@ -10,10 +10,13 @@ public class VueCustomElementType<T extends IsVueComponent> {
 
   @JsOverlay
   public final VueCustomElement<T> create() {
-    return createElement(this);
+    return VCE.createElement(this);
   }
 
-  @JsMethod(namespace = "VueCustomElement")
-  private native static <T extends IsVueComponent> VueCustomElement<T> createElement(
-      VueCustomElementType<T> type);
+  @JsType(isNative = true, namespace = "<global>", name = "VueCustomElement")
+  private static final class VCE {
+    @JsMethod
+    private native static <T extends IsVueComponent> VueCustomElement<T> createElement(
+            VueCustomElementType<T> type);
+  }
 }
