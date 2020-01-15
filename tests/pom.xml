@@ -105,14 +105,14 @@
         <groupId>com.vertispan.j2cl</groupId>
         <artifactId>j2cl-maven-plugin</artifactId>
         <version>0.11-SNAPSHOT</version>
-        <executions>
-          <execution>
-            <phase>test</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <phase>test</phase>-->
+<!--            <goals>-->
+<!--              <goal>build</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
         <configuration>
           <entrypoint>com.axellience.vuegwt.tests.client.VueGwtTestsApp</entrypoint>
           <initialScriptFilename>VueGwtTests.j2cl.js</initialScriptFilename>
