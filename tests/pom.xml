@@ -7,8 +7,8 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axellience</groupId>
   <artifactId>vue-gwt-tests</artifactId>
-  <packaging>gwt-app</packaging>
   <version>1.0-beta-10-SNAPSHOT</version>
+  <packaging>war</packaging>
   <name>Vue GWT Tests</name>
   <description>Tests suite for Vue GWT</description>
 
@@ -20,6 +20,8 @@
     <yarn.version>v1.21.1</yarn.version>
     <auto-service.version>1.0-rc4</auto-service.version>
 
+    <auto-service.version>1.0-rc4</auto-service.version>
+
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
@@ -27,24 +29,23 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <version>${gwt.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <version>${gwt.version}</version>
-      <scope>provided</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.google.gwt</groupId>-->
+<!--      <artifactId>gwt-user</artifactId>-->
+<!--      <version>${gwt.version}</version>-->
+<!--      <scope>provided</scope>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>com.google.gwt</groupId>-->
+<!--      <artifactId>gwt-dev</artifactId>-->
+<!--      <version>${gwt.version}</version>-->
+<!--      <scope>provided</scope>-->
+<!--    </dependency>-->
 
     <!-- Annotation Processors -->
     <dependency>
       <groupId>com.google.auto.service</groupId>
       <artifactId>auto-service</artifactId>
-      <version>${auto-service.version}</version>
     </dependency>
 
     <!-- Vue GWT -->
@@ -59,38 +60,64 @@
       <version>${project.version}</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>com.vertispan.jsinterop</groupId>
+      <artifactId>base</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>
+    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+
     <plugins>
+<!--      <plugin>-->
+<!--        <groupId>net.ltgt.gwt.maven</groupId>-->
+<!--        <artifactId>gwt-maven-plugin</artifactId>-->
+<!--        <extensions>true</extensions>-->
+<!--        <configuration>-->
+<!--          <moduleName>com.axellience.vuegwt.tests.VueGwtTests</moduleName>-->
+<!--          <compilerArgs>-->
+<!--            <arg>-generateJsInteropExports</arg>-->
+<!--          </compilerArgs>-->
+<!--          <failOnError>true</failOnError>-->
+<!--          <useCompilerArgsForTests>true</useCompilerArgsForTests>-->
+<!--          <codeserverArgs>-->
+<!--            <arg>-generateJsInteropExports</arg>-->
+<!--          </codeserverArgs>-->
+<!--          <devmodeArgs>-->
+<!--            <arg>-generateJsInteropExports</arg>-->
+<!--          </devmodeArgs>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>compile-test-components</id>-->
+<!--            <goals>-->
+<!--              <goal>generate-module</goal>-->
+<!--              <goal>compile</goal>-->
+<!--            </goals>-->
+<!--            <phase>test</phase>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
+
       <plugin>
-        <groupId>net.ltgt.gwt.maven</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <moduleName>com.axellience.vuegwt.tests.VueGwtTests</moduleName>
-          <compilerArgs>
-            <arg>-generateJsInteropExports</arg>
-          </compilerArgs>
-          <failOnError>true</failOnError>
-          <useCompilerArgsForTests>true</useCompilerArgsForTests>
-          <codeserverArgs>
-            <arg>-generateJsInteropExports</arg>
-          </codeserverArgs>
-          <devmodeArgs>
-            <arg>-generateJsInteropExports</arg>
-          </devmodeArgs>
-        </configuration>
+        <groupId>com.vertispan.j2cl</groupId>
+        <artifactId>j2cl-maven-plugin</artifactId>
+        <version>0.11-SNAPSHOT</version>
         <executions>
           <execution>
-            <id>compile-test-components</id>
-            <goals>
-              <goal>generate-module</goal>
-              <goal>compile</goal>
-            </goals>
             <phase>test</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
           </execution>
         </executions>
+        <configuration>
+          <entrypoint>com.axellience.vuegwt.tests.client.VueGwtTestsApp</entrypoint>
+          <initialScriptFilename>VueGwtTests.j2cl.js</initialScriptFilename>
+          <compilationLevel>BUNDLE</compilationLevel>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -136,13 +163,61 @@
               <goal>karma</goal>
             </goals>
             <configuration>
-              <karmaConfPath>src/test/javascript/karma.conf.ci.js</karmaConfPath>
+              <karmaConfPath>src/test/javascript/karma.conf.ci.j2cl.js</karmaConfPath>
             </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
+
+  <repositories>
+    <repository>
+      <id>vertispan-gwt</id>
+      <name>Vertispan Snapshots</name>
+      <url>https://repo.vertispan.com/gwt-snapshot/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <!--<updatePolicy>always</updatePolicy>-->
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>vertispan-j2cl</id>
+      <name>Vertispan hosted artifacts-releases</name>
+      <url>https://repo.vertispan.com/j2cl</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>vertispan-gwt</id>
+      <name>Vertispan Snapshots</name>
+      <url>https://repo.vertispan.com/gwt-snapshot/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <!--<updatePolicy>always</updatePolicy>-->
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>vertispan-j2cl</id>
+      <name>Vertispan hosted artifacts-releases</name>
+      <url>https://repo.vertispan.com/j2cl</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
   <profiles>
     <profile>
@@ -156,6 +231,14 @@
         <resources>
           <resource>
             <directory>src/main/java</directory>
+            <includes>
+              <include>
+                **/*.html
+              </include>
+              <include>
+                **/*.scss
+              </include>
+            </includes>
           </resource>
         </resources>
       </build>

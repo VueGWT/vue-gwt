@@ -68,17 +68,16 @@ import com.axellience.vuegwt.tests.client.components.style.scoped.ScopedTestComp
 import com.axellience.vuegwt.tests.client.components.style.scoped.ScopedTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.vmodel.VModelComponent;
 import com.axellience.vuegwt.tests.client.components.vmodel.VModelComponentFactory;
-import com.google.gwt.core.client.EntryPoint;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
 
-public class VueGwtTestsApp implements EntryPoint {
+public class VueGwtTestsApp {
 
   public void onModuleLoad() {
-    VueGWT.init();
+    VueGWT.initWithoutVueLib();
     registerTestComponent(ComputedTestComponent.class, ComputedTestComponentFactory.get());
     registerTestComponent(DataTestComponent.class, DataTestComponentFactory.get());
     registerTestComponent(PropParentTestComponent.class, PropParentTestComponentFactory.get());
