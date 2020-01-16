@@ -308,12 +308,9 @@ public class ComponentExposedTypeGenerator {
         .addStatement(
             "$T.e($L)",
             FieldsExposer.class,
-            String.join(
-                ",",
-                fieldsWithNameExposed.stream()
-                    .map(ExposedField::getName)
-                    .collect(Collectors.toList())
-            )
+            fieldsWithNameExposed.stream()
+                .map(ExposedField::getName)
+                .collect(Collectors.joining(","))
         );
     componentExposedTypeBuilder.addMethod(exposeFieldMethod.build());
   }
@@ -452,7 +449,9 @@ public class ComponentExposedTypeGenerator {
    * @param createdMethodBuilder Builder for the created hook method
    */
   private void processWatchers(MethodSpec.Builder createdMethodBuilder) {
-    createdMethodBuilder.addStatement("Proto p = __proto__");
+    createdMethodBuilder
+        .addStatement("Proto p = $T.cast(vue().$L().getComponentExportedTypePrototype())",
+            Js.class, "$options");
     getMethodsWithAnnotation(component, Watch.class)
         .forEach(method -> processWatcher(createdMethodBuilder, method));
   }
