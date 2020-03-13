@@ -4,11 +4,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+  <parent>
+    <groupId>com.axellience</groupId>
+    <artifactId>vue-gwt-parent</artifactId>
+    <version>1.0-beta-10-SNAPSHOT</version>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.axellience</groupId>
   <artifactId>vue-gwt-tests</artifactId>
-  <version>1.0-beta-10-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>pom</packaging>
   <name>Vue GWT Tests</name>
   <description>Tests suite for Vue GWT</description>
 
@@ -18,8 +22,6 @@
     <frontend-maven-plugin.version>1.8.0</frontend-maven-plugin.version>
     <node.version>v10.16.0</node.version>
     <yarn.version>v1.21.1</yarn.version>
-    <auto-service.version>1.0-rc4</auto-service.version>
-
     <auto-service.version>1.0-rc4</auto-service.version>
 
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -52,13 +54,11 @@
     <dependency>
       <groupId>com.axellience</groupId>
       <artifactId>vue-gwt</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.axellience</groupId>
       <artifactId>vue-gwt-processors</artifactId>
-      <version>${project.version}</version>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.vertispan.jsinterop</groupId>
@@ -71,48 +71,18 @@
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 
     <plugins>
-<!--      <plugin>-->
-<!--        <groupId>net.ltgt.gwt.maven</groupId>-->
-<!--        <artifactId>gwt-maven-plugin</artifactId>-->
-<!--        <extensions>true</extensions>-->
-<!--        <configuration>-->
-<!--          <moduleName>com.axellience.vuegwt.tests.VueGwtTests</moduleName>-->
-<!--          <compilerArgs>-->
-<!--            <arg>-generateJsInteropExports</arg>-->
-<!--          </compilerArgs>-->
-<!--          <failOnError>true</failOnError>-->
-<!--          <useCompilerArgsForTests>true</useCompilerArgsForTests>-->
-<!--          <codeserverArgs>-->
-<!--            <arg>-generateJsInteropExports</arg>-->
-<!--          </codeserverArgs>-->
-<!--          <devmodeArgs>-->
-<!--            <arg>-generateJsInteropExports</arg>-->
-<!--          </devmodeArgs>-->
-<!--        </configuration>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>compile-test-components</id>-->
-<!--            <goals>-->
-<!--              <goal>generate-module</goal>-->
-<!--              <goal>compile</goal>-->
-<!--            </goals>-->
-<!--            <phase>test</phase>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
-
       <plugin>
         <groupId>com.vertispan.j2cl</groupId>
         <artifactId>j2cl-maven-plugin</artifactId>
-        <version>0.11-SNAPSHOT</version>
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <phase>test</phase>-->
-<!--            <goals>-->
-<!--              <goal>build</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
+        <version>0.13-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <entrypoint>com.axellience.vuegwt.tests.client.VueGwtTestsApp</entrypoint>
           <initialScriptFilename>VueGwtTests.j2cl.js</initialScriptFilename>
