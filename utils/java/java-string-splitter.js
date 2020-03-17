@@ -1,5 +1,5 @@
 const JAVA_STRING_LIMIT = 65535;
-const JAVA_STRING_LIMIT_CHUCK = JAVA_STRING_LIMIT * 0.9;
+const JAVA_STRING_LIMIT_CHUCK = JAVA_STRING_LIMIT * 0.5;
 
 const escapeData = (data) => data.replace(/\\/g, "\\\\").replace(/\n/g,
     "\\n").replace(/"/g,
@@ -7,7 +7,7 @@ const escapeData = (data) => data.replace(/\\/g, "\\\\").replace(/\n/g,
 
 class JavaStringSplitter {
   splitStringForJava(data, stringField) {
-    if (data.length < JAVA_STRING_LIMIT) {
+    if (data.length < JAVA_STRING_LIMIT_CHUCK) {
       return `${stringField} = "${escapeData(data)}";`;
     }
 
