@@ -77,7 +77,7 @@
         <version>0.13-SNAPSHOT</version>
         <executions>
           <execution>
-            <phase>test</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>build</goal>
             </goals>
