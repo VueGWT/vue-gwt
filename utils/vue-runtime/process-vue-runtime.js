@@ -2,14 +2,15 @@
  * Process the Vue.js dev runtime and output lines of java
  * to be put in VueLibDevInjector
  */
-
-const fs = require('fs'),
-    javaStringSplitter = require('../java/java-string-splitter'),
-    path = require('path');
+const fs = require('fs');
+const javaStringSplitter = require('../java/java-string-splitter');
+const path = require('path');
 
 const IN = path.join(__dirname, '..', 'node_modules', 'vue', 'dist',
     'vue.runtime.min.js');
-const OUT = path.join(__dirname, '..', 'out', 'VueLibInjector.java');
+const OUT = path.join(__dirname, '..', '..', 'core', 'src', 'main',
+    'java', 'com',
+    'axellience', 'vuegwt', 'core', 'client', 'VueLibInjector.java');
 
 module.exports = function () {
   fs.readFile(IN, 'utf8', function (err, data) {

@@ -9,10 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "vue-template-compiler": "^2.5.16",
-    "vue": "^2.5.16"
+    "vue-template-compiler": "2.5.16",
+    "vue": "2.5.16"
   },
   "devDependencies": {
-    "webpack": "^3.10.0"
+    "webpack": "^4.42.0"
   }
 }

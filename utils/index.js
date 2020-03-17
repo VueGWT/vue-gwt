@@ -1,9 +1,9 @@
 const processNashornTemplateCompiler = require(
-    './nashorn/process-nashorn-template-compiler'),
-    processVueDevRuntime = require('./vue-runtime/process-vue-dev-runtime'),
-    processVueRuntime = require('./vue-runtime/process-vue-runtime'),
-    fs = require('fs'),
-    path = require('path');
+    './nashorn/process-nashorn-template-compiler');
+const processVueDevRuntime = require('./vue-runtime/process-vue-dev-runtime');
+const processVueRuntime = require('./vue-runtime/process-vue-runtime');
+const fs = require('fs');
+const path = require('path');
 
 const OUT = path.join(__dirname, 'out');
 if (!fs.existsSync(OUT)) {

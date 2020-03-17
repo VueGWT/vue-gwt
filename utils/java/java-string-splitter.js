@@ -1,20 +1,23 @@
 const JAVA_STRING_LIMIT = 65535;
+const JAVA_STRING_LIMIT_CHUCK = JAVA_STRING_LIMIT * 0.9;
+
+const escapeData = (data) => data.replace(/\\/g, "\\\\").replace(/\n/g,
+    "\\n").replace(/"/g,
+    "\\\"");
 
 class JavaStringSplitter {
   splitStringForJava(data, stringField) {
-    data = data.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/"/g,
-        "\\\"");
-
     if (data.length < JAVA_STRING_LIMIT) {
-      return `${stringField} = "${data}";`;
+      return `${stringField} = "${escapeData(data)}";`;
     }
 
     let result = "StringBuilder builder = new StringBuilder();\n";
-    while (data.length > JAVA_STRING_LIMIT) {
-      result += `builder.append("${data.substring(0, JAVA_STRING_LIMIT)}");\n`;
-      data = data.substring(JAVA_STRING_LIMIT);
+    while (data.length > JAVA_STRING_LIMIT_CHUCK) {
+      result += `builder.append("${escapeData(data.substring(0,
+          JAVA_STRING_LIMIT_CHUCK))}");\n`;
+      data = data.substring(JAVA_STRING_LIMIT_CHUCK);
     }
-    result += `builder.append("${data}");\n`;
+    result += `builder.append("${escapeData(data)}");\n`;
     result += `${stringField} = builder.toString();`;
 
     return result;
