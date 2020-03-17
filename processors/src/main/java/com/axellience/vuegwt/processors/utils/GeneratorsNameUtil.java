@@ -97,8 +97,8 @@ public class GeneratorsNameUtil {
     return ClassName.get(typeElement).packageName();
   }
 
-  public static String vModelFieldToPlaceHolderField(String fieldName) {
-    return fieldName + "__vuegwt__vmodel";
+  public static String markedDataFieldToPlaceHolderField(String fieldName) {
+    return fieldName + "__vuegwt__markedfield";
   }
 
   /**

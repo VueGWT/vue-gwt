@@ -23,13 +23,13 @@ public class TemplateParserResult {
   private final List<TemplateExpression> expressions = new LinkedList<>();
   private final TemplateParserContext context;
   private final String templateName;
-  private final Set<VariableInfo> vModelDataFields;
+  private final Set<VariableInfo> markedDataFields;
   private final Set<RefInfo> refs;
 
   public TemplateParserResult(TemplateParserContext context) {
     this.context = context;
     this.templateName = context.getTemplateName();
-    vModelDataFields = new HashSet<>();
+    markedDataFields = new HashSet<>();
     refs = new HashSet<>();
   }
 
@@ -81,11 +81,11 @@ public class TemplateParserResult {
   }
 
   /**
-   * Register a data field used in a v-model expression.
+   * Register a data field used in a v-model or a .sync expression.
    * @param dataFieldName Name of the field
    */
-  public void addvModelDataField(VariableInfo dataFieldName) {
-    vModelDataFields.add(dataFieldName);
+  public void addMarkedDataField(VariableInfo dataFieldName) {
+    markedDataFields.add(dataFieldName);
   }
 
   /**
@@ -119,8 +119,8 @@ public class TemplateParserResult {
     this.scopedCss = scopedCss;
   }
 
-  public Set<VariableInfo> getvModelDataFields() {
-    return vModelDataFields;
+  public Set<VariableInfo> getMarkedDataFields() {
+    return markedDataFields;
   }
 
   public Set<RefInfo> getRefs() {

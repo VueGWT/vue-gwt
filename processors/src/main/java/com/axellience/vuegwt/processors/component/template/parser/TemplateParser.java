@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.processors.component.template.parser;
 
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.vModelFieldToPlaceHolderField;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.markedDataFieldToPlaceHolderField;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.boundedAttributeToAttributeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.isBoundedAttribute;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
@@ -297,6 +297,11 @@ public class TemplateParser {
         continue;
       }
 
+      if (isAttributeBinding(attribute) && key.toLowerCase().endsWith(".sync")) {
+        processSyncProp(attribute);
+        continue;
+      }
+
       Optional<LocalComponentProp> optionalProp =
           localComponent.flatMap(lc -> lc.getPropForAttribute(attribute.getName()));
       optionalProp.ifPresent(foundProps::add);
@@ -414,9 +419,33 @@ public class TemplateParser {
       return;
     }
 
-    String placeHolderVModelValue = vModelFieldToPlaceHolderField(vModelValue);
+    String placeHolderVModelValue = markedDataFieldToPlaceHolderField(vModelValue);
     outputDocument.replace(vModelAttribute.getValueSegment(), placeHolderVModelValue);
-    result.addvModelDataField(vModelDataField);
+    result.addMarkedDataField(vModelDataField);
+  }
+
+  /**
+   * Process :prop.sync expressions. Only @Data fields are allowed on .sync.
+   *
+   * @param syncPropAttribute The sync attribute to process
+   */
+  private void processSyncProp(Attribute syncPropAttribute) {
+    String syncFieldValue = syncPropAttribute.getValue();
+    VariableInfo vModelDataField = context.findRootVariable(syncFieldValue);
+    if (vModelDataField == null) {
+      if (syncFieldValue.contains(".")) {
+        logger.error(".sync doesn't support dot notation in Vue GWT: \"" + syncFieldValue
+            + "\". Try using a @Computed with a getter and a setter. Check our documentation on .sync for more information.");
+      } else {
+        logger.error("Couldn't find @Data or @Computed for .sync \"" + syncFieldValue
+            + "\". V-Model is only supported on @Data and @Computed. Check our documentation on .sync for more information.");
+      }
+      return;
+    }
+
+    String placeHolderSyncValue = markedDataFieldToPlaceHolderField(syncFieldValue);
+    outputDocument.replace(syncPropAttribute.getValueSegment(), placeHolderSyncValue);
+    result.addMarkedDataField(vModelDataField);
   }
 
   /**

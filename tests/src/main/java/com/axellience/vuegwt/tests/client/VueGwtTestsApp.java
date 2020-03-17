@@ -21,6 +21,10 @@ import com.axellience.vuegwt.tests.client.components.basic.propdefault.PropDefau
 import com.axellience.vuegwt.tests.client.components.basic.propdefault.PropDefaultParentTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.propdefault.PropDefaultTestComponent;
 import com.axellience.vuegwt.tests.client.components.basic.propdefault.PropDefaultTestComponentFactory;
+import com.axellience.vuegwt.tests.client.components.basic.propsync.PropSyncParentTestComponent;
+import com.axellience.vuegwt.tests.client.components.basic.propsync.PropSyncParentTestComponentFactory;
+import com.axellience.vuegwt.tests.client.components.basic.propsync.PropSyncTestComponent;
+import com.axellience.vuegwt.tests.client.components.basic.propsync.PropSyncTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorParentTestComponent;
 import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorParentTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorTestComponent;
@@ -84,6 +88,8 @@ public class VueGwtTestsApp implements EntryPoint {
         PropDefaultParentTestComponentFactory.get()
     );
     registerTestComponent(PropDefaultTestComponent.class, PropDefaultTestComponentFactory.get());
+    registerTestComponent(PropSyncParentTestComponent.class,
+        PropSyncParentTestComponentFactory.get());
     registerTestComponent(
         PropValidatorParentTestComponent.class,
         PropValidatorParentTestComponentFactory.get()

@@ -1,6 +1,6 @@
 package com.axellience.vuegwt.processors.component.template.builder;
 
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.vModelFieldToPlaceHolderField;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.markedDataFieldToPlaceHolderField;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getFieldMarkingValueForType;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getUnusableByJSAnnotation;
 
@@ -79,20 +79,20 @@ public class TemplateMethodsBuilder {
         .returns(Function.class)
         .addStatement("String renderFunctionString = $S", result.getRenderFunction());
 
-    for (VariableInfo vModelField : templateParserResult.getvModelDataFields()) {
-      String placeHolderVModelValue = vModelFieldToPlaceHolderField(vModelField.getName());
+    for (VariableInfo markedDataField : templateParserResult.getMarkedDataFields()) {
+      String placeHolderDataFieldValue = markedDataFieldToPlaceHolderField(markedDataField.getName());
 
-      String fieldName = vModelField.getName();
-      if (vModelField instanceof ComputedVariableInfo)
-        fieldName = ((ComputedVariableInfo) vModelField).getFieldName();
+      String fieldName = markedDataField.getName();
+      if (markedDataField instanceof ComputedVariableInfo)
+        fieldName = ((ComputedVariableInfo) markedDataField).getFieldName();
 
       getRenderFunctionBuilder
           .addStatement(
               "renderFunctionString = $T.replaceVariableInRenderFunction(renderFunctionString, $S, this, () -> this.$L = $L)",
               VueGWTTools.class,
-              placeHolderVModelValue,
+              placeHolderDataFieldValue,
               fieldName,
-              getFieldMarkingValueForType(vModelField.getType())
+              getFieldMarkingValueForType(markedDataField.getType())
           );
     }
 

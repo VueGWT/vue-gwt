@@ -59,7 +59,7 @@ describe('Slot Scope', () => {
       const element = getElement(component, "#mySimpleObject");
 
       component.$refs["child"].changeSimpleObjectValue("NEW_VALUE");
-      nextTick()
+      return nextTick()
       .then(() => expect(element.innerText).to.be.equal("NEW_VALUE_HELLO"));
     });
   });
@@ -146,7 +146,7 @@ describe('Slot Scope', () => {
       const element = getElement(component, "#mySimpleObjectD");
 
       component.$refs["child"].changeSimpleObjectValue("NEW_VALUE");
-      nextTick()
+      return nextTick()
       .then(() => expect(element.innerText).to.be.equal("NEW_VALUE_HELLO"));
     });
   });

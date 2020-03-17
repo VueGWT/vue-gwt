@@ -2,6 +2,8 @@
   "name": "vue-gwt-tests",
   "version": "0.0.1",
   "dependencies": {
+    "@types/karma": "^4.4.0",
+    "@types/chai": "^4.2.11",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-polyfill": "^6.26.0",
