@@ -21,6 +21,7 @@ var Vue = {
   },
   "nextTick": function () {
   },
+  "$refs": {},
   "options": {
     "_base": {
       "cid": {},
