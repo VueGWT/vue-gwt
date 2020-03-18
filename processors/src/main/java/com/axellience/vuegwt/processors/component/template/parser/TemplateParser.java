@@ -253,7 +253,16 @@ public class TemplateParser {
 
     Attribute vForAttribute = attributes.get("v-for");
     Attribute slotScopeAttribute = attributes.get("slot-scope");
-    if (vForAttribute != null || slotScopeAttribute != null) {
+    Attribute vSlotAttribute = null;
+    for (Attribute attribute : attributes) {
+      if (isVSlot(attribute)) {
+        vSlotAttribute = attribute;
+      }
+    }
+
+    if (vForAttribute != null || slotScopeAttribute != null || (vSlotAttribute != null
+        && !vSlotAttribute.getValue()
+        .isEmpty())) {
       // Add a context layer
       shouldPopContext = true;
       context.addContextLayer(vForAttribute != null);
@@ -267,6 +276,11 @@ public class TemplateParser {
     if (slotScopeAttribute != null) {
       String processedScopedSlotValue = processSlotScopeValue(slotScopeAttribute.getValue());
       outputDocument.replace(slotScopeAttribute.getValueSegment(), processedScopedSlotValue);
+    }
+
+    if (vSlotAttribute != null) {
+      String processedScopedSlotValue = processSlotScopeValue(vSlotAttribute.getValue());
+      outputDocument.replace(vSlotAttribute.getValueSegment(), processedScopedSlotValue);
     }
 
     Optional<LocalComponent> localComponent = getLocalComponentForElement(element);
@@ -288,7 +302,7 @@ public class TemplateParser {
     Set<LocalComponentProp> foundProps = new HashSet<>();
     for (Attribute attribute : element.getAttributes()) {
       String key = attribute.getKey();
-      if ("v-for".equals(key) || "slot-scope".equals(key)) {
+      if ("v-for".equals(key) || "slot-scope".equals(key) || isVSlot(attribute)) {
         continue;
       }
 
@@ -635,6 +649,11 @@ public class TemplateParser {
   private static boolean isEventBinding(Attribute attribute) {
     String attributeName = attribute.getKey().toLowerCase();
     return attributeName.startsWith("@") || attributeName.startsWith("v-on:");
+  }
+
+  private static boolean isVSlot(Attribute attribute) {
+    String attributeName = attribute.getKey().toLowerCase();
+    return attributeName.startsWith("v-slot");
   }
 
   /**

@@ -23,8 +23,6 @@ import com.axellience.vuegwt.tests.client.components.basic.propdefault.PropDefau
 import com.axellience.vuegwt.tests.client.components.basic.propdefault.PropDefaultTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.propsync.PropSyncParentTestComponent;
 import com.axellience.vuegwt.tests.client.components.basic.propsync.PropSyncParentTestComponentFactory;
-import com.axellience.vuegwt.tests.client.components.basic.propsync.PropSyncTestComponent;
-import com.axellience.vuegwt.tests.client.components.basic.propsync.PropSyncTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorParentTestComponent;
 import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorParentTestComponentFactory;
 import com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorTestComponent;
@@ -59,6 +57,8 @@ import com.axellience.vuegwt.tests.client.components.inheritance.ChildComponentF
 import com.axellience.vuegwt.tests.client.components.jsinterop.ComputedOverrideComponent;
 import com.axellience.vuegwt.tests.client.components.jsinterop.ComputedOverrideComponentFactory;
 import com.axellience.vuegwt.tests.client.components.slots.SlotScopeParentComponent;
+import com.axellience.vuegwt.tests.client.components.slots.SlotScopeParentOldComponent;
+import com.axellience.vuegwt.tests.client.components.slots.SlotScopeParentOldComponentFactory;
 import com.axellience.vuegwt.tests.client.components.slots.SlotScopeParentComponentFactory;
 import com.axellience.vuegwt.tests.client.components.style.classbinding.ClassBindingTestComponent;
 import com.axellience.vuegwt.tests.client.components.style.classbinding.ClassBindingTestComponentFactory;
@@ -123,6 +123,7 @@ public class VueGwtTestsApp implements EntryPoint {
     );
     registerTestComponent(ScopedTestComponent.class, ScopedTestComponentFactory.get());
     registerTestComponent(VModelComponent.class, VModelComponentFactory.get());
+    registerTestComponent(SlotScopeParentOldComponent.class, SlotScopeParentOldComponentFactory.get());
     registerTestComponent(SlotScopeParentComponent.class, SlotScopeParentComponentFactory.get());
 
     Vue.component(GloballyRegisteredComponentFactory.get());
