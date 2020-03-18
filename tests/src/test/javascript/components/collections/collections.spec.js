@@ -9,10 +9,11 @@ import {
 describe('Java Collections Observation', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.collections.CollectionObservationComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);
@@ -30,26 +31,22 @@ describe('Java Collections Observation', () => {
         expect(collectionDiv.childNodes.length).to.equal(0);
       });
 
-      it('should should update when adding an item', () => {
+      it('should should update when adding an item', async () => {
         component.addToArrayList("Hello");
 
-        return nextTick().then(() => {
-          expect(collectionDiv.childNodes.length).to.equal(1);
-          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-        });
+        await nextTick();
+        expect(collectionDiv.childNodes.length).to.equal(1);
+        expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
       });
 
-      it('should should update when removing an item', () => {
+      it('should should update when removing an item', async () => {
         component.addToArrayList("Hello");
 
-        return nextTick()
-        .then(() => {
-          component.removeFromArrayList("Hello");
-          return nextTick();
-        })
-        .then(() => {
-          expect(collectionDiv.childNodes.length).to.equal(0);
-        });
+        await nextTick();
+        component.removeFromArrayList("Hello");
+
+        await nextTick();
+        expect(collectionDiv.childNodes.length).to.equal(0);
       });
     });
 
@@ -64,26 +61,22 @@ describe('Java Collections Observation', () => {
         expect(collectionDiv.childNodes.length).to.equal(0);
       });
 
-      it('should should update when adding an item', () => {
+      it('should should update when adding an item', async () => {
         component.addToLinkedList("Hello");
 
-        return nextTick().then(() => {
-          expect(collectionDiv.childNodes.length).to.equal(1);
-          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-        });
+        await nextTick();
+        expect(collectionDiv.childNodes.length).to.equal(1);
+        expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
       });
 
-      it('should should update when removing an item', () => {
+      it('should should update when removing an item', async () => {
         component.addToLinkedList("Hello");
 
-        return nextTick()
-        .then(() => {
-          component.removeFromLinkedList("Hello");
-          return nextTick();
-        })
-        .then(() => {
-          expect(collectionDiv.childNodes.length).to.equal(0);
-        });
+        await nextTick();
+        component.removeFromLinkedList("Hello");
+
+        await nextTick();
+        expect(collectionDiv.childNodes.length).to.equal(0);
       });
     });
 
@@ -98,26 +91,22 @@ describe('Java Collections Observation', () => {
         expect(collectionDiv.childNodes.length).to.equal(0);
       });
 
-      it('should should update when adding an item', () => {
+      it('should should update when adding an item', async () => {
         component.addToHashSet("Hello");
 
-        return nextTick().then(() => {
-          expect(collectionDiv.childNodes.length).to.equal(1);
-          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-        });
+        await nextTick();
+        expect(collectionDiv.childNodes.length).to.equal(1);
+        expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
       });
 
-      it('should should update when removing an item', () => {
+      it('should should update when removing an item', async () => {
         component.addToHashSet("Hello");
 
-        return nextTick()
-        .then(() => {
-          component.removeFromHashSet("Hello");
-          return nextTick();
-        })
-        .then(() => {
-          expect(collectionDiv.childNodes.length).to.equal(0);
-        });
+        await nextTick();
+        component.removeFromHashSet("Hello");
+
+        await nextTick();
+        expect(collectionDiv.childNodes.length).to.equal(0);
       });
     });
 
@@ -132,26 +121,22 @@ describe('Java Collections Observation', () => {
         expect(collectionDiv.childNodes.length).to.equal(0);
       });
 
-      it('should should update when adding an item', () => {
+      it('should should update when adding an item', async () => {
         component.addToHashMap("Key", "Hello");
 
-        return nextTick().then(() => {
-          expect(collectionDiv.childNodes.length).to.equal(1);
-          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-        });
+        await nextTick();
+        expect(collectionDiv.childNodes.length).to.equal(1);
+        expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
       });
 
-      it('should should update when removing an item', () => {
+      it('should should update when removing an item', async () => {
         component.addToHashMap("Key", "Hello");
 
-        return nextTick()
-        .then(() => {
-          component.removeFromHashMap("Key");
-          return nextTick();
-        })
-        .then(() => {
-          expect(collectionDiv.childNodes.length).to.equal(0);
-        });
+        await nextTick();
+        component.removeFromHashMap("Key");
+
+        await nextTick();
+        expect(collectionDiv.childNodes.length).to.equal(0);
       });
     });
   });
@@ -169,26 +154,22 @@ describe('Java Collections Observation', () => {
           expect(collectionDiv.childNodes.length).to.equal(0);
         });
 
-        it('should should update when adding an item', () => {
+        it('should should update when adding an item', async () => {
           component.addToArrayList("Hello");
 
-          return nextTick().then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(1);
-            expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-          });
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(1);
+          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
         });
 
-        it('should should update when removing an item', () => {
+        it('should should update when removing an item', async () => {
           component.addToArrayList("Hello");
 
-          return nextTick()
-          .then(() => {
-            component.removeFromArrayList("Hello");
-            return nextTick();
-          })
-          .then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(0);
-          });
+          await nextTick();
+          component.removeFromArrayList("Hello");
+
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(0);
         });
       });
 
@@ -203,26 +184,22 @@ describe('Java Collections Observation', () => {
           expect(collectionDiv.childNodes.length).to.equal(0);
         });
 
-        it('should should update when adding an item', () => {
+        it('should should update when adding an item', async () => {
           component.addToLinkedList("Hello");
 
-          return nextTick().then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(1);
-            expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-          });
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(1);
+          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
         });
 
-        it('should should update when removing an item', () => {
+        it('should should update when removing an item', async () => {
           component.addToLinkedList("Hello");
 
-          return nextTick()
-          .then(() => {
-            component.removeFromLinkedList("Hello");
-            return nextTick();
-          })
-          .then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(0);
-          });
+          await nextTick();
+          component.removeFromLinkedList("Hello");
+
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(0);
         });
       });
 
@@ -237,26 +214,22 @@ describe('Java Collections Observation', () => {
           expect(collectionDiv.childNodes.length).to.equal(0);
         });
 
-        it('should should update when adding an item', () => {
+        it('should should update when adding an item', async () => {
           component.addToHashSet("Hello");
 
-          return nextTick().then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(1);
-            expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-          });
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(1);
+          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
         });
 
-        it('should should update when removing an item', () => {
+        it('should should update when removing an item', async () => {
           component.addToHashSet("Hello");
 
-          return nextTick()
-          .then(() => {
-            component.removeFromHashSet("Hello");
-            return nextTick();
-          })
-          .then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(0);
-          });
+          await nextTick();
+          component.removeFromHashSet("Hello");
+
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(0);
         });
       });
 
@@ -271,26 +244,22 @@ describe('Java Collections Observation', () => {
           expect(collectionDiv.childNodes.length).to.equal(0);
         });
 
-        it('should should update when adding an item', () => {
+        it('should should update when adding an item', async () => {
           component.addToHashMap("Key", "Hello");
 
-          return nextTick().then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(1);
-            expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-          });
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(1);
+          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
         });
 
-        it('should should update when removing an item', () => {
+        it('should should update when removing an item', async () => {
           component.addToHashMap("Key", "Hello");
 
-          return nextTick()
-          .then(() => {
-            component.removeFromHashMap("Key");
-            return nextTick();
-          })
-          .then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(0);
-          });
+          await nextTick();
+          component.removeFromHashMap("Key");
+
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(0);
         });
       });
     });
@@ -298,9 +267,10 @@ describe('Java Collections Observation', () => {
     describe("When changing from Child", () => {
       let child;
 
-      beforeEach(() => onGwtReady().then(() => {
+      beforeEach(async () => {
+        await onGwtReady();
         child = component.$refs.child;
-      }));
+      });
 
       describe("ArrayList", () => {
         let collectionDiv;
@@ -313,26 +283,22 @@ describe('Java Collections Observation', () => {
           expect(collectionDiv.childNodes.length).to.equal(0);
         });
 
-        it('should should update when adding an item', () => {
+        it('should should update when adding an item', async () => {
           child.addToArrayList("Hello");
 
-          return nextTick().then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(1);
-            expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-          });
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(1);
+          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
         });
 
-        it('should should update when removing an item', () => {
+        it('should should update when removing an item', async () => {
           child.addToArrayList("Hello");
 
-          return nextTick()
-          .then(() => {
-            child.removeFromArrayList("Hello");
-            return nextTick();
-          })
-          .then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(0);
-          });
+          await nextTick();
+          child.removeFromArrayList("Hello");
+
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(0);
         });
       });
 
@@ -347,26 +313,22 @@ describe('Java Collections Observation', () => {
           expect(collectionDiv.childNodes.length).to.equal(0);
         });
 
-        it('should should update when adding an item', () => {
+        it('should should update when adding an item', async () => {
           child.addToLinkedList("Hello");
 
-          return nextTick().then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(1);
-            expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-          });
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(1);
+          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
         });
 
-        it('should should update when removing an item', () => {
+        it('should should update when removing an item', async () => {
           child.addToLinkedList("Hello");
 
-          return nextTick()
-          .then(() => {
-            child.removeFromLinkedList("Hello");
-            return nextTick();
-          })
-          .then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(0);
-          });
+          await nextTick();
+          child.removeFromLinkedList("Hello");
+
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(0);
         });
       });
 
@@ -381,26 +343,22 @@ describe('Java Collections Observation', () => {
           expect(collectionDiv.childNodes.length).to.equal(0);
         });
 
-        it('should should update when adding an item', () => {
+        it('should should update when adding an item', async () => {
           child.addToHashSet("Hello");
 
-          return nextTick().then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(1);
-            expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-          });
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(1);
+          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
         });
 
-        it('should should update when removing an item', () => {
+        it('should should update when removing an item', async () => {
           child.addToHashSet("Hello");
 
-          return nextTick()
-          .then(() => {
-            child.removeFromHashSet("Hello");
-            return nextTick();
-          })
-          .then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(0);
-          });
+          await nextTick();
+          child.removeFromHashSet("Hello");
+
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(0);
         });
       });
 
@@ -415,26 +373,22 @@ describe('Java Collections Observation', () => {
           expect(collectionDiv.childNodes.length).to.equal(0);
         });
 
-        it('should should update when adding an item', () => {
+        it('should should update when adding an item', async () => {
           child.addToHashMap("Key", "Hello");
 
-          return nextTick().then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(1);
-            expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
-          });
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(1);
+          expect(collectionDiv.childNodes[0].innerText).to.equal("Hello");
         });
 
-        it('should should update when removing an item', () => {
+        it('should should update when removing an item', async () => {
           child.addToHashMap("Key", "Hello");
 
-          return nextTick()
-          .then(() => {
-            child.removeFromHashMap("Key");
-            return nextTick();
-          })
-          .then(() => {
-            expect(collectionDiv.childNodes.length).to.equal(0);
-          });
+          await nextTick();
+          child.removeFromHashMap("Key");
+
+          await nextTick();
+          expect(collectionDiv.childNodes.length).to.equal(0);
         });
       });
     });

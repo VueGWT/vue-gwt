@@ -10,10 +10,11 @@ import {
 describe('Component inheritance', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.inheritance.ChildComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);
@@ -26,28 +27,26 @@ describe('Component inheritance', () => {
         'PARENT_INITIAL_DATA');
   });
 
-  it('should react to child data field change', () => {
+  it('should react to child data field change', async () => {
     expect(getElement(component, "#childData").innerText).to.equal(
         'CHILD_INITIAL_DATA');
 
     component.setChildData("NEW_CHILD_DATA");
-    return nextTick()
-    .then(() => {
-      expect(getElement(component, "#childData").innerText).to.equal(
-          'NEW_CHILD_DATA');
-    });
+
+    await nextTick();
+    expect(getElement(component, "#childData").innerText).to.equal(
+        'NEW_CHILD_DATA');
   });
 
-  it('should react to parent data field change', () => {
+  it('should react to parent data field change', async () => {
     expect(getElement(component, "#parentData").innerText).to.equal(
         'PARENT_INITIAL_DATA');
 
     component.setParentData("NEW_PARENT_DATA");
-    return nextTick()
-    .then(() => {
-      expect(getElement(component, "#parentData").innerText).to.equal(
-          'NEW_PARENT_DATA');
-    });
+
+    await nextTick();
+    expect(getElement(component, "#parentData").innerText).to.equal(
+        'NEW_PARENT_DATA');
   });
 
   it('should make Computed work correctly', () => {

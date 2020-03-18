@@ -8,10 +8,11 @@ import {
 describe('Event Types', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         "com.axellience.vuegwt.tests.client.components.events.types.EmitTypesParentComponent")
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);

@@ -11,42 +11,42 @@ import {
 describe('@PropValidator', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     chai.use(spies);
     chai.spy.on(console, 'error');
-
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.basic.propvalidator.PropValidatorParentTestComponent');
-  }));
+  });
 
   afterEach(() => {
     chai.spy.restore(console);
     destroyComponent(component);
   });
 
-  it('should not fire an error if the value is correct', () => {
+  it('should not fire an error if the value is correct', async () => {
     component.setValidatedPropParent(6);
-    return nextTick().then(() => {
-      expect(console.error).to.not.have.been.called();
-    });
+
+    await nextTick();
+    expect(console.error).to.not.have.been.called();
   });
 
-  it('should fire an error if the value is incorrect in dev mode', () => {
+  it('should fire an error if the value is incorrect in dev mode', async () => {
     if (Vue.config.productionTip === true) {
       component.setValidatedPropParent(106);
-      return nextTick().then(() => {
-        expect(console.error).to.have.been.called.once;
-      });
+
+      await nextTick();
+      expect(console.error).to.have.been.called.once;
     }
   });
 
   it('should not fire an error if the value is incorrect in production mode',
-      () => {
+      async () => {
         if (Vue.config.productionTip === false) {
           component.setValidatedPropParent(106);
-          return nextTick().then(() => {
-            expect(console.error).to.not.have.been.called();
-          });
+
+          await nextTick();
+          expect(console.error).to.not.have.been.called();
         }
       });
 });

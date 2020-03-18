@@ -10,37 +10,38 @@ import {
 describe('Scoped styling', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.style.scoped.ScopedTestComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);
   });
 
-  it('check non-boiling label has proper styling', () => {
+  it('check non-boiling label has proper styling', async () => {
     component.celsius = '22';
-    return nextTick().then(() => {
-      const element = getElement(component, '.relax');
-      expect(element).to.exist;
-      const c = window.getComputedStyle(element, null).getPropertyValue(
-          'color');
-      expect(c).to.equal('rgb(0, 128, 0)'); // green
-      const b = window.getComputedStyle(element, null).getPropertyValue(
-          'border-radius');
-      expect(b).to.equal('8px'); // 0.5em
-    });
+
+    await nextTick();
+    const element = getElement(component, '.relax');
+    expect(element).to.exist;
+    const c = window.getComputedStyle(element, null).getPropertyValue(
+        'color');
+    expect(c).to.equal('rgb(0, 128, 0)');
+    const b = window.getComputedStyle(element, null).getPropertyValue(
+        'border-radius');
+    expect(b).to.equal('8px');
   });
 
-  it('check boiling label has proper styling', () => {
+  it('check boiling label has proper styling', async () => {
     component.celsius = '101';
-    return nextTick().then(() => {
-      const element = getElement(component, '.attention');
-      expect(element).to.exist;
-      const c = window.getComputedStyle(element, null).getPropertyValue(
-          'color');
-      expect(c).to.equal('rgb(255, 0, 0)'); // red
-    });
+
+    await nextTick();
+    const element = getElement(component, '.attention');
+    expect(element).to.exist;
+    const c = window.getComputedStyle(element, null).getPropertyValue(
+        'color');
+    expect(c).to.equal('rgb(255, 0, 0)');
   });
 });

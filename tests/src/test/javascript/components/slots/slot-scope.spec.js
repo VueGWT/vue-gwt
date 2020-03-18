@@ -15,10 +15,11 @@ describe('Slot Scope', () => {
       ([description, componentName]) => {
 
         describe(description, () => {
-          beforeEach(() => onGwtReady().then(() => {
+          beforeEach(async () => {
+            await onGwtReady();
             component = createAndMountComponent(
                 `com.axellience.vuegwt.tests.client.components.slots.${componentName}`);
-          }));
+          });
 
           afterEach(() => {
             destroyComponent(component);
@@ -60,14 +61,15 @@ describe('Slot Scope', () => {
               expect(element.innerText).to.be.equal("MY_VALUE_HELLO");
             });
 
-            it('should update when value updates', () => {
+            it('should update when value updates', async () => {
               const element = getElement(component, "#mySimpleObject");
 
               component.$refs["child"].changeSimpleObjectValue("NEW_VALUE");
-              return nextTick()
-              .then(
-                  () => expect(element.innerText).to.be.equal(
-                      "NEW_VALUE_HELLO"));
+
+              await nextTick();
+
+              return expect(element.innerText).to.be.equal(
+                  "NEW_VALUE_HELLO");
             });
           });
 
@@ -149,14 +151,13 @@ describe('Slot Scope', () => {
               expect(element.innerText).to.be.equal("MY_VALUE_HELLO");
             });
 
-            it('should update when value updates', () => {
+            it('should update when value updates', async () => {
               const element = getElement(component, "#mySimpleObjectD");
 
               component.$refs["child"].changeSimpleObjectValue("NEW_VALUE");
-              return nextTick()
-              .then(
-                  () => expect(element.innerText).to.be.equal(
-                      "NEW_VALUE_HELLO"));
+
+              await nextTick();
+              expect(element.innerText).to.be.equal("NEW_VALUE_HELLO");
             });
           });
 

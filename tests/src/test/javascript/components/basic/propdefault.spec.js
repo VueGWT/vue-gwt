@@ -9,10 +9,11 @@ import {
 describe('@PropDefault', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.basic.propdefault.PropDefaultParentTestComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);

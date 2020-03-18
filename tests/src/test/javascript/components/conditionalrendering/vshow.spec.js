@@ -10,11 +10,12 @@ import {
 describe('v-show', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.conditionalrendering.vshow.VShowTestComponent'
     );
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);
@@ -25,11 +26,11 @@ describe('v-show', () => {
     expect(showElement.style.display).to.equals('none');
   });
 
-  it('should show its element if its condition is true', () => {
+  it('should show its element if its condition is true', async () => {
     const showElement = getElement(component, '#show-element');
     component.setShowCondition(true);
-    return nextTick().then(() => {
-      expect(showElement.style.display).to.be.empty;
-    });
+
+    await nextTick();
+    expect(showElement.style.display).to.be.empty;
   });
 });

@@ -8,10 +8,11 @@ import {
 describe('Global Registration', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.globalregistration.UsingGloballyRegisteredComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);

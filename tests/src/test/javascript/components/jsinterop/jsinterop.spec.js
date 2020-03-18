@@ -10,10 +10,11 @@ describe("JsInterop", () => {
   let component;
 
   describe("computed", () => {
-    beforeEach(() => onGwtReady().then(() => {
+    beforeEach(async () => {
+      await onGwtReady();
       component = createAndMountComponent(
           'com.axellience.vuegwt.tests.client.components.jsinterop.ComputedOverrideComponent');
-    }));
+    });
 
     afterEach(() => {
       destroyComponent(component);

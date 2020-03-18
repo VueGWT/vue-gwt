@@ -10,11 +10,12 @@ import {
 describe('Emit Annotation', () => {
   let component, child;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         "com.axellience.vuegwt.tests.client.components.events.emitannotation.EmitAnnotationParent");
     child = component.$refs.child;
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);

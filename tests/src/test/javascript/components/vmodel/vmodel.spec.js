@@ -10,10 +10,11 @@ import {
 describe('v-model', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.vmodel.VModelComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);
@@ -31,23 +32,21 @@ describe('v-model', () => {
       expect(component.getInputTextValue()).to.equal('initialValue');
     });
 
-    it('should change input value when data is changed', () => {
+    it('should change input value when data is changed', async () => {
       component.setInputTextValue('newValueFromData');
 
-      return nextTick().then(() => {
-        expect(textInput.value).to.equal('newValueFromData');
-        expect(component.getInputTextValue()).to.equal('newValueFromData');
-      });
+      await nextTick();
+      expect(textInput.value).to.equal('newValueFromData');
+      expect(component.getInputTextValue()).to.equal('newValueFromData');
     });
 
-    it('should change data field when input value is changed', () => {
+    it('should change data field when input value is changed', async () => {
       textInput.value = "newValueFromInput";
       triggerEvent(textInput, "input");
 
-      return nextTick().then(() => {
-        expect(textInput.value).to.equal('newValueFromInput');
-        expect(component.getInputTextValue()).to.equal('newValueFromInput');
-      });
+      await nextTick();
+      expect(textInput.value).to.equal('newValueFromInput');
+      expect(component.getInputTextValue()).to.equal('newValueFromInput');
     });
   });
 
@@ -63,23 +62,23 @@ describe('v-model', () => {
       expect(component.getInputTextValue$WithDollar()).to.equal('initialValue');
     });
 
-    it('should change input value when data is changed', () => {
+    it('should change input value when data is changed', async () => {
       component.setInputTextValue$WithDollar('newValueFromData');
 
-      return nextTick().then(() => {
-        expect(textInput.value).to.equal('newValueFromData');
-        expect(component.getInputTextValue$WithDollar()).to.equal('newValueFromData');
-      });
+      await nextTick();
+      expect(textInput.value).to.equal('newValueFromData');
+      expect(component.getInputTextValue$WithDollar()).to.equal(
+          'newValueFromData');
     });
 
-    it('should change data field when input value is changed', () => {
+    it('should change data field when input value is changed', async () => {
       textInput.value = "newValueFromInput";
       triggerEvent(textInput, "input");
 
-      return nextTick().then(() => {
-        expect(textInput.value).to.equal('newValueFromInput');
-        expect(component.getInputTextValue$WithDollar()).to.equal('newValueFromInput');
-      });
+      await nextTick();
+      expect(textInput.value).to.equal('newValueFromInput');
+      expect(component.getInputTextValue$WithDollar()).to.equal(
+          'newValueFromInput');
     });
   });
 
@@ -95,23 +94,23 @@ describe('v-model', () => {
       expect(component.getComputedInputTextValueProperty()).to.equal('initialValue');
     });
 
-    it('should change input value when data is changed', () => {
+    it('should change input value when data is changed', async () => {
       component.setComputedInputTextValueProperty('newValueFromData');
 
-      return nextTick().then(() => {
-        expect(textInput.value).to.equal('newBobbyFromData');
-        expect(component.getComputedInputTextValueProperty()).to.equal('newValueFromData');
-      });
+      await nextTick();
+      expect(textInput.value).to.equal('newBobbyFromData');
+      expect(component.getComputedInputTextValueProperty()).to.equal(
+          'newValueFromData');
     });
 
-    it('should change data field when input value is changed', () => {
+    it('should change data field when input value is changed', async () => {
       textInput.value = "newValueFromInput";
       triggerEvent(textInput, "input");
 
-      return nextTick().then(() => {
-        expect(textInput.value).to.equal('newBobbyFromInput');
-        expect(component.getComputedInputTextValueProperty()).to.equal('newValueFromInput');
-      });
+      await nextTick();
+      expect(textInput.value).to.equal('newBobbyFromInput');
+      expect(component.getComputedInputTextValueProperty()).to.equal(
+          'newValueFromInput');
     });
   });
 });

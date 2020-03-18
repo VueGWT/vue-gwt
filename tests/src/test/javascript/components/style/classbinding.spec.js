@@ -10,87 +10,82 @@ import {
 describe('Class binding', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.style.classbinding.ClassBindingTestComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);
   });
 
-  it('should work with single map entry', () => {
+  it('should work with single map entry', async () => {
     const classAElement = getElement(component, "#class-a");
     expect(classAElement.getAttribute('class')).to.be.empty;
 
     component.setHasClassA(true);
-    return nextTick().then(() => {
-      expect(classAElement.getAttribute('class')).to.equal('class-a');
-    });
+
+    await nextTick();
+    expect(classAElement.getAttribute('class')).to.equal('class-a');
   });
 
-  it('should work with multiple map entries', () => {
+  it('should work with multiple map entries', async () => {
     const classABElement = getElement(component, "#class-a-b");
     expect(classABElement.getAttribute('class')).to.be.empty;
 
     component.setHasClassB(true);
-    return nextTick()
-    .then(() => {
-      const classValue = classABElement.getAttribute('class');
-      expect(classValue).to.equal('class-b');
 
-      component.setHasClassA(true);
-      return nextTick();
-    })
-    .then(() => {
-      const classValue = classABElement.getAttribute('class');
-      expect(classValue).to.have.string('class-a');
-      expect(classValue).to.have.string('class-b');
-    });
+    await nextTick();
+    let classValue = classABElement.getAttribute('class');
+    expect(classValue).to.equal('class-b');
+    component.setHasClassA(true);
+
+    await nextTick();
+    classValue = classABElement.getAttribute('class');
+    expect(classValue).to.have.string('class-a');
+    expect(classValue).to.have.string('class-b');
   });
 
-  it('should work with computed method', () => {
+  it('should work with computed method', async () => {
     const computedClassABElement = getElement(component,
         "#computed-class-a-b");
     expect(computedClassABElement.getAttribute('class')).to.be.empty;
 
     component.setHasClassB(true);
-    return nextTick()
-    .then(() => {
-      const classValue = computedClassABElement.getAttribute('class');
-      expect(classValue).to.equal('class-b');
 
-      component.setHasClassA(true);
-      return nextTick();
-    })
-    .then(() => {
-      const classValue = computedClassABElement.getAttribute('class');
-      expect(classValue).to.have.string('class-a');
-      expect(classValue).to.have.string('class-b');
-    });
+    await nextTick();
+    let classValue = computedClassABElement.getAttribute('class');
+    expect(classValue).to.equal('class-b');
+    component.setHasClassA(true);
+
+    await nextTick();
+    classValue = computedClassABElement.getAttribute('class');
+    expect(classValue).to.have.string('class-a');
+    expect(classValue).to.have.string('class-b');
   });
 
-  it('should work with static class', () => {
+  it('should work with static class', async () => {
     const staticClassElement = getElement(component, "#static-class");
     expect(staticClassElement.getAttribute('class')).to.equal('static-class');
 
     component.setHasClassA(true);
-    return nextTick().then(() => {
-      const classValue = staticClassElement.getAttribute('class');
-      expect(classValue).to.have.string('static-class');
-      expect(classValue).to.have.string('class-a');
-    });
+
+    await nextTick();
+    const classValue = staticClassElement.getAttribute('class');
+    expect(classValue).to.have.string('static-class');
+    expect(classValue).to.have.string('class-a');
   });
 
-  it('should work with array syntax', () => {
+  it('should work with array syntax', async () => {
     const arrayClassElement = getElement(component, "#array-class");
     expect(arrayClassElement.getAttribute('class')).to.equal('class-c');
 
     component.setHasClassA(true);
-    return nextTick().then(() => {
-      const classValue = arrayClassElement.getAttribute('class');
-      expect(classValue).to.have.string('class-c');
-      expect(classValue).to.have.string('class-a');
-    });
+
+    await nextTick();
+    const classValue = arrayClassElement.getAttribute('class');
+    expect(classValue).to.have.string('class-c');
+    expect(classValue).to.have.string('class-a');
   });
 });

@@ -9,10 +9,11 @@ import {
 describe('Static imports', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.basic.imports.StaticImportsComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);

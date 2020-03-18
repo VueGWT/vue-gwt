@@ -11,10 +11,11 @@ import {
 describe('@Prop sync', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+        await onGwtReady();
         component = createAndMountComponent(
             'com.axellience.vuegwt.tests.client.components.basic.propsync.PropSyncParentTestComponent');
-      })
+      }
   );
 
   afterEach(() => {
@@ -29,15 +30,14 @@ describe('@Prop sync', () => {
     expect(propDomValue).to.equal('originalValue');
   });
 
-  it('should sync the value from the child up to the parent', () => {
+  it('should sync the value from the child up to the parent', async () => {
     const button = getElement(component, '#setParentPropButton');
     triggerEvent(button, "click");
 
-    return nextTick().then(() => {
-      const parentPropDomValue = getElement(component, '#parentProp').innerText;
-      const propDomValue = getElement(component, '#prop').innerText;
-      expect(parentPropDomValue).to.equal('changedValue');
-      expect(propDomValue).to.equal('changedValue');
-    });
+    await nextTick();
+    const parentPropDomValue = getElement(component, '#parentProp').innerText;
+    const propDomValue = getElement(component, '#prop').innerText;
+    expect(parentPropDomValue).to.equal('changedValue');
+    expect(propDomValue).to.equal('changedValue');
   });
 });

@@ -8,10 +8,11 @@ import {
 describe('Ref', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.basic.ref.RefParentTestComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);
@@ -29,19 +30,18 @@ describe('Ref', () => {
     expect(component.$refs.divElements[1].innerText).to.equal("World");
   });
 
-  it('should work with Components', () => {
+  it('should work with Components', async () => {
     const child = component.$refs.child;
     expect(child).to.be.not.undefined;
     expect(child.$el.innerText).to.equal("Hello");
 
     child.setData("New Data");
 
-    return nextTick().then(() => {
-      expect(child.$el.innerText).to.equal("New Data");
-    });
+    await nextTick();
+    expect(child.$el.innerText).to.equal("New Data");
   });
 
-  it('should work with DOM elements on v-for', () => {
+  it('should work with DOM elements on v-for', async () => {
     const children = component.$refs.children;
     expect(children).to.be.not.undefined;
     expect(children.length).to.equal(2);
@@ -51,10 +51,9 @@ describe('Ref', () => {
     children[0].setData("New Data Child 0");
     children[1].setData("New Data Child 1");
 
-    return nextTick().then(() => {
-      expect(children[0].$el.innerText).to.equal("New Data Child 0");
-      expect(children[1].$el.innerText).to.equal("New Data Child 1");
-    });
+    await nextTick();
+    expect(children[0].$el.innerText).to.equal("New Data Child 0");
+    expect(children[1].$el.innerText).to.equal("New Data Child 1");
   });
 
   describe('@Ref and @RefArray', () => {
@@ -70,19 +69,18 @@ describe('Ref', () => {
       expect(component.getDivElements()[1].innerText).to.equal("World");
     });
 
-    it('should work with Components', () => {
+    it('should work with Components', async () => {
       const child = component.getChild();
       expect(child).to.be.not.undefined;
       expect(child.$el.innerText).to.equal("Hello");
 
       child.setData("New Data");
 
-      return nextTick().then(() => {
-        expect(child.$el.innerText).to.equal("New Data");
-      });
+      await nextTick();
+      expect(child.$el.innerText).to.equal("New Data");
     });
 
-    it('should work with DOM elements on v-for', () => {
+    it('should work with DOM elements on v-for', async () => {
       const children = component.getChildren();
       expect(children).to.be.not.undefined;
       expect(children.length).to.equal(2);
@@ -92,10 +90,9 @@ describe('Ref', () => {
       children[0].setData("New Data Child 0");
       children[1].setData("New Data Child 1");
 
-      return nextTick().then(() => {
-        expect(children[0].$el.innerText).to.equal("New Data Child 0");
-        expect(children[1].$el.innerText).to.equal("New Data Child 1");
-      });
+      await nextTick();
+      expect(children[0].$el.innerText).to.equal("New Data Child 0");
+      expect(children[1].$el.innerText).to.equal("New Data Child 1");
     });
   })
 });

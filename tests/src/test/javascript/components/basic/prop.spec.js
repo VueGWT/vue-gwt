@@ -10,10 +10,11 @@ import {
 describe('@Prop', () => {
   let component;
 
-  beforeEach(() => onGwtReady().then(() => {
+  beforeEach(async () => {
+    await onGwtReady();
     component = createAndMountComponent(
         'com.axellience.vuegwt.tests.client.components.basic.prop.PropParentTestComponent');
-  }));
+  });
 
   afterEach(() => {
     destroyComponent(component);
@@ -29,19 +30,17 @@ describe('@Prop', () => {
     expect(requiredPropDomValue).to.equal('');
   });
 
-  it('should have correct value when its passed value changes', () => {
+  it('should have correct value when its passed value changes', async () => {
     component.setOptionalPropParent(16);
     component.getRequiredPropParent().setStringProperty('value');
 
-    return nextTick().then(() => {
-      const optionalPropDomValue = getElement(component,
-          '#optional-prop').innerText;
-      const requiredPropDomValue = getElement(component,
-          '#required-prop').innerText;
-
-      expect(optionalPropDomValue).to.equal('16');
-      expect(requiredPropDomValue).to.equal('value');
-    });
+    await nextTick();
+    const optionalPropDomValue = getElement(component,
+        '#optional-prop').innerText;
+    const requiredPropDomValue = getElement(component,
+        '#required-prop').innerText;
+    expect(optionalPropDomValue).to.equal('16');
+    expect(requiredPropDomValue).to.equal('value');
   });
 
   it('should not be observed if original value wasn\'t', () => {
