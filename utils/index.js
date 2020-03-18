@@ -1,5 +1,5 @@
 const processNashornTemplateCompiler = require(
-    './nashorn/process-nashorn-template-compiler');
+    './js-vue-template-compiler/process-js-vue-template-compiler');
 const processVueDevRuntime = require('./vue-runtime/process-vue-dev-runtime');
 const processVueRuntime = require('./vue-runtime/process-vue-runtime');
 const fs = require('fs');

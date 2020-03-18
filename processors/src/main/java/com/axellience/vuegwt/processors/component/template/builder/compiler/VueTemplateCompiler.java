@@ -1,39 +1,41 @@
 package com.axellience.vuegwt.processors.component.template.builder.compiler;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
-
-import javax.script.ScriptException;
+import java.util.List;
+import org.mozilla.javascript.ConsString;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.Scriptable;
 
 /**
- * Compile an HTML Vue template to JS render function using Nashorn and the vue-template-compiler.
+ * Compile an HTML Vue template to JS render function using Rhino and the vue-template-compiler.
  *
  * @author Adrien Baron
  */
 public class VueTemplateCompiler {
 
-  private static NashornScriptEngine engine;
+  private static Context context;
+  private static Scriptable scope;
 
   public VueTemplateCompiler() {
     // Engine is cached between instance to avoid creating at each compilation
-    if (engine == null) {
+    if (context == null) {
       initEngine();
     }
   }
 
   /**
-   * Init the Nashorn engine and load the Vue compiler in it.
+   * Init the Rhino engine and load the Vue compiler in it.
    */
   private void initEngine() {
-    engine = (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine();
+    context = Context.enter();
+    scope = context.initStandardObjects();
 
-    try {
-      engine.eval("(function(global){global.global = global})(this);");
-      engine.eval(NashornVueTemplateCompiler.NASHORN_VUE_TEMPLATE_COMPILER);
-    } catch (ScriptException e) {
-      e.printStackTrace();
-    }
+    context.evaluateString(scope, "(function(global){global.global = global})(this);", "<cmd>", 1,
+        null);
+    context
+        .evaluateString(scope, JsVueTemplateCompiler.JS_VUE_TEMPLATE_COMPILER, "<cmd>",
+            1, null);
   }
 
   /**
@@ -45,23 +47,24 @@ public class VueTemplateCompiler {
    */
   public VueTemplateCompilerResult compile(String htmlTemplate)
       throws VueTemplateCompilerException {
-    ScriptObjectMirror templateCompilerResult;
-    try {
-      templateCompilerResult =
-          (ScriptObjectMirror) engine.invokeFunction("compile", htmlTemplate);
-    } catch (ScriptException | NoSuchMethodException e) {
-      e.printStackTrace();
+
+    NativeObject templateCompilerResult;
+    Object vueCompilerFunction = scope.get("compile", scope);
+    if (!(vueCompilerFunction instanceof Function)) {
       throw new VueTemplateCompilerException(
-          "An error occurred while compiling the template: "
-              + htmlTemplate
-              + " -> "
-              + e.getMessage());
+          "An error occurred while compiling the template: " + htmlTemplate);
     }
 
-    String renderFunction = (String) templateCompilerResult.get("render");
-    String[] staticRenderFunctions =
-        ((ScriptObjectMirror) templateCompilerResult.get("staticRenderFns")).to(String[].class);
+    Object[] vueCompilerArgs = {htmlTemplate};
+    Function f = (Function) vueCompilerFunction;
+    Object result = f.call(context, scope, scope, vueCompilerArgs);
+    templateCompilerResult = (NativeObject) Context.jsToJava(result, NativeObject.class);
+    String render = ((ConsString) templateCompilerResult.get("render")).toString();
 
-    return new VueTemplateCompilerResult(renderFunction, staticRenderFunctions);
+    String[] staticRenderFunctions = ((List<?>) templateCompilerResult
+        .get("staticRenderFns")).stream().map(s -> ((ConsString) s).toString())
+        .toArray(String[]::new);
+
+    return new VueTemplateCompilerResult(render, staticRenderFunctions);
   }
 }
