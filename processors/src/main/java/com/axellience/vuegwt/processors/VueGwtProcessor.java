@@ -28,7 +28,6 @@ import javax.lang.model.util.ElementFilter;
     "com.axellience.vuegwt.core.annotations.component.JsComponent",
     "com.axellience.vuegwt.core.annotations.directive.Directive"
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class VueGwtProcessor extends AbstractProcessor {
 
   @Override
@@ -85,5 +84,10 @@ public class VueGwtProcessor extends AbstractProcessor {
     for (TypeElement element : ElementFilter.typesIn(annotatedElements)) {
       vueJsComponentRegistrationGenerator.generate(element);
     }
+  }
+
+  @Override
+  public SourceVersion getSupportedSourceVersion() {
+    return SourceVersion.latestSupported();
   }
 }
