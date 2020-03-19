@@ -5,7 +5,7 @@ name: Test Vue GWT
 
 on:
   push:
-    branches: [ develop, master ]
+    branches: [ master ]
   pull_request:
     branches: [ develop, master ]
 
