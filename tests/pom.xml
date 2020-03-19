@@ -4,22 +4,21 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>com.axellience</groupId>
-    <artifactId>vue-gwt-parent</artifactId>
-    <version>1.0-beta-10-SNAPSHOT</version>
-  </parent>
-
   <modelVersion>4.0.0</modelVersion>
+  <groupId>com.axellience</groupId>
   <artifactId>vue-gwt-tests</artifactId>
   <packaging>gwt-app</packaging>
+  <version>1.0-beta-10-SNAPSHOT</version>
   <name>Vue GWT Tests</name>
   <description>Tests suite for Vue GWT</description>
 
   <properties>
+    <gwt.version>2.8.2</gwt.version>
+
     <frontend-maven-plugin.version>1.8.0</frontend-maven-plugin.version>
     <node.version>v10.16.0</node.version>
     <yarn.version>v1.21.1</yarn.version>
+    <auto-service.version>1.0-rc4</auto-service.version>
 
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -31,11 +30,13 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
+      <version>${gwt.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
+      <version>${gwt.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -43,16 +44,20 @@
     <dependency>
       <groupId>com.google.auto.service</groupId>
       <artifactId>auto-service</artifactId>
+      <version>${auto-service.version}</version>
     </dependency>
 
     <!-- Vue GWT -->
     <dependency>
       <groupId>com.axellience</groupId>
       <artifactId>vue-gwt</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.axellience</groupId>
       <artifactId>vue-gwt-processors</artifactId>
+      <version>${project.version}</version>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 
