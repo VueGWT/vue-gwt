@@ -40,7 +40,6 @@
     <module>core</module>
     <module>gwt2</module>
     <module>processors</module>
-    <module>tests</module>
   </modules>
 
   <scm>
