@@ -1,0 +1,7 @@
+<vue-gwt:import static="com.axellience.vuegwt.testsapp.client.common.Utils.STATIC_TEST_STRING"/>
+<vue-gwt:import static="com.axellience.vuegwt.testsapp.client.common.Utils.addTwoStrings"/>
+
+<div>
+  <div id="testString">{{ STATIC_TEST_STRING + "_FROM_COMPONENT" }}</div>
+  <div id="testMethod">{{ addTwoStrings("HELLO", "_WORLD") }}</div>
+</div>

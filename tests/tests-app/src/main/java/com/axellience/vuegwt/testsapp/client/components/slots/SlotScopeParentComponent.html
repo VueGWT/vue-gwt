@@ -1,0 +1,41 @@
+<vue-gwt:import class="com.axellience.vuegwt.testsapp.client.common.SimpleObject"/>
+
+<slot-scope-child ref="child">
+  <template v-slot="scope">
+    <div id="myInt">{{ scope.getAny("myInt").asInt() + 5 }}</div>
+    <div id="myIntCamelCase">{{ scope.getAny("myIntCamelCase").asInt() + 5 }}</div>
+    <div id="myIntLiteral">{{ scope.getAny("myIntLiteral").asInt() + 10 }}</div>
+    <div id="myInteger">{{ ((Integer) scope.get("myInteger")) + 5 }}</div>
+    <div id="myString">{{ ((String) scope.get("myString")) + "_HELLO" }}</div>
+    <div id="myStringLiteral">{{ ((String) scope.get("myStringLiteral")) + "_HELLO" }}</div>
+    <div id="mySimpleObject">{{ ((SimpleObject) scope.get("mySimpleObject")).getStringProperty() +
+      "_HELLO" }}
+    </div>
+  </template>
+  <template v-slot:my-named-slot="scope">
+    <div id="nameSlotMyString">{{ ((String) scope.get("namedSlotMyString")) + "_HELLO" }}</div>
+  </template>
+
+  <template
+      v-slot:my-destructured-slot="{int myIntD, int myIntCamelCaseD, byte myByteD, short myShortD, long myLongD, float myFloatD, double myDoubleD, boolean myBooleanD, char myCharD, int myIntLiteralD, Integer myIntegerD, String myStringD, String myStringLiteralD, SimpleObject mySimpleObjectD}">
+    <div id="myIntD">{{ myIntD + 5 }}</div>
+    <div id="myIntCamelCaseD">{{ myIntCamelCaseD + 5 }}</div>
+    <div id='myByteD'>{{ myByteD }}</div>
+    <div id='myShortD'>{{ myShortD }}</div>
+    <div id='myLongD'>{{ myLongD }}</div>
+    <div id='myFloatD'>{{ myFloatD }}</div>
+    <div id='myDoubleD'>{{ myDoubleD }}</div>
+    <div id='myBooleanD'>{{ myBooleanD }}</div>
+    <div id='myCharD'>{{ myCharD }}</div>
+    <div id="myIntLiteralD">{{ myIntLiteralD + 10 }}</div>
+    <div id="myIntegerD">{{ myIntegerD + 5 }}</div>
+    <div id="myStringD">{{ myStringD + "_HELLO" }}</div>
+    <div id="myStringLiteralD">{{ myStringLiteralD + "_HELLO" }}</div>
+    <div id="mySimpleObjectD">{{ mySimpleObjectD.getStringProperty() + "_HELLO" }}</div>
+  </template>
+
+  <template v-slot:my-slot-with-spaces="   {   int myIntS  ,   int myIntLiteralS   }   ">
+    <div id="myIntS">{{ myIntS + 5 }}</div>
+    <div id="myIntLiteralS">{{ myIntLiteralS + 10 }}</div>
+  </template>
+</slot-scope-child>

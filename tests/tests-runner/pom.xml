@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>vue-gwt-tests</artifactId>
+    <groupId>com.axellience</groupId>
+    <version>1.0-beta-10-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>tests-runner</artifactId>
+
+  <properties>
+    <frontend-maven-plugin.version>1.8.0</frontend-maven-plugin.version>
+    <node.version>v10.16.0</node.version>
+    <yarn.version>v1.21.1</yarn.version>
+  </properties>
+
+  <dependencies>
+<!--    <dependency>-->
+<!--      <groupId>com.axellience</groupId>-->
+<!--      <artifactId>tests-app-wrapper-gwt2</artifactId>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>com.axellience</groupId>
+      <artifactId>tests-app-wrapper-j2cl</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend-maven-plugin.version}</version>
+        <configuration>
+          <nodeVersion>${node.version}</nodeVersion>
+          <yarnVersion>${yarn.version}</yarnVersion>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>install node and yarn</id>
+            <goals>
+              <goal>install-node-and-yarn</goal>
+            </goals>
+          </execution>
+
+          <execution>
+            <id>yarn install</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+          </execution>
+
+<!--          <execution>-->
+<!--            <id>GWT2 tests</id>-->
+<!--            <goals>-->
+<!--              <goal>karma</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <karmaConfPath>src/test/javascript/karma.conf.ci.js</karmaConfPath>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+
+          <execution>
+            <id>J2CL tests</id>
+            <goals>
+              <goal>karma</goal>
+            </goals>
+            <configuration>
+              <karmaConfPath>src/test/javascript/karma.conf.ci.j2cl.js</karmaConfPath>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
