@@ -1,7 +1,0 @@
-<module rename-to="VueGwtTests">
-  <inherits name="com.axellience.vuegwt.VueGWT"/>
-  <entry-point class="com.axellience.vuegwt.tests.client.VueGwtTestsApp"/>
-  <source path="client"/>
-  <source path="shared"/>
-  <super-source path="super"/>
-</module>
