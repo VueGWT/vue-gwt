@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.testsapp.j2cl;
 
 import com.axellience.vuegwt.core.client.VueGWT;
-import com.axellience.vuegwt.testsapp.client.VueGwtTestApp;
+import com.axellience.vuegwt.testsapp.client.VueGwtTestsApp;
 
 public class VueGwtTestsAppJ2CL {
 
