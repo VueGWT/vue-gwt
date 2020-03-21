@@ -44,13 +44,6 @@
       <scope>compile</scope>
     </dependency>
 
-    <!-- Annotation Processors -->
-    <dependency>
-      <groupId>com.google.auto.service</groupId>
-      <artifactId>auto-service</artifactId>
-      <version>1.0-rc4</version>
-    </dependency>
-
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>

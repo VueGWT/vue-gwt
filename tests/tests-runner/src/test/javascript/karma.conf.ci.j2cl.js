@@ -9,7 +9,7 @@ module.exports = function (config) {
       'src/test/javascript/components/**/*.js',
       'src/test/javascript/lib/vue.runtime.js',
       {
-        pattern: "target/vue-gwt-tests-*/**/*.j2cl.js",
+        pattern: "../tests-app-wrapper-j2cl/target/tests-app-wrapper-j2cl-*/**/*.j2cl.js",
         watched: false
       },
     ],
