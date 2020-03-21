@@ -25,7 +25,7 @@ public @interface Prop {
   /**
    * Should check the type of the property. By default check based on the Java type.
    *
-   * @return true if we should check the type, false otherwise. Default to false.
+   * @return true if we should check the type, false otherwise. Default to true.
    */
-  boolean checkType() default false;
+  boolean checkType() default true;
 }
