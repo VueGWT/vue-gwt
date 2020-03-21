@@ -10,7 +10,7 @@
     <version>1.0-beta-10-SNAPSHOT</version>
   </parent>
 
-  <artifactId>tests-app</artifactId>
+  <artifactId>vue-gwt-tests-app</artifactId>
   <packaging>gwt-lib</packaging>
 
   <dependencies>

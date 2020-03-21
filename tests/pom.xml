@@ -40,23 +40,18 @@
       </dependency>
       <dependency>
         <groupId>com.axellience</groupId>
-        <artifactId>tests-app</artifactId>
+        <artifactId>vue-gwt-tests-app</artifactId>
         <version>${project.version}</version>
         <type>gwt-lib</type>
       </dependency>
       <dependency>
         <groupId>com.axellience</groupId>
-        <artifactId>tests-app</artifactId>
+        <artifactId>vue-gwt-tests-app-wrapper-gwt2</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.axellience</groupId>
-        <artifactId>tests-app-wrapper-gwt2</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.axellience</groupId>
-        <artifactId>tests-app-wrapper-j2cl</artifactId>
+        <artifactId>vue-gwt-tests-app-wrapper-j2cl</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

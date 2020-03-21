@@ -10,7 +10,7 @@
     <version>1.0-beta-10-SNAPSHOT</version>
   </parent>
 
-  <artifactId>tests-app-wrapper-j2cl</artifactId>
+  <artifactId>vue-gwt-tests-app-wrapper-j2cl</artifactId>
   <name>Vue GWT Tests J2CL</name>
   <description>Vue GWT test suite for J2CL</description>
   <packaging>jar</packaging>
@@ -32,7 +32,7 @@
   <dependencies>
     <dependency>
       <groupId>com.axellience</groupId>
-      <artifactId>tests-app</artifactId>
+      <artifactId>vue-gwt-tests-app</artifactId>
       <version>${project.version}</version>
     </dependency>
 
