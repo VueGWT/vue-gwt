@@ -60,7 +60,7 @@
               <goal>karma</goal>
             </goals>
             <configuration>
-              <karmaConfPath>src/test/javascript/karma.conf.ci.js</karmaConfPath>
+              <karmaConfPath>src/test/javascript/karma.conf.ci.gwt2.js</karmaConfPath>
             </configuration>
           </execution>
 
