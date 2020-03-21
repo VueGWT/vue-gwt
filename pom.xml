@@ -62,7 +62,7 @@
     <jericho.version>3.4</jericho.version>
     <javaparser.version>3.15.15</javaparser.version>
     <auto-service.version>1.0-rc6</auto-service.version>
-    <auto-common.version>0.8</auto-common.version>
+    <auto-common.version>0.10</auto-common.version>
     <ph-css.version>6.1.1</ph-css.version>
     <jsass.version>5.7.3</jsass.version>
     <rhino.version>1.7.12</rhino.version>
