@@ -10,7 +10,7 @@
     <version>1.0-beta-10-SNAPSHOT</version>
   </parent>
 
-  <artifactId>tests-app-wrapper-gwt2</artifactId>
+  <artifactId>vue-gwt-tests-app-wrapper-gwt2</artifactId>
   <name>Vue GWT Tests GWT2</name>
   <description>Vue GWT test suite for GWT 2.x</description>
   <packaging>gwt-app</packaging>
@@ -29,7 +29,7 @@
   <dependencies>
     <dependency>
       <groupId>com.axellience</groupId>
-      <artifactId>tests-app</artifactId>
+      <artifactId>vue-gwt-tests-app</artifactId>
       <type>gwt-lib</type>
     </dependency>
 

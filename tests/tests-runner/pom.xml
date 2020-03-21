@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>tests-runner</artifactId>
+  <artifactId>vue-gwt-tests-runner</artifactId>
 
   <properties>
     <frontend-maven-plugin.version>1.8.0</frontend-maven-plugin.version>
@@ -20,11 +20,11 @@
   <dependencies>
     <dependency>
       <groupId>com.axellience</groupId>
-      <artifactId>tests-app-wrapper-gwt2</artifactId>
+      <artifactId>vue-gwt-tests-app-wrapper-gwt2</artifactId>
     </dependency>
     <dependency>
       <groupId>com.axellience</groupId>
-      <artifactId>tests-app-wrapper-j2cl</artifactId>
+      <artifactId>vue-gwt-tests-app-wrapper-j2cl</artifactId>
     </dependency>
   </dependencies>
 
