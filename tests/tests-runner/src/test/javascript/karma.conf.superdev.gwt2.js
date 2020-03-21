@@ -7,7 +7,7 @@ module.exports = function (config) {
   config.set({
     files: [
       'src/test/javascript/components/**/*.js',
-      "http://127.0.0.1:8888/VueGwtTests/VueGwtTests.nocache.js"
+      "http://127.0.0.1:8888/VueGwtTestsAppGwt2/VueGwtTestsAppGwt2.nocache.js"
     ],
     crossOriginAttribute: false,
     singleRun: false,
