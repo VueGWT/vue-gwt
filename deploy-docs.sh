@@ -6,7 +6,7 @@ set -e
 cd docs
 
 echo "-> Build VuePress"
-vuepress build
+yarn build
 
 # navigate into the build output directory
 cd .vuepress/dist
