@@ -58,7 +58,7 @@
     <jsinterop-base.version>1.0.0-RC1</jsinterop-base.version>
     <elemental.version>1.0.0-RC1</elemental.version>
 
-    <javapoet.version>1.9.0</javapoet.version>
+    <javapoet.version>1.12.1</javapoet.version>
     <jericho.version>3.4</jericho.version>
     <javaparser.version>3.0.1</javaparser.version>
     <auto-service.version>1.0-rc4</auto-service.version>
