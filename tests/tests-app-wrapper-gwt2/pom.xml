@@ -41,7 +41,7 @@
     <dependency>
       <groupId>com.axellience</groupId>
       <artifactId>vue-gwt-processors</artifactId>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
