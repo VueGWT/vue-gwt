@@ -77,6 +77,7 @@ public class TemplateParser {
   private static Pattern VUE_ATTR_PATTERN = Pattern.compile("^(v-|:|@).*");
   private static Pattern VUE_MUSTACHE_PATTERN = Pattern.compile("\\{\\{.*?}}", Pattern.DOTALL);
 
+  private JavaParser javaParser;
   private TemplateParserContext context;
   private Elements elements;
   private Messager messager;
@@ -105,6 +106,7 @@ public class TemplateParser {
     this.messager = messager;
     this.logger = new TemplateParserLogger(context, messager);
     this.htmlTemplateUri = htmlTemplateUri;
+    this.javaParser = new JavaParser();
 
     initJerichoConfig(this.logger);
 
@@ -698,15 +700,16 @@ public class TemplateParser {
    * expression
    */
   private TemplateExpression processJavaExpression(String expressionString) {
-    Expression expression;
-    try {
-      expression = JavaParser.parseExpression(expressionString);
-    } catch (ParseProblemException parseException) {
+    Optional<Expression> maybeExpression = this.javaParser.parseExpression(expressionString)
+        .getResult();
+
+    if (!maybeExpression.isPresent()) {
       logger.error("Couldn't parse Expression, make sure it is valid Java.",
           expressionString);
-      throw parseException;
+      throw new RuntimeException();
     }
 
+    Expression expression = maybeExpression.get();
     resolveTypesUsingImports(expression);
     resolveStaticMethodsUsingImports(expression);
 
