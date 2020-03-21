@@ -20,7 +20,6 @@ import com.axellience.vuegwt.processors.component.template.parser.variable.Local
 import com.axellience.vuegwt.processors.component.template.parser.variable.VariableInfo;
 import com.axellience.vuegwt.processors.dom.DOMElementsUtil;
 import com.github.javaparser.JavaParser;
-import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
