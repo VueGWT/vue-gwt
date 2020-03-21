@@ -9,6 +9,8 @@ module.exports = function (config) {
       'src/test/javascript/components/**/*.js',
       "http://127.0.0.1:8888/VueGwtTests/VueGwtTests.nocache.js"
     ],
-    crossOriginAttribute: false
+    crossOriginAttribute: false,
+    singleRun: false,
+    autoWatch: true,
   });
 };
