@@ -35,6 +35,7 @@ buildNumber.properties
 
 ### VuePress
 docs/.vuepress/dist
+docs/node_modules
 
 ### Utils out
 utils/out
