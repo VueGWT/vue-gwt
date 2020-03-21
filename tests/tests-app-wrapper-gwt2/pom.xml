@@ -65,7 +65,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
-          <moduleName>com.axellience.vuegwt.testsappgwt2.VueGwtTestsAppGwt2</moduleName>
+          <moduleName>com.axellience.vuegwt.testsapp.gwt2.VueGwtTestsAppGwt2</moduleName>
           <compilerArgs>
             <arg>-generateJsInteropExports</arg>
           </compilerArgs>

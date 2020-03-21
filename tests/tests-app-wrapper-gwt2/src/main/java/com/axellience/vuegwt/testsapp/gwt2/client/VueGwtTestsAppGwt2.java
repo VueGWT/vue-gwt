@@ -1,4 +1,4 @@
-package com.axellience.vuegwt.testsappgwt2.client;
+package com.axellience.vuegwt.testsapp.gwt2.client;
 
 import com.axellience.vuegwt.core.client.VueGWT;
 import com.axellience.vuegwt.testsapp.client.VueGwtTestApp;
@@ -9,7 +9,7 @@ public class VueGwtTestsAppGwt2 implements EntryPoint {
   @Override
   public void onModuleLoad() {
     VueGWT.init();
-    VueGwtTestApp.bootstrap();
+    VueGwtTestsApp.bootstrap();
   }
 
 }
