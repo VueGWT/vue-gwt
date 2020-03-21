@@ -61,7 +61,7 @@
     <javapoet.version>1.12.1</javapoet.version>
     <jericho.version>3.4</jericho.version>
     <javaparser.version>3.15.15</javaparser.version>
-    <auto-service.version>1.0-rc4</auto-service.version>
+    <auto-service.version>1.0-rc6</auto-service.version>
     <auto-common.version>0.8</auto-common.version>
     <ph-css.version>6.1.1</ph-css.version>
     <jsass.version>5.7.3</jsass.version>
