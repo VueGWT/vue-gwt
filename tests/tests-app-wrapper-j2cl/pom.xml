@@ -69,7 +69,7 @@
         </executions>
         <configuration>
           <entrypoint>com.axellience.vuegwt.testsapp.j2cl.VueGwtTestsAppJ2CL</entrypoint>
-          <initialScriptFilename>VueGwtTests.j2cl.js</initialScriptFilename>
+          <initialScriptFilename>VueGwtTestsAppJ2CL.js</initialScriptFilename>
           <compilationLevel>ADVANCED</compilationLevel>
         </configuration>
       </plugin>

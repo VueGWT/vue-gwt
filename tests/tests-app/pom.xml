@@ -47,7 +47,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
-          <moduleName>com.axellience.vuegwt.VueGwtTestApp</moduleName>
+          <moduleName>com.axellience.vuegwt.testsapp.VueGwtTestApp</moduleName>
           <compilerArgs>
             <arg>-generateJsInteropExports</arg>
           </compilerArgs>

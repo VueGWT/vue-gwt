@@ -8,7 +8,7 @@ module.exports = function (config) {
     files: [
       'src/test/javascript/components/**/*.js',
       {
-        pattern: "../tests-app-wrapper-j2cl/target/vue-gwt-tests-app-wrapper-j2cl-*/**/*.j2cl.js",
+        pattern: "../tests-app-wrapper-j2cl/target/vue-gwt-tests-app-wrapper-j2cl-*/VueGwtTestsAppJ2CL.js",
         watched: false
       },
     ],

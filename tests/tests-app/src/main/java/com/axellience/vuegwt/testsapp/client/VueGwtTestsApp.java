@@ -73,7 +73,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
 
-public class VueGwtTestApp {
+public class VueGwtTestsApp {
 
   public static void bootstrap() {
     registerTestComponent(ComputedTestComponent.class, ComputedTestComponentFactory.get());
