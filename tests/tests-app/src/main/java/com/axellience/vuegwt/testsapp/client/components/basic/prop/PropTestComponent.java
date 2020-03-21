@@ -16,4 +16,10 @@ public class PropTestComponent implements IsVueComponent {
 
   @Prop
   SimpleObject nonObservedProp;
+
+  @Prop
+  boolean booleanPropTrue;
+
+  @Prop
+  boolean booleanPropFalse;
 }

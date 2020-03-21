@@ -46,4 +46,16 @@ describe('@Prop', () => {
   it('should not be observed if original value wasn\'t', () => {
     expect(component.getNonObservedObject().__ob__).to.be.undefined;
   });
+
+  it('should pass boolean props to true when defined', async () => {
+    const booleanPropTrue = getElement(component,
+        '#boolean-prop-true').innerText;
+    expect(booleanPropTrue).to.equal('true');
+  });
+
+  it('should pass boolean props to false when not defined', async () => {
+    const booleanPropFalse = getElement(component,
+        '#boolean-prop-false').innerText;
+    expect(booleanPropFalse).to.equal('false');
+  });
 });
