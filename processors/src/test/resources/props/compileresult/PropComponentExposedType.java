@@ -18,7 +18,7 @@ public class PropComponentExposedType extends PropComponent {
     VueComponentOptions<PropComponent> options = new VueComponentOptions<PropComponent>();
     Proto p = __proto__;
     options.setComponentExportedTypePrototype(p);
-    options.addJavaProp("myProp", VueGWTTools.getFieldName(this, () -> this.myProp = 1), false, null);
+    options.addJavaProp("myProp", VueGWTTools.getFieldName(this, () -> this.myProp = 1), false, "Number");
     options.addHookMethod("created", p.vg$created);
     options.initData(true, VueGWTTools.getFieldsName(this, () -> {
     }));
