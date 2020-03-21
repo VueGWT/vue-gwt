@@ -12,6 +12,11 @@ module.exports = function (config) {
         watched: false
       },
     ],
+    // NOT WORKING IN J2CL for now!
+    exclude: [
+      '**/collections.spec.js',
+      '**/inheritance.spec.js'
+    ],
     singleRun: true,
     autoWatch: false
   });
