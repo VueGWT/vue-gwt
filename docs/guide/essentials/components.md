@@ -581,33 +581,33 @@ In these cases, you can use the `.native` modifier for `v-on`. For example:
 
 > 2.3.0+
 
-In some cases we may need "two-way binding" for a prop - in fact, in Vue 1.x this is exactly what the `.sync` modifier provided. 
-When a child component mutates a prop that has `.sync`, the value change will be reflected in the parent.
-This is convenient, however it leads to maintenance issues in the long run because it breaks the one-way data flow assumption: the code that mutates child props are implicitly affecting parent state.
+In some cases, we may need “two-way binding” for a prop.
+Unfortunately, true two-way binding can create maintenance issues, because child components can mutate the parent without the source of that mutation being obvious in both the parent and the child.
 
-This is why we removed the `.sync` modifier when 2.0 was released.
-However, we've found that there are indeed cases where it could be useful, especially when shipping reusable components.
-What we need to change is **making the code in the child that affects parent state more consistent and explicit.**
-
-In 2.3 we re-introduced the `.sync` modifier for props, but this time it is just syntax sugar that automatically expands into an additional `v-on` listener:
-
-The following
-
-```html
-<comp :foo.sync="bar"></comp>
-```
-
-is expanded into:
-
-```html
-<comp :foo="bar" @update:foo="val => bar = val"></comp>
-```
-
-For the child component to update `foo`'s value, it needs to explicitly emit an event instead of mutating the prop:
+That’s why instead, we recommend emitting events in the pattern of update:myPropName.
+For example, in a hypothetical component with a title prop, we could communicate the intent of assigning a new value with:
 
 ```java
-vue().$emit('update:foo', newValue);
+vue().$emit('update:title', newTitle)
 ```
+
+```html
+<text-document
+  v-bind:title="title"
+  v-on:update:title="title = $event"
+></text-document>
+```
+
+For convenience, we offer a shorthand for this pattern with the .sync modifier:
+
+```html
+<text-document v-bind:title.sync="title"></text-document>
+```
+
+:::warning
+It's important to note that only `@Data` fields or `@Computed` with a getter and a setter can be used directly with `.sync` in Vue GWT.
+Apart from this limitations, `.sync` works the same way in Vue GWT than in Vue.js.
+:::
 
 ### Form Input Components using Custom Events
 
