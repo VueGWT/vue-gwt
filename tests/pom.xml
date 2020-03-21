@@ -36,7 +36,7 @@
         <groupId>com.axellience</groupId>
         <artifactId>vue-gwt-processors</artifactId>
         <version>${project.version}</version>
-        <scope>compile</scope>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.axellience</groupId>
