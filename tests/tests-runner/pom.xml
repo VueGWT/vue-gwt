@@ -18,10 +18,10 @@
   </properties>
 
   <dependencies>
-<!--    <dependency>-->
-<!--      <groupId>com.axellience</groupId>-->
-<!--      <artifactId>tests-app-wrapper-gwt2</artifactId>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>com.axellience</groupId>
+      <artifactId>tests-app-wrapper-gwt2</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.axellience</groupId>
       <artifactId>tests-app-wrapper-j2cl</artifactId>
@@ -54,15 +54,15 @@
             </goals>
           </execution>
 
-<!--          <execution>-->
-<!--            <id>GWT2 tests</id>-->
-<!--            <goals>-->
-<!--              <goal>karma</goal>-->
-<!--            </goals>-->
-<!--            <configuration>-->
-<!--              <karmaConfPath>src/test/javascript/karma.conf.ci.js</karmaConfPath>-->
-<!--            </configuration>-->
-<!--          </execution>-->
+          <execution>
+            <id>GWT2 tests</id>
+            <goals>
+              <goal>karma</goal>
+            </goals>
+            <configuration>
+              <karmaConfPath>src/test/javascript/karma.conf.ci.js</karmaConfPath>
+            </configuration>
+          </execution>
 
           <execution>
             <id>J2CL tests</id>

@@ -18,7 +18,7 @@
 
   <modules>
     <module>tests-app</module>
-<!--    <module>tests-app-wrapper-gwt2</module>-->
+    <module>tests-app-wrapper-gwt2</module>
     <module>tests-app-wrapper-j2cl</module>
     <module>tests-runner</module>
   </modules>
@@ -43,6 +43,11 @@
         <artifactId>tests-app</artifactId>
         <version>${project.version}</version>
         <type>gwt-lib</type>
+      </dependency>
+      <dependency>
+        <groupId>com.axellience</groupId>
+        <artifactId>tests-app</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.axellience</groupId>
