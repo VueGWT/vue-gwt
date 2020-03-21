@@ -14,7 +14,7 @@ jobs:
       - name: Set up JDK 13
         uses: actions/setup-java@v1
         with: # running setup-java again overwrites the settings.xml
-          java-version: 1.13
+          java-version: 13
           server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: MAVEN_USERNAME # env variable for username in deploy
           server-password: MAVEN_OSSRH_TOKEN # env variable for token in deploy
@@ -24,10 +24,10 @@ jobs:
 
       - name: Run Vue GWT test suite
         working-directory: tests
-        run: mvn -B test --file pom.xml
+        run: mvn -B clean test --file pom.xml
 
       - name: Publish Snapshot to OSSRH
-        run: mvn -B deploy --file pom.xml
+        run: mvn -B clean deploy --file pom.xml
         env:
           MAVEN_USERNAME: axellience
           MAVEN_OSSRH_TOKEN: ${{ secrets.MAVEN_OSSRH_TOKEN }}

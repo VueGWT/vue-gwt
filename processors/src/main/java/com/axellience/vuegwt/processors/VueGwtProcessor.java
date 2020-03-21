@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.processors;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
-import com.axellience.vuegwt.core.annotations.component.EventBound;
 import com.axellience.vuegwt.core.annotations.component.JsComponent;
 import com.axellience.vuegwt.core.annotations.directive.Directive;
 import com.axellience.vuegwt.processors.component.ComponentExposedTypeGenerator;
@@ -16,7 +15,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
