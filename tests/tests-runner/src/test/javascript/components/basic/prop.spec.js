@@ -1,4 +1,5 @@
-import {expect} from 'chai'
+import chai, {expect} from 'chai'
+import spies from 'chai-spies'
 import {
   createAndMountComponent,
   destroyComponent,
@@ -12,11 +13,15 @@ describe('@Prop', () => {
 
   beforeEach(async () => {
     await onGwtReady();
+    chai.use(spies);
+    chai.spy.on(console, 'error');
+
     component = createAndMountComponent(
         'com.axellience.vuegwt.testsapp.client.components.basic.prop.PropParentTestComponent');
   });
 
   afterEach(() => {
+    chai.spy.restore(console);
     destroyComponent(component);
   });
 
@@ -57,5 +62,18 @@ describe('@Prop', () => {
     const booleanPropFalse = getElement(component,
         '#boolean-prop-false').innerText;
     expect(booleanPropFalse).to.equal('false');
+  });
+
+  it('should work with boolean object props', async () => {
+    const booleanPropObject = getElement(component,
+        '#boolean-object-prop-true').innerText;
+    expect(booleanPropObject).to.equal('true');
+    expect(console.error).to.not.have.been.called();
+  });
+
+  it('should initialize boolean object prop to null', async () => {
+    const booleanPropObject = getElement(component,
+        '#boolean-object-prop-null').innerText;
+    expect(booleanPropObject).is.empty;
   });
 });
