@@ -76,4 +76,9 @@ describe('@Prop', () => {
         '#boolean-object-prop-null').innerText;
     expect(booleanPropObject).is.empty;
   });
+
+  it('should work with JsArray prop', async () => {
+    const stringArrayProp = getElement(component, '#string-array').innerText;
+    expect(stringArrayProp).to.equal('value-1,value-2');
+  });
 });

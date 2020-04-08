@@ -4,6 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.testsapp.client.common.SimpleObject;
+import elemental2.core.JsArray;
 
 @Component
 public class PropTestComponent implements IsVueComponent {
@@ -22,4 +23,13 @@ public class PropTestComponent implements IsVueComponent {
 
   @Prop
   boolean booleanPropFalse;
+
+  @Prop
+  Boolean booleanObjectPropTrue;
+
+  @Prop
+  Boolean booleanObjectPropNull;
+
+  @Prop
+  JsArray<String> stringArray;
 }

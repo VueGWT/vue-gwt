@@ -4,6 +4,7 @@ import elemental2.core.Function;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Any;
 
 /**
  * Definition of a property.
@@ -17,5 +18,5 @@ public class PropOptions {
   public boolean required;
   public Function validator;
   @JsProperty(name = "default")
-  public Function defaultValue;
+  public Any defaultValue;
 }

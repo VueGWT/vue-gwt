@@ -1,7 +1,7 @@
 package com.axellience.vuegwt.processors.component.template.parser;
 
-import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.markedDataFieldToPlaceHolderField;
+import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.propNameToAttributeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.boundedAttributeToAttributeName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.isBoundedAttribute;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.stringTypeToTypeName;
@@ -94,8 +94,8 @@ public class TemplateParser {
    * transformed HTML.
    *
    * @param htmlTemplate The HTML template to process, as a String
-   * @param context      Context of the Component we are currently processing
-   * @param messager     Used to report errors in template during Annotation Processing
+   * @param context Context of the Component we are currently processing
+   * @param messager Used to report errors in template during Annotation Processing
    * @return A {@link TemplateParserResult} containing the processed template and expressions
    */
   public TemplateParserResult parseHtmlTemplate(String htmlTemplate,
@@ -487,12 +487,16 @@ public class TemplateParser {
    * Check whether this is a boolean binding in the form: <component is-something />
    *
    * @param attribute The attribute we are using to bind
-   * @param prop      The prop we are binding to
+   * @param prop The prop we are binding to
    * @return true if this is a boolean binding, false otherwise
    */
   private boolean isBooleanBinding(Attribute attribute, LocalComponentProp prop) {
-    return prop.getType().equals(TypeName.BOOLEAN) && prop.getType().isPrimitive() && !attribute
-        .hasValue();
+    TypeName type = prop.getType();
+    if (type.isBoxedPrimitive()) {
+      type = type.unbox();
+    }
+
+    return type.equals(TypeName.BOOLEAN) && !attribute.hasValue();
   }
 
   /**
@@ -517,7 +521,7 @@ public class TemplateParser {
    * {@link Element} that represents it.
    *
    * @param localComponent The {@link LocalComponent} we want to check
-   * @param foundProps     The props we found on the HTML {@link Element} during processing
+   * @param foundProps The props we found on the HTML {@link Element} during processing
    */
   private void validateRequiredProps(LocalComponent localComponent,
       Set<LocalComponentProp> foundProps) {
@@ -871,7 +875,7 @@ public class TemplateParser {
    * Process the $event variable passed on v-on. This variable must have a valid cast in front.
    *
    * @param expression The currently processed expression
-   * @param nameExpr   The variable we are processing
+   * @param nameExpr The variable we are processing
    * @param parameters The parameters this expression depends on
    */
   private void processEventParameter(Expression expression, NameExpr nameExpr,
@@ -891,7 +895,7 @@ public class TemplateParser {
    * Process a name expression to determine if it exists in the context. If it does, and it's a
    * local variable (from a v-for) we add it to our parameters
    *
-   * @param nameExpr   The variable we are processing
+   * @param nameExpr The variable we are processing
    * @param parameters The parameters this expression depends on
    */
   private void processNameExpression(NameExpr nameExpr,
