@@ -23,6 +23,8 @@ import javax.inject.Provider;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Any;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -199,15 +201,27 @@ public class VueComponentOptions<T extends IsVueComponent> implements JsProperty
   }
 
   /**
-   * Add a custom prop validator to validate a property
+   * Add property default value using a {@link Function}.
    *
-   * @param javaMethod Function pointer to the method in the {@link IsVueComponent}
-   * @param propertyName The name of the property to validate
+   * @param javaMethod the method in the {@link IsVueComponent} that returns the default value of
+   * the property.
+   * @param propertyName the property name.
    */
   @JsOverlay
   public final void addJavaPropDefaultValue(Function javaMethod, String propertyName) {
+    addJavaPropDefaultValue(propertyName, Js.asAny(javaMethod));
+  }
+
+  /**
+   * Add property default value.
+   *
+   * @param propertyName the property name.
+   * @param defaultValue the default value of the property.
+   */
+  @JsOverlay
+  public final void addJavaPropDefaultValue(String propertyName, Any defaultValue) {
     PropOptions propDefinition = getProps().get(propertyName);
-    propDefinition.defaultValue = javaMethod;
+    propDefinition.defaultValue = defaultValue;
   }
 
   @JsOverlay

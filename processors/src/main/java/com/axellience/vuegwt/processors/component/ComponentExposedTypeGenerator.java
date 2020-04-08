@@ -323,24 +323,33 @@ public class ComponentExposedTypeGenerator {
         .fieldsIn(component.getEnclosedElements())
         .stream()
         .filter(field -> hasAnnotation(field, Prop.class))
-        .forEach(field -> {
-          String propName = field.getSimpleName().toString();
-          Prop prop = field.getAnnotation(Prop.class);
+        .forEach(this::processProp);
+  }
 
-          collectionFieldsValidator.validateComponentPropField(field);
+  private void processProp(VariableElement field) {
+    String propName = field.getSimpleName().toString();
+    Prop prop = field.getAnnotation(Prop.class);
 
-          fieldsWithNameExposed.add(new ExposedField(propName, field.asType()));
+    collectionFieldsValidator.validateComponentPropField(field);
 
-          optionsBuilder.addStatement(
-              "options.addJavaProp($S, $T.getFieldName(this, () -> this.$L = $L), $L, $S)",
-              propName,
-              VueGWTTools.class,
-              propName,
-              getFieldMarkingValueForType(field.asType()),
-              prop.required(),
-              prop.checkType() ? getNativeNameForJavaType(field.asType()) : null
-          );
-        });
+    TypeMirror typeMirror = field.asType();
+    TypeName typeName = TypeName.get(typeMirror);
+
+    fieldsWithNameExposed.add(new ExposedField(propName, typeMirror));
+
+    optionsBuilder.addStatement(
+        "options.addJavaProp($S, $T.getFieldName(this, () -> this.$L = $L), $L, $S)",
+        propName,
+        VueGWTTools.class,
+        propName,
+        getFieldMarkingValueForType(typeMirror),
+        prop.required(),
+        prop.checkType() ? getNativeNameForJavaType(typeName) : null
+    );
+
+    if (isBooleanObject(typeName)) {
+      optionsBuilder.addStatement("options.addJavaPropDefaultValue($S, null)", propName);
+    }
   }
 
   /**
@@ -917,28 +926,47 @@ public class ComponentExposedTypeGenerator {
   /**
    * Transform a Java type name into a JavaScript type name. Takes care of primitive types.
    *
-   * @param typeMirror A type to convert
-   * @return A String representing the JavaScript type name
+   * @param typeName the type to convert.
+   * @return A String representing the JavaScript type name.
    */
-  private String getNativeNameForJavaType(TypeMirror typeMirror) {
-    TypeName typeName = TypeName.get(typeMirror);
+  private String getNativeNameForJavaType(TypeName typeName) {
 
-    if (typeName.equals(TypeName.INT)
-        || typeName.equals(TypeName.BYTE)
-        || typeName.equals(TypeName.SHORT)
-        || typeName.equals(TypeName.LONG)
-        || typeName.equals(TypeName.FLOAT)
-        || typeName.equals(TypeName.DOUBLE)) {
+    if (isNumber(typeName)) {
       return "Number";
-    } else if (typeName.equals(TypeName.BOOLEAN)) {
+    } else if (isBoolean(typeName)) {
       return "Boolean";
-    } else if (typeName.equals(TypeName.get(String.class)) || typeName.equals(TypeName.CHAR)) {
+    } else if (isString(typeName)) {
       return "String";
-    } else if (typeMirror.toString().startsWith(JsArray.class.getCanonicalName())) {
+    } else if (isArray(typeName)) {
       return "Array";
     } else {
       return "Object";
     }
+  }
+
+  private boolean isNumber(TypeName typeName) {
+    return typeName.equals(TypeName.INT)
+        || typeName.equals(TypeName.BYTE)
+        || typeName.equals(TypeName.SHORT)
+        || typeName.equals(TypeName.LONG)
+        || typeName.equals(TypeName.FLOAT)
+        || typeName.equals(TypeName.DOUBLE);
+  }
+
+  private boolean isString(TypeName typeName) {
+    return typeName.equals(TypeName.get(String.class)) || typeName.equals(TypeName.CHAR);
+  }
+
+  private boolean isArray(TypeName typeName) {
+    return typeName.toString().startsWith(JsArray.class.getCanonicalName());
+  }
+
+  private boolean isBoolean(TypeName typeName) {
+    return typeName.equals(TypeName.BOOLEAN) || isBooleanObject(typeName);
+  }
+
+  private boolean isBooleanObject(TypeName typeName) {
+    return typeName.isBoxedPrimitive() && typeName.unbox().equals(TypeName.BOOLEAN);
   }
 
   private void printError(String message) {
