@@ -23,7 +23,7 @@ public class DestructuredPropertyInfo extends VariableInfo {
       String typeName = getType().toString();
       String anyGetterName =
           "as" + typeName.substring(0, 1).toUpperCase() + typeName.substring(1) + "()";
-      return destructuredVariable.getName() + ".getAny(\"" + getName() + "\")." + anyGetterName;
+      return destructuredVariable.getName() + ".getAsAny(\"" + getName() + "\")." + anyGetterName;
     }
 
     return "((" + getType() + ") " + destructuredVariable.getName() + ".get(\""
