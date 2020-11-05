@@ -20,8 +20,15 @@ class VueJsObserverGetter {
 
   VueObserver getVueJsObserver() {
     VueComponentOptions options = new VueComponentOptions();
-    options.setComponentExportedTypePrototype(this.__proto__);
-    options.addMethod("getObserver", this.__proto__.getObserver);
+
+    try {
+      options.setComponentExportedTypePrototype(this.__proto__);
+      options.addMethod("getObserver", this.__proto__.getObserver);
+    } catch (Exception e) {
+      throw new IllegalStateException(
+          "Cannot initialize VueJsObserver. Please be sure to add `-generateJsInteropExports` flag to your GWT configuration.",
+          e);
+    }
 
     VueJsConstructor vueJsConstructor = Vue.extendJavaComponent(options);
     VueJsObserverGetter getter = uncheckedCast(vueJsConstructor.instantiate());
