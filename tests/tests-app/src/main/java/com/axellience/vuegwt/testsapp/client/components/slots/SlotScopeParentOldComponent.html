@@ -2,9 +2,9 @@
 
 <slot-scope-child ref="child">
   <template slot-scope="scope">
-    <div id="myInt">{{ scope.getAny("myInt").asInt() + 5 }}</div>
-    <div id="myIntCamelCase">{{ scope.getAny("myIntCamelCase").asInt() + 5 }}</div>
-    <div id="myIntLiteral">{{ scope.getAny("myIntLiteral").asInt() + 10 }}</div>
+    <div id="myInt">{{ scope.getAsAny("myInt").asInt() + 5 }}</div>
+    <div id="myIntCamelCase">{{ scope.getAsAny("myIntCamelCase").asInt() + 5 }}</div>
+    <div id="myIntLiteral">{{ scope.getAsAny("myIntLiteral").asInt() + 10 }}</div>
     <div id="myInteger">{{ ((Integer) scope.get("myInteger")) + 5 }}</div>
     <div id="myString">{{ ((String) scope.get("myString")) + "_HELLO" }}</div>
     <div id="myStringLiteral">{{ ((String) scope.get("myStringLiteral")) + "_HELLO" }}</div>

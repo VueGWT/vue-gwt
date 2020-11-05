@@ -69,6 +69,7 @@ import com.axellience.vuegwt.testsapp.client.components.vmodel.VModelComponent;
 import com.axellience.vuegwt.testsapp.client.components.vmodel.VModelComponentFactory;
 import elemental2.core.Function;
 import elemental2.core.JsArray;
+import elemental2.core.JsArray.ForEachCallbackFn;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
@@ -140,7 +141,12 @@ public class VueGwtTestsApp {
     registerTestComponent(ComputedOverrideComponent.class, ComputedOverrideComponentFactory.get());
     registerTestComponent(RefParentTestComponent.class, RefParentTestComponentFactory.get());
 
-    Window.onVueGwtTestsReady.forEach((f, i, a) -> f.call(i, a));
+    Window.onVueGwtTestsReady.forEach(new ForEachCallbackFn<Function>() {
+      @Override
+      public Object onInvoke(Function f, int i, JsArray<Function> a) {
+        return f.call(i, a);
+      }
+    });
   }
 
   private static <T extends IsVueComponent> void registerTestComponent(Class<T> componentClass,
