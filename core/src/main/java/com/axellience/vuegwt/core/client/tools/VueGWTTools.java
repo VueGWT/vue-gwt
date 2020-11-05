@@ -248,6 +248,6 @@ public class VueGWTTools {
         new Function("this[\"" + sourceKey + "\"][\"" + sourceProperty + "\"] = arguments[0];"));
     PROXY_SHARED_DEFINITION.set("get",
         new Function("return this[\"" + sourceKey + "\"][\"" + sourceProperty + "\"];"));
-    JsObject.defineProperty(target, targetProperty, PROXY_SHARED_DEFINITION);
+    JsObject.defineProperty(target, targetProperty, Js.uncheckedCast(PROXY_SHARED_DEFINITION));
   }
 }

@@ -68,7 +68,7 @@ public abstract class VueDirectiveOptions implements JsPropertyMap {
     JsString jsString = cast(jsFunction.toString());
 
     // Get content between first { and last }
-    JsString m = cast(jsString.match(new JsRegExp("\\{([\\s\\S]*)\\}", "m"))[1]);
+    JsString m = cast(jsString.match(new JsRegExp("\\{([\\s\\S]*)\\}", "m")).getAt(1));
     // Strip comments
     return m.replace(new JsRegExp("^\\s*\\/\\/.*$", "mg"), "").trim();
   }

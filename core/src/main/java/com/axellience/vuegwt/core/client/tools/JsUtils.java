@@ -33,7 +33,7 @@ public class JsUtils {
   }
 
   public static <T> JsArray<T> arrayFrom(Collection<T> collection) {
-    return new JsArray<>(collection.toArray());
+    return new JsArray(collection.toArray());
   }
 
   public static <K, V> JsArray<V> arrayFrom(Map<K, V> map) {
