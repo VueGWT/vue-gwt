@@ -16,7 +16,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Plugins -->
-    <plugin.version.gwt.maven>1.0-rc-9</plugin.version.gwt.maven>
+    <plugin.version.gwt.maven>1.0.0</plugin.version.gwt.maven>
   </properties>
 
   <modules>

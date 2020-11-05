@@ -16,7 +16,7 @@
   <packaging>gwt-app</packaging>
 
   <properties>
-    <gwt.version>2.8.2</gwt.version>
+    <gwt.version>2.9.0</gwt.version>
 
     <auto-service.version>1.0-rc4</auto-service.version>
 
