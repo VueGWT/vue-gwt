@@ -7,6 +7,7 @@ import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorAttribute;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CascadingStyleSheet;
+import com.helger.css.decl.ICSSSelectorMember;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.reader.CSSReader;
@@ -83,7 +84,8 @@ public class TemplateScopedCssParser {
         ICommonsList<CSSSelector> selectors = aStyleRule.getAllSelectors();
         if (selectors != null) {
           for (CSSSelector sel : selectors) {
-            sel.addMember(new CSSSelectorAttribute("", datav));
+            int vDataPosition = getVDataPosition(sel);
+            sel.addMember(vDataPosition, new CSSSelectorAttribute("", datav));
           }
         }
       }
@@ -91,5 +93,22 @@ public class TemplateScopedCssParser {
     Map<String, String> mandatoryAttributes = new LinkedHashMap<>();
     mandatoryAttributes.put(datav, null);
     return Optional.of(new ScopedCssResult(getCssAsString(cssSheet), mandatoryAttributes));
+  }
+
+  private int getVDataPosition(CSSSelector selector) {
+    if (selector.hasMembers()) {
+      for (int i = selector.getMemberCount() - 1; i > 0; i--) {
+        ICSSSelectorMember member = selector.getMemberAtIndex(i);
+        if (!isPseudoElementOrPseudoClass(member)) {
+          return i + 1;
+        }
+      }
+    }
+
+    return 1;
+  }
+
+  private boolean isPseudoElementOrPseudoClass(ICSSSelectorMember member) {
+    return member != null && member.getAsCSSString().startsWith(":");
   }
 }

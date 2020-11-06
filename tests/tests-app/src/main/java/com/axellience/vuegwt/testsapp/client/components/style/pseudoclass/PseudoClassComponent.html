@@ -1,0 +1,19 @@
+<div>
+  <div class='simple-pseudo-class'></div>
+  <ul>
+    <li>first</li>
+    <li id='second-li'>second</li>
+    <li>third</li>
+    <li>forth</li>
+    <li>fifth</li>
+  </ul>
+</div>
+<style scoped>
+  .simple-pseudo-class:before {
+    content: "before";
+  }
+
+  ul > li:not(:nth-child(1)):not(:nth-child(3)) {
+    color: rgb(255, 0, 0);
+  }
+</style>
