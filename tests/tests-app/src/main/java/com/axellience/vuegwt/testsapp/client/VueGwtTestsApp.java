@@ -63,6 +63,8 @@ import com.axellience.vuegwt.testsapp.client.components.style.classbinding.Class
 import com.axellience.vuegwt.testsapp.client.components.style.classbinding.ClassBindingTestComponentFactory;
 import com.axellience.vuegwt.testsapp.client.components.style.inlinestylebinding.InlineStyleBindingTestComponent;
 import com.axellience.vuegwt.testsapp.client.components.style.inlinestylebinding.InlineStyleBindingTestComponentFactory;
+import com.axellience.vuegwt.testsapp.client.components.style.pseudoclass.PseudoClassComponent;
+import com.axellience.vuegwt.testsapp.client.components.style.pseudoclass.PseudoClassComponentFactory;
 import com.axellience.vuegwt.testsapp.client.components.style.scoped.ScopedTestComponent;
 import com.axellience.vuegwt.testsapp.client.components.style.scoped.ScopedTestComponentFactory;
 import com.axellience.vuegwt.testsapp.client.components.vmodel.VModelComponent;
@@ -120,6 +122,7 @@ public class VueGwtTestsApp {
         InlineStyleBindingTestComponentFactory.get()
     );
     registerTestComponent(ScopedTestComponent.class, ScopedTestComponentFactory.get());
+    registerTestComponent(PseudoClassComponent.class, PseudoClassComponentFactory.get());
     registerTestComponent(VModelComponent.class, VModelComponentFactory.get());
     registerTestComponent(SlotScopeParentOldComponent.class,
         SlotScopeParentOldComponentFactory.get());
