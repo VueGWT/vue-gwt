@@ -13,13 +13,13 @@ To add Vue GWT to your Maven project, simply add the following to your `pom.xml`
         <dependency>
             <groupId>com.axellience</groupId>
             <artifactId>vue-gwt</artifactId>
-            <version>1.0-beta-9</version>
+            <version>1.0.0</version>
         </dependency>
         <!-- Annotation Processors for Vue GWT -->
         <dependency>
             <groupId>com.axellience</groupId>
             <artifactId>vue-gwt-processors</artifactId>
-            <version>1.0-beta-9</version>
+            <version>1.0.0</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -27,7 +27,7 @@ To add Vue GWT to your Maven project, simply add the following to your `pom.xml`
 ```
 
 ::: warning
-Starting beta-3, Vue GWT requires at least GWT 2.8.1 to work.
+Starting 1.0.0, Vue GWT has been tested with GWT 2.9.0.
 :::
 
 ### Configure Annotation Processing
