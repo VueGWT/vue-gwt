@@ -71,7 +71,7 @@ Then add this to expose templates to the annotation processor:
 ### Configure `JsInterop`
 
 Vue GWT relies heavily on GWT `JsInterop`.
-It is not enabled by default in GWT 2.8, so you must enable it in your SuperDevMode and Maven configurations.
+It is not enabled by default in GWT, so you must enable it in your SuperDevMode and Maven configurations.
 
 #### SuperDevMode
 For SuperDevMode, simply add this flag to your devMode parameters:

@@ -1,6 +1,6 @@
 # Introduction
 
-Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT 2.8](http://www.gwtproject.org/) using [JsInterop](https://github.com/google/jsinterop-base) and [Elemental2](https://github.com/google/elemental2).
+Vue GWT integrates [Vue.js](https://vuejs.org/) with [GWT](http://www.gwtproject.org/) using [JsInterop](https://github.com/google/jsinterop-base) and [Elemental2](https://github.com/google/elemental2).
 It lets you write Vue.js components in Java.
 
 ## Features
