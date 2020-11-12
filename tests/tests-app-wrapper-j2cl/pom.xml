@@ -7,7 +7,7 @@
   <parent>
     <artifactId>vue-gwt-tests</artifactId>
     <groupId>com.axellience</groupId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </parent>
 
   <artifactId>vue-gwt-tests-app-wrapper-j2cl</artifactId>
