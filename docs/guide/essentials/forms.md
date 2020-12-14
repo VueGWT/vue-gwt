@@ -46,10 +46,16 @@ public class TodoTextComputedComponent implements IsVueComponent {
 In some case you can't use computed properties.
 For example inside a `v-for` on the loop variable.
 
-In those case you can use the following syntax:
-
+In those case you can use the long form of v-model with the following syntax:
 ```html
-<div>
+<div v-for="Task todo in todoList">
+    <input :value="todo.getText()" @input="todo.text = (String) $event"/>
+    Todo Text: {{ todo.getText() }}
+</div>
+```
+Or this syntax :
+```html
+<div v-for="Task todo in todoList">
     <input :value="todo.getText()" @input="updateTodoText"/>
     Todo Text: {{ todo.getText() }}
 </div>
@@ -61,7 +67,7 @@ public class TodoTextComponent implements IsVueComponent {
     @Data Todo todo = new Todo("Hello World!");
 
     @JsMethod
-    public void updateMessage(HTMLInputElement event) {
+    public void updateTodoText(HTMLInputElement event) {
         this.todo.setText(event.target.value);
     }
 }
