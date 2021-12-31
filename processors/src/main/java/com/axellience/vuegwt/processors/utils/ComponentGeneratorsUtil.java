@@ -185,12 +185,14 @@ public class ComponentGeneratorsUtil {
    * Optional}
    */
   public static Optional<TypeElement> getSuperComponentType(TypeElement component) {
-    // If super type is vue component, don't return it
-    if (TypeName.get(Object.class).equals(TypeName.get(component.getSuperclass()))) {
+    // If super type is Object or "none" ignore it
+    TypeMirror mirror = component.getSuperclass();
+    if ( mirror.getKind() == TypeKind.NONE
+        || TypeName.get(Object.class).equals(TypeName.get(mirror))) {
       return Optional.empty();
     }
 
-    return Optional.of((TypeElement) ((DeclaredType) component.getSuperclass()).asElement());
+    return Optional.of((TypeElement) ((DeclaredType) mirror).asElement());
   }
 
   /**
