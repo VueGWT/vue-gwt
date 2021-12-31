@@ -1,7 +1,6 @@
 package com.axellience.vuegwt.processors.component.template;
 
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getComponentLocalComponents;
-import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.getSuperComponentType;
+import static com.axellience.vuegwt.processors.utils.ComponentGeneratorsUtil.*;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.componentToTagName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsNameUtil.computedPropertyNameToFieldName;
 import static com.axellience.vuegwt.processors.utils.GeneratorsUtil.getComputedPropertyName;
@@ -173,6 +172,13 @@ public class ComponentTemplateProcessor {
         .ifPresent(superComponent -> registerFieldsAndMethodsInContext(
             templateParserContext,
             superComponent,
+            alreadyDoneVariable,
+            alreadyDoneMethods));
+
+    getInterfaceTypes(componentTypeElement)
+        .forEach(iface -> registerFieldsAndMethodsInContext(
+            templateParserContext,
+            iface,
             alreadyDoneVariable,
             alreadyDoneMethods));
   }
