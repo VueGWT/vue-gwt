@@ -194,6 +194,23 @@ public class ComponentGeneratorsUtil {
   }
 
   /**
+   * Return the {@link TypeElement}s of the interfaces of a given {@link
+   * IsVueComponent}. If the {@link IsVueComponent} has not interfaces,
+   * return an empty {@link List}
+   *
+   * @param component The {@link IsVueComponent} to get the super type of
+   * @return The List of {@link TypeElement}s of the interfaces or an empty.
+   */
+  public static List<TypeElement> getInterfaceTypes(TypeElement component) {
+    List<TypeElement> interfaceElements = new LinkedList<>();
+    for (TypeMirror m : component.getInterfaces()) {
+      interfaceElements.add((TypeElement) ((DeclaredType) m).asElement());
+    }
+    return interfaceElements;
+  }
+
+
+  /**
    * Return the number of super component in the chain of parents
    *
    * @param component The {@link IsVueComponent} to count the super type of
