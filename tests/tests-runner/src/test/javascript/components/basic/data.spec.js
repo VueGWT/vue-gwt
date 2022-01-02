@@ -293,6 +293,13 @@ describe('Data', () => {
     });
   });
 
+  describe('simpleObjectWithDefaultMethod', () => {
+    it('should display the value of the default method', async () => {
+      const domValue = getElement(component, '#default-method-on-data-object').innerText;
+      expect(domValue).to.equal('a default method value');
+    });
+  });
+
   describe('attributeValueData', () => {
     it('should not be displayed in the DOM if its value is null', () => {
       const element = getElement(component, '#data-attribute-element');
