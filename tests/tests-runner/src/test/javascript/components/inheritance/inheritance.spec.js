@@ -27,6 +27,11 @@ describe('Component inheritance', () => {
         'PARENT_INITIAL_DATA');
   });
 
+  it('should show result of interfaces default methods', () => {
+    expect(getElement(component, "#parentInterfaceDefaultMethod").innerText).to.equal(
+        'a default method value');
+  });
+
   it('should react to child data field change', async () => {
     expect(getElement(component, "#childData").innerText).to.equal(
         'CHILD_INITIAL_DATA');

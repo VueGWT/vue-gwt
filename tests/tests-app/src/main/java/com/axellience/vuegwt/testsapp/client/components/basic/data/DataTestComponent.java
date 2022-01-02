@@ -4,6 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.testsapp.client.common.SimpleObject;
+import com.axellience.vuegwt.testsapp.client.common.SimpleObjectWithDefaultMethod;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 
@@ -63,6 +64,9 @@ public class DataTestComponent implements IsVueComponent {
 
   @Data
   SimpleObject simpleObjectData = null;
+
+  @Data
+  SimpleObjectWithDefaultMethod simpleObjectWithDefaultMethod = new SimpleObjectWithDefaultMethod();
 
   @Data
   String attributeValueData = null;
